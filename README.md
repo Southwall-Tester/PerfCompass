@@ -4,6 +4,12 @@ Windows 原生电脑占用监测与购机配置分析工具。C# / .NET 10 / WPF
 
 双击根目录 `启动.cmd`。通过验证的新版本位于 `release-next/`，启动器优先使用它，并继续读取 `release/data/` 中的历史。已经运行的旧版本需要正常退出后再启动。发布版自带运行时，不依赖 Python 或预装 .NET。
 
+GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.com/Southwall-Tester/PerfCompass/actions/workflows/windows.yml) 中成功的运行下载 `PerfCompass-Windows-x64` 产物，解压后运行 `PerfCompass.exe`。当前为 0.2.0 试用版，尚未完成商业级验证。
+
+![近期任务变化分析](docs/images/recent-demand.png)
+
+上图使用隔离的合成测试轨迹，演示显卡过去低负载、最近一周新增重任务时的分析结果，不代表截图所在电脑的真实购机结论。
+
 ## 使用
 
 1. 正常使用电脑，按实际任务切换右上角场景。
