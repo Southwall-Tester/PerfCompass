@@ -9,11 +9,13 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\App.ico</ApplicationIcon>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
     <AssemblyName>PerfCompass</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\tests\nlp-cases.json" LogicalName="PerfCompass.NlpCases.json" />
+    <EmbeddedResource Include="..\..\tests\nlp-output.schema.json" LogicalName="PerfCompass.SemanticSchema.json" />
+    <EmbeddedResource Include="..\..\tests\nlp-extraction-prompt.txt" LogicalName="PerfCompass.SemanticPrompt.txt" />
     <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.6" />
     <Resource Include="Assets\App.ico"/>
   </ItemGroup>

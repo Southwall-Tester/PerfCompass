@@ -13,7 +13,11 @@ try {
     & $taskDotnet build $taskProject -c Release
     if ($LASTEXITCODE -ne 0) { throw 'Build failed' }
     if ($Test) {
-        $taskTest = Start-Process -FilePath (Join-Path $taskRoot 'src\PerfCompass\bin\Release\net10.0-windows\PerfCompass.exe') -ArgumentList '--self-test' -WindowStyle Hidden -PassThru -Wait
+        $taskTest = Start-Process -FilePath (Join-Path $taskRoot 'src\PerfCompass\bin\Release\net10.0-windows\PerfCompass.exe') -ArgumentList '--self-test' -WindowStyle Hidden -PassThru
+        if (-not $taskTest.WaitForExit(60000)) {
+            Stop-Process -Id $taskTest.Id -ErrorAction SilentlyContinue
+            throw 'Self-tests exceeded 60 seconds; inspect artifacts/self-tests.txt for the last running check.'
+        }
         Get-Content -LiteralPath (Join-Path $taskRoot 'artifacts\self-tests.txt')
         if ($taskTest.ExitCode -ne 0) { throw 'Tests failed' }
     }

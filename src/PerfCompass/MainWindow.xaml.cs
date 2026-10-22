@@ -40,6 +40,7 @@ public partial class MainWindow : Window
         if (SceneCombo.SelectedIndex < 0) SceneCombo.SelectedIndex = 0;
         RepresentativeCheck.IsChecked = store.Settings.Representative;
         FutureBox.Text = store.Settings.FutureNeeds;
+        InitializeSemanticSettings();
         if (store.Settings.Requirements is { } savedPlan && savedPlan.Source == store.Settings.FutureNeeds.Trim())
         { ShowRequirementDraft(savedPlan); RequirementsConfirm.IsChecked = true; }
         CloseToTrayCheck.IsChecked = store.Settings.CloseToTray;
@@ -151,8 +152,8 @@ public partial class MainWindow : Window
         try
         {
             var settings = store.Settings; var id = collector?.HardwareId; int days = windowDays; string? scene = analysisScene;
-            var result = await Task.Run(() => RequirementParser.Apply(ExperienceAnalyzer.Attach(
-                AnalysisEngine.Analyze(store.Read(Math.Max(days, 60), id), settings, days, scene), store.ReadExperiences(days, id ?? "")), settings));
+            var result = await Task.Run(() => SemanticRequirements.Apply(RequirementParser.Apply(ExperienceAnalyzer.Attach(
+                AnalysisEngine.Analyze(store.Read(Math.Max(days, 60), id), settings, days, scene), store.ReadExperiences(days, id ?? "")), settings), settings));
             if (days != windowDays || scene != analysisScene || settings != store.Settings || id != collector?.HardwareId) { refreshRequested = true; return; }
             report = result;
             ExperienceList.ItemsSource = result.ExperienceEvents.Take(20);
@@ -197,7 +198,7 @@ public partial class MainWindow : Window
     private Border AdviceCard(Advice advice, bool expanded)
     {
         var stack = new StackPanel();
-        string label = advice.Status switch { "surplus" => "疑似过剩", "pressure" => "压力线索", "fit" => "保持观察", "changed" => "近期需求增加", "review" => "待验证降档", "experience" => "体验待核对", "requirements" => "新需求待验证", _ => "证据积累中" };
+        string label = advice.Status switch { "surplus" => "疑似过剩", "pressure" => "压力线索", "fit" => "保持观察", "changed" => "近期需求增加", "review" => "待验证降档", "experience" => "体验待核对", "requirements" => "新需求待验证", "constraints" => "已确认条件", _ => "证据积累中" };
         string color = advice.Status switch { "surplus" => "#007F73", "pressure" or "changed" => "#BC7132", "review" => "#6378C8", _ => "#677A87" };
         var header = new DockPanel();
         header.Children.Add(new TextBlock { Text = advice.Name, FontSize = 13, Foreground = Brush("#677A87") });
@@ -236,6 +237,7 @@ public partial class MainWindow : Window
     private void Pause_Click(object sender, RoutedEventArgs e) => TogglePause();
     private void TogglePause()
     {
+        if (semanticLocalRequest && paused) { StatusLine.Text = "本机模型正在解析，结束并停止服务后再继续监测。"; return; }
         lock (recordingGate) { paused = !paused; recordingGeneration++; }
         experienceContext.Clear();
         PauseButton.Content = paused ? "继续记录" : "暂停记录";
@@ -291,7 +293,8 @@ public partial class MainWindow : Window
             try { confirmed = RequirementParser.Confirm(requirementDraft, ((ComboBoxItem)AiModeCombo.SelectedItem).Tag.ToString()!); }
             catch (ArgumentException ex) { RequirementsStatus.Text = ex.Message; return; }
         }
-        store.SaveSettings(store.Settings with { Representative = RepresentativeCheck.IsChecked == true, FutureNeeds = FutureBox.Text.Trim(), Requirements = confirmed });
+        store.SaveSettings(store.Settings with { Representative = RepresentativeCheck.IsChecked == true, FutureNeeds = FutureBox.Text.Trim(), Requirements = confirmed,
+            SemanticRequirements = confirmed != null || store.Settings.SemanticRequirements?.Source != FutureBox.Text.Trim() ? null : store.Settings.SemanticRequirements });
         RequirementsStatus.Text = confirmed == null ? "描述已保存，尚未确认的解析结果不参与配置建议。" : "已保存确认的需求，将用于配置建议；修改描述后需要重新解析。";
         StatusLine.Text = "设置已保存。"; await RefreshAnalysis();
     }
@@ -308,6 +311,7 @@ public partial class MainWindow : Window
     private void FutureBox_Changed(object sender, TextChangedEventArgs e)
     {
         if (!initialized) return;
+        ResetSemanticDraft();
         requirementDraft = null; RequirementsList.ItemsSource = null; RequirementsConfirm.IsChecked = false;
         RequirementsStatus.Text = "描述已修改，请重新解析。";
     }
@@ -355,7 +359,7 @@ public partial class MainWindow : Window
     private async void Exit()
     {
         if (exiting) return;
-        exiting = true; stop.Cancel(); tray.Visible = false; tray.Dispose();
+        exiting = true; semanticCancellation?.Cancel(); ModelApiKey.Clear(); stop.Cancel(); tray.Visible = false; tray.Dispose();
         if (collectionTask != null)
         {
             var finished = await Task.WhenAny(collectionTask, Task.Delay(5000));

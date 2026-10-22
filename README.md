@@ -1,10 +1,10 @@
 # PerfCompass
 
-Windows 原生电脑占用监测与购机配置分析工具。C# / .NET 10 / WPF；数据保存在本机。
+Windows 原生电脑占用监测与购机配置分析工具。C# / .NET 10 / WPF；采样与历史保存在本机，可选模型解析会在主动点击时向所配服务发送需求描述。
 
 双击根目录 `启动.cmd`。通过验证的新版本位于 `release-next/`，启动器优先使用它，并继续读取 `release/data/` 中的历史。已经运行的旧版本需要正常退出后再启动。发布版自带运行时，不依赖 Python 或预装 .NET。
 
-GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.com/Southwall-Tester/PerfCompass/actions/workflows/windows.yml) 中成功的运行下载 `PerfCompass-Windows-x64` 产物，解压后运行 `PerfCompass.exe`。当前为 0.3.0 试用版，尚未完成商业级验证。
+GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.com/Southwall-Tester/PerfCompass/actions/workflows/windows.yml) 中成功的运行下载 `PerfCompass-Windows-x64` 产物，解压后运行 `PerfCompass.exe`。当前为 0.4.0 试用版，尚未完成商业级验证。
 
 ![近期任务变化分析](docs/images/recent-demand.png)
 
@@ -20,6 +20,8 @@ GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.
 在实时页展开“记录体验”，可保存卡顿或等待描述及此前两分钟采样线索；历史页可查看并标为已处理。未处理的近期体验问题会约束降档建议。暂停期间不关联旧采样；同时出现高占用不能证明部件是原因。
 
 设置页的需求描述支持有限的规则预解析：列出任务、否定与未来线索，AI 描述还需核对本地或云端方式。用户确认保存后，字段才参与建议；修改原文会取消旧确认。当前规则不支持通用自然语言，可能遗漏条件、时间与数值关系。未识别片段保留原文，不悄悄转成硬件要求。论文、开源方案和 36 条广度诊断见 [NLP_RESEARCH.md](docs/NLP_RESEARCH.md)。
+
+0.4.0 另提供可选的“模型解析与逐项核对”：配置兼容的结构化聊天接口后，可提取开放的任务名称、资源目标、预算、便携等事项，并分别保留否定、条件与时间。候选默认不选用，可修改、排除或补充，确认保存后才影响建议。接口仅发送需求文字，不附带监测记录；密钥仅在当前运行保留。本机接口会暂停监测，需要先停止本地模型服务再继续。尚未默认采用任何模型，详见 [模型解析说明](docs/MODEL_REQUIREMENTS.md)。
 
 默认关闭窗口会收起到系统托盘并继续采集；从程序或托盘菜单退出才停止记录。可在“记录设置”更改关闭行为，并主动启用登录 Windows 后记录。暂停时停止采集与保存。程序不默认修改开机启动，不上传遥测。
 

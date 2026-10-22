@@ -2,15 +2,19 @@ using System.IO;
 
 namespace PerfCompass;
 
-public static class SelfTests
+public static partial class SelfTests
 {
     public static int Run()
     {
+        Directory.CreateDirectory("artifacts");
+        File.WriteAllText("artifacts/self-tests.txt", "RUNNING " + DateTimeOffset.Now.ToString("O") + "\n");
         var log = new List<string>();
         void Check(string name, Action action)
         {
+            File.AppendAllText("artifacts/self-tests.txt", "RUN " + name + "\n");
             try { action(); log.Add("PASS " + name); }
             catch (Exception e) { log.Add("FAIL " + name + ": " + e.Message); }
+            File.AppendAllText("artifacts/self-tests.txt", log[^1] + "\n");
         }
         void Assert(bool condition, string message) { if (!condition) throw new Exception(message); }
         List<Sample> Fixture() => Enumerable.Range(0, 3600).Select(i => new Sample
@@ -353,6 +357,7 @@ public static class SelfTests
             Assert(report.SampleCount == 259200 && report.History.Count <= 722, "unbounded history points or missing samples");
             log.Add($"METRIC 30-day analysis: {timer.Elapsed.TotalMilliseconds:0} ms, {report.History.Count} chart bins");
         });
+        Task.Run(() => RunSemanticTests(Check, Assert, () => Analyze(Fixture()))).GetAwaiter().GetResult();
         Directory.CreateDirectory("artifacts");
         File.WriteAllLines("artifacts/self-tests.txt", log);
         return log.Any(x => x.StartsWith("FAIL")) ? 1 : 0;
