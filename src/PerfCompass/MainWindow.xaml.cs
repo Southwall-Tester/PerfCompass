@@ -1,0 +1,307 @@
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using Forms = System.Windows.Forms;
+
+namespace PerfCompass;
+
+public partial class MainWindow : Window
+{
+    private readonly LocalStore store;
+    private readonly CancellationTokenSource stop = new();
+    private Collector? collector;
+    private readonly Forms.NotifyIcon tray;
+    private volatile bool paused;
+    private bool exiting, initialized, analyzing, refreshRequested;
+    private int recordingGeneration;
+    private readonly object recordingGate = new();
+    private readonly List<HistoryPoint> livePoints = [];
+    private AnalysisReport? report;
+    private LiveSnapshot? live;
+    private int windowDays = 7;
+    private string? analysisScene;
+    private bool updatingSceneChoices;
+    private Task? collectionTask;
+    private DateTimeOffset lastAnalysis = DateTimeOffset.MinValue;
+    private string activePage = "live";
+    private volatile bool historyWriteFailed;
+    public MainWindow(LocalStore store)
+    {
+        this.store = store;
+        InitializeComponent();
+        for (int i = 0; i < SceneCombo.Items.Count; i++) if (((ComboBoxItem)SceneCombo.Items[i]).Content.ToString() == store.Settings.Scene) SceneCombo.SelectedIndex = i;
+        if (SceneCombo.SelectedIndex < 0) SceneCombo.SelectedIndex = 0;
+        RepresentativeCheck.IsChecked = store.Settings.Representative;
+        FutureBox.Text = store.Settings.FutureNeeds;
+        CloseToTrayCheck.IsChecked = store.Settings.CloseToTray;
+        StartupCheck.IsChecked = StartupRegistration.Enabled();
+        RetentionCombo.SelectedItem = RetentionCombo.Items.OfType<ComboBoxItem>().FirstOrDefault(i => i.Tag.ToString() == store.Settings.RetentionDays.ToString());
+        RetentionLabel.Text = $"当前保存最近 {store.Settings.RetentionDays} 天 · 实时约 2 秒 · 历史记录约 10 秒";
+        var menu = new Forms.ContextMenuStrip();
+        menu.Items.Add("打开 PerfCompass", null, (_, _) => Dispatcher.Invoke(Restore));
+        menu.Items.Add("暂停 / 继续记录", null, (_, _) => Dispatcher.Invoke(TogglePause));
+        menu.Items.Add("退出", null, (_, _) => Dispatcher.Invoke(Exit));
+        tray = new Forms.NotifyIcon { Text = "PerfCompass · 正在记录", Icon = System.Drawing.Icon.ExtractAssociatedIcon(Environment.ProcessPath!) ?? System.Drawing.SystemIcons.Application, Visible = true, ContextMenuStrip = menu };
+        tray.DoubleClick += (_, _) => Dispatcher.Invoke(Restore);
+        Closing += OnClosing;
+        initialized = true;
+        Loaded += async (_, _) =>
+        {
+            try
+            {
+                collector = await Task.Run(() => new Collector(store));
+                collectionTask = Task.Run(CollectionLoop);
+                await RefreshAnalysis();
+                if (Environment.GetCommandLineArgs().Contains("--ui-test")) _ = RunUiTests();
+                if (Environment.GetCommandLineArgs().Contains("--smoke-test")) _ = RunSmokeTest();
+            }
+            catch (Exception ex) { store.Log(ex); StatusLine.Text = "采集启动失败，请查看 data/errors.log 后重试。"; RecordState.Text = "● 启动失败"; }
+        };
+    }
+    private async Task CollectionLoop()
+    {
+        var batch = new List<Sample>();
+        int generation = recordingGeneration;
+        var lastCleanup = DateTimeOffset.Now;
+        try
+        {
+            while (!stop.IsCancellationRequested)
+            {
+                await Task.Delay(2000, stop.Token);
+                if (paused || generation != Volatile.Read(ref recordingGeneration))
+                {
+                    collector!.ResetTiming(); batch.Clear(); generation = Volatile.Read(ref recordingGeneration); continue;
+                }
+                try
+                {
+                    var snapshot = collector!.Collect();
+                    lock (recordingGate)
+                    {
+                        if (paused || generation != recordingGeneration) { batch.Clear(); continue; }
+                        if (batch.Count > 0 && (batch[^1].Scene != snapshot.Sample.Scene || snapshot.Sample.Seconds == 0))
+                        { store.Append(SampleBatch.Merge(batch)); batch.Clear(); }
+                        batch.Add(snapshot.Sample);
+                        if (batch.Count >= 5) { store.Append(SampleBatch.Merge(batch)); batch.Clear(); historyWriteFailed = false; }
+                    }
+                    if (DateTimeOffset.Now - lastCleanup > TimeSpan.FromHours(1)) { store.Cleanup(); lastCleanup = DateTimeOffset.Now; }
+                    await Dispatcher.InvokeAsync(() => UpdateLive(snapshot));
+                }
+                catch (Exception ex)
+                {
+                    if (ex is IOException or UnauthorizedAccessException)
+                    {
+                        historyWriteFailed = true;
+                        // Keep at most one pending bucket if the destination stays unwritable.
+                        if (batch.Count > 5) batch.RemoveRange(0, batch.Count - 5);
+                    }
+                    store.Log(ex);
+                    await Dispatcher.InvokeAsync(() => { RecordState.Text = "● 采集重试中"; StatusLine.Text = "本次采样失败，2 秒后重试。错误已写入 data/errors.log。"; });
+                }
+            }
+        }
+        catch (OperationCanceledException) { }
+        finally
+        {
+            try { if (batch.Count > 0 && generation == recordingGeneration) store.Append(SampleBatch.Merge(batch)); } catch (Exception ex) { store.Log(ex); }
+            collector?.Dispose();
+        }
+    }
+    private static string Percent(double? value) => value is double d ? $"{d:0}%" : "—";
+    private void UpdateLive(LiveSnapshot snapshot)
+    {
+        if (paused || exiting) return;
+        live = snapshot;
+        var s = snapshot.Sample;
+        CpuValue.Text = Percent(s.Cpu); CpuBar.Value = s.Cpu ?? 0;
+        CpuDetail.Text = $"最忙核心 {Percent(s.CoreMax)}" + (s.CpuTemp.HasValue ? $" · {s.CpuTemp:0}°C" : "");
+        double? memPct = s.MemoryTotalGb > 0 ? s.MemoryUsedGb / s.MemoryTotalGb * 100 : null;
+        MemoryValue.Text = Percent(memPct); MemoryBar.Value = memPct ?? 0;
+        MemoryDetail.Text = $"{s.MemoryUsedGb:0.0} / {s.MemoryTotalGb:0.0} GB";
+        GpuValue.Text = Percent(s.Gpu); GpuBar.Value = s.Gpu ?? 0;
+        GpuDetail.Text = s.Gpu.HasValue ? (s.VramUsedGb.HasValue ? $"显存 {s.VramUsedGb:0.0} GB" : "显存数据待采集") + (s.GpuTemp.HasValue ? $" · {s.GpuTemp:0}°C" : "") : "负载传感器不可用";
+        DiskValue.Text = Percent(s.DiskBusy); DiskBar.Value = s.DiskBusy ?? 0;
+        DiskDetail.Text = s.DiskReadMbps.HasValue ? $"读 {s.DiskReadMbps:0.0} / 写 {s.DiskWriteMbps:0.0} MB/s" : "计数器不可用";
+        CpuNameLabel.Text = snapshot.CpuName; GpuNameLabel.Text = snapshot.GpuName;
+        DriveLabel.Text = string.Join("\n", snapshot.Disks.Select(d => $"{d.Name}  {d.UsedGb:0} / {d.TotalGb:0} GB"));
+        AppList.ItemsSource = snapshot.Apps;
+        SensorLabel.Text = snapshot.SensorStatus;
+        RecordState.Text = "● " + (s.Active ? "正在记录 · 有效使用" : "正在记录 · 空闲");
+        LastTime.Text = $"更新于 {s.Time.LocalDateTime:HH:mm:ss}";
+        StatusLine.Text = historyWriteFailed ? "实时采集继续，历史保存失败。请检查数据目录权限与磁盘空间；程序会自动重试。" : $"采集正常 · 历史记录每 10 秒保存 · {snapshot.SensorStatus}";
+        livePoints.Add(new(s.Time, s.Cpu, memPct, s.Gpu));
+        livePoints.RemoveAll(p => p.Time < s.Time.AddMinutes(-4));
+        LiveChart.SetPoints(livePoints);
+        if ((DateTimeOffset.Now - lastAnalysis).TotalSeconds >= 60 && !analyzing) _ = RefreshAnalysis();
+    }
+    private async Task RefreshAnalysis()
+    {
+        if (analyzing) { refreshRequested = true; return; }
+        analyzing = true; lastAnalysis = DateTimeOffset.Now;
+        try
+        {
+            var settings = store.Settings; var id = collector?.HardwareId; int days = windowDays; string? scene = analysisScene;
+            var result = await Task.Run(() => AnalysisEngine.Analyze(store.Read(Math.Max(days, 60), id), settings, days, scene));
+            if (days != windowDays || scene != analysisScene || settings != store.Settings || id != collector?.HardwareId) { refreshRequested = true; return; }
+            report = result;
+            updatingSceneChoices = true;
+            try
+            {
+                AnalysisSceneCombo.Items.Clear();
+                var allScenes = new ComboBoxItem { Content = "全部场景", Tag = null };
+                AnalysisSceneCombo.Items.Add(allScenes); ComboBoxItem selected = allScenes;
+                foreach (string name in result.SceneProfiles.Select(p => p.Name).Concat(scene == null ? [] : new[] { scene }).Distinct())
+                {
+                    var choice = new ComboBoxItem { Content = name, Tag = name }; AnalysisSceneCombo.Items.Add(choice);
+                    if (name == scene) selected = choice;
+                }
+                AnalysisSceneCombo.SelectedItem = selected;
+            }
+            finally { updatingSceneChoices = false; }
+            SceneProfileList.ItemsSource = result.SceneProfiles;
+            SceneEmptyLabel.Visibility = result.SceneProfiles.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            DemandTrendList.ItemsSource = result.DemandTrends;
+            var changed = result.DemandTrends.Where(t => t.Status == "increased").OrderBy(t => t.Days).FirstOrDefault();
+            DemandTrendHeader.Text = changed == null ? "近期需求变化 · " + (result.DemandTrends.Any(t => t.Status == "similar" || t.Status == "decreased") ? "查看时期对照" : "对照记录积累中") : $"近期需求变化 · {changed.Name}增加（{changed.Days} 天对照）";
+            AnalysisSummary.Text = result.Summary;
+            CoverageLabel.Text = $"{scene ?? "全部场景"} · {result.Level}  ·  有效使用 {result.DurationLabel}  ·  覆盖 {result.ActiveDays} 天  ·  {result.SampleCount:N0} 条记录";
+            CoverageNext.Text = result.Ready ? "已满足基础观察门槛；近期任务变化会优先约束配置建议。" : result.ActiveHours >= 10 && result.ActiveDays >= 3 && (result.FreshActiveHours < .5 || result.FreshActiveDays < 2) ? "还需补充最近 7 天至少 30 分钟、2 天的有效记录，再判断当前配置余量。" : $"观察目标：10 小时 / 3 天。{(settings.Representative ? "典型任务已确认。" : "完成常用任务后，在记录设置中确认覆盖情况。")}";
+            var expanded = AdviceList.Items.OfType<Border>().Select(b => b.Child).OfType<StackPanel>()
+                .SelectMany(s => s.Children.OfType<Expander>()).Where(x => x.IsExpanded).Select(x => x.Tag?.ToString()).ToHashSet();
+            AdviceList.Items.Clear();
+            foreach (var advice in result.Cards) AdviceList.Items.Add(AdviceCard(advice, expanded.Contains(advice.Key)));
+            HistoryChart.SetPoints(result.History);
+            HistorySummary.Text = $"最近 {days} 天 · {result.SampleCount:N0} 条记录 · {scene ?? "全部场景"} · {(result.Scenes.Length > 0 ? string.Join("、", result.Scenes) : "等待有效使用")}";
+        }
+        catch (Exception ex) { store.Log(ex); StatusLine.Text = "分析读取失败，请稍后刷新。错误已记录。"; }
+        finally
+        {
+            analyzing = false;
+            if (refreshRequested && !exiting) { refreshRequested = false; _ = RefreshAnalysis(); }
+        }
+    }
+    private static Brush Brush(string color) => (SolidColorBrush)new BrushConverter().ConvertFromString(color)!;
+    private Border AdviceCard(Advice advice, bool expanded)
+    {
+        var stack = new StackPanel();
+        string label = advice.Status switch { "surplus" => "疑似过剩", "pressure" => "压力线索", "fit" => "保持观察", "changed" => "近期需求增加", "review" => "待验证降档", _ => "证据积累中" };
+        string color = advice.Status switch { "surplus" => "#007F73", "pressure" or "changed" => "#BC7132", "review" => "#6378C8", _ => "#677A87" };
+        var header = new DockPanel();
+        header.Children.Add(new TextBlock { Text = advice.Name, FontSize = 13, Foreground = Brush("#677A87") });
+        header.Children.Add(new TextBlock { Text = label, Foreground = Brush(color), HorizontalAlignment = System.Windows.HorizontalAlignment.Right, FontSize = 12 });
+        stack.Children.Add(header);
+        stack.Children.Add(new TextBlock { Text = advice.Title, FontSize = 18, FontWeight = FontWeights.SemiBold, Margin = new(0, 10, 0, 10) });
+        stack.Children.Add(new TextBlock { Text = advice.Suggestion, Foreground = Brush("#45606C"), LineHeight = 23 });
+        var detail = new StackPanel();
+        detail.Children.Add(new TextBlock { Text = advice.Evidence, Margin = new(0, 12, 0, 8), LineHeight = 22 });
+        detail.Children.Add(new TextBlock { Text = advice.Limits, Foreground = Brush("#677A87"), FontSize = 12, LineHeight = 21 });
+        stack.Children.Add(new Expander { Tag = advice.Key, IsExpanded = expanded, Header = "查看依据与选型条件", Content = detail, Margin = new(0, 16, 0, 0), Foreground = Brush("#007F73") });
+        return new Border { Style = (Style)FindResource("Card"), Child = stack, Margin = new(0, 0, 0, 14) };
+    }
+    private void Navigate(string page)
+    {
+        activePage = page;
+        LivePage.Visibility = page == "live" ? Visibility.Visible : Visibility.Collapsed;
+        AdvicePage.Visibility = page == "advice" ? Visibility.Visible : Visibility.Collapsed;
+        HistoryPage.Visibility = page == "history" ? Visibility.Visible : Visibility.Collapsed;
+        SettingsPage.Visibility = page == "settings" ? Visibility.Visible : Visibility.Collapsed;
+        foreach (var pair in new[] { (LiveNav, "live"), (AdviceNav, "advice"), (HistoryNav, "history"), (SettingsNav, "settings") })
+        { pair.Item1.Background = Brush(pair.Item2 == page ? "#254854" : "#132D38"); pair.Item1.Foreground = Brush(pair.Item2 == page ? "#FFFFFF" : "#BCCED4"); }
+        (PageTitle.Text, PageSubtitle.Text) = page switch
+        {
+            "advice" => ("配置分析", "识别不足与过剩，整理下次购机的配置依据"),
+            "history" => ("历史趋势", "查看使用分布，导出本机采样记录"),
+            "settings" => ("记录设置", "确认典型任务与下一台电脑的新需求"),
+            _ => ("实时概览", "当前占用、硬件状态与正在运行的应用")
+        };
+        if (page is "advice" or "history") _ = RefreshAnalysis();
+    }
+    private void LiveNav_Click(object sender, RoutedEventArgs e) => Navigate("live");
+    private void AdviceNav_Click(object sender, RoutedEventArgs e) => Navigate("advice");
+    private void HistoryNav_Click(object sender, RoutedEventArgs e) => Navigate("history");
+    private void SettingsNav_Click(object sender, RoutedEventArgs e) => Navigate("settings");
+    private void Pause_Click(object sender, RoutedEventArgs e) => TogglePause();
+    private void TogglePause()
+    {
+        lock (recordingGate) { paused = !paused; recordingGeneration++; }
+        PauseButton.Content = paused ? "继续记录" : "暂停记录";
+        RecordState.Text = paused ? "● 已暂停" : "● 正在恢复";
+        tray.Text = paused ? "PerfCompass · 已暂停" : "PerfCompass · 正在记录";
+        StatusLine.Text = paused ? "已暂停采集与历史保存。点击继续记录恢复。" : "正在恢复采集…";
+    }
+    private void Scene_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (initialized && SceneCombo.SelectedItem is ComboBoxItem item) store.SaveSettings(store.Settings with { Scene = item.Content.ToString()! });
+    }
+    private void Window_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (initialized && WindowCombo.SelectedItem is ComboBoxItem item) { windowDays = int.Parse(item.Tag.ToString()!); _ = RefreshAnalysis(); }
+    }
+    private void AnalysisScene_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (!initialized || updatingSceneChoices || AnalysisSceneCombo.SelectedItem is not ComboBoxItem item) return;
+        analysisScene = item.Tag as string; _ = RefreshAnalysis();
+    }
+    private async void Refresh_Click(object sender, RoutedEventArgs e) => await RefreshAnalysis();
+    private async void SaveSettings_Click(object sender, RoutedEventArgs e)
+    {
+        store.SaveSettings(store.Settings with { Representative = RepresentativeCheck.IsChecked == true, FutureNeeds = FutureBox.Text.Trim() });
+        StatusLine.Text = "设置已保存。"; await RefreshAnalysis();
+    }
+    private void OpenData_Click(object sender, RoutedEventArgs e) => Process.Start(new ProcessStartInfo(store.Root) { UseShellExecute = true });
+    private void Help_Click(object sender, RoutedEventArgs e)
+    {
+        string path = Path.Combine(AppContext.BaseDirectory, "README.html");
+        if (File.Exists(path)) Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+        else System.Windows.MessageBox.Show("打开项目目录中的 README.md 查看使用说明与分析方法。", "PerfCompass");
+    }
+    private async void ExportReport_Click(object sender, RoutedEventArgs e)
+    {
+        while (analyzing) await Task.Delay(50);
+        await RefreshAnalysis(); if (report == null) return;
+        var dialog = new Microsoft.Win32.SaveFileDialog { Filter = "HTML 报告|*.html|JSON 数据|*.json", FileName = $"PerfCompass-配置报告-{DateTime.Now:yyyyMMdd}" };
+        if (dialog.ShowDialog(this) != true) return;
+        var current = report;
+        await File.WriteAllTextAsync(dialog.FileName, dialog.FilterIndex == 2 ? JsonSerializer.Serialize(current, new JsonSerializerOptions { WriteIndented = true }) : ReportExporter.Html(current, live), new UTF8Encoding(false));
+        StatusLine.Text = $"报告已导出：{dialog.FileName}";
+    }
+    private async void ExportCsv_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new Microsoft.Win32.SaveFileDialog { Filter = "CSV 数据|*.csv", FileName = $"PerfCompass-采样-{DateTime.Now:yyyyMMdd}.csv" };
+        if (dialog.ShowDialog(this) != true) return;
+        string? id = collector?.HardwareId; string? scene = analysisScene; int days = windowDays;
+        await Task.Run(() => ReportExporter.Csv(dialog.FileName, store.Read(days, id).Where(s => scene == null || AnalysisEngine.NormalizeScene(s.Scene) == scene)));
+        StatusLine.Text = $"CSV 已导出：{dialog.FileName}";
+    }
+    private void SaveBackground_Click(object sender, RoutedEventArgs e)
+    {
+        StartupRegistration.Set(StartupCheck.IsChecked == true);
+        int retention = RetentionCombo.SelectedItem is ComboBoxItem choice ? int.Parse(choice.Tag.ToString()!) : store.Settings.RetentionDays;
+        store.SaveSettings(store.Settings with { CloseToTray = CloseToTrayCheck.IsChecked == true, RetentionDays = retention });
+        RetentionLabel.Text = $"当前保存最近 {retention} 天 · 实时约 2 秒 · 历史记录约 10 秒";
+        StatusLine.Text = "后台设置已保存。";
+    }
+    private void OnClosing(object? sender, CancelEventArgs e)
+    {
+        if (exiting) return;
+        e.Cancel = true;
+        if (store.Settings.CloseToTray) Hide(); else Exit();
+    }
+    private void Restore() { Show(); WindowState = WindowState.Normal; Activate(); }
+    private void Exit_Click(object sender, RoutedEventArgs e) => Exit();
+    private async void Exit()
+    {
+        if (exiting) return;
+        exiting = true; stop.Cancel(); tray.Visible = false; tray.Dispose();
+        if (collectionTask != null)
+        {
+            var finished = await Task.WhenAny(collectionTask, Task.Delay(5000));
+            if (finished != collectionTask) store.Log(new TimeoutException("Collector shutdown exceeded five seconds."));
+        }
+        Close(); System.Windows.Application.Current.Shutdown(Environment.ExitCode);
+    }
+}

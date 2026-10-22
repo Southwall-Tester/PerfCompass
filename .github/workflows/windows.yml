@@ -1,0 +1,33 @@
+name: Windows build and regression
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.402'
+      - name: Build, test and publish
+        shell: pwsh
+        run: ./build.ps1 -Test -Publish -OutputDirectory release-next
+      - name: Regression results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-results
+          path: artifacts/self-tests.txt
+      - name: Portable Windows x64 application
+        uses: actions/upload-artifact@v4
+        with:
+          name: PerfCompass-Windows-x64
+          path: release-next/

@@ -1,0 +1,245 @@
+﻿[
+    {
+        "Package":  "BlackSharp.Core/1.0.7",
+        "Authors":  "BlackSharp.Core",
+        "License":  "MPL-2.0",
+        "LicenseType":  "expression",
+        "Project":  "https://github.com/Blacktempel/BlackSharp",
+        "Repository":  "https://github.com/Blacktempel/BlackSharp",
+        "Commit":  "c70b735c6cec123ee8a046ac4a0bc6c606f52cf0"
+    },
+    {
+        "Package":  "DiskInfoToolkit/1.1.2",
+        "Authors":  "DiskInfoToolkit",
+        "License":  "MPL-2.0",
+        "LicenseType":  "expression",
+        "Project":  "https://github.com/Blacktempel/DiskInfoToolkit",
+        "Repository":  "https://github.com/Blacktempel/DiskInfoToolkit",
+        "Commit":  "25319eae5781e75bcf141e844ceab2afe94d40ea"
+    },
+    {
+        "Package":  "HidSharp/2.6.4",
+        "Authors":  "James F. Bellinger",
+        "License":  "LICENSE.txt",
+        "LicenseType":  "file",
+        "Project":  "https://software.seekye.com/hidsharp",
+        "Repository":  "",
+        "Commit":  ""
+    },
+    {
+        "Package":  "LibreHardwareMonitorLib/0.9.6",
+        "Authors":  "LibreHardwareMonitorLib",
+        "License":  "MPL-2.0",
+        "LicenseType":  "expression",
+        "Project":  "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+        "Repository":  "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+        "Commit":  "3d331e3370efb858411f19511373eff65a218701"
+    },
+    {
+        "Package":  "Microsoft.NET.ILLink.Tasks/10.0.13",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "4099f83977f4d29604a9aeb971fb0a7bc1d5f699"
+    },
+    {
+        "Package":  "Mono.Posix.NETStandard/1.0.0",
+        "Authors":  "Microsoft",
+        "License":  "",
+        "LicenseType":  "",
+        "Project":  "https://go.microsoft.com/fwlink/?linkid=869051",
+        "Repository":  "",
+        "Commit":  ""
+    },
+    {
+        "Package":  "RAMSPDToolkit-NDD/1.4.2",
+        "Authors":  "RAMSPDToolkit-NDD",
+        "License":  "MPL-2.0",
+        "LicenseType":  "expression",
+        "Project":  "https://github.com/Blacktempel/RAMSPDToolkit",
+        "Repository":  "https://github.com/Blacktempel/RAMSPDToolkit",
+        "Commit":  "3b47b960e0830fef344624ad5e389675d5f0a1ce"
+    },
+    {
+        "Package":  "runtime.android-arm.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.android-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.android-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.android-x86.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.linux-arm.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.linux-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.linux-bionic-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.linux-bionic-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.linux-musl-arm.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.linux-musl-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.linux-musl-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.linux-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.maccatalyst-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.maccatalyst-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.osx-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "runtime.osx-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "System.IO.FileSystem.AccessControl/5.0.0",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://github.com/dotnet/runtime",
+        "Repository":  "git://github.com/dotnet/runtime",
+        "Commit":  "cf258a14b70ad9069470a108f13765e0e5988f51"
+    },
+    {
+        "Package":  "System.IO.Ports/10.0.3",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "c2435c3e0f46de784341ac3ed62863ce77e117b4"
+    },
+    {
+        "Package":  "System.Management/10.0.2",
+        "Authors":  "Microsoft",
+        "License":  "MIT",
+        "LicenseType":  "expression",
+        "Project":  "https://dot.net/",
+        "Repository":  "https://github.com/dotnet/dotnet",
+        "Commit":  "44525024595742ebe09023abe709df51de65009b"
+    }
+]

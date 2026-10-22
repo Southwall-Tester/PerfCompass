@@ -1,0 +1,11 @@
+.tools/
+**/bin/
+**/obj/
+**/data/
+release/
+release-next/
+artifacts/
+/*.zip
+SHA256SUMS.txt
+*.user
+.vs/

@@ -1,0 +1,15 @@
+<Application x:Class="PerfCompass.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" ShutdownMode="OnExplicitShutdown">
+  <Application.Resources>
+    <SolidColorBrush x:Key="Ink" Color="#192A36"/>
+    <SolidColorBrush x:Key="Muted" Color="#677A87"/>
+    <SolidColorBrush x:Key="Accent" Color="#007F73"/>
+    <Style TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/></Style>
+    <Style TargetType="Button">
+      <Setter Property="Background" Value="#EDF3F4"/><Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="Padding" Value="16,10"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border x:Name="Box" Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Box" Property="Opacity" Value="0.78"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter TargetName="Box" Property="Opacity" Value="0.45"/></Trigger><Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Box" Property="BorderBrush" Value="#009F91"/><Setter TargetName="Box" Property="BorderThickness" Value="2"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="ComboBox"><Setter Property="Padding" Value="10,7"/><Setter Property="MinWidth" Value="120"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
+    <Style x:Key="Card" TargetType="Border"><Setter Property="Background" Value="White"/><Setter Property="CornerRadius" Value="14"/><Setter Property="Padding" Value="22"/><Setter Property="BorderBrush" Value="#E3EAEC"/><Setter Property="BorderThickness" Value="1"/></Style>
+  </Application.Resources>
+</Application>
