@@ -27,7 +27,6 @@ $taskPortProbe = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 0)
 $taskPortProbe.Start(); $taskPort = $taskPortProbe.LocalEndpoint.Port; $taskPortProbe.Stop()
 $taskEndpoint = "http://127.0.0.1:$taskPort"
 $taskArgs = @('-m',('"'+$taskModel+'"'),'--host','127.0.0.1','--port',$taskPort,'--alias','perfcompass-research','-t','4','-tb','4','-ngl','0','-c','8192','-np','1')
-$taskServer = Start-Process -FilePath $taskRunner -ArgumentList $taskArgs -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $taskOutput 'server.stdout.log') -RedirectStandardError (Join-Path $taskOutput 'server.stderr.log')
 $taskManifest = [ordered]@{
     Notice='Synthetic inputs only. Real model inference; not semantic accuracy or purchasing validation.'
     Started=[DateTimeOffset]::UtcNow.ToString('O'); Model=$taskModelName; ModelSha256=$taskExpected
@@ -35,14 +34,19 @@ $taskManifest = [ordered]@{
     PromptSha256=(Get-FileHash -LiteralPath (Join-Path $taskRoot 'tests\nlp-extraction-prompt.txt') -Algorithm SHA256).Hash
     SchemaSha256=(Get-FileHash -LiteralPath (Join-Path $taskRoot 'tests\nlp-output.schema.json') -Algorithm SHA256).Hash
     CorpusSha256=(Get-FileHash -LiteralPath (Join-Path $taskRoot 'tests\nlp-cases.json') -Algorithm SHA256).Hash
-    CaseIds=$CaseIds; ServerPid=$taskServer.Id; Port=$taskPort; Threads=4; GpuLayers=0; Context=8192
+    CaseIds=$CaseIds; ServerPid=$null; Port=$taskPort; Threads=4; GpuLayers=0; Context=8192
     ProductCommit=(& git -C $taskRoot rev-parse HEAD); Outcome='starting'
     WorkingTreeDirty=([bool](& git -C $taskRoot status --porcelain))
     ProbeSha256=(Get-FileHash -LiteralPath (Join-Path $taskRoot 'tests\PerfCompass.ModelProbe\bin\Release\net10.0-windows\PerfCompass.ModelProbe.dll') -Algorithm SHA256).Hash
     ProductAssemblySha256=(Get-FileHash -LiteralPath (Join-Path $taskRoot 'tests\PerfCompass.ModelProbe\bin\Release\net10.0-windows\PerfCompass.dll') -Algorithm SHA256).Hash
 }
 function Write-TaskManifest { [IO.File]::WriteAllText((Join-Path $taskOutput 'manifest.json'),($taskManifest | ConvertTo-Json -Depth 6),[Text.UTF8Encoding]::new($false)) }
+$taskServer=$null
 try {
+    # Finish all file validation and hashing before starting an owned service.
+    # Startup itself is also inside the cleanup scope.
+    $taskServer = Start-Process -FilePath $taskRunner -ArgumentList $taskArgs -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $taskOutput 'server.stdout.log') -RedirectStandardError (Join-Path $taskOutput 'server.stderr.log')
+    $taskManifest.ServerPid=$taskServer.Id
     Write-TaskManifest
     $taskHealthy=$false
     for ($taskWait=0; $taskWait -lt 60; $taskWait++) {
@@ -61,16 +65,18 @@ try {
 finally {
     try {
         # Process-owned metrics cover startup and inference, not whole-system load or commit.
-        try {
-            $taskServer.Refresh()
-            $taskManifest.ServerPeakWorkingSetBytes=$taskServer.PeakWorkingSet64
-            $taskManifest.ServerCpuSeconds=$taskServer.TotalProcessorTime.TotalSeconds
-            $taskManifest.LogicalProcessors=[Environment]::ProcessorCount
-        } catch { $taskManifest.ResourceMetricsErrorType=$_.Exception.GetType().Name }
-        if (-not $taskServer.HasExited) { $taskServer.Kill(); $taskServer.WaitForExit(10000) | Out-Null }
-        if (-not $taskServer.HasExited) { $taskManifest.Outcome='cleanup-failed'; throw 'Owned research server did not exit; its PID remains in the manifest.' }
+        if ($taskServer) {
+            try {
+                $taskServer.Refresh()
+                $taskManifest.ServerPeakWorkingSetBytes=$taskServer.PeakWorkingSet64
+                $taskManifest.ServerCpuSeconds=$taskServer.TotalProcessorTime.TotalSeconds
+                $taskManifest.LogicalProcessors=[Environment]::ProcessorCount
+            } catch { $taskManifest.ResourceMetricsErrorType=$_.Exception.GetType().Name }
+            if (-not $taskServer.HasExited) { $taskServer.Kill(); $taskServer.WaitForExit(10000) | Out-Null }
+            if (-not $taskServer.HasExited) { $taskManifest.Outcome='cleanup-failed'; throw 'Owned research server did not exit; its PID remains in the manifest.' }
+        }
     } finally {
-        $taskManifest.ServerExited=$taskServer.HasExited
+        $taskManifest.ServerExited=if ($taskServer) { $taskServer.HasExited } else { $null }
         $taskManifest.Finished=[DateTimeOffset]::UtcNow.ToString('O'); Write-TaskManifest
     }
 }
