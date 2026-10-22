@@ -37,5 +37,12 @@ try {
         Copy-Item -LiteralPath (Join-Path $taskRoot 'README.md') -Destination (Join-Path $taskPublishRoot 'README.md')
         Copy-Item -LiteralPath (Join-Path $taskRoot 'docs\VALIDATION.md') -Destination (Join-Path $taskPublishRoot 'VALIDATION.md')
         Copy-Item -LiteralPath (Join-Path $taskRoot 'docs\DEMAND_MODEL.md') -Destination (Join-Path $taskPublishRoot 'DEMAND_MODEL.md')
+        $taskDocsRoot = Join-Path $taskRoot 'docs'
+        foreach ($taskDocFile in Get-ChildItem -LiteralPath $taskDocsRoot -File -Recurse) {
+            $taskDocRelative = $taskDocFile.FullName.Substring($taskDocsRoot.Length).TrimStart('\')
+            $taskDocDestination = Join-Path (Join-Path $taskPublishRoot 'docs') $taskDocRelative
+            New-Item -ItemType Directory -Force -Path (Split-Path -Parent $taskDocDestination) | Out-Null
+            Copy-Item -LiteralPath $taskDocFile.FullName -Destination $taskDocDestination -Force
+        }
     }
 } finally { Pop-Location }
