@@ -49,14 +49,15 @@
    <TextBlock Text="“逐项核对”用于软件兼容性、排除项或尚未量化的目标；“实际任务测量”可填耗时、帧率、噪声等，需统一单位、软件版本、任务数据及设置。规格字段使用表头固定单位。" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,10,0,0"/>
   </StackPanel></Border>
   <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
-   <DockPanel Margin="0,0,0,12"><TextBlock Text="任务测试与逐项核对结果" FontSize="18" FontWeight="SemiBold"/><Button x:Name="PrepareMeasurementsButton" Content="生成 / 更新结果行" Click="PrepareMeasurements_Click" HorizontalAlignment="Right"/></DockPanel>
+   <TextBlock Text="任务测试与逐项核对结果" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/>
+   <WrapPanel Margin="0,0,0,12"><Button x:Name="PrepareMeasurementsButton" Content="生成 / 更新结果行" Click="PrepareMeasurements_Click" Margin="0,0,8,8"/><Button x:Name="OpenTaskMeasurementButton" Content="运行任务测量" Click="OpenTaskMeasurement_Click" Margin="0,0,8,8"/><Button x:Name="ImportTaskMeasurementButton" Content="导入所选行的测量" Click="ImportTaskMeasurement_Click" Margin="0,0,0,8"/></WrapPanel>
    <DataGrid x:Name="ObservationsGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Height="240" RowHeight="40" EnableRowVirtualization="False" FrozenColumnCount="2">
     <DataGrid.Columns>
      <DataGridTextColumn Header="候选" Binding="{Binding CandidateName}" IsReadOnly="True" Width="130"/>
      <DataGridTextColumn Header="条件或任务" Binding="{Binding CriterionName}" IsReadOnly="True" Width="220"/>
      <DataGridTextColumn Header="实测数值" Binding="{Binding Value}" Width="100"/>
      <DataGridComboBoxColumn Header="逐项核对" ItemsSource="{x:Static local:CandidateComparison.Verdicts}" DisplayMemberPath="Label" SelectedValuePath="Key" SelectedValueBinding="{Binding Verdict}" Width="100"/>
-     <DataGridCheckBoxColumn Header="已核对 / 测试可比" Binding="{Binding Comparable}" Width="130"/>
+     <DataGridCheckBoxColumn Header="机器与测试已核对" Binding="{Binding Comparable}" Width="135"/>
      <DataGridTextColumn Header="测量记录或核对依据" Binding="{Binding Evidence}" Width="350"/>
     </DataGrid.Columns>
    </DataGrid>

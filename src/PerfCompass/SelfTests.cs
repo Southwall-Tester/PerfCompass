@@ -359,6 +359,7 @@ public static partial class SelfTests
         });
         Task.Run(() => RunSemanticTests(Check, Assert, () => Analyze(Fixture()))).GetAwaiter().GetResult();
         RunComparisonTests(Check, Assert);
+        Task.Run(() => RunTaskMeasurementTests(Check, Assert)).GetAwaiter().GetResult();
         Directory.CreateDirectory("artifacts");
         File.WriteAllLines("artifacts/self-tests.txt", log);
         return log.Any(x => x.StartsWith("FAIL")) ? 1 : 0;

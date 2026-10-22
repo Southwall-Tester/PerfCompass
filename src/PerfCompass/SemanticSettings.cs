@@ -54,6 +54,7 @@ public partial class MainWindow
     private async void ExtractSemantic_Click(object sender, RoutedEventArgs e)
     {
         if (!ExtractSemanticButton.IsEnabled) return;
+        if (measurementActive) { SemanticStatus.Text = "任务测量仍在运行，请结束后再解析需求。"; return; }
         string source = FutureBox.Text.Trim();
         try
         {

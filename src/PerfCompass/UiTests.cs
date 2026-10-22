@@ -163,6 +163,7 @@ public partial class MainWindow
             await WaitForAnalysis(() => report!.ExperienceEvents.Single().Resolved);
             Require(new LocalStore(store.Root).ReadExperiences(7, collector!.HardwareId).Single().Resolved, "Resolved experience survives reopening");
             await RunSemanticUiTests(output, Require, Screenshot, WaitForAnalysis);
+            await RunTaskMeasurementUiTests(output, Require, Screenshot, WaitForAnalysis);
             File.WriteAllText(Path.Combine(output, "NOTICE.txt"), "01-live.png and hardware.json use real telemetry. Populated analysis and historical captures use isolated synthetic test data; they are not a recommendation for this computer.");
         }
         catch (Exception e) { store.Log(e); results.Add("FAIL " + e); }

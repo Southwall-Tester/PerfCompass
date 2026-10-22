@@ -18,6 +18,7 @@ public partial class MainWindow : Window
     private readonly Forms.NotifyIcon tray;
     private volatile bool paused;
     private bool exiting, initialized, analyzing, refreshRequested;
+    private bool measurementActive;
     private int recordingGeneration;
     private readonly object recordingGate = new();
     private readonly List<HistoryPoint> livePoints = [];
@@ -36,6 +37,16 @@ public partial class MainWindow : Window
     {
         this.store = store;
         InitializeComponent();
+        ComparisonPage.OpenTaskMeasurement = () => Navigate("measurement");
+        TaskMeasurementPage.Initialize(store,
+            () => new(live?.CpuName ?? "", live?.GpuName ?? "", live?.Sample.MemoryTotalGb, Environment.OSVersion.VersionString, TaskMeasurements.PowerSource(), TaskMeasurementPage.PowerProfileBox.Text.Trim()),
+            active =>
+            {
+                if (active && semanticCancellation != null) throw new ArgumentException("模型解析尚未结束，请结束后再进行任务测量。");
+                bool wasActive = measurementActive; measurementActive = active;
+                if (active && !paused) TogglePause();
+                if (!active && wasActive) StatusLine.Text = "任务测量已结束。核对任务进程后，可继续监测。";
+            });
         for (int i = 0; i < SceneCombo.Items.Count; i++) if (((ComboBoxItem)SceneCombo.Items[i]).Content.ToString() == store.Settings.Scene) SceneCombo.SelectedIndex = i;
         if (SceneCombo.SelectedIndex < 0) SceneCombo.SelectedIndex = 0;
         RepresentativeCheck.IsChecked = store.Settings.Representative;
@@ -221,8 +232,9 @@ public partial class MainWindow : Window
         HistoryPage.Visibility = page == "history" ? Visibility.Visible : Visibility.Collapsed;
         SettingsPage.Visibility = page == "settings" ? Visibility.Visible : Visibility.Collapsed;
         ComparisonPage.Visibility = page == "comparison" ? Visibility.Visible : Visibility.Collapsed;
+        TaskMeasurementPage.Visibility = page == "measurement" ? Visibility.Visible : Visibility.Collapsed;
         if (page == "comparison" && report != null) ComparisonPage.SetContext(store, report);
-        foreach (var pair in new[] { (LiveNav, "live"), (AdviceNav, "advice"), (ComparisonNav, "comparison"), (HistoryNav, "history"), (SettingsNav, "settings") })
+        foreach (var pair in new[] { (LiveNav, "live"), (AdviceNav, "advice"), (ComparisonNav, "comparison"), (TaskMeasurementNav, "measurement"), (HistoryNav, "history"), (SettingsNav, "settings") })
         { pair.Item1.Background = Brush(pair.Item2 == page ? "#254854" : "#132D38"); pair.Item1.Foreground = Brush(pair.Item2 == page ? "#FFFFFF" : "#BCCED4"); }
         (PageTitle.Text, PageSubtitle.Text) = page switch
         {
@@ -230,6 +242,7 @@ public partial class MainWindow : Window
             "history" => ("历史趋势", "查看使用分布，导出本机采样记录"),
             "settings" => ("记录设置", "确认典型任务与下一台电脑的新需求"),
             "comparison" => ("候选配置", "比较报价、已确认条件与实际任务表现"),
+            "measurement" => ("任务测量", "在同一任务下重复记录运行耗时，核对候选电脑的实际表现"),
             _ => ("实时概览", "当前占用、硬件状态与正在运行的应用")
         };
         if (page is "advice" or "history") _ = RefreshAnalysis();
@@ -237,12 +250,14 @@ public partial class MainWindow : Window
     private void LiveNav_Click(object sender, RoutedEventArgs e) => Navigate("live");
     private void AdviceNav_Click(object sender, RoutedEventArgs e) => Navigate("advice");
     private async void ComparisonNav_Click(object sender, RoutedEventArgs e) { await RefreshAnalysis(); Navigate("comparison"); }
+    private void TaskMeasurementNav_Click(object sender, RoutedEventArgs e) => Navigate("measurement");
     private void HistoryNav_Click(object sender, RoutedEventArgs e) => Navigate("history");
     private void SettingsNav_Click(object sender, RoutedEventArgs e) => Navigate("settings");
     private void Pause_Click(object sender, RoutedEventArgs e) => TogglePause();
     private void TogglePause()
     {
         if (semanticLocalRequest && paused) { StatusLine.Text = "本机模型正在解析，结束并停止服务后再继续监测。"; return; }
+        if (measurementActive && paused) { StatusLine.Text = "任务测量仍在运行，结束并核对任务进程后再继续监测。"; return; }
         lock (recordingGate) { paused = !paused; recordingGeneration++; }
         experienceContext.Clear();
         PauseButton.Content = paused ? "继续记录" : "暂停记录";
@@ -364,7 +379,8 @@ public partial class MainWindow : Window
     private async void Exit()
     {
         if (exiting) return;
-        exiting = true; semanticCancellation?.Cancel(); ModelApiKey.Clear(); stop.Cancel(); tray.Visible = false; tray.Dispose();
+        exiting = true; semanticCancellation?.Cancel(); TaskMeasurementPage.Cancel(); ModelApiKey.Clear(); stop.Cancel(); tray.Visible = false; tray.Dispose();
+        if (TaskMeasurementPage.Running) await Task.WhenAny(TaskMeasurementPage.Completion, Task.Delay(7000));
         if (collectionTask != null)
         {
             var finished = await Task.WhenAny(collectionTask, Task.Delay(5000));

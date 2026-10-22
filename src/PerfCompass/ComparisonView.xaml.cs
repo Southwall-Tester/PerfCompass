@@ -17,6 +17,8 @@ public partial class ComparisonView : UserControl
     private bool updating, loaded, loadFailed;
     internal PurchaseWorkspace Workspace => workspace;
     internal PurchaseComparison? Result => comparison;
+    internal Action? OpenTaskMeasurement;
+    internal Func<string?> MeasurementPathPicker = () => { var dialog = new OpenFileDialog { Filter = "任务测量 JSON|*.json", CheckFileExists = true }; return dialog.ShowDialog() == true ? dialog.FileName : null; };
     public ComparisonView()
     {
         InitializeComponent();
@@ -127,6 +129,28 @@ public partial class ComparisonView : UserControl
             found.CandidateName = pair.candidate.Name; found.CriterionName = pair.criterion.Name; return found;
         }).ToList();
         Invalidate(); Bind(); ComparisonStatus.Text = "结果行已更新。请填写原始测量或核对依据，并确认各候选测试条件一致。";
+    }
+    private void OpenTaskMeasurement_Click(object sender, RoutedEventArgs e) => OpenTaskMeasurement?.Invoke();
+    private void ImportTaskMeasurement_Click(object sender, RoutedEventArgs e)
+    {
+        if (!Commit() || ObservationsGrid.SelectedItem is not PurchaseObservation observation) { ComparisonStatus.Text = "先在结果表中选择要导入的候选与任务行。"; return; }
+        var criterion = workspace.Criteria.Single(c => c.Id == observation.CriterionId);
+        if (criterion.Metric != "task" || criterion.Unit is not ("秒" or "s" or "seconds" or "毫秒" or "ms")) { ComparisonStatus.Text = "所选行需为实际任务测量，单位设为秒/s 或毫秒/ms。"; return; }
+        string? path = MeasurementPathPicker(); if (path == null) return;
+        try
+        {
+            var result = TaskMeasurements.Load(path);
+            if (!TaskMeasurements.Comparable(result)) { ComparisonStatus.Text = "测量未完整成功，或电源状态改变/未知；请检查后重新测量。"; return; }
+            if (criterion.MeasurementProtocol.Length > 0 && criterion.MeasurementProtocol != result.ProtocolFingerprint) { ComparisonStatus.Text = "程序、输入或测试协议不同，不能并入同一目标。请新建目标保留不同协议的测量。"; return; }
+            criterion.MeasurementProtocol = result.ProtocolFingerprint; criterion.Reviewed = false;
+            observation.Measurement = result; observation.Value = result.MedianSeconds * (criterion.Unit is "毫秒" or "ms" ? 1000 : 1);
+            observation.Evidence = TaskMeasurements.Evidence(result); observation.Comparable = false; observation.ProofStamp = "";
+            Invalidate(); Bind();
+            ComparisonStatus.Text = $"已导入 {result.Recipe.Name}。来源机器：{result.Machine.Cpu} / {result.Machine.Gpu}。请核对它对应所选候选、任务步骤与实际产物，重新确认目标及可比性。";
+        }
+        catch (ArgumentException ex) { ComparisonStatus.Text = ex.Message; }
+        catch (System.Text.Json.JsonException) { ComparisonStatus.Text = "测量文件格式不正确，未导入。"; }
+        catch (Exception ex) { store?.Log(new InvalidOperationException("Measurement import failed: " + ex.GetType().Name)); ComparisonStatus.Text = "无法读取测量文件，未导入。"; }
     }
     private void Compare_Click(object sender, RoutedEventArgs e)
     {

@@ -10,19 +10,7 @@ public partial class MainWindow
     private async Task RunComparisonUiTests(string output, Action<bool, string> require, Func<string, Task> screenshot, Func<Func<bool>, Task> wait)
     {
         void Click(Button button) => button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-        async Task Cell(DataGrid grid, int row, int column, object value)
-        {
-            var item = grid.Items[row]; var col = grid.Columns[column];
-            grid.SelectedItem = item; grid.CurrentCell = new(item, col); grid.ScrollIntoView(item, col); grid.UpdateLayout();
-            if (!grid.BeginEdit()) throw new Exception("Could not edit comparison cell " + row + "/" + column);
-            await Task.Delay(10); grid.UpdateLayout();
-            var editor = col.GetCellContent(item);
-            if (editor is TextBox text) { text.Text = value.ToString(); text.GetBindingExpression(TextBox.TextProperty)?.UpdateSource(); }
-            else if (editor is CheckBox check) { check.IsChecked = (bool)value; check.GetBindingExpression(ToggleButton.IsCheckedProperty)?.UpdateSource(); }
-            else if (editor is ComboBox combo) { combo.SelectedValue = value; combo.GetBindingExpression(Selector.SelectedValueProperty)?.UpdateSource(); }
-            else throw new Exception("Unexpected comparison cell editor: " + editor?.GetType().Name);
-            if (!grid.CommitEdit(DataGridEditingUnit.Cell, true) || !grid.CommitEdit(DataGridEditingUnit.Row, true)) throw new Exception("Comparison cell did not commit.");
-        }
+        Task Cell(DataGrid grid, int row, int column, object value) => EditComparisonCell(grid, row, column, value);
         Click(ComparisonNav); await wait(() => ComparisonPage.Visibility == Visibility.Visible);
         var view = ComparisonPage;
         require(PageTitle.Text == "候选配置" && view.Workspace.Candidates.Count == 0, "Candidate comparison opens through native navigation with empty user input");

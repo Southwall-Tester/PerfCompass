@@ -4,7 +4,7 @@ Windows 原生电脑占用监测与购机配置分析工具。C# / .NET 10 / WPF
 
 双击根目录 `启动.cmd`。通过验证的新版本位于 `release-next/`，启动器优先使用它，并继续读取 `release/data/` 中的历史。已经运行的旧版本需要正常退出后再启动。发布版自带运行时，不依赖 Python 或预装 .NET。
 
-GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.com/Southwall-Tester/PerfCompass/actions/workflows/windows.yml) 中成功的运行下载 `PerfCompass-Windows-x64` 产物，解压后运行 `PerfCompass.exe`。当前为 0.4.0 试用版，尚未完成商业级验证。
+GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.com/Southwall-Tester/PerfCompass/actions/workflows/windows.yml) 中成功的运行下载 `PerfCompass-Windows-x64` 产物，解压后运行 `PerfCompass.exe`。当前为开发试用版，尚未完成商业级验证。
 
 ![近期任务变化分析](docs/images/recent-demand.png)
 
@@ -26,6 +26,8 @@ GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.
 0.5.0 新增“候选配置”：比较两三套电脑的报价、容量与实际任务结果，导入已确认需求、已有场景和近期变化，分别保留必需与条件需求。输出不足项、待验证项、通过条件的报价差及容量/任务变化；没有证据时不猜测新机器性能。比较可保存并导出报告，详见 [候选比较说明](docs/CANDIDATE_COMPARISON.md)。
 
 候选、条件和任务结果保存在同一数据目录的 `comparison.json`，不随采样保留期自动清理；损坏文件保留原件并禁止覆盖。报价与测量目前由用户提供，尚未独立核实。
+
+0.6.0 新增“任务测量”：选定能自行退出的程序和任务输入后，重复记录运行耗时，保留每轮结果、机器、电源及协议依据，再导入对应候选的时间目标。全部正式轮次跨过目标线时保留待验证。测量期间暂停本实例的长期记录，结束后保持暂停；结果不证明任务产物正确。记录保存在 `measurements/`，详见 [任务测量说明](docs/TASK_MEASUREMENT.md)。
 
 默认关闭窗口会收起到系统托盘并继续采集；从程序或托盘菜单退出才停止记录。可在“记录设置”更改关闭行为，并主动启用登录 Windows 后记录。暂停时停止采集与保存。程序不默认修改开机启动，不上传遥测。
 

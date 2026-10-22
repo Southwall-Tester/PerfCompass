@@ -32,6 +32,7 @@ public sealed class PurchaseCriterion
     public string Condition { get; set; } = "";
     public string Evidence { get; set; } = "";
     public string Procedure { get; set; } = "";
+    public string MeasurementProtocol { get; set; } = "";
     private bool reviewed;
     public bool Reviewed { get => reviewed; set { reviewed = value; if (value) ReviewStamp = CandidateComparison.CriterionStamp(this); } }
     public string ReviewStamp { get; set; } = "";
@@ -45,6 +46,7 @@ public sealed class PurchaseObservation
     public double? Value { get; set; }
     public string Verdict { get; set; } = "unknown";
     public string Evidence { get; set; } = "";
+    public TaskMeasurementResult? Measurement { get; set; }
     [System.Text.Json.Serialization.JsonIgnore]
     public Func<string>? SignatureFactory { get; set; }
     private bool comparable;
@@ -53,7 +55,7 @@ public sealed class PurchaseObservation
 }
 public sealed class PurchaseWorkspace
 {
-    public string Version { get; set; } = "comparison-1.0";
+    public string Version { get; set; } = "comparison-1.1";
     public string ContextStamp { get; set; } = "";
     public bool CoverageConfirmed { get; set; }
     public List<PurchaseCandidate> Candidates { get; set; } = [];
@@ -71,7 +73,11 @@ public record PurchaseComparison(string Summary, List<PurchaseAssessment> Candid
 public static class CandidateComparison
 {
     private static string Hash(object value) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value))));
-    public static string CriterionStamp(PurchaseCriterion c) => Hash(new { c.Name, c.Metric, c.Direction, c.Target, c.Unit, c.Condition, c.Evidence, c.Procedure });
+    public static string CriterionStamp(PurchaseCriterion c)
+    {
+        string legacy = Hash(new { c.Name, c.Metric, c.Direction, c.Target, c.Unit, c.Condition, c.Evidence, c.Procedure });
+        return string.IsNullOrEmpty(c.MeasurementProtocol) ? legacy : Hash(new { Goal = legacy, c.MeasurementProtocol });
+    }
     public static string ObservationStamp(PurchaseCandidate candidate, PurchaseCriterion criterion) => Hash(new { candidate.Id, candidate.Cpu, candidate.Gpu, candidate.MemoryGb, candidate.VramGb, candidate.StorageGb, Criterion = CriterionStamp(criterion) });
     public static readonly SemanticChoice[] Metrics = [new("check", "逐项核对"), new("price", "整机报价 / 元"), new("memory", "内存 / GB"), new("vram", "独立显存 / GB"), new("storage", "存储 / GB"), new("task", "实际任务测量")];
     public static readonly SemanticChoice[] Directions = [new("min", "至少"), new("max", "不超过")];
@@ -137,7 +143,7 @@ public static class CandidateComparison
         void Need([System.Diagnostics.CodeAnalysis.DoesNotReturnIf(false)] bool value, string message) { if (!value) throw new ArgumentException(message); }
         bool Text(string? text, int max) => text != null && text.Length <= max;
         bool Number(double? value) => value == null || double.IsFinite(value.Value) && value >= 0 && value <= 1e12;
-        Need(workspace.Version == "comparison-1.0" && workspace.Candidates != null && workspace.Criteria != null && workspace.Observations != null, "比较文件版本或内容无效。");
+        Need(workspace.Version is "comparison-1.0" or "comparison-1.1" && workspace.Candidates != null && workspace.Criteria != null && workspace.Observations != null, "比较文件版本或内容无效。");
         Need(workspace.Candidates!.Count <= 3 && workspace.Criteria!.Count <= 40 && workspace.Observations!.Count <= 120, "最多比较三套配置、40 项条件。");
         Need(workspace.Candidates.All(c => c != null && Text(c.Id, 100) && !string.IsNullOrWhiteSpace(c.Id) && Text(c.Name, 150) && !string.IsNullOrWhiteSpace(c.Name) && Text(c.Cpu, 200) && Text(c.Gpu, 200) && Text(c.Source, 2000) && new[] { c.PriceCny, c.MemoryGb, c.VramGb, c.StorageGb }.All(Number)), "候选名称、容量、价格或来源无效；数值须非负且有限。");
         Need(workspace.Candidates.Select(c => c.Id).Distinct().Count() == workspace.Candidates.Count, "候选编号重复。");
@@ -147,6 +153,8 @@ public static class CandidateComparison
         Need(workspace.Criteria.All(c => c.Metric is "check" or "task" || c.Unit == (c.Metric == "price" ? "元" : "GB")), "规格比较单位固定为 GB，报价固定为人民币元；请先换算数值。");
         Need(workspace.Observations.All(o => o != null && workspace.Candidates.Any(c => c.Id == o.CandidateId) && workspace.Criteria.Any(c => c.Id == o.CriterionId) && Number(o.Value) && Verdicts.Any(v => v.Key == o.Verdict) && Text(o.Evidence, 3000)), "测量记录、来源或关联条件无效。");
         Need(workspace.Observations.Select(o => (o.CandidateId, o.CriterionId)).Distinct().Count() == workspace.Observations.Count, "同一候选与条件存在重复测量，请合并核对。");
+        Need(workspace.Criteria.All(c => c.MeasurementProtocol != null && (c.MeasurementProtocol.Length == 0 || c.MeasurementProtocol.Length == 64 && c.MeasurementProtocol.All(Uri.IsHexDigit))), "测量协议校验值无效。");
+        foreach (var observation in workspace.Observations.Where(o => o.Measurement != null)) TaskMeasurements.Validate(observation.Measurement!);
     }
     public static PurchaseComparison Evaluate(PurchaseWorkspace workspace, AnalysisReport report)
     {
@@ -173,8 +181,13 @@ public static class CandidateComparison
                 }
                 else if (value.HasValue && c.Target.HasValue && evidence && (c.Metric != "task" || proofCurrent && !string.IsNullOrWhiteSpace(c.Procedure) && !string.IsNullOrWhiteSpace(c.Unit)))
                 {
-                    state = (c.Direction == "min" ? value >= c.Target : value <= c.Target) ? "pass" : "fail";
-                    reading = $"{value:0.###} {c.Unit}；目标{(c.Direction == "min" ? "至少" : "不超过")} {c.Target:0.###} {c.Unit}";
+                    if (c.Metric == "task" && (o?.Measurement != null || c.MeasurementProtocol.Length > 0))
+                        (state, reading) = o?.Measurement == null ? ("unknown", "此目标已绑定测量协议，请导入匹配的原始测量文件") : TaskMeasurements.Assess(o.Measurement, c, value);
+                    else
+                    {
+                        state = (c.Direction == "min" ? value >= c.Target : value <= c.Target) ? "pass" : "fail";
+                        reading = $"{value:0.###} {c.Unit}；目标{(c.Direction == "min" ? "至少" : "不超过")} {c.Target:0.###} {c.Unit}";
+                    }
                 }
                 checks.Add(new(c.Name, state, reading, source, c.Condition));
             }
@@ -207,7 +220,8 @@ public static class CandidateComparison
                 {
                     var before = workspace.Observations.SingleOrDefault(o => o.CandidateId == baseline.Id && o.CriterionId == goal.Id);
                     var after = workspace.Observations.SingleOrDefault(o => o.CandidateId == candidate.Id && o.CriterionId == goal.Id);
-                    if (before?.Value != null && after?.Value != null && before.Comparable && after.Comparable && before.ProofStamp == ObservationStamp(baseline, goal) && after.ProofStamp == ObservationStamp(candidate, goal) && !string.IsNullOrWhiteSpace(before.Evidence) && !string.IsNullOrWhiteSpace(after.Evidence))
+                    bool ValidMeasurement(PurchaseObservation observation) => observation.Measurement == null ? goal.MeasurementProtocol.Length == 0 : TaskMeasurements.Assess(observation.Measurement, goal, observation.Value).State != "unknown";
+                    if (before?.Value != null && after?.Value != null && before.Comparable && after.Comparable && before.ProofStamp == ObservationStamp(baseline, goal) && after.ProofStamp == ObservationStamp(candidate, goal) && !string.IsNullOrWhiteSpace(before.Evidence) && !string.IsNullOrWhiteSpace(after.Evidence) && ValidMeasurement(before) && ValidMeasurement(after))
                         changes.Add($"{goal.Name}：{before.Value:0.###} → {after.Value:0.###} {goal.Unit}" + (goal.Condition.Length > 0 ? "（条件：" + goal.Condition + "）" : ""));
                 }
                 tradeoffs.Add($"{candidate.Name} 比 {baseline.Name} 多花 {candidate.PriceCny - baseline.PriceCny:0.##} 元。" + (changes.Count > 0 ? string.Join("；", changes) + "。" : "当前没有记录可量化的容量差异或任务收益。") + "超出必需条件的部分是否值得，由任务收益和条件需求决定。");
@@ -225,20 +239,20 @@ public static class CandidateComparison
     {
         var path = Path.Combine(root, "comparison.json");
         if (!File.Exists(path)) return new();
-        if (new FileInfo(path).Length > 1048576) throw new InvalidDataException("比较文件过大。");
+        if (new FileInfo(path).Length > 8388608) throw new InvalidDataException("比较文件过大。");
         var workspace = JsonSerializer.Deserialize<PurchaseWorkspace>(File.ReadAllText(path, Encoding.UTF8)) ?? throw new InvalidDataException("比较文件为空。");
-        Validate(workspace); return workspace;
+        Validate(workspace); workspace.Version = "comparison-1.1"; return workspace;
     }
     public static void Save(string root, PurchaseWorkspace workspace)
     {
-        Validate(workspace); string path = Path.Combine(root, "comparison.json");
+        Validate(workspace); workspace.Version = "comparison-1.1"; string path = Path.Combine(root, "comparison.json");
         File.WriteAllText(path + ".tmp", JsonSerializer.Serialize(workspace), new UTF8Encoding(false)); File.Move(path + ".tmp", path, true);
     }
     public static string Html(PurchaseWorkspace workspace, PurchaseComparison comparison)
     {
         string E(string? s) => WebUtility.HtmlEncode(s ?? "");
         string State(string s) => s switch { "pass" => "满足已核对条件", "fail" => "有不满足项", _ => "待验证" };
-        return "<!doctype html><html lang='zh-CN'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>候选配置比较</title><style>body{font:15px/1.8 system-ui,'Microsoft YaHei';background:#f4f7f8;color:#192a36;margin:30px auto;max-width:1000px;padding:20px}section{background:white;padding:24px;margin:20px 0;border-radius:12px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd}table{width:100%;border-collapse:collapse}small{color:#677a87}</style><h1>候选配置比较</h1><p>" + E(comparison.Summary) + "</p><small>" + DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm") + " · comparison-1.0 · 报价与测量由用户提供；未独立验证其真实性。GB 容量按 1 TB = 1000 GB 归一化，GiB/TiB 请先换算，购买前核对厂商口径。</small>"
+        return "<!doctype html><html lang='zh-CN'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>候选配置比较</title><style>body{font:15px/1.8 system-ui,'Microsoft YaHei';background:#f4f7f8;color:#192a36;margin:30px auto;max-width:1000px;padding:20px}section{background:white;padding:24px;margin:20px 0;border-radius:12px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd;vertical-align:top;overflow-wrap:anywhere;box-sizing:border-box}table{width:100%;border-collapse:collapse;table-layout:fixed}th:nth-child(1){width:30%}th:nth-child(2){width:28%}th:nth-child(3){width:42%}small{color:#677a87}</style><h1>候选配置比较</h1><p>" + E(comparison.Summary) + "</p><small>" + DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm") + " · comparison-1.1 · 报价与测量由用户提供；未独立验证其真实性。GB 容量按 1 TB = 1000 GB 归一化，GiB/TiB 请先换算，购买前核对厂商口径。</small>"
             + string.Join("", comparison.ScenarioSummaries.Select(t => "<section><h2>条件情景</h2><p>" + E(t) + "</p></section>"))
             + string.Join("", comparison.Tradeoffs.Select(t => "<section><p>" + E(t) + "</p></section>"))
             + string.Join("", comparison.Candidates.Select(a => { var candidate = workspace.Candidates.Single(c => c.Id == a.Id); return "<section><h2>" + E(a.Name) + " · 必需条件：" + State(a.State) + "</h2><p>" + E(candidate.Cpu) + " / " + E(candidate.Gpu) + "；报价 " + E(a.PriceCny?.ToString("0.##")) + " 元</p><p>配置/报价来源：" + E(candidate.Source) + "</p><table><tr><th>条件</th><th>结果</th><th>依据</th></tr>" + string.Join("", a.Checks.Select(c => "<tr><td>" + E(c.Name) + (c.Condition.Length > 0 ? "<br>条件：" + E(c.Condition) : "") + "</td><td>" + State(c.State) + "<br>" + E(c.Reading) + "</td><td>" + E(c.Evidence) + "</td></tr>")) + "</table></section>"; }))
