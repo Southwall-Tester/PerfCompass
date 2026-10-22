@@ -11,12 +11,19 @@ public record SemanticPlan(string Source, string Model, string Provider, string 
 public record SemanticDraft(string Source, string Model, string Provider, List<SemanticFact> Facts, string[] Questions);
 public record SemanticChoice(string Key, string Label);
 
-public sealed class SemanticFactEditor
+public sealed class SemanticFactEditor : System.ComponentModel.INotifyPropertyChanged
 {
+    public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
     public Action? Changed { get; set; }
     private bool include;
     private string subject = "", kind = "other", polarity = "uncertain", timeframe = "unspecified", value = "", unit = "", condition = "", evidence = "";
-    private void Set<T>(ref T field, T next) { if (!EqualityComparer<T>.Default.Equals(field, next)) { field = next; Changed?.Invoke(); } }
+    private void Set<T>(ref T field, T next, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+    {
+        if (!EqualityComparer<T>.Default.Equals(field, next))
+        {
+            field = next; PropertyChanged?.Invoke(this, new(name)); PropertyChanged?.Invoke(this, new(nameof(QuantityPreview))); Changed?.Invoke();
+        }
+    }
     public bool Include { get => include; set => Set(ref include, value); }
     public string Subject { get => subject; set => Set(ref subject, value); }
     public string Kind { get => kind; set => Set(ref kind, value); }
@@ -32,6 +39,14 @@ public sealed class SemanticFactEditor
     public SemanticFactEditor() { }
     public SemanticFactEditor(SemanticFact fact) { Subject = fact.Subject; Kind = fact.Kind; Polarity = fact.Polarity; Timeframe = fact.Timeframe; Value = fact.Value; Unit = fact.Unit; Condition = fact.Condition; Evidence = fact.Evidence; }
     public SemanticFact ToFact() => new(Subject.Trim(), Kind, Polarity, Timeframe, Value.Trim(), Unit.Trim(), Condition.Trim(), Evidence.Trim());
+    public string QuantityPreview
+    {
+        get
+        {
+            var goals = QuantityGoals.Compile(ToFact());
+            return goals.Count == 0 ? "候选比较方式：逐项核对" : "候选比较目标：" + string.Join(" 且 ", goals.Select(g => CandidateComparison.DirectionLabel(g.Direction) + $" {g.Target:G} {g.Unit}")) + (Polarity == "conditional" ? "（条件成立时）" : "");
+        }
+    }
 }
 
 public static class SemanticRequirements

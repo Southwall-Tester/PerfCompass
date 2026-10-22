@@ -147,13 +147,13 @@ public partial class MainWindow : Window
         CpuDetail.Text = $"最忙核心 {Percent(s.CoreMax)}" + (s.CpuTemp.HasValue ? $" · {s.CpuTemp:0}°C" : "");
         double? memPct = s.MemoryTotalGb > 0 ? s.MemoryUsedGb / s.MemoryTotalGb * 100 : null;
         MemoryValue.Text = Percent(memPct); MemoryBar.Value = memPct ?? 0;
-        MemoryDetail.Text = $"{s.MemoryUsedGb:0.0} / {s.MemoryTotalGb:0.0} GB";
+        MemoryDetail.Text = $"{s.MemoryUsedGb:0.0} / {s.MemoryTotalGb:0.0} GiB";
         GpuValue.Text = Percent(s.Gpu); GpuBar.Value = s.Gpu ?? 0;
-        GpuDetail.Text = s.Gpu.HasValue ? (s.VramUsedGb.HasValue ? $"显存 {s.VramUsedGb:0.0} GB" : "显存数据待采集") + (s.GpuTemp.HasValue ? $" · {s.GpuTemp:0}°C" : "") : "负载传感器不可用";
+        GpuDetail.Text = s.Gpu.HasValue ? (s.VramUsedGb.HasValue ? $"显存 {s.VramUsedGb:0.0} GiB" : "显存数据待采集") + (s.GpuTemp.HasValue ? $" · {s.GpuTemp:0}°C" : "") : "负载传感器不可用";
         DiskValue.Text = Percent(s.DiskBusy); DiskBar.Value = s.DiskBusy ?? 0;
-        DiskDetail.Text = s.DiskReadMbps.HasValue ? $"读 {s.DiskReadMbps:0.0} / 写 {s.DiskWriteMbps:0.0} MB/s" : "计数器不可用";
+        DiskDetail.Text = s.DiskReadMbps.HasValue ? $"读 {s.DiskReadMbps:0.0} / 写 {s.DiskWriteMbps:0.0} MiB/s" : "计数器不可用";
         CpuNameLabel.Text = snapshot.CpuName; GpuNameLabel.Text = snapshot.GpuName;
-        DriveLabel.Text = string.Join("\n", snapshot.Disks.Select(d => $"{d.Name}  {d.UsedGb:0} / {d.TotalGb:0} GB"));
+        DriveLabel.Text = string.Join("\n", snapshot.Disks.Select(d => $"{d.Name}  {d.UsedGb:0} / {d.TotalGb:0} GiB"));
         AppList.ItemsSource = snapshot.Apps;
         SensorLabel.Text = snapshot.SensorStatus;
         RecordState.Text = "● " + (s.Active ? "正在记录 · 有效使用" : "正在记录 · 空闲");

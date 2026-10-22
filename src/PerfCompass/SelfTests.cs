@@ -359,6 +359,7 @@ public static partial class SelfTests
         });
         Task.Run(() => RunSemanticTests(Check, Assert, () => Analyze(Fixture()))).GetAwaiter().GetResult();
         RunComparisonTests(Check, Assert);
+        RunQuantityGoalTests(Check, Assert);
         RunDataProtectionTests(Check, Assert);
         Task.Run(() => RunTaskMeasurementTests(Check, Assert)).GetAwaiter().GetResult();
         Directory.CreateDirectory("artifacts");

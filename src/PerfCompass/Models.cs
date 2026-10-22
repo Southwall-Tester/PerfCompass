@@ -5,6 +5,8 @@ public record Settings(string Scene = "日常办公", bool Representative = fals
     [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, System.Text.Json.JsonElement>? AdditionalFields { get; init; }
 }
+// Legacy persisted names: *Gb capacity fields use GiB; *Mbps throughput fields use MiB/s.
+// Keep these names to read old histories without changing or rescaling their values.
 public record DiskInfo(string Name, double TotalGb, double UsedGb) { public double Percent => TotalGb > 0 ? UsedGb / TotalGb * 100 : 0; }
 public record AppUsage(string Name, double Cpu, double MemoryMb);
 public record Sample

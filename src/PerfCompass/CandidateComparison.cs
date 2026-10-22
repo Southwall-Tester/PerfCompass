@@ -1,10 +1,8 @@
-using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace PerfCompass;
 
@@ -55,7 +53,7 @@ public sealed class PurchaseObservation
 }
 public sealed class PurchaseWorkspace
 {
-    public string Version { get; set; } = "comparison-1.1";
+    public string Version { get; set; } = "comparison-1.2";
     public string ContextStamp { get; set; } = "";
     public bool CoverageConfirmed { get; set; }
     public List<PurchaseCandidate> Candidates { get; set; } = [];
@@ -80,7 +78,9 @@ public static class CandidateComparison
     }
     public static string ObservationStamp(PurchaseCandidate candidate, PurchaseCriterion criterion) => Hash(new { candidate.Id, candidate.Cpu, candidate.Gpu, candidate.MemoryGb, candidate.VramGb, candidate.StorageGb, Criterion = CriterionStamp(criterion) });
     public static readonly SemanticChoice[] Metrics = [new("check", "逐项核对"), new("price", "整机报价 / 元"), new("memory", "内存 / GB"), new("vram", "独立显存 / GB"), new("storage", "存储 / GB"), new("task", "实际任务测量")];
-    public static readonly SemanticChoice[] Directions = [new("min", "至少"), new("max", "不超过")];
+    public static readonly SemanticChoice[] Directions = [new("min", "至少"), new("max", "不超过"), new("gt", "严格大于"), new("lt", "严格小于")];
+    public static bool Meets(double value, double target, string direction) => direction switch { "min" => value >= target, "max" => value <= target, "gt" => value > target, "lt" => value < target, _ => false };
+    public static string DirectionLabel(string direction) => Directions.FirstOrDefault(d => d.Key == direction)?.Label ?? "方向无效";
     public static readonly SemanticChoice[] Verdicts = [new("unknown", "待核对"), new("pass", "满足"), new("fail", "不满足")];
     public static string Stamp(AnalysisReport report) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
     {
@@ -99,8 +99,14 @@ public static class CandidateComparison
                 var c = new PurchaseCriterion { OriginId = "semantic:" + Hash(f), Name = f.Label + "：" + f.Detail, Evidence = f.Evidence,
                     Condition = f.Polarity is "conditional" or "uncertain" || f.Timeframe == "unspecified" ? (string.IsNullOrWhiteSpace(f.Condition) ? "需求尚未确定：" + f.Subject : f.Condition) : "" };
                 // An exclusion is a checklist of the entire negative statement, never a positive capacity floor.
-                if (f.Polarity == "required" && f.Timeframe is "current" or "future") TryNumeric(f, c);
-                result.Add(c);
+                var quantities = QuantityGoals.Compile(f);
+                if (quantities.Count == 0) result.Add(c);
+                else foreach (var q in quantities)
+                {
+                    result.Add(new() { OriginId = c.OriginId + (quantities.Count > 1 ? ":" + q.Direction : ""),
+                        Name = c.Name + (quantities.Count > 1 ? "（" + DirectionLabel(q.Direction) + "）" : ""),
+                        Condition = c.Condition, Evidence = c.Evidence, Metric = q.Metric, Direction = q.Direction, Target = q.Target, Unit = q.Unit });
+                }
             }
         else if (report.ConfirmedRequirements is { } rules)
             result.Add(new() { OriginId = "rules:" + Hash(rules), Name = "验证已确认需求：" + rules.Summary, Evidence = rules.Source });
@@ -114,36 +120,12 @@ public static class CandidateComparison
             result.Add(new() { OriginId = "experience:" + e.Id, Name = "验证体验已改善：" + e.Title, Evidence = e.Note });
         return result;
     }
-    private static void TryNumeric(SemanticFact fact, PurchaseCriterion criterion)
-    {
-        var m = Regex.Match(fact.Value.Trim(), @"^(至少|不低于|>=|≥|最多|不超过|<=|≤)?\s*(\d+(?:\.\d+)?)\s*(GB|TB|MB|万元|元)?\s*(以内|以下|以上|起步)?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        if (!m.Success) return;
-        string prefix = m.Groups[1].Value, suffix = m.Groups[4].Value;
-        bool lower = prefix is "至少" or "不低于" or ">=" or "≥" || suffix is "以上" or "起步";
-        bool upper = prefix is "最多" or "不超过" or "<=" or "≤" || suffix is "以内" or "以下";
-        if (lower && upper || !lower && !upper && fact.Kind != "budget") return;
-        string unit = m.Groups[3].Success ? m.Groups[3].Value : fact.Unit.Trim();
-        string subject = fact.Subject;
-        bool vram = Regex.IsMatch(subject, @"显存|(?i:\bVRAM\b)"), memory = Regex.IsMatch(subject, @"内存|(?i:\bRAM\b)"), storage = Regex.IsMatch(subject, @"存储|硬盘|(?i:\bSSD\b)");
-        if (new[] { vram, memory, storage }.Count(v => v) > 1 || memory && Regex.IsMatch(subject, @"显卡|(?i:\bGPU\b)")) return;
-        // Component budgets cannot be tested against the whole-computer quotation.
-        bool wholeBudget = Regex.IsMatch(subject, @"^(整机|总|购机|电脑)?预算(上限)?$");
-        string metric = fact.Kind == "budget" && wholeBudget && (unit is "元" or "万元") ? "price"
-            : fact.Kind == "resource" && vram ? "vram"
-            : fact.Kind == "resource" && memory ? "memory"
-            : fact.Kind == "resource" && storage ? "storage" : "";
-        if (metric.Length == 0 || metric != "price" && !new[] { "GB", "TB", "MB" }.Contains(unit, StringComparer.OrdinalIgnoreCase)) return;
-        double scale = unit.Equals("TB", StringComparison.OrdinalIgnoreCase) ? 1000 : unit.Equals("MB", StringComparison.OrdinalIgnoreCase) ? 1d / 1000 : unit == "万元" ? 10000 : 1;
-        criterion.Target = double.Parse(m.Groups[2].Value, CultureInfo.InvariantCulture) * scale;
-        criterion.Metric = metric; criterion.Unit = metric == "price" ? "元" : "GB";
-        criterion.Direction = lower ? "min" : "max";
-    }
     public static void Validate(PurchaseWorkspace workspace)
     {
         void Need([System.Diagnostics.CodeAnalysis.DoesNotReturnIf(false)] bool value, string message) { if (!value) throw new ArgumentException(message); }
         bool Text(string? text, int max) => text != null && text.Length <= max;
         bool Number(double? value) => value == null || double.IsFinite(value.Value) && value >= 0 && value <= 1e12;
-        Need(workspace.Version is "comparison-1.0" or "comparison-1.1" && workspace.Candidates != null && workspace.Criteria != null && workspace.Observations != null, "比较文件版本或内容无效。");
+        Need(workspace.Version is "comparison-1.0" or "comparison-1.1" or "comparison-1.2" && workspace.Candidates != null && workspace.Criteria != null && workspace.Observations != null, "比较文件版本或内容无效。");
         Need(workspace.Candidates!.Count <= 3 && workspace.Criteria!.Count <= 40 && workspace.Observations!.Count <= 120, "最多比较三套配置、40 项条件。");
         Need(workspace.Candidates.All(c => c != null && Text(c.Id, 100) && !string.IsNullOrWhiteSpace(c.Id) && Text(c.Name, 150) && !string.IsNullOrWhiteSpace(c.Name) && Text(c.Cpu, 200) && Text(c.Gpu, 200) && Text(c.Source, 2000) && new[] { c.PriceCny, c.MemoryGb, c.VramGb, c.StorageGb }.All(Number)), "候选名称、容量、价格或来源无效；数值须非负且有限。");
         Need(workspace.Candidates.Select(c => c.Id).Distinct().Count() == workspace.Candidates.Count, "候选编号重复。");
@@ -185,8 +167,8 @@ public static class CandidateComparison
                         (state, reading) = o?.Measurement == null ? ("unknown", "此目标已绑定测量协议，请导入匹配的原始测量文件") : TaskMeasurements.Assess(o.Measurement, c, value);
                     else
                     {
-                        state = (c.Direction == "min" ? value >= c.Target : value <= c.Target) ? "pass" : "fail";
-                        reading = $"{value:0.###} {c.Unit}；目标{(c.Direction == "min" ? "至少" : "不超过")} {c.Target:0.###} {c.Unit}";
+                        state = Meets(value.Value, c.Target.Value, c.Direction) ? "pass" : "fail";
+                        reading = $"{value:G} {c.Unit}；目标{DirectionLabel(c.Direction)} {c.Target:G} {c.Unit}";
                     }
                 }
                 checks.Add(new(c.Name, state, reading, source, c.Condition));
@@ -241,18 +223,18 @@ public static class CandidateComparison
         if (!File.Exists(path)) return new();
         if (new FileInfo(path).Length > 8388608) throw new InvalidDataException("比较文件过大。");
         var workspace = JsonSerializer.Deserialize<PurchaseWorkspace>(File.ReadAllText(path, Encoding.UTF8)) ?? throw new InvalidDataException("比较文件为空。");
-        Validate(workspace); workspace.Version = "comparison-1.1"; return workspace;
+        Validate(workspace); workspace.Version = "comparison-1.2"; return workspace;
     }
     public static void Save(string root, PurchaseWorkspace workspace)
     {
-        Validate(workspace); workspace.Version = "comparison-1.1"; string path = Path.Combine(root, "comparison.json");
+        Validate(workspace); workspace.Version = "comparison-1.2"; string path = Path.Combine(root, "comparison.json");
         File.WriteAllText(path + ".tmp", JsonSerializer.Serialize(workspace), new UTF8Encoding(false)); File.Move(path + ".tmp", path, true);
     }
     public static string Html(PurchaseWorkspace workspace, PurchaseComparison comparison)
     {
         string E(string? s) => WebUtility.HtmlEncode(s ?? "");
         string State(string s) => s switch { "pass" => "满足已核对条件", "fail" => "有不满足项", _ => "待验证" };
-        return "<!doctype html><html lang='zh-CN'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>候选配置比较</title><style>body{font:15px/1.8 system-ui,'Microsoft YaHei';background:#f4f7f8;color:#192a36;margin:30px auto;max-width:1000px;padding:20px}section{background:white;padding:24px;margin:20px 0;border-radius:12px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd;vertical-align:top;overflow-wrap:anywhere;box-sizing:border-box}table{width:100%;border-collapse:collapse;table-layout:fixed}th:nth-child(1){width:30%}th:nth-child(2){width:28%}th:nth-child(3){width:42%}small{color:#677a87}</style><h1>候选配置比较</h1><p>" + E(comparison.Summary) + "</p><small>" + DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm") + " · comparison-1.1 · 报价与测量由用户提供；未独立验证其真实性。GB 容量按 1 TB = 1000 GB 归一化，GiB/TiB 请先换算，购买前核对厂商口径。</small>"
+        return "<!doctype html><html lang='zh-CN'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>候选配置比较</title><style>body{font:15px/1.8 system-ui,'Microsoft YaHei';background:#f4f7f8;color:#192a36;margin:30px auto;max-width:1000px;padding:20px}section{background:white;padding:24px;margin:20px 0;border-radius:12px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd;vertical-align:top;overflow-wrap:anywhere;box-sizing:border-box}table{width:100%;border-collapse:collapse;table-layout:fixed}th:nth-child(1){width:30%}th:nth-child(2){width:28%}th:nth-child(3){width:42%}small{color:#677a87}</style><h1>候选配置比较</h1><p>" + E(comparison.Summary) + "</p><small>" + DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm") + " · comparison-1.2 · 报价与测量由用户提供；未独立验证其真实性。GB 容量按 1 TB = 1000 GB 归一化，GiB/TiB 请先换算，购买前核对厂商口径。</small>"
             + string.Join("", comparison.ScenarioSummaries.Select(t => "<section><h2>条件情景</h2><p>" + E(t) + "</p></section>"))
             + string.Join("", comparison.Tradeoffs.Select(t => "<section><p>" + E(t) + "</p></section>"))
             + string.Join("", comparison.Candidates.Select(a => { var candidate = workspace.Candidates.Single(c => c.Id == a.Id); return "<section><h2>" + E(a.Name) + " · 必需条件：" + State(a.State) + "</h2><p>" + E(candidate.Cpu) + " / " + E(candidate.Gpu) + "；报价 " + E(a.PriceCny?.ToString("0.##")) + " 元</p><p>配置/报价来源：" + E(candidate.Source) + "</p><table><tr><th>条件</th><th>结果</th><th>依据</th></tr>" + string.Join("", a.Checks.Select(c => "<tr><td>" + E(c.Name) + (c.Condition.Length > 0 ? "<br>条件：" + E(c.Condition) : "") + "</td><td>" + State(c.State) + "<br>" + E(c.Reading) + "</td><td>" + E(c.Evidence) + "</td></tr>")) + "</table></section>"; }))

@@ -12,7 +12,7 @@ public static class ReportExporter
         string E(string? text) => WebUtility.HtmlEncode(text ?? "");
         var cards = string.Join("", report.Cards.Select(c => $"<section><small>{E(c.Name)}</small><h2>{E(c.Title)}</h2><p>{E(c.Suggestion)}</p><p class='evidence'>{E(c.Evidence)}</p><p class='muted'>{E(c.Limits)}</p></section>"));
         string P(double? value, string unit = "%") => value.HasValue ? $"{value:0.0}{unit}" : "—";
-        var sceneRows = string.Join("", report.SceneProfiles.Select(p => $"<tr><td>{E(p.Name)}</td><td>{E(p.DurationLabel)}</td><td>{P(p.CpuP95)}</td><td>{P(p.MemoryPeakGb, " GB")}</td><td>{P(p.GpuP95)}</td><td>{P(p.GpuPeak)}</td></tr>"));
+        var sceneRows = string.Join("", report.SceneProfiles.Select(p => $"<tr><td>{E(p.Name)}</td><td>{E(p.DurationLabel)}</td><td>{P(p.CpuP95)}</td><td>{P(p.MemoryPeakGb, " GiB")}</td><td>{P(p.GpuP95)}</td><td>{P(p.GpuPeak)}</td></tr>"));
         string sceneTable = report.SceneProfiles.Count > 0 ? $"<section><h2>场景明细</h2><p class='muted'>当前时间范围内的全部场景 · 有效时长加权</p><div class='table-wrap'><table><thead><tr><th>场景</th><th>有效时长</th><th>CPU P95</th><th>内存峰值</th><th>GPU P95</th><th>GPU 峰值</th></tr></thead><tbody>{sceneRows}</tbody></table></div></section>" : "";
         var trendItems = string.Join("", report.DemandTrends.Select(t => $"<article class='demand'><h3>{E(t.Name)} · {E(t.ComparisonLabel)} — {E(t.StatusLabel)}</h3><p>{E(t.ReadingsLabel)}</p><p class='muted'>{E(t.BusyLabel)}</p><p class='muted'>{E(t.SceneLabel)}</p><p>{E(t.Suggestion)}</p></article>"));
         string trendSection = report.DemandTrends.Count > 0 ? $"<section class='trend-section'><h2>近期需求变化</h2><p>近期反复出现的任务优先约束配置建议；较早记录用于核对偶发任务。时期对照使用可用的最近 60 天记录，并跟随当前所选场景。</p>{trendItems}</section>" : "";
@@ -34,7 +34,7 @@ public static class ReportExporter
     public static void Csv(string path, IEnumerable<Sample> samples)
     {
         using var writer = new StreamWriter(path, false, new UTF8Encoding(true));
-        writer.WriteLine("timestamp,hardware_id,scene,active,seconds,cpu_percent,core_max_percent,memory_used_gb,memory_peak_gb,memory_total_gb,commit_gb,gpu_percent,vram_used_gb,vram_total_gb,disk_read_mbps,disk_write_mbps,disk_busy_percent,disk_used_gb,disk_total_gb,max_partition_percent,cpu_temp_c,gpu_temp_c,cpu_coverage_seconds,core_coverage_seconds,memory_coverage_seconds,commit_coverage_seconds,gpu_coverage_seconds,gpu_peak_percent,cpu_high_seconds,gpu_heavy_seconds,gpu_high_seconds,memory_high_seconds");
+        writer.WriteLine("timestamp,hardware_id,scene,active,seconds,cpu_percent,core_max_percent,memory_used_gib,memory_peak_gib,memory_total_gib,commit_gib,gpu_percent,vram_used_gib,vram_total_gib,disk_read_mib_per_second,disk_write_mib_per_second,disk_busy_percent,disk_used_gib,disk_total_gib,max_partition_percent,cpu_temp_c,gpu_temp_c,cpu_coverage_seconds,core_coverage_seconds,memory_coverage_seconds,commit_coverage_seconds,gpu_coverage_seconds,gpu_peak_percent,cpu_high_seconds,gpu_heavy_seconds,gpu_high_seconds,memory_high_seconds");
         foreach (var s in samples)
         {
             string D(double? v) => v?.ToString("0.####", CultureInfo.InvariantCulture) ?? "";

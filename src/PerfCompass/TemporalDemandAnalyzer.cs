@@ -71,7 +71,7 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
     {
         result.Add(Trend("gpu", "显卡", "%", days, recent.Gpu, previous.Gpu, recent.GpuDays.Count, previous.GpuDays.Count, recent.GpuHeavyScenes, recent.ActiveSeconds, previous.ActiveSeconds, recent.GpuHeavySeconds, previous.GpuHeavySeconds));
         result.Add(Trend("cpu", "处理器", "%", days, recent.Cpu, previous.Cpu, recent.CpuDays.Count, previous.CpuDays.Count, recent.CpuHeavyScenes, recent.ActiveSeconds, previous.ActiveSeconds, recent.Cpu.TimeAbove(80), previous.Cpu.TimeAbove(80)));
-        result.Add(Trend("memory", "内存", " GB", days, recent.Memory, previous.Memory, recent.MemoryDays.Count, previous.MemoryDays.Count, [], recent.ActiveSeconds, previous.ActiveSeconds, 0, 0));
+        result.Add(Trend("memory", "内存", " GiB", days, recent.Memory, previous.Memory, recent.MemoryDays.Count, previous.MemoryDays.Count, [], recent.ActiveSeconds, previous.ActiveSeconds, 0, 0));
     }
     private static DemandTrend Trend(string key, string name, string unit, int days, WeightedSeries recent, WeightedSeries previous,
         int recentDays, int previousDays, Dictionary<string, double> heavyScenes, double recentObserved, double previousObserved, double busy, double priorBusy)

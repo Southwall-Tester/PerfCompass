@@ -70,21 +70,21 @@ public static class AnalysisEngine
         bool memCoverage = memorySeconds >= seconds * .95 && commitSeconds >= seconds * .95 && seconds > 0;
         string ms = temporal.HasRecentPressure("memory") ? "pressure" : ready && memCoverage && temporal.HasFreshEvidence("memory") && candidate > 0 && candidate < latest?.MemoryTotalGb * .9 ? "surplus" : State(ready && memCoverage && temporal.HasFreshEvidence("memory"));
         cards.Add(new("memory", "内存", ms,
-            ms == "surplus" ? $"可评估 {candidate} GB，当前容量可能偏高" : ms == "pressure" ? "内存余量曾持续偏低" : "保留峰值，再评估容量",
-            $"当前 {F(latest?.MemoryTotalGb, " GB")}；有效时段使用量 P95 {F(m95, " GB")}，峰值 {F(peak, " GB")}；提交量峰值 {F(peakCommit, " GB")}。",
-            ms == "surplus" ? $"{candidate} GB 是下次购机的验证候选；先在该容量机器上重跑最重的多任务组合。" : "覆盖虚拟机、大工程和多任务。余量偏低时，检查分页与卡顿是否同时发生，再决定是否升级。",
+            ms == "surplus" ? $"可评估 {candidate} GiB，当前容量可能偏高" : ms == "pressure" ? "内存余量曾持续偏低" : "保留峰值，再评估容量",
+            $"当前 {F(latest?.MemoryTotalGb, " GiB")}；有效时段使用量 P95 {F(m95, " GiB")}，峰值 {F(peak, " GiB")}；提交量峰值 {F(peakCommit, " GiB")}。",
+            ms == "surplus" ? $"{candidate} GiB 是下次购机的验证候选；先在该容量机器上重跑最重的多任务组合。" : "覆盖虚拟机、大工程和多任务。余量偏低时，检查分页与卡顿是否同时发生，再决定是否升级。",
             "降档候选保留至少 30% 物理容量余量，并用提交量作保守约束。提交量不等于物理需求；本版未测硬缺页，不能证明内存瓶颈。"));
         var g95 = gpu.Quantile(.95);
         bool rareGpuWork = gpuPeak >= 90 && g95 < 30;
         string gs = temporal.HasRecentPressure("gpu") ? "pressure" : ready && gpuSeconds >= seconds * .9 && temporal.HasFreshEvidence("gpu") && g95 < 30 && !rareGpuWork ? "review" : State(ready && gpuSeconds >= seconds * .9 && temporal.HasFreshEvidence("gpu") && gpu.Maximum.HasValue);
         cards.Add(new("gpu", "显卡", gs,
             !gpu.Maximum.HasValue ? "GPU 负载数据尚不可用" : gs == "review" ? "负载偏低，降档仍需验证" : gs == "pressure" ? "GPU 存在持续高负载" : rareGpuWork ? "存在偶发重负载，保留该任务需求" : "观察图形与计算任务需求",
-            $"覆盖 {gpuSeconds / Math.Max(seconds, 1) * 100:0}% 有效时段；GPU P95 {F(g95)}，峰值 {F(gpuPeak)}；显存分配峰值 {F(vram.Maximum, " GB")}。",
+            $"覆盖 {gpuSeconds / Math.Max(seconds, 1) * 100:0}% 有效时段；GPU P95 {F(g95)}，峰值 {F(gpuPeak)}；显存分配峰值 {F(vram.Maximum, " GiB")}。",
             rareGpuWork ? "在场景明细中找出重负载任务，再用候选显卡验证该任务的帧率、耗时与功能。" : "核对目标分辨率、帧率、编码、CUDA/AI 和多屏需求。只有低档候选卡也满足这些条件，才有降档依据。",
             "本版没有帧时间、编码引擎与候选卡基准测试。低利用率可能来自锁帧或 CPU 瓶颈，不直接判定独显过剩。多显卡仅分析界面标明的卡。"));
         cards.Add(new("disk", "存储", diskPeak >= 90 ? "pressure" : State(ready),
             diskPeak >= 90 ? "至少一个分区空间曾接近用满" : "容量和速度需要分别评估",
-            $"当前固定卷合计已用 {latest?.DiskUsedGb:0} / {latest?.DiskTotalGb:0} GB；观测到最高分区使用率 {diskPeak:0.0}%。",
+            $"当前固定卷合计已用 {latest?.DiskUsedGb:0} / {latest?.DiskTotalGb:0} GiB；观测到最高分区使用率 {diskPeak:0.0}%。",
             "下次选容量时逐卷核对数据、安装空间与增长量；判断 SSD 性能档位时，需要比较实际任务耗时。",
             "分区不等于物理硬盘。低读写吞吐不能证明高端 SSD 无用；本版不据此推荐降速或具体型号。"));
         if (count == 0)

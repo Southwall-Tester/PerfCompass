@@ -25,7 +25,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: regression-results
-          path: artifacts/self-tests.txt
+          path: |
+            artifacts/self-tests.txt
+            artifacts/quantity-cases.txt
+      - name: Model batch transport regression
+        shell: pwsh
+        run: ./tests/model-probe-batch.ps1
       - name: NLP diagnostic baseline
         shell: pwsh
         run: |

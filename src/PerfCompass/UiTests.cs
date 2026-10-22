@@ -35,6 +35,7 @@ public partial class MainWindow
             for (int i = 0; i < 30 && live == null; i++) await Task.Delay(500);
             Require(live?.Sample.Cpu is >= 0 and <= 100, "Real CPU sample available");
             Require(live?.Sample.MemoryTotalGb > 0, "Real memory sample available");
+            Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
             await Task.Delay(6000); await Screenshot("01-live");
             File.WriteAllText(Path.Combine(output, "hardware.json"), JsonSerializer.Serialize(live, new JsonSerializerOptions { WriteIndented = true }));
             PauseButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
@@ -164,6 +165,7 @@ public partial class MainWindow
             Require(new LocalStore(store.Root).ReadExperiences(7, collector!.HardwareId).Single().Resolved, "Resolved experience survives reopening");
             await RunSemanticUiTests(output, Require, Screenshot, WaitForAnalysis);
             await RunTaskMeasurementUiTests(output, Require, Screenshot, WaitForAnalysis);
+            await RunQuantityGoalUiTests(output, Require, Screenshot, WaitForAnalysis);
             await RunDataProtectionUiTests(output, Require);
             File.WriteAllText(Path.Combine(output, "NOTICE.txt"), "01-live.png and hardware.json use real telemetry. Populated analysis and historical captures use isolated synthetic test data; they are not a recommendation for this computer.");
         }

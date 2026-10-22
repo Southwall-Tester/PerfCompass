@@ -70,8 +70,10 @@ public static class TaskMeasurements
         if (!displayedValue.HasValue || Math.Abs(displayedValue.Value - median) > Math.Max(1e-8, median * 1e-9)) return ("unknown", "显示值已修改，与原始测量不一致");
         var values = result.Attempts.Where(a => !a.Warmup).Select(a => a.Seconds * scale).ToArray();
         double min = values.Min(), max = values.Max();
-        string state = criterion.Direction == "max" ? max <= criterion.Target ? "pass" : min > criterion.Target ? "fail" : "unknown" : min >= criterion.Target ? "pass" : max < criterion.Target ? "fail" : "unknown";
-        return (state, $"中位数 {median:0.###} {criterion.Unit}；范围 {min:0.###}–{max:0.###} {criterion.Unit}；{values.Length} 次；目标{(criterion.Direction == "max" ? "不超过" : "至少")} {criterion.Target:0.###} {criterion.Unit}" + (state == "unknown" ? "，重复结果跨过目标线，请复测" : ""));
+        if (!CandidateComparison.Directions.Any(d => d.Key == criterion.Direction)) return ("unknown", "目标方向无效");
+        var passing = values.Select(v => CandidateComparison.Meets(v, criterion.Target.Value, criterion.Direction)).ToArray();
+        string state = passing.All(v => v) ? "pass" : passing.All(v => !v) ? "fail" : "unknown";
+        return (state, $"中位数 {median:G6} {criterion.Unit}；范围 {min:G6}–{max:G6} {criterion.Unit}；{values.Length} 次；目标{CandidateComparison.DirectionLabel(criterion.Direction)} {criterion.Target:G6} {criterion.Unit}" + (state == "unknown" ? "，重复结果跨过目标线，请复测" : ""));
     }
     public static string Evidence(TaskMeasurementResult result) => $"重复测量 {result.Started.LocalDateTime:yyyy-MM-dd HH:mm}；{result.Recipe.Name}；软件 {result.Recipe.SoftwareVersion}；{result.Machine.Cpu} / {result.Machine.Gpu}；内存 {result.Machine.MemoryGiB:0.##} GiB；{result.Machine.PowerSource} / {result.Machine.PowerProfile}；协议 SHA256 {result.ProtocolFingerprint}；程序 SHA256 {result.Recipe.ExecutableSha256}；输入 SHA256 {result.Recipe.InputSha256}。根进程退出耗时，不包含已分离后台任务的完整完成时间。";
     public static TaskMeasurementResult Load(string path)

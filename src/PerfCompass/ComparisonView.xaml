@@ -32,7 +32,7 @@
   <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
    <TextBlock Text="购机条件与任务目标" FontSize="18" FontWeight="SemiBold"/>
    <TextBlock Text="导入已确认需求、近期负载增加和未解决的体验问题。逐项检查比较类型、目标值和触发条件后勾选“已核对”。过去需求不导入；否定需求按完整句子核对。" Foreground="{StaticResource Muted}" Margin="0,10,0,12"/>
-   <WrapPanel Margin="0,0,0,12"><Button x:Name="ImportCriteriaButton" Content="导入当前需求与近期任务" Click="ImportCriteria_Click" Margin="0,0,8,8"/><Button x:Name="AddCriterionButton" Content="补充条件 / 实测目标" Click="AddCriterion_Click" Margin="0,0,8,8"/><Button Content="删除选中条件" Click="RemoveCriterion_Click" Margin="0,0,0,8"/></WrapPanel>
+   <WrapPanel Margin="0,0,0,12"><Button x:Name="ImportCriteriaButton" Content="导入当前需求与近期任务" Click="ImportCriteria_Click" Margin="0,0,8,8"/><Button x:Name="AddCriterionButton" Content="补充条件 / 实测目标" Click="AddCriterion_Click" Margin="0,0,8,8"/><Button x:Name="RemoveCriterionButton" Content="删除选中条件" Click="RemoveCriterion_Click" Margin="0,0,0,8"/></WrapPanel>
    <DataGrid x:Name="CriteriaGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Height="240" RowHeight="40" EnableRowVirtualization="False" FrozenColumnCount="2" SelectionMode="Single">
     <DataGrid.Columns>
      <DataGridCheckBoxColumn Header="已核对" Binding="{Binding Reviewed}" Width="65"/>
