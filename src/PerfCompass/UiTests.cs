@@ -167,6 +167,7 @@ public partial class MainWindow
             await RunTaskMeasurementUiTests(output, Require, Screenshot, WaitForAnalysis);
             await RunQuantityGoalUiTests(output, Require, Screenshot, WaitForAnalysis);
             await RunProviderReplayUiTests(Require, Screenshot, WaitForAnalysis);
+            await RunConflictUiTests(output, Require, Screenshot, WaitForAnalysis);
             await RunDataProtectionUiTests(output, Require);
             File.WriteAllText(Path.Combine(output, "NOTICE.txt"), "01-live.png and hardware.json use real telemetry. Populated analysis and historical captures use isolated synthetic test data; they are not a recommendation for this computer.");
         }

@@ -68,7 +68,7 @@ public partial class ComparisonView : UserControl
         try { CoverageConfirm.IsChecked = false; workspace.CoverageConfirmed = false; DropResult(); }
         finally { updating = false; }
     }
-    private void DropResult() { comparison = null; ComparisonResults.ItemsSource = null; ComparisonTradeoffs.ItemsSource = null; ComparisonScenarios.ItemsSource = null; ComparisonSummary.Text = ""; ExportComparisonButton.IsEnabled = false; }
+    private void DropResult() { comparison = null; ComparisonResults.ItemsSource = null; ComparisonTradeoffs.ItemsSource = null; ComparisonScenarios.ItemsSource = null; ComparisonConflicts.ItemsSource = null; ComparisonSummary.Text = ""; ExportComparisonButton.IsEnabled = false; }
     private bool Commit()
     {
         foreach (var grid in new[] { CandidatesGrid, CriteriaGrid, ObservationsGrid })
@@ -162,6 +162,7 @@ public partial class ComparisonView : UserControl
             if (workspace.Candidates.Count < 2) { DropResult(); ComparisonStatus.Text = "草稿已保存；至少添加两套候选配置后比较。"; return; }
             comparison = CandidateComparison.Evaluate(workspace, context);
             ComparisonSummary.Text = comparison.Summary;
+            ComparisonConflicts.ItemsSource = comparison.Conflicts;
             ComparisonTradeoffs.ItemsSource = comparison.Tradeoffs;
             ComparisonScenarios.ItemsSource = comparison.ScenarioSummaries;
             ComparisonResults.ItemsSource = comparison.Candidates.Select(a => new { a.Name, StatusLabel = a.State == "pass" ? "必需条件通过 · 条件需求另行核对" : a.State == "fail" ? "存在不满足的必需条件" : "待验证，暂不能确认满足需求", StatusBrush = a.State == "pass" ? "#007F73" : a.State == "fail" ? "#BC7132" : "#677A87", Checks = a.Checks.Select(c => new { c.Name, Reading = (c.State == "pass" ? "满足：" : c.State == "fail" ? "不满足：" : "待验证：") + c.Reading, c.Evidence, ConditionLabel = c.Condition.Length > 0 ? "触发条件：" + c.Condition : "必需条件" }) }).ToList();

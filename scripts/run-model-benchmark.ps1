@@ -60,6 +60,13 @@ try {
 } catch { $taskManifest.Outcome='failed'; $taskManifest.ErrorType=$_.Exception.GetType().Name; throw }
 finally {
     try {
+        # Process-owned metrics cover startup and inference, not whole-system load or commit.
+        try {
+            $taskServer.Refresh()
+            $taskManifest.ServerPeakWorkingSetBytes=$taskServer.PeakWorkingSet64
+            $taskManifest.ServerCpuSeconds=$taskServer.TotalProcessorTime.TotalSeconds
+            $taskManifest.LogicalProcessors=[Environment]::ProcessorCount
+        } catch { $taskManifest.ResourceMetricsErrorType=$_.Exception.GetType().Name }
         if (-not $taskServer.HasExited) { $taskServer.Kill(); $taskServer.WaitForExit(10000) | Out-Null }
         if (-not $taskServer.HasExited) { $taskManifest.Outcome='cleanup-failed'; throw 'Owned research server did not exit; its PID remains in the manifest.' }
     } finally {

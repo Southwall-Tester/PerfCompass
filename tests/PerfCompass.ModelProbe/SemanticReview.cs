@@ -111,7 +111,7 @@ internal static class SemanticReview
             if (File.Exists(manifestPath))
             {
                 using var manifest = JsonDocument.Parse(Read(manifestPath, 65536));
-                identity = string.Join("\n", new[] { "Model", "ModelSha256", "RunnerSha256", "PromptSha256", "SchemaSha256", "CorpusSha256", "Threads", "GpuLayers", "Context", "ProductCommit", "Outcome", "ServerExited" }
+                identity = string.Join("\n", new[] { "Model", "ModelSha256", "RunnerSha256", "PromptSha256", "SchemaSha256", "CorpusSha256", "Threads", "GpuLayers", "Context", "ProductCommit", "WorkingTreeDirty", "ProbeSha256", "ProductAssemblySha256", "Outcome", "ServerExited", "ServerPeakWorkingSetBytes", "ServerCpuSeconds", "LogicalProcessors" }
                     .Where(key => manifest.RootElement.TryGetProperty(key, out _)).Select(key => key + ": " + manifest.RootElement.GetProperty(key).ToString()));
             }
             if (!args[3].EndsWith(".html", StringComparison.OrdinalIgnoreCase)) throw new ArgumentException("Output must be HTML.");

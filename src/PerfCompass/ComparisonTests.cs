@@ -119,6 +119,55 @@ public static partial class SelfTests
             var reversed = CandidateComparison.Evaluate(workspace, context);
             assert(result.Candidates.All(c => reversed.Candidates.Single(r => r.Id == c.Id).State == c.State) && reversed.Summary.Contains("A") && reversed.Summary.Contains("B"), "order or tied minimum wrong");
         });
+        check("Contradictory specification bounds explain invalid inputs rather than rejecting every candidate", () =>
+        {
+            var context = Context(); var lower = Goal(target: 64); lower.Name = "内存底线"; lower.Reviewed = true;
+            var upper = Goal(target: 32, direction: "max"); upper.Name = "内存上限"; upper.Reviewed = true;
+            var workspace = Workspace(context, lower, upper); var result = CandidateComparison.Evaluate(workspace, context);
+            assert(result.Conflicts.Length == 1 && result.Conflicts[0].CriterionIds.ToHashSet().SetEquals(new[] { lower.Id, upper.Id }), "conflict did not identify actual bounds");
+            assert(result.Candidates.All(c => c.State == "unknown") && result.Summary.Contains("数值冲突") && result.Tradeoffs.Length == 0 && !result.Summary.Contains("最低报价"), "invalid requirement became a purchase verdict");
+            workspace.Criteria.Reverse();
+            assert(CandidateComparison.Evaluate(workspace, context).Conflicts[0].Message == result.Conflicts[0].Message, "constraint ordering changed conflict");
+            upper.Target = 128;
+            assert(CandidateComparison.Evaluate(workspace, context).Conflicts.Length == 0 && CandidateComparison.Evaluate(workspace, context).Candidates[1].State == "unknown", "repair retained conflict or old review stamp");
+            upper.Reviewed = true;
+            assert(CandidateComparison.Evaluate(workspace, context).Candidates[1].State == "pass", "repaired and reviewed bounds did not recover");
+        });
+        check("Strict interval boundaries and the nonnegative domain determine feasibility", () =>
+        {
+            var context = Context();
+            foreach (string lower in new[] { "min", "gt" }) foreach (string upper in new[] { "max", "lt" })
+            {
+                var result = CandidateComparison.Evaluate(Workspace(context, Goal(target: 32, direction: lower), Goal(target: 32, direction: upper)), context);
+                assert((result.Conflicts.Length == 0) == (lower == "min" && upper == "max"), "equal endpoint feasibility wrong");
+            }
+            assert(CandidateComparison.Evaluate(Workspace(context, Goal(target: 0, direction: "lt")), context).Conflicts.Single().CriterionIds.Length == 1, "negative capacity requirement not diagnosed");
+            assert(CandidateComparison.Evaluate(Workspace(context, Goal(target: 0, direction: "max")), context).Conflicts.Length == 0, "zero capacity falsely contradictory");
+            var overlap = Workspace(context, Goal(target: 16), Goal(target: 64), Goal(target: 128, direction: "max"), Goal(target: 64, direction: "max"));
+            assert(CandidateComparison.Evaluate(overlap, context).Conflicts.Length == 0, "overlapping redundant bounds became a conflict");
+        });
+        check("Conditional conflicts combine the base and one trigger without merging unrelated scenarios", () =>
+        {
+            var context = Context(); var cap = Goal(target: 64, direction: "max");
+            var training = Goal(target: 128); training.Condition = "接到训练任务"; training.Reviewed = true;
+            var travel = Goal(target: 32, direction: "max"); travel.Condition = "  出差  "; travel.Reviewed = true;
+            var workspace = Workspace(context, cap, training, travel); var result = CandidateComparison.Evaluate(workspace, context);
+            assert(result.Candidates.All(c => c.State == "pass") && result.Conflicts.Single().Condition == "接到训练任务", "conditional conflict poisoned base comparison");
+            assert(result.ScenarioSummaries.Single(s => s.Contains("训练任务")).Contains("数值冲突") && result.ScenarioSummaries.Single(s => s.Contains("出差")).Contains("6000"), "scenario did not retain its own feasibility");
+            workspace.Criteria = [training, travel];
+            assert(CandidateComparison.Evaluate(workspace, context).Conflicts.Length == 0, "different triggers incorrectly assumed simultaneous");
+            travel.Condition = "接到训练任务";
+            assert(CandidateComparison.Evaluate(workspace, context).Conflicts.Length == 1, "same trigger constraints not combined");
+        });
+        check("Budget conflicts preserve evidence while different resources and task identities remain separate", () =>
+        {
+            var context = Context(); var budgetFloor = Goal("price", 8000, "min", "元"); budgetFloor.Name = "<预算底线>";
+            var budgetCap = Goal("price", 6000, "max", "元");
+            var workspace = Workspace(context, budgetFloor, budgetCap); var result = CandidateComparison.Evaluate(workspace, context);
+            assert(result.Conflicts.Single().Metric == "price" && CandidateComparison.Html(workspace, result).Contains("&lt;预算底线&gt;") && !CandidateComparison.Html(workspace, result).Contains("<预算底线>"), "budget identity or report escaping lost");
+            workspace.Criteria = [Goal("memory", 128), Goal("vram", 16, "max"), Goal("task", 120, "min", "秒"), Goal("task", 10, "max", "秒")];
+            assert(CandidateComparison.Evaluate(workspace, context).Conflicts.Length == 0, "different resources or unnamed task identities merged");
+        });
         check("Comparison persistence retains review stamps and escapes all report text", () =>
         {
             var context = Context(); var goal = Goal("check"); var workspace = Workspace(context, goal); workspace.Candidates[0].Name = "<script>测试</script>";

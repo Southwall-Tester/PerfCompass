@@ -62,13 +62,15 @@ public sealed class PurchaseWorkspace
 }
 public record PurchaseCheck(string Name, string State, string Reading, string Evidence, string Condition);
 public record PurchaseAssessment(string Id, string Name, string State, double? PriceCny, List<PurchaseCheck> Checks);
+public record PurchaseConflict(string Metric, string Condition, string[] CriterionIds, string Message);
 public record PurchaseComparison(string Summary, List<PurchaseAssessment> Candidates, string[] Context, string ContextStamp)
 {
     public string[] Tradeoffs { get; init; } = [];
     public string[] ScenarioSummaries { get; init; } = [];
+    public PurchaseConflict[] Conflicts { get; init; } = [];
 }
 
-public static class CandidateComparison
+public static partial class CandidateComparison
 {
     private static string Hash(object value) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value))));
     public static string CriterionStamp(PurchaseCriterion c)
@@ -143,6 +145,8 @@ public static class CandidateComparison
         Validate(workspace);
         string stamp = Stamp(report);
         bool current = workspace.ContextStamp == stamp;
+        var conflicts = FindConflicts(workspace.Criteria);
+        bool requiredConflict = conflicts.Any(c => c.Condition.Length == 0);
         var assessments = new List<PurchaseAssessment>();
         foreach (var candidate in workspace.Candidates)
         {
@@ -174,11 +178,11 @@ public static class CandidateComparison
                 checks.Add(new(c.Name, state, reading, source, c.Condition));
             }
             var required = checks.Where(c => string.IsNullOrWhiteSpace(c.Condition)).ToArray();
-            string overall = required.Any(c => c.State == "fail") ? "fail" : !current || !workspace.CoverageConfirmed || required.Length == 0 || required.Any(c => c.State != "pass") ? "unknown" : "pass";
+            string overall = requiredConflict ? "unknown" : required.Any(c => c.State == "fail") ? "fail" : !current || !workspace.CoverageConfirmed || required.Length == 0 || required.Any(c => c.State != "pass") ? "unknown" : "pass";
             assessments.Add(new(candidate.Id, candidate.Name, overall, candidate.PriceCny, checks));
         }
         var passing = assessments.Where(a => a.State == "pass" && a.PriceCny.HasValue).OrderBy(a => a.PriceCny).ToArray();
-        string summary = !current ? "需求或近期任务已改变，请重新核对条件覆盖范围。" : !workspace.CoverageConfirmed ? "请先核对是否覆盖重要任务、新需求和近期体验问题。"
+        string summary = requiredConflict ? "必需条件存在数值冲突。请先核对冲突项目的方向、数值和触发条件，再比较候选电脑。" : !current ? "需求或近期任务已改变，请重新核对条件覆盖范围。" : !workspace.CoverageConfirmed ? "请先核对是否覆盖重要任务、新需求和近期体验问题。"
             : passing.Length == 0 ? "当前没有同时通过必需条件且有报价的候选。调整不满足条件的候选，或补齐待验证项。"
             : "必需条件已通过且有报价的候选中，最低报价为 " + string.Join("、", passing.Where(p => p.PriceCny == passing[0].PriceCny).Select(p => p.Name)) + $"（{passing[0].PriceCny:0.##} 元）。";
         if (passing.Length > 0)
@@ -213,9 +217,10 @@ public static class CandidateComparison
         foreach (string condition in workspace.Criteria.Select(c => c.Condition.Trim()).Where(c => c.Length > 0).Distinct())
         {
             var qualified = assessments.Where(a => a.State == "pass" && a.Checks.Where(c => c.Condition.Trim() == condition).All(c => c.State == "pass") && a.PriceCny.HasValue).OrderBy(a => a.PriceCny).ToArray();
-            scenarios.Add("情景「" + condition + "」成立时：" + (qualified.Length == 0 ? "当前没有通过必需条件及此情景全部条件、且有报价的候选。请检查不满足或待验证项。" : "最低已核对报价为 " + string.Join("、", qualified.Where(a => a.PriceCny == qualified[0].PriceCny).Select(a => a.Name)) + $"（{qualified[0].PriceCny:0.##} 元）。") + "多个条件同时成立时，还需一起核对所有相关项目。");
+            string conflict = requiredConflict ? "必需条件存在数值冲突，请先修正。" : conflicts.Any(c => c.Condition == condition) ? "本情景存在数值冲突，请核对冲突项目。" : "";
+            scenarios.Add("情景「" + condition + "」成立时：" + (conflict.Length > 0 ? conflict : qualified.Length == 0 ? "当前没有通过必需条件及此情景全部条件、且有报价的候选。请检查不满足或待验证项。" : "最低已核对报价为 " + string.Join("、", qualified.Where(a => a.PriceCny == qualified[0].PriceCny).Select(a => a.Name)) + $"（{qualified[0].PriceCny:0.##} 元）。") + "多个条件同时成立时，还需一起核对所有相关项目。");
         }
-        return new(summary, assessments, context, stamp) { Tradeoffs = tradeoffs.ToArray(), ScenarioSummaries = scenarios.ToArray() };
+        return new(summary, assessments, context, stamp) { Tradeoffs = tradeoffs.ToArray(), ScenarioSummaries = scenarios.ToArray(), Conflicts = conflicts };
     }
     public static PurchaseWorkspace Load(string root)
     {
@@ -235,6 +240,7 @@ public static class CandidateComparison
         string E(string? s) => WebUtility.HtmlEncode(s ?? "");
         string State(string s) => s switch { "pass" => "满足已核对条件", "fail" => "有不满足项", _ => "待验证" };
         return "<!doctype html><html lang='zh-CN'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>候选配置比较</title><style>body{font:15px/1.8 system-ui,'Microsoft YaHei';background:#f4f7f8;color:#192a36;margin:30px auto;max-width:1000px;padding:20px}section{background:white;padding:24px;margin:20px 0;border-radius:12px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd;vertical-align:top;overflow-wrap:anywhere;box-sizing:border-box}table{width:100%;border-collapse:collapse;table-layout:fixed}th:nth-child(1){width:30%}th:nth-child(2){width:28%}th:nth-child(3){width:42%}small{color:#677a87}</style><h1>候选配置比较</h1><p>" + E(comparison.Summary) + "</p><small>" + DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm") + " · comparison-1.2 · 报价与测量由用户提供；未独立验证其真实性。GB 容量按 1 TB = 1000 GB 归一化，GiB/TiB 请先换算，购买前核对厂商口径。</small>"
+            + string.Join("", comparison.Conflicts.Select(c => "<section><h2>条件数值冲突</h2><p>" + E(c.Message) + "</p></section>"))
             + string.Join("", comparison.ScenarioSummaries.Select(t => "<section><h2>条件情景</h2><p>" + E(t) + "</p></section>"))
             + string.Join("", comparison.Tradeoffs.Select(t => "<section><p>" + E(t) + "</p></section>"))
             + string.Join("", comparison.Candidates.Select(a => { var candidate = workspace.Candidates.Single(c => c.Id == a.Id); return "<section><h2>" + E(a.Name) + " · 必需条件：" + State(a.State) + "</h2><p>" + E(candidate.Cpu) + " / " + E(candidate.Gpu) + "；报价 " + E(a.PriceCny?.ToString("0.##")) + " 元</p><p>配置/报价来源：" + E(candidate.Source) + "</p><table><tr><th>条件</th><th>结果</th><th>依据</th></tr>" + string.Join("", a.Checks.Select(c => "<tr><td>" + E(c.Name) + (c.Condition.Length > 0 ? "<br>条件：" + E(c.Condition) : "") + "</td><td>" + State(c.State) + "<br>" + E(c.Reading) + "</td><td>" + E(c.Evidence) + "</td></tr>")) + "</table></section>"; }))
