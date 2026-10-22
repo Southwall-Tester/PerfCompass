@@ -1,0 +1,80 @@
+﻿{
+  "Id": "12",
+  "Source": "Cubase\u540C\u65F6\u5F00\u4E00\u767E\u8F68\uFF0C\u5F55\u97F3\u76D1\u542C\u5EF6\u8FDF\u5E0C\u671B\u4F4E\u4E8E10\u6BEB\u79D2",
+  "Seconds": 26.8850234,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "Cubase\u540C\u65F6\u5F00\u4E00\u767E\u8F68\uFF0C\u5F55\u97F3\u76D1\u542C\u5EF6\u8FDF\u5E0C\u671B\u4F4E\u4E8E10\u6BEB\u79D2",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "Cubase",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E00\u767E\u8F68",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "Cubase\u540C\u65F6\u5F00\u4E00\u767E\u8F68",
+        "Label": "Cubase \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E00\u767E\u8F68"
+      },
+      {
+        "Subject": "\u5F55\u97F3\u76D1\u542C\u5EF6\u8FDF",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4F4E\u4E8E10\u6BEB\u79D2",
+        "Unit": "\u6BEB\u79D2",
+        "Condition": "",
+        "Evidence": "\u5F55\u97F3\u76D1\u542C\u5EF6\u8FDF\u5E0C\u671B\u4F4E\u4E8E10\u6BEB\u79D2",
+        "Label": "\u5F55\u97F3\u76D1\u542C\u5EF6\u8FDF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4F4E\u4E8E10\u6BEB\u79D2\uFF1B\u6BEB\u79D2"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "Cubase",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E00\u767E\u8F68",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "Cubase\u540C\u65F6\u5F00\u4E00\u767E\u8F68",
+        "Label": "Cubase \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E00\u767E\u8F68"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u5F55\u97F3\u76D1\u542C\u5EF6\u8FDF",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4F4E\u4E8E10\u6BEB\u79D2",
+        "Unit": "\u6BEB\u79D2",
+        "Condition": "",
+        "Evidence": "\u5F55\u97F3\u76D1\u542C\u5EF6\u8FDF\u5E0C\u671B\u4F4E\u4E8E10\u6BEB\u79D2",
+        "Label": "\u5F55\u97F3\u76D1\u542C\u5EF6\u8FDF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4F4E\u4E8E10\u6BEB\u79D2\uFF1B\u6BEB\u79D2"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": [
+        {
+          "Metric": "task",
+          "Direction": "lt",
+          "Target": 0.01,
+          "Unit": "\u79D2"
+        }
+      ]
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

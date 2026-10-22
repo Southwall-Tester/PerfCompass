@@ -1,0 +1,73 @@
+﻿{
+  "Id": "11",
+  "Source": "\u7528SolidWorks\u5F00\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53\uFF0C\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684",
+  "Seconds": 26.5510122,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u7528SolidWorks\u5F00\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53\uFF0C\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "SolidWorks",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u7528SolidWorks\u5F00\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53",
+        "Label": "SolidWorks \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53"
+      },
+      {
+        "Subject": "\u65CB\u8F6C",
+        "Kind": "experience",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u4E00\u5361\u4E00\u5361\u7684",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684",
+        "Label": "\u65CB\u8F6C \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E00\u5361\u4E00\u5361\u7684"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "SolidWorks",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u7528SolidWorks\u5F00\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53",
+        "Label": "SolidWorks \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u65CB\u8F6C",
+        "Kind": "experience",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u4E00\u5361\u4E00\u5361\u7684",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684",
+        "Label": "\u65CB\u8F6C \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E00\u5361\u4E00\u5361\u7684"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

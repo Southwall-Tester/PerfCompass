@@ -1,0 +1,80 @@
+﻿{
+  "Id": "18",
+  "Source": "\u9884\u7B97\u516D\u5343\u5230\u516B\u5343\uFF0C\u663E\u793A\u5668\u952E\u9F20\u4E0D\u5305\u542B\u5728\u91CC\u9762",
+  "Seconds": 25.561864,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u9884\u7B97\u516D\u5343\u5230\u516B\u5343\uFF0C\u663E\u793A\u5668\u952E\u9F20\u4E0D\u5305\u542B\u5728\u91CC\u9762",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u9884\u7B97",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u516D\u5343",
+        "Unit": "\u5143",
+        "Condition": "",
+        "Evidence": "\u9884\u7B97\u516D\u5343\u5230\u516B\u5343",
+        "Label": "\u9884\u7B97 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u516D\u5343\uFF1B\u5143"
+      },
+      {
+        "Subject": "\u9884\u7B97",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u516B\u5343",
+        "Unit": "\u5143",
+        "Condition": "",
+        "Evidence": "\u9884\u7B97\u516D\u5343\u5230\u516B\u5343",
+        "Label": "\u9884\u7B97 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u516B\u5343\uFF1B\u5143"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u9884\u7B97",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u516D\u5343",
+        "Unit": "\u5143",
+        "Condition": "",
+        "Evidence": "\u9884\u7B97\u516D\u5343\u5230\u516B\u5343",
+        "Label": "\u9884\u7B97 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u516D\u5343\uFF1B\u5143"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u9884\u7B97",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u516B\u5343",
+        "Unit": "\u5143",
+        "Condition": "",
+        "Evidence": "\u9884\u7B97\u516D\u5343\u5230\u516B\u5343",
+        "Label": "\u9884\u7B97 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u516B\u5343\uFF1B\u5143"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": [
+        {
+          "Metric": "price",
+          "Direction": "max",
+          "Target": 8000,
+          "Unit": "\u5143"
+        }
+      ]
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

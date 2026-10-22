@@ -1,0 +1,101 @@
+﻿{
+  "Id": "17",
+  "Source": "\u7167\u7247\u73B0\u5728\u67091.5TB\uFF0C\u6BCF\u5E74\u8FD8\u589E\u52A0\u7EA6300GB\uFF0C\u81F3\u5C11\u7528\u56DB\u5E74",
+  "Seconds": 37.8009707,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u7167\u7247\u73B0\u5728\u67091.5TB\uFF0C\u6BCF\u5E74\u8FD8\u589E\u52A0\u7EA6300GB\uFF0C\u81F3\u5C11\u7528\u56DB\u5E74",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u7167\u7247",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "1.5TB",
+        "Unit": "TB",
+        "Condition": "",
+        "Evidence": "\u7167\u7247\u73B0\u5728\u67091.5TB",
+        "Label": "\u7167\u7247 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "1.5TB\uFF1BTB"
+      },
+      {
+        "Subject": "\u7167\u7247",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "300GB",
+        "Unit": "GB",
+        "Condition": "\u6BCF\u5E74",
+        "Evidence": "\u6BCF\u5E74\u8FD8\u589E\u52A0\u7EA6300GB",
+        "Label": "\u7167\u7247 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "300GB\uFF1BGB\uFF1B\u6761\u4EF6\uFF1A\u6BCF\u5E74"
+      },
+      {
+        "Subject": "\u7167\u7247",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "4",
+        "Unit": "\u5E74",
+        "Condition": "\u81F3\u5C11",
+        "Evidence": "\u81F3\u5C11\u7528\u56DB\u5E74",
+        "Label": "\u7167\u7247 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "4\uFF1B\u5E74\uFF1B\u6761\u4EF6\uFF1A\u81F3\u5C11"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u7167\u7247",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "1.5TB",
+        "Unit": "TB",
+        "Condition": "",
+        "Evidence": "\u7167\u7247\u73B0\u5728\u67091.5TB",
+        "Label": "\u7167\u7247 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "1.5TB\uFF1BTB"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u7167\u7247",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "300GB",
+        "Unit": "GB",
+        "Condition": "\u6BCF\u5E74",
+        "Evidence": "\u6BCF\u5E74\u8FD8\u589E\u52A0\u7EA6300GB",
+        "Label": "\u7167\u7247 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "300GB\uFF1BGB\uFF1B\u6761\u4EF6\uFF1A\u6BCF\u5E74"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u7167\u7247",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "4",
+        "Unit": "\u5E74",
+        "Condition": "\u81F3\u5C11",
+        "Evidence": "\u81F3\u5C11\u7528\u56DB\u5E74",
+        "Label": "\u7167\u7247 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "4\uFF1B\u5E74\uFF1B\u6761\u4EF6\uFF1A\u81F3\u5C11"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

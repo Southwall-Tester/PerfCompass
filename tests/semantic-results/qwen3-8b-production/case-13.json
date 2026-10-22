@@ -1,0 +1,101 @@
+﻿{
+  "Id": "13",
+  "Source": "OBS\u63A8\u6D41\u7684\u540C\u65F6\u5F00\u76F4\u64AD\u4F34\u4FA3\uFF0C\u8FD8\u8981\u5F55\u4E00\u4EFD\u672C\u5730\u5F55\u50CF",
+  "Seconds": 34.835579,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "OBS\u63A8\u6D41\u7684\u540C\u65F6\u5F00\u76F4\u64AD\u4F34\u4FA3\uFF0C\u8FD8\u8981\u5F55\u4E00\u4EFD\u672C\u5730\u5F55\u50CF",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "OBS",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u63A8\u6D41",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "OBS\u63A8\u6D41",
+        "Label": "OBS \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u63A8\u6D41"
+      },
+      {
+        "Subject": "\u76F4\u64AD\u4F34\u4FA3",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5F00",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u5F00\u76F4\u64AD\u4F34\u4FA3",
+        "Label": "\u76F4\u64AD\u4F34\u4FA3 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5F00"
+      },
+      {
+        "Subject": "\u672C\u5730\u5F55\u50CF",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5F55\u4E00\u4EFD",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u5F55\u4E00\u4EFD\u672C\u5730\u5F55\u50CF",
+        "Label": "\u672C\u5730\u5F55\u50CF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5F55\u4E00\u4EFD"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "OBS",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u63A8\u6D41",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "OBS\u63A8\u6D41",
+        "Label": "OBS \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u63A8\u6D41"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u76F4\u64AD\u4F34\u4FA3",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5F00",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u5F00\u76F4\u64AD\u4F34\u4FA3",
+        "Label": "\u76F4\u64AD\u4F34\u4FA3 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5F00"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u672C\u5730\u5F55\u50CF",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5F55\u4E00\u4EFD",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u5F55\u4E00\u4EFD\u672C\u5730\u5F55\u50CF",
+        "Label": "\u672C\u5730\u5F55\u50CF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5F55\u4E00\u4EFD"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

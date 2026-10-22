@@ -1,0 +1,73 @@
+﻿{
+  "Id": "19",
+  "Source": "\u6BCF\u5929\u80CC\u53BB\u5B66\u6821\uFF0C\u91CD\u91CF\u522B\u8D85\u8FC71.5\u516C\u65A4\uFF0C\u7EED\u822A\u8981\u516D\u5C0F\u65F6",
+  "Seconds": 25.7154422,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u6BCF\u5929\u80CC\u53BB\u5B66\u6821\uFF0C\u91CD\u91CF\u522B\u8D85\u8FC71.5\u516C\u65A4\uFF0C\u7EED\u822A\u8981\u516D\u5C0F\u65F6",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u80CC\u5305",
+        "Kind": "portability",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "1.5",
+        "Unit": "\u516C\u65A4",
+        "Condition": "",
+        "Evidence": "\u91CD\u91CF\u522B\u8D85\u8FC71.5\u516C\u65A4",
+        "Label": "\u80CC\u5305 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "1.5\uFF1B\u516C\u65A4"
+      },
+      {
+        "Subject": "\u8BBE\u5907",
+        "Kind": "portability",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "6",
+        "Unit": "\u5C0F\u65F6",
+        "Condition": "",
+        "Evidence": "\u7EED\u822A\u8981\u516D\u5C0F\u65F6",
+        "Label": "\u8BBE\u5907 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "6\uFF1B\u5C0F\u65F6"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u80CC\u5305",
+        "Kind": "portability",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "1.5",
+        "Unit": "\u516C\u65A4",
+        "Condition": "",
+        "Evidence": "\u91CD\u91CF\u522B\u8D85\u8FC71.5\u516C\u65A4",
+        "Label": "\u80CC\u5305 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "1.5\uFF1B\u516C\u65A4"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u8BBE\u5907",
+        "Kind": "portability",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "6",
+        "Unit": "\u5C0F\u65F6",
+        "Condition": "",
+        "Evidence": "\u7EED\u822A\u8981\u516D\u5C0F\u65F6",
+        "Label": "\u8BBE\u5907 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "6\uFF1B\u5C0F\u65F6"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

@@ -1,0 +1,101 @@
+﻿{
+  "Id": "27",
+  "Source": "I don\u0027t play games. Mostly Excel, but next year I may try CAD.",
+  "Seconds": 37.4729895,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "I don\u0027t play games. Mostly Excel, but next year I may try CAD.",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "user",
+        "Kind": "workload",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "games",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "I don\u0027t play games.",
+        "Label": "user \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "games"
+      },
+      {
+        "Subject": "user",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "Excel",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "Mostly Excel",
+        "Label": "user \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "Excel"
+      },
+      {
+        "Subject": "user",
+        "Kind": "workload",
+        "Polarity": "conditional",
+        "Timeframe": "future",
+        "Value": "CAD",
+        "Unit": "",
+        "Condition": "next year",
+        "Evidence": "next year I may try CAD.",
+        "Label": "user \u00B7 \u6761\u4EF6\u6210\u7ACB\u65F6\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "CAD\uFF1B\u6761\u4EF6\uFF1Anext year"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "user",
+        "Kind": "workload",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "games",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "I don\u0027t play games.",
+        "Label": "user \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "games"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "user",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "Excel",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "Mostly Excel",
+        "Label": "user \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "Excel"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "user",
+        "Kind": "workload",
+        "Polarity": "conditional",
+        "Timeframe": "future",
+        "Value": "CAD",
+        "Unit": "",
+        "Condition": "next year",
+        "Evidence": "next year I may try CAD.",
+        "Label": "user \u00B7 \u6761\u4EF6\u6210\u7ACB\u65F6\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "CAD\uFF1B\u6761\u4EF6\uFF1Anext year"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

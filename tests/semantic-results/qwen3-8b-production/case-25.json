@@ -1,0 +1,101 @@
+﻿{
+  "Id": "25",
+  "Source": "\u6211\u7528Blender\u505A\u4EBA\u7269\u52A8\u753B\u3002\u5B83\u6BCF\u6B21\u70D8\u7119\u90FD\u8981\u534A\u5C0F\u65F6\uFF0C\u6211\u5E0C\u671B\u7F29\u5230\u5341\u5206\u949F",
+  "Seconds": 37.7297255,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u6211\u7528Blender\u505A\u4EBA\u7269\u52A8\u753B\u3002\u5B83\u6BCF\u6B21\u70D8\u7119\u90FD\u8981\u534A\u5C0F\u65F6\uFF0C\u6211\u5E0C\u671B\u7F29\u5230\u5341\u5206\u949F",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "Blender",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4EBA\u7269\u52A8\u753B",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6211\u7528Blender\u505A\u4EBA\u7269\u52A8\u753B",
+        "Label": "Blender \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4EBA\u7269\u52A8\u753B"
+      },
+      {
+        "Subject": "\u70D8\u7119",
+        "Kind": "experience",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u534A\u5C0F\u65F6",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u5B83\u6BCF\u6B21\u70D8\u7119\u90FD\u8981\u534A\u5C0F\u65F6",
+        "Label": "\u70D8\u7119 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u534A\u5C0F\u65F6"
+      },
+      {
+        "Subject": "\u70D8\u7119",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u5341\u5206\u949F",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6211\u5E0C\u671B\u7F29\u5230\u5341\u5206\u949F",
+        "Label": "\u70D8\u7119 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u5341\u5206\u949F"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "Blender",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4EBA\u7269\u52A8\u753B",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6211\u7528Blender\u505A\u4EBA\u7269\u52A8\u753B",
+        "Label": "Blender \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4EBA\u7269\u52A8\u753B"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u70D8\u7119",
+        "Kind": "experience",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u534A\u5C0F\u65F6",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u5B83\u6BCF\u6B21\u70D8\u7119\u90FD\u8981\u534A\u5C0F\u65F6",
+        "Label": "\u70D8\u7119 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u534A\u5C0F\u65F6"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u70D8\u7119",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u5341\u5206\u949F",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6211\u5E0C\u671B\u7F29\u5230\u5341\u5206\u949F",
+        "Label": "\u70D8\u7119 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u5341\u5206\u949F"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

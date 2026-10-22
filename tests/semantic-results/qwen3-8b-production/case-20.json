@@ -1,0 +1,45 @@
+﻿{
+  "Id": "20",
+  "Source": "\u653E\u5BBF\u820D\u665A\u4E0A\u7528\uFF0C\u98CE\u6247\u5B89\u9759\u6BD4\u8DD1\u5206\u66F4\u91CD\u8981",
+  "Seconds": 13.3126639,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u653E\u5BBF\u820D\u665A\u4E0A\u7528\uFF0C\u98CE\u6247\u5B89\u9759\u6BD4\u8DD1\u5206\u66F4\u91CD\u8981",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u98CE\u6247",
+        "Kind": "noise",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5B89\u9759",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u98CE\u6247\u5B89\u9759\u6BD4\u8DD1\u5206\u66F4\u91CD\u8981",
+        "Label": "\u98CE\u6247 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5B89\u9759"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u98CE\u6247",
+        "Kind": "noise",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5B89\u9759",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u98CE\u6247\u5B89\u9759\u6BD4\u8DD1\u5206\u66F4\u91CD\u8981",
+        "Label": "\u98CE\u6247 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5B89\u9759"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

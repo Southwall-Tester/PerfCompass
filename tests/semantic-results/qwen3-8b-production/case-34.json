@@ -1,0 +1,73 @@
+﻿{
+  "Id": "34",
+  "Source": "\u4E00\u5E74\u53EA\u5BFC\u51FA\u4E24\u6B21\u89C6\u9891\uFF0C\u6BCF\u6B21\u7B49\u534A\u5C0F\u65F6\u53EF\u4EE5\u63A5\u53D7",
+  "Seconds": 25.9982031,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u4E00\u5E74\u53EA\u5BFC\u51FA\u4E24\u6B21\u89C6\u9891\uFF0C\u6BCF\u6B21\u7B49\u534A\u5C0F\u65F6\u53EF\u4EE5\u63A5\u53D7",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u89C6\u9891\u5BFC\u51FA",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u4E24\u6B21",
+        "Unit": "\u6B21",
+        "Condition": "",
+        "Evidence": "\u4E00\u5E74\u53EA\u5BFC\u51FA\u4E24\u6B21\u89C6\u9891",
+        "Label": "\u89C6\u9891\u5BFC\u51FA \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u4E24\u6B21\uFF1B\u6B21"
+      },
+      {
+        "Subject": "\u5BFC\u51FA\u89C6\u9891",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u534A\u5C0F\u65F6",
+        "Unit": "\u5206\u949F",
+        "Condition": "",
+        "Evidence": "\u6BCF\u6B21\u7B49\u534A\u5C0F\u65F6\u53EF\u4EE5\u63A5\u53D7",
+        "Label": "\u5BFC\u51FA\u89C6\u9891 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u534A\u5C0F\u65F6\uFF1B\u5206\u949F"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u89C6\u9891\u5BFC\u51FA",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u4E24\u6B21",
+        "Unit": "\u6B21",
+        "Condition": "",
+        "Evidence": "\u4E00\u5E74\u53EA\u5BFC\u51FA\u4E24\u6B21\u89C6\u9891",
+        "Label": "\u89C6\u9891\u5BFC\u51FA \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u4E24\u6B21\uFF1B\u6B21"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u5BFC\u51FA\u89C6\u9891",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u534A\u5C0F\u65F6",
+        "Unit": "\u5206\u949F",
+        "Condition": "",
+        "Evidence": "\u6BCF\u6B21\u7B49\u534A\u5C0F\u65F6\u53EF\u4EE5\u63A5\u53D7",
+        "Label": "\u5BFC\u51FA\u89C6\u9891 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u534A\u5C0F\u65F6\uFF1B\u5206\u949F"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

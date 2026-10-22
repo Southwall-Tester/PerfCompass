@@ -1,0 +1,50 @@
+﻿{
+  "Id": "03",
+  "Source": "\u51C6\u5907\u8FD0\u884C\u672C\u5730\u6A21\u578B",
+  "Seconds": 21.7438488,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u51C6\u5907\u8FD0\u884C\u672C\u5730\u6A21\u578B",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u8FD0\u884C\u672C\u5730\u6A21\u578B",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u8FD0\u884C\u672C\u5730\u6A21\u578B",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u51C6\u5907\u8FD0\u884C\u672C\u5730\u6A21\u578B",
+        "Label": "\u8FD0\u884C\u672C\u5730\u6A21\u578B \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u8FD0\u884C\u672C\u5730\u6A21\u578B"
+      }
+    ],
+    "Questions": [
+      "\u9700\u8981\u8FD0\u884C\u7684\u672C\u5730\u6A21\u578B\u7C7B\u578B\u662F\u4EC0\u4E48\uFF1F",
+      "\u662F\u5426\u9700\u8981\u652F\u6301\u591A\u4EFB\u52A1\u540C\u65F6\u8FD0\u884C\uFF1F",
+      "\u662F\u5426\u6709\u7279\u5B9A\u7684\u786C\u4EF6\u8981\u6C42\u6216\u9650\u5236\uFF1F",
+      "\u662F\u5426\u9700\u8981\u8003\u8651\u6A21\u578B\u7684\u8BAD\u7EC3\u6216\u63A8\u7406\u901F\u5EA6\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u8FD0\u884C\u672C\u5730\u6A21\u578B",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u8FD0\u884C\u672C\u5730\u6A21\u578B",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u51C6\u5907\u8FD0\u884C\u672C\u5730\u6A21\u578B",
+        "Label": "\u8FD0\u884C\u672C\u5730\u6A21\u578B \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u8FD0\u884C\u672C\u5730\u6A21\u578B"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

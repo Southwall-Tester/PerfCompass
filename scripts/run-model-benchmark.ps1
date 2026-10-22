@@ -1,10 +1,12 @@
 param(
     [string]$ModelMetadata = '.tools/nlp/model-source.json',
     [string]$OutputName = ('nlp-production-' + (Get-Date -Format 'yyyyMMdd-HHmmss')),
-    [string]$CaseIds = 'all'
+    [string]$CaseIds = 'all',
+    [ValidateSet('baseline','extended')][string]$Corpus = 'baseline'
 )
 $ErrorActionPreference = 'Stop'
 $taskRoot = Split-Path -Parent $PSScriptRoot
+$taskCorpusPath = Join-Path $taskRoot $(if ($Corpus -eq 'extended') { 'tests\nlp-extended-cases.json' } else { 'tests\nlp-cases.json' })
 $taskDotnet = Join-Path $taskRoot '.tools\dotnet\dotnet.exe'
 if (Test-Path -LiteralPath $taskDotnet) { $env:DOTNET_ROOT = Split-Path -Parent $taskDotnet } else { $taskDotnet = 'dotnet' }
 if ($OutputName -notmatch '^[a-zA-Z0-9_-]+$' -or $CaseIds -notmatch '^(all|[a-zA-Z0-9_-]+(,[a-zA-Z0-9_-]+)*)$') { throw 'Invalid output name or case selection.' }
@@ -33,7 +35,8 @@ $taskManifest = [ordered]@{
     RunnerSha256=(Get-FileHash -LiteralPath $taskRunner -Algorithm SHA256).Hash
     PromptSha256=(Get-FileHash -LiteralPath (Join-Path $taskRoot 'tests\nlp-extraction-prompt.txt') -Algorithm SHA256).Hash
     SchemaSha256=(Get-FileHash -LiteralPath (Join-Path $taskRoot 'tests\nlp-output.schema.json') -Algorithm SHA256).Hash
-    CorpusSha256=(Get-FileHash -LiteralPath (Join-Path $taskRoot 'tests\nlp-cases.json') -Algorithm SHA256).Hash
+    CorpusSha256=(Get-FileHash -LiteralPath $taskCorpusPath -Algorithm SHA256).Hash
+    CorpusFile=[IO.Path]::GetFileName($taskCorpusPath)
     CaseIds=$CaseIds; ServerPid=$null; Port=$taskPort; Threads=4; GpuLayers=0; Context=8192
     ProductCommit=(& git -C $taskRoot rev-parse HEAD); Outcome='starting'
     WorkingTreeDirty=([bool](& git -C $taskRoot status --porcelain))
@@ -58,7 +61,7 @@ try {
     $taskManifest.Outcome='running'; Write-TaskManifest
     Write-Output ("Running verified synthetic benchmark: server PID " + $taskServer.Id + ', model ' + $taskModelName)
     $taskProbe = Join-Path $taskRoot 'tests\PerfCompass.ModelProbe\bin\Release\net10.0-windows\PerfCompass.ModelProbe.dll'
-    & $taskDotnet $taskProbe --batch "$taskEndpoint/v1/chat/completions" perfcompass-research (Join-Path $taskRoot 'tests\nlp-cases.json') (Join-Path $taskOutput 'cases') $CaseIds
+    & $taskDotnet $taskProbe --batch "$taskEndpoint/v1/chat/completions" perfcompass-research $taskCorpusPath (Join-Path $taskOutput 'cases') $CaseIds
     if ($LASTEXITCODE -ne 0) { throw 'Batch probe did not complete; inspect per-case records.' }
     $taskManifest.Outcome='completed'
 } catch { $taskManifest.Outcome='failed'; $taskManifest.ErrorType=$_.Exception.GetType().Name; throw }

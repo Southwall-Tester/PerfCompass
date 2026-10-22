@@ -8,6 +8,7 @@
 *.ico binary
 licenses/** -whitespace
 tests/nlp-cases.json text eol=lf
+tests/nlp-extended-cases.json text eol=lf
 tests/nlp-extraction-prompt.txt text eol=lf
 tests/nlp-output.schema.json text eol=lf
 # Preserve hashed provider records, including their original CRLF endings.

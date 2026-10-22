@@ -1,0 +1,73 @@
+﻿{
+  "Id": "16",
+  "Source": "\u4E0B\u53F0\u673A\u5668\u81F3\u5C1132GB\u5185\u5B58\uFF0C\u663E\u5B58\u6700\u597D16GB\u4EE5\u4E0A",
+  "Seconds": 26.1299564,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u4E0B\u53F0\u673A\u5668\u81F3\u5C1132GB\u5185\u5B58\uFF0C\u663E\u5B58\u6700\u597D16GB\u4EE5\u4E0A",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u5185\u5B58",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "32",
+        "Unit": "GB",
+        "Condition": "",
+        "Evidence": "\u4E0B\u53F0\u673A\u5668\u81F3\u5C1132GB\u5185\u5B58",
+        "Label": "\u5185\u5B58 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "32\uFF1BGB"
+      },
+      {
+        "Subject": "\u663E\u5B58",
+        "Kind": "resource",
+        "Polarity": "conditional",
+        "Timeframe": "current",
+        "Value": "16",
+        "Unit": "GB",
+        "Condition": "\u6700\u597D",
+        "Evidence": "\u663E\u5B58\u6700\u597D16GB\u4EE5\u4E0A",
+        "Label": "\u663E\u5B58 \u00B7 \u6761\u4EF6\u6210\u7ACB\u65F6\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "16\uFF1BGB\uFF1B\u6761\u4EF6\uFF1A\u6700\u597D"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u5185\u5B58",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "32",
+        "Unit": "GB",
+        "Condition": "",
+        "Evidence": "\u4E0B\u53F0\u673A\u5668\u81F3\u5C1132GB\u5185\u5B58",
+        "Label": "\u5185\u5B58 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "32\uFF1BGB"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u663E\u5B58",
+        "Kind": "resource",
+        "Polarity": "conditional",
+        "Timeframe": "current",
+        "Value": "16",
+        "Unit": "GB",
+        "Condition": "\u6700\u597D",
+        "Evidence": "\u663E\u5B58\u6700\u597D16GB\u4EE5\u4E0A",
+        "Label": "\u663E\u5B58 \u00B7 \u6761\u4EF6\u6210\u7ACB\u65F6\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "16\uFF1BGB\uFF1B\u6761\u4EF6\uFF1A\u6700\u597D"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

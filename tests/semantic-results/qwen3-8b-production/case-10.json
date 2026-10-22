@@ -1,0 +1,73 @@
+﻿{
+  "Id": "10",
+  "Source": "\u4E0D\u53EA\u662F\u6E38\u620F\uFF0C\u8FD8\u51C6\u5907\u5B66\u526A\u8F91",
+  "Seconds": 23.3108503,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u4E0D\u53EA\u662F\u6E38\u620F\uFF0C\u8FD8\u51C6\u5907\u5B66\u526A\u8F91",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u7535\u8111",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u526A\u8F91",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u8FD8\u51C6\u5907\u5B66\u526A\u8F91",
+        "Label": "\u7535\u8111 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u526A\u8F91"
+      },
+      {
+        "Subject": "\u7535\u8111",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6E38\u620F",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4E0D\u53EA\u662F\u6E38\u620F",
+        "Label": "\u7535\u8111 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6E38\u620F"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u7535\u8111",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u526A\u8F91",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u8FD8\u51C6\u5907\u5B66\u526A\u8F91",
+        "Label": "\u7535\u8111 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u526A\u8F91"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u7535\u8111",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6E38\u620F",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4E0D\u53EA\u662F\u6E38\u620F",
+        "Label": "\u7535\u8111 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6E38\u620F"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

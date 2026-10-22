@@ -1,0 +1,50 @@
+﻿{
+  "Id": "07",
+  "Source": "\u6253\u7B97\u5B66\u4E60\u89C6\u9891\u526A\u8F91",
+  "Seconds": 20.3886826,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u6253\u7B97\u5B66\u4E60\u89C6\u9891\u526A\u8F91",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u89C6\u9891\u526A\u8F91",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5B66\u4E60",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6253\u7B97\u5B66\u4E60\u89C6\u9891\u526A\u8F91",
+        "Label": "\u89C6\u9891\u526A\u8F91 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5B66\u4E60"
+      }
+    ],
+    "Questions": [
+      "\u9700\u8981\u89C6\u9891\u526A\u8F91\u8F6F\u4EF6\u7684\u7C7B\u578B\uFF1F",
+      "\u662F\u5426\u6709\u7279\u5B9A\u7684\u89C6\u9891\u526A\u8F91\u9700\u6C42\uFF1F",
+      "\u662F\u5426\u9700\u8981\u652F\u6301\u9AD8\u5206\u8FA8\u7387\u89C6\u9891\u526A\u8F91\uFF1F",
+      "\u662F\u5426\u6709\u9884\u7B97\u9650\u5236\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u89C6\u9891\u526A\u8F91",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5B66\u4E60",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6253\u7B97\u5B66\u4E60\u89C6\u9891\u526A\u8F91",
+        "Label": "\u89C6\u9891\u526A\u8F91 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5B66\u4E60"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

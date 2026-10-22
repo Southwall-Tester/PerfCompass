@@ -1,0 +1,101 @@
+﻿{
+  "Id": "29",
+  "Source": "\u6BCF\u5929\u8DD1\u4E00\u6B21MATLAB\u4EFF\u771F\uFF0C\u80FD\u63A5\u53D7\u591C\u91CC\u6162\u6162\u7B97\u5B8C\uFF0C\u522B\u5F71\u54CD\u767D\u5929\u4E0A\u8BFE",
+  "Seconds": 38.8124423,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u6BCF\u5929\u8DD1\u4E00\u6B21MATLAB\u4EFF\u771F\uFF0C\u80FD\u63A5\u53D7\u591C\u91CC\u6162\u6162\u7B97\u5B8C\uFF0C\u522B\u5F71\u54CD\u767D\u5929\u4E0A\u8BFE",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "MATLAB\u4EFF\u771F",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6BCF\u5929\u4E00\u6B21",
+        "Unit": "\u6B21",
+        "Condition": "",
+        "Evidence": "\u6BCF\u5929\u8DD1\u4E00\u6B21MATLAB\u4EFF\u771F",
+        "Label": "MATLAB\u4EFF\u771F \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6BCF\u5929\u4E00\u6B21\uFF1B\u6B21"
+      },
+      {
+        "Subject": "\u8BA1\u7B97\u5B8C\u6210\u65F6\u95F4",
+        "Kind": "schedule",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u591C\u91CC",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u80FD\u63A5\u53D7\u591C\u91CC\u6162\u6162\u7B97\u5B8C",
+        "Label": "\u8BA1\u7B97\u5B8C\u6210\u65F6\u95F4 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u591C\u91CC"
+      },
+      {
+        "Subject": "\u767D\u5929",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E0A\u8BFE",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u522B\u5F71\u54CD\u767D\u5929\u4E0A\u8BFE",
+        "Label": "\u767D\u5929 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E0A\u8BFE"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "MATLAB\u4EFF\u771F",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6BCF\u5929\u4E00\u6B21",
+        "Unit": "\u6B21",
+        "Condition": "",
+        "Evidence": "\u6BCF\u5929\u8DD1\u4E00\u6B21MATLAB\u4EFF\u771F",
+        "Label": "MATLAB\u4EFF\u771F \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6BCF\u5929\u4E00\u6B21\uFF1B\u6B21"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u8BA1\u7B97\u5B8C\u6210\u65F6\u95F4",
+        "Kind": "schedule",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u591C\u91CC",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u80FD\u63A5\u53D7\u591C\u91CC\u6162\u6162\u7B97\u5B8C",
+        "Label": "\u8BA1\u7B97\u5B8C\u6210\u65F6\u95F4 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u591C\u91CC"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u767D\u5929",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E0A\u8BFE",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u522B\u5F71\u54CD\u767D\u5929\u4E0A\u8BFE",
+        "Label": "\u767D\u5929 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E0A\u8BFE"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

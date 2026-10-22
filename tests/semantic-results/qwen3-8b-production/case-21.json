@@ -1,0 +1,101 @@
+﻿{
+  "Id": "21",
+  "Source": "\u9700\u8981\u88C5Linux\uFF0CCUDA\u5FC5\u987B\u80FD\u7528\uFF0C\u8F6F\u4EF6\u8FD8\u4F9D\u8D56x86\u63D2\u4EF6",
+  "Seconds": 36.7704145,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u9700\u8981\u88C5Linux\uFF0CCUDA\u5FC5\u987B\u80FD\u7528\uFF0C\u8F6F\u4EF6\u8FD8\u4F9D\u8D56x86\u63D2\u4EF6",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u8F6F\u4EF6",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "x86\u63D2\u4EF6",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u8F6F\u4EF6\u8FD8\u4F9D\u8D56x86\u63D2\u4EF6",
+        "Label": "\u8F6F\u4EF6 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "x86\u63D2\u4EF6"
+      },
+      {
+        "Subject": "\u7CFB\u7EDF",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "Linux",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u9700\u8981\u88C5Linux",
+        "Label": "\u7CFB\u7EDF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "Linux"
+      },
+      {
+        "Subject": "CUDA",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u80FD\u7528",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "CUDA\u5FC5\u987B\u80FD\u7528",
+        "Label": "CUDA \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u80FD\u7528"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u8F6F\u4EF6",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "x86\u63D2\u4EF6",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u8F6F\u4EF6\u8FD8\u4F9D\u8D56x86\u63D2\u4EF6",
+        "Label": "\u8F6F\u4EF6 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "x86\u63D2\u4EF6"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u7CFB\u7EDF",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "Linux",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u9700\u8981\u88C5Linux",
+        "Label": "\u7CFB\u7EDF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "Linux"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "CUDA",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u80FD\u7528",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "CUDA\u5FC5\u987B\u80FD\u7528",
+        "Label": "CUDA \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u80FD\u7528"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}
