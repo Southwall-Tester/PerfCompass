@@ -13,7 +13,7 @@ $taskFiles = @(Get-ChildItem -LiteralPath $taskSource -File -Recurse)
 foreach ($taskFile in $taskFiles) {
     $taskRelative = $taskFile.FullName.Substring($taskSource.Length + 1).Replace('\','/')
     if ($taskRelative -match '(^|/)data/|\.(jsonl|gguf)$|(^|/)(errors\.log|settings\.json|comparison\.json)$') { throw "Private data or a model file cannot be packaged: $taskRelative" }
-    if ($taskRelative -notmatch '^(docs/[^/]+\.(md|html)|licenses/.+|PerfCompass\.(exe|pdb)|READY|README\.(md|html)|THIRD-PARTY-NOTICES\.md|VALIDATION\.md|DEMAND_MODEL\.md)$') { throw "Unexpected distribution file: $taskRelative" }
+    if ($taskRelative -notmatch '^(docs/([^/]+\.(md|html)|experiments/[^/]+\.(json|txt)|images/[^/]+\.(png|jpg|svg))|licenses/.+|PerfCompass\.(exe|pdb)|READY|README\.(md|html)|THIRD-PARTY-NOTICES\.md|VALIDATION\.md|DEMAND_MODEL\.md)$') { throw "Unexpected distribution file: $taskRelative" }
     if (($taskFile.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'Linked files cannot be packaged.' }
 }
 # Reparse directories could point outside the chosen distribution even if the leaves are ordinary files.
