@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["facts", "questions"],
+  "properties": {
+    "facts": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["subject", "kind", "polarity", "timeframe", "value", "unit", "condition", "evidence"],
+        "properties": {
+          "subject": {"type": "string"},
+          "kind": {"type": "string", "enum": ["workload", "resource", "experience", "budget", "portability", "noise", "power", "compatibility", "frequency", "schedule", "conflict", "other"]},
+          "polarity": {"type": "string", "enum": ["required", "excluded", "conditional", "uncertain"]},
+          "timeframe": {"type": "string", "enum": ["past", "current", "future", "unspecified"]},
+          "value": {"type": "string"},
+          "unit": {"type": "string"},
+          "condition": {"type": "string"},
+          "evidence": {"type": "string"}
+        }
+      }
+    },
+    "questions": {"type": "array", "maxItems": 4, "items": {"type": "string"}}
+  }
+}

@@ -26,6 +26,16 @@ jobs:
         with:
           name: regression-results
           path: artifacts/self-tests.txt
+      - name: NLP diagnostic baseline
+        shell: pwsh
+        run: |
+          $process = Start-Process ./release-next/PerfCompass.exe -ArgumentList '--nlp-evaluate' -PassThru -Wait
+          if ($process.ExitCode -ne 0) { throw 'NLP diagnostic runner failed' }
+      - name: NLP diagnostic results
+        uses: actions/upload-artifact@v4
+        with:
+          name: nlp-diagnostic-baseline
+          path: artifacts/nlp-evaluation.*
       - name: Portable Windows x64 application
         uses: actions/upload-artifact@v4
         with:

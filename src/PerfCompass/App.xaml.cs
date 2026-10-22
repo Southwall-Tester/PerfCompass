@@ -11,10 +11,11 @@ public partial class App : System.Windows.Application
     {
         base.OnStartup(e);
         if (e.Args.Contains("--self-test")) { Shutdown(SelfTests.Run()); return; }
+        if (e.Args.Contains("--nlp-evaluate")) { Shutdown(NlpEvaluation.Run()); return; }
         string root = Path.Combine(AppContext.BaseDirectory, "data");
         int idx = Array.IndexOf(e.Args, "--data-dir");
         if (idx >= 0 && idx + 1 < e.Args.Length) root = Path.GetFullPath(e.Args[idx + 1]);
-        if (e.Args.Contains("--ui-test") && (idx < 0 || (Directory.Exists(root) && Directory.GetFiles(root, "samples-*.jsonl").Length > 0)))
+        if (e.Args.Contains("--ui-test") && (idx < 0 || (Directory.Exists(root) && (Directory.GetFiles(root, "samples-*.jsonl").Length > 0 || Directory.GetFiles(root, "experience-*.jsonl").Length > 0))))
         {
             System.Windows.MessageBox.Show("UI 测试需要通过 --data-dir 指定一个没有历史记录的独立测试目录。", "PerfCompass"); Shutdown(3); return;
         }

@@ -1,6 +1,6 @@
 namespace PerfCompass;
 
-public record Settings(string Scene = "日常办公", bool Representative = false, string FutureNeeds = "", int RetentionDays = 90, bool CloseToTray = true);
+public record Settings(string Scene = "日常办公", bool Representative = false, string FutureNeeds = "", int RetentionDays = 90, bool CloseToTray = true, RequirementsPlan? Requirements = null);
 public record DiskInfo(string Name, double TotalGb, double UsedGb) { public double Percent => TotalGb > 0 ? UsedGb / TotalGb * 100 : 0; }
 public record AppUsage(string Name, double Cpu, double MemoryMb);
 public record Sample
@@ -70,11 +70,13 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public List<SceneProfile> SceneProfiles { get; init; } = [];
     public string? SelectedScene { get; init; }
     public List<DemandTrend> DemandTrends { get; init; } = [];
+    public List<ExperienceEvent> ExperienceEvents { get; init; } = [];
+    public RequirementsPlan? ConfirmedRequirements { get; init; }
     public double FreshActiveHours { get; init; }
     public int FreshActiveDays { get; init; }
-    public string MethodVersion { get; init; } = "1.2";
+    public string MethodVersion { get; init; } = "1.3";
     [System.Text.Json.Serialization.JsonIgnore]
     public string DurationLabel => DurationText.FromHours(ActiveHours);
     public string Level => Ready ? "较充分" : ActiveHours >= .5 ? "初步观察" : "积累中";
-    public string Summary => DemandTrends.Any(t => t.Status == "increased") ? "近期任务负载增加，优先核对新的配置需求" : Ready ? $"{Cards.Count(c => c.Status == "surplus")} 项疑似过剩 · {Cards.Count(c => c.Status == "pressure")} 项压力线索" : "先记录真实使用，再决定配置预算";
+    public string Summary => Cards.Any(c => c.Status == "experience") ? "近期有体验问题，先核对原因再评估余量" : DemandTrends.Any(t => t.Status == "increased") ? "近期任务负载增加，优先核对新的配置需求" : Ready ? $"{Cards.Count(c => c.Status == "surplus")} 项疑似过剩 · {Cards.Count(c => c.Status == "pressure")} 项压力线索" : "先记录真实使用，再决定配置预算";
 }

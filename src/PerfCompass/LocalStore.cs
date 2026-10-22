@@ -62,11 +62,43 @@ public sealed class LocalStore
     }
     public void Cleanup()
     {
-        foreach (var file in Directory.GetFiles(Root, "samples-*.jsonl"))
+        foreach (var file in Directory.GetFiles(Root, "samples-*.jsonl").Concat(Directory.GetFiles(Root, "experience-*.jsonl")))
         {
-            if (DateTime.TryParseExact(Path.GetFileNameWithoutExtension(file)[8..], "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var date)
+            string name = Path.GetFileNameWithoutExtension(file);
+            string suffix = name.StartsWith("experience-", StringComparison.Ordinal) ? name[11..] : name[8..];
+            if (DateTime.TryParseExact(suffix, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var date)
                 && date.Date < DateTime.Today.AddDays(-Math.Clamp(Settings.RetentionDays, 1, 90))) File.Delete(file);
         }
+    }
+    public void AppendExperience(ExperienceEvent value)
+    {
+        lock (gate)
+        {
+            var path = Path.Combine(Root, $"experience-{value.Time.LocalDateTime:yyyy-MM-dd}.jsonl");
+            // Always separate a potentially truncated crash tail from the next complete event.
+            File.AppendAllText(path, "\n" + JsonSerializer.Serialize(value) + "\n", new System.Text.UTF8Encoding(false));
+        }
+    }
+    public List<ExperienceEvent> ReadExperiences(int days, string hardwareId)
+    {
+        var found = new Dictionary<string, ExperienceEvent>();
+        var cutoff = DateTimeOffset.Now.AddDays(-days);
+        foreach (var file in Directory.GetFiles(Root, "experience-*.jsonl").Order())
+        {
+            using var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var reader = new StreamReader(stream);
+            while (reader.ReadLine() is { } line)
+            {
+                try
+                {
+                    var value = JsonSerializer.Deserialize<ExperienceEvent>(line);
+                    if (value != null && !string.IsNullOrWhiteSpace(value.Id) && value.HardwareId == hardwareId && value.Time >= cutoff
+                        && value.Clues != null && value.Clues.All(c => c != null)) found[value.Id] = value;
+                }
+                catch (JsonException) { }
+            }
+        }
+        return found.Values.OrderByDescending(e => e.Time).ToList();
     }
     public void Log(Exception e)
     {

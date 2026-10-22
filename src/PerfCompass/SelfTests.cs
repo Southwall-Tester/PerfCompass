@@ -260,6 +260,91 @@ public static class SelfTests
             Assert(new LocalStore(legacyRoot).Settings.RetentionDays == 30, "existing retention overwritten");
             Assert(new LocalStore(Path.Combine(root, "new-retention")).Settings.RetentionDays == 90, "new context retention missing");
         });
+        Check("Future AI stays ambiguous until its execution mode is chosen", () =>
+        {
+            var parsed = RequirementParser.Parse("准备做 AI");
+            Assert(parsed.NeedsAiChoice && parsed.Facts.Single().Future && parsed.Facts.Single().Evidence == "准备做 AI", "intent or provenance lost");
+            bool refused = false; try { RequirementParser.Confirm(parsed, "unspecified"); } catch (ArgumentException) { refused = true; }
+            Assert(refused, "ambiguous AI was confirmed silently");
+        });
+        Check("Task negation does not become a graphics requirement", () =>
+        {
+            var parsed = RequirementParser.Parse("不玩游戏，只做办公");
+            Assert(parsed.Facts.Single(f => f.Key == "game").Excluded && !parsed.Facts.Single(f => f.Key == "office").Excluded, "negation leaked across clauses");
+            Assert(!RequirementParser.Parse("不只是游戏，还准备做剪辑").Facts.Single(f => f.Key == "game").Excluded, "inclusive negation treated as exclusion");
+        });
+        Check("Cloud AI does not invent a local GPU or memory requirement", () =>
+        {
+            string text = "准备在线用AI"; var plan = RequirementParser.Confirm(RequirementParser.Parse(text), "cloud");
+            var report = RequirementParser.Apply(Analyze(Fixture()), new Settings(FutureNeeds: text, Requirements: plan));
+            Assert(report.Cards.Single(c => c.Key == "memory").Status == "surplus" && report.Cards.Single(c => c.Key == "gpu").Status == "review", "cloud inferred a GPU need");
+        });
+        Check("Confirmed local AI protects sizing while source edits invalidate confirmation", () =>
+        {
+            string text = "准备运行本地模型"; var plan = RequirementParser.Confirm(RequirementParser.Parse(text), "local");
+            var settings = new Settings(FutureNeeds: text, Requirements: plan);
+            var report = RequirementParser.Apply(Analyze(Fixture()), settings);
+            Assert(report.Cards.Single(c => c.Key == "memory").Status == "requirements" && report.Cards.Single(c => c.Key == "gpu").Status == "requirements", "new local tasks ignored");
+            Assert(RequirementParser.Apply(Analyze(Fixture()), settings with { FutureNeeds = "现在仅办公" }).ConfirmedRequirements == null, "old confirmation survived an edit");
+        });
+        Check("Slow compilation is a task and symptom rather than a CPU diagnosis", () =>
+        {
+            var parsed = RequirementParser.Parse("刚才编译很慢");
+            Assert(parsed.Facts.Any(f => f.Key == "compile") && parsed.Facts.Any(f => f.Key == "latency") && parsed.Facts.All(f => !f.Future), "symptom confused with future intent");
+        });
+        Check("Display targets and unsupported descriptions remain explicit", () =>
+        {
+            var parsed = RequirementParser.Parse("准备玩游戏，目标144帧，升级4K显示器");
+            Assert(parsed.Facts.Any(f => f.Key == "fps") && parsed.Facts.Any(f => f.Key == "display"), "display target lost");
+            Assert(RequirementParser.Parse("随便选个差不多的").Facts.Count == 0, "unknown text fabricated requirements");
+        });
+        Check("Experience window clips and deduplicates sampled duration", () =>
+        {
+            var now = DateTimeOffset.Now;
+            var s = Fixture()[0] with { Time = now, Seconds = 10, Cpu = 99, Scene = "开发编译" };
+            var value = ExperienceAnalyzer.Create(now, s.HardwareId, s.Scene, "操作卡顿", "刚才编译很慢", [s, s, s with { Time = now.AddSeconds(-115), Seconds = 10 }]);
+            Assert(value.Clues.Single(c => c.Key == "cpu").CoveredSeconds == 15 && value.Clues.Single(c => c.Key == "cpu").HighSeconds == 15, "overlap or window boundary overcounted");
+            Assert(value.ParsedDescription.Contains("开发编译"), "description parsing not connected");
+        });
+        Check("Experience context excludes other scenes hardware future and stale telemetry", () =>
+        {
+            var now = DateTimeOffset.Now; var s = Fixture()[0] with { Time = now, Seconds = 2 };
+            var value = ExperienceAnalyzer.Create(now, s.HardwareId, s.Scene, "操作卡顿", "", [s with { HardwareId = "other" }, s with { Scene = "other" }, s with { Time = now.AddSeconds(1) }, s with { Time = now.AddSeconds(-7) }]);
+            Assert(value.Clues.All(c => c.CoveredSeconds == 0) && value.Conclusion.Contains("没有近期"), "borrowed stale or unrelated evidence");
+        });
+        Check("Missing and invalid experience readings never become zero load", () =>
+        {
+            var now = DateTimeOffset.Now; var s = Fixture()[0] with { Time = now, Cpu = double.NaN, Gpu = null, CpuCoverage = 2, Seconds = 2 };
+            var value = ExperienceAnalyzer.Create(now, s.HardwareId, s.Scene, "任务等待过久", "", [s]);
+            Assert(value.Clues.Single(c => c.Key == "cpu").Peak == null && value.Clues.Single(c => c.Key == "gpu").CoveredSeconds == 0, "missing values became idle");
+        });
+        Check("Pending recent experience protects surplus without inventing a cause", () =>
+        {
+            var now = DateTimeOffset.Now; var value = ExperienceAnalyzer.Create(now, "test-machine", "日常办公", "操作卡顿", "", []);
+            var baseline = Analyze(Fixture()) with { Generated = now };
+            var report = ExperienceAnalyzer.Attach(baseline, [value]);
+            Assert(report.Cards.All(c => c.Status != "surplus" && c.Status != "review") && report.Cards.Any(c => c.Status == "experience"), "symptom ignored");
+            Assert(ExperienceAnalyzer.Attach(baseline, [value with { Resolved = true }]).Cards.Single(c => c.Key == "memory").Status == "surplus", "resolution does not restore independent analysis");
+            Assert(ExperienceAnalyzer.Attach(baseline with { SelectedScene = "开发编译" }, [value]).ExperienceEvents.Count == 0, "event crossed scene boundary");
+        });
+        Check("Experience persistence handles crash tails resolution and hardware isolation", () =>
+        {
+            var storage = new LocalStore(Path.Combine(root, "experience")); var value = ExperienceAnalyzer.Create(DateTimeOffset.Now, "mine", "日常办公", "操作卡顿", "描述 <script>", []);
+            storage.AppendExperience(value); storage.AppendExperience(value with { Resolved = true });
+            Assert(new LocalStore(storage.Root).ReadExperiences(7, "mine").Single().Resolved && storage.ReadExperiences(7, "other").Count == 0, "state or isolation lost");
+            string path = Directory.GetFiles(storage.Root, "experience-*.jsonl").Single(); File.AppendAllText(path, "{truncated");
+            storage.AppendExperience(value with { Resolved = false });
+            Assert(storage.ReadExperiences(7, "mine").Single().Resolved == false, "crash tail consumed following record");
+            var report = ExperienceAnalyzer.Attach(Analyze(Fixture()), storage.ReadExperiences(7, "mine"));
+            Assert(ReportExporter.Html(report, null).Contains("&lt;script&gt;"), "experience HTML not escaped");
+        });
+        Check("Experience files obey retention without touching unrelated files", () =>
+        {
+            var storage = new LocalStore(Path.Combine(root, "experience-retention"));
+            File.WriteAllText(Path.Combine(storage.Root, $"experience-{DateTime.Today.AddDays(-100):yyyy-MM-dd}.jsonl"), "old");
+            File.WriteAllText(Path.Combine(storage.Root, "experience-not-a-date.jsonl"), "keep"); storage.Cleanup();
+            Assert(Directory.GetFiles(storage.Root, "experience-*.jsonl").Length == 1, "retention did not isolate dated events");
+        });
         Check("Thirty-day stream remains bounded and supports full analysis", () =>
         {
             var prototype = Fixture()[0];

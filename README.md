@@ -4,7 +4,7 @@ Windows 原生电脑占用监测与购机配置分析工具。C# / .NET 10 / WPF
 
 双击根目录 `启动.cmd`。通过验证的新版本位于 `release-next/`，启动器优先使用它，并继续读取 `release/data/` 中的历史。已经运行的旧版本需要正常退出后再启动。发布版自带运行时，不依赖 Python 或预装 .NET。
 
-GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.com/Southwall-Tester/PerfCompass/actions/workflows/windows.yml) 中成功的运行下载 `PerfCompass-Windows-x64` 产物，解压后运行 `PerfCompass.exe`。当前为 0.2.0 试用版，尚未完成商业级验证。
+GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.com/Southwall-Tester/PerfCompass/actions/workflows/windows.yml) 中成功的运行下载 `PerfCompass-Windows-x64` 产物，解压后运行 `PerfCompass.exe`。当前为 0.3.0 试用版，尚未完成商业级验证。
 
 ![近期任务变化分析](docs/images/recent-demand.png)
 
@@ -16,6 +16,10 @@ GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.
 2. 在“配置分析”查看处理器、内存、显卡和存储的压力与余量。
 3. 累计有效使用至少 10 小时、覆盖 3 天，完成常用任务后，在设置中确认记录具有代表性。
 4. 导出 HTML 报告或 CSV 原始记录，供下次选机时比较。
+
+在实时页展开“记录体验”，可保存卡顿或等待描述及此前两分钟采样线索；历史页可查看并标为已处理。未处理的近期体验问题会约束降档建议。暂停期间不关联旧采样；同时出现高占用不能证明部件是原因。
+
+设置页的需求描述支持有限的规则预解析：列出任务、否定与未来线索，AI 描述还需核对本地或云端方式。用户确认保存后，字段才参与建议；修改原文会取消旧确认。当前规则不支持通用自然语言，可能遗漏条件、时间与数值关系。未识别片段保留原文，不悄悄转成硬件要求。论文、开源方案和 36 条广度诊断见 [NLP_RESEARCH.md](docs/NLP_RESEARCH.md)。
 
 默认关闭窗口会收起到系统托盘并继续采集；从程序或托盘菜单退出才停止记录。可在“记录设置”更改关闭行为，并主动启用登录 Windows 后记录。暂停时停止采集与保存。程序不默认修改开机启动，不上传遥测。
 
@@ -30,7 +34,7 @@ GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.
 - 10 小时、3 天、P95 等为透明启发式设置，尚未完成跨机型校准；采样可能漏掉短峰。具体型号比较需要候选硬件上的实际任务测试。进程名称只实时展示，不写入历史。
 - 同一数据目录中的不同硬件配置按指纹隔离。指纹来自硬件型号与容量，不包含设备序列号。
 
-通过根目录启动器运行时，数据位置为 `release/data/`；直接运行 EXE 默认使用 EXE 旁的 `data/`，也可通过 `--data-dir` 指定。`settings.json` 保存场景与设置，`samples-YYYY-MM-DD.jsonl` 保存采样，`errors.log` 保存错误。新设置默认保留 90 天，可选 30/60/90 天；旧设置中的 30 天不会被自动改变，已清理的历史无法恢复。报告由用户主动选择保存位置。
+通过根目录启动器运行时，数据位置为 `release/data/`；直接运行 EXE 默认使用 EXE 旁的 `data/`，也可通过 `--data-dir` 指定。`settings.json` 保存场景、设置与已确认需求，`samples-YYYY-MM-DD.jsonl` 保存采样，`experience-YYYY-MM-DD.jsonl` 保存体验及处理状态，`errors.log` 保存错误。新设置默认保留 90 天，可选 30/60/90 天；旧设置中的 30 天不会被自动改变，已清理的历史无法恢复。报告由用户主动选择保存位置。
 
 ## 开发与验证
 

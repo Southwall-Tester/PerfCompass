@@ -117,6 +117,51 @@ public partial class MainWindow
             Require(!paused, "Resume button restores recording");
             DateTimeOffset resumeAt = DateTimeOffset.Now; await Task.Delay(14000);
             Require(store.Read(7).Any(s => s.Time > resumeAt && s.Seconds <= 15), "Resume excludes pause duration");
+            SettingsNav.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            FutureBox.Text = "准备做 AI";
+            ParseNeedsButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            Require(requirementDraft?.NeedsAiChoice == true && AiModePanel.Visibility == Visibility.Visible, "Ambiguous AI description asks for execution mode");
+            RequirementsConfirm.IsChecked = true;
+            SaveRequirementsButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            Require(store.Settings.Requirements == null && RequirementsStatus.Text.Contains("明确 AI"), "Ambiguous AI cannot silently become a hardware constraint");
+            AiModeCombo.SelectedItem = AiModeCombo.Items.OfType<ComboBoxItem>().Single(i => i.Tag.ToString() == "cloud");
+            SaveRequirementsButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            await WaitForAnalysis(() => report!.ConfirmedRequirements?.AiMode == "cloud");
+            Require(store.Settings.Requirements?.AiMode == "cloud", "Confirmed structured requirement reaches saved settings and analysis");
+            await Screenshot("09-structured-needs");
+            FutureBox.Text = "不玩游戏，只做办公";
+            Require(RequirementsConfirm.IsChecked == false && requirementDraft == null, "Editing source clears prior confirmation");
+            ParseNeedsButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            Require(requirementDraft!.Facts.Single(f => f.Key == "game").Excluded, "Negated task reaches the rendered review");
+            RequirementsConfirm.IsChecked = true;
+            SaveRequirementsButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            await WaitForAnalysis(() => report!.ConfirmedRequirements?.Source == FutureBox.Text);
+            LiveNav.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            ExperienceEntry.IsExpanded = true; ExperienceNote.Text = "刚才编译很慢 <script>";
+            RecordExperienceButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            await WaitForAnalysis(() => report!.ExperienceEvents.Count == 1 && RecordExperienceButton.IsEnabled);
+            Require(report!.ExperienceEvents.Single().ParsedDescription.Contains("开发编译"), "Experience description is parsed and linked to analysis");
+            HistoryNav.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            await WaitForAnalysis(() => ExperienceList.Items.Count == 1); await Screenshot("10-experience-record");
+            var experienceHtml = ReportExporter.Html(report!, live);
+            File.WriteAllText(Path.Combine(output, "experience-report.html"), experienceHtml);
+            Require(experienceHtml.Contains("体验与负载线索") && experienceHtml.Contains("&lt;script&gt;") && experienceHtml.Contains("已确认的结构化需求"), "Report combines confirmed needs and escaped experience evidence");
+            UpdateLayout();
+            Button? resolveButton = null;
+            void FindResolve(DependencyObject parent)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+                {
+                    var child = VisualTreeHelper.GetChild(parent, i);
+                    if (child is Button { Tag: ExperienceEvent } b) resolveButton = b;
+                    FindResolve(child);
+                }
+            }
+            FindResolve(ExperienceList);
+            Require(resolveButton != null, "Experience resolution is available through its real control");
+            resolveButton!.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            await WaitForAnalysis(() => report!.ExperienceEvents.Single().Resolved);
+            Require(new LocalStore(store.Root).ReadExperiences(7, collector!.HardwareId).Single().Resolved, "Resolved experience survives reopening");
             File.WriteAllText(Path.Combine(output, "NOTICE.txt"), "01-live.png and hardware.json use real telemetry. Populated analysis and historical captures use isolated synthetic test data; they are not a recommendation for this computer.");
         }
         catch (Exception e) { store.Log(e); results.Add("FAIL " + e); }

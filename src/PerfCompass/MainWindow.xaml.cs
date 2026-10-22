@@ -21,11 +21,13 @@ public partial class MainWindow : Window
     private int recordingGeneration;
     private readonly object recordingGate = new();
     private readonly List<HistoryPoint> livePoints = [];
+    private readonly List<Sample> experienceContext = [];
     private AnalysisReport? report;
     private LiveSnapshot? live;
     private int windowDays = 7;
     private string? analysisScene;
     private bool updatingSceneChoices;
+    private RequirementsPlan? requirementDraft;
     private Task? collectionTask;
     private DateTimeOffset lastAnalysis = DateTimeOffset.MinValue;
     private string activePage = "live";
@@ -38,6 +40,8 @@ public partial class MainWindow : Window
         if (SceneCombo.SelectedIndex < 0) SceneCombo.SelectedIndex = 0;
         RepresentativeCheck.IsChecked = store.Settings.Representative;
         FutureBox.Text = store.Settings.FutureNeeds;
+        if (store.Settings.Requirements is { } savedPlan && savedPlan.Source == store.Settings.FutureNeeds.Trim())
+        { ShowRequirementDraft(savedPlan); RequirementsConfirm.IsChecked = true; }
         CloseToTrayCheck.IsChecked = store.Settings.CloseToTray;
         StartupCheck.IsChecked = StartupRegistration.Enabled();
         RetentionCombo.SelectedItem = RetentionCombo.Items.OfType<ComboBoxItem>().FirstOrDefault(i => i.Tag.ToString() == store.Settings.RetentionDays.ToString());
@@ -117,6 +121,8 @@ public partial class MainWindow : Window
         if (paused || exiting) return;
         live = snapshot;
         var s = snapshot.Sample;
+        experienceContext.Add(s);
+        experienceContext.RemoveAll(p => p.Time < s.Time.AddMinutes(-2));
         CpuValue.Text = Percent(s.Cpu); CpuBar.Value = s.Cpu ?? 0;
         CpuDetail.Text = $"最忙核心 {Percent(s.CoreMax)}" + (s.CpuTemp.HasValue ? $" · {s.CpuTemp:0}°C" : "");
         double? memPct = s.MemoryTotalGb > 0 ? s.MemoryUsedGb / s.MemoryTotalGb * 100 : null;
@@ -145,9 +151,12 @@ public partial class MainWindow : Window
         try
         {
             var settings = store.Settings; var id = collector?.HardwareId; int days = windowDays; string? scene = analysisScene;
-            var result = await Task.Run(() => AnalysisEngine.Analyze(store.Read(Math.Max(days, 60), id), settings, days, scene));
+            var result = await Task.Run(() => RequirementParser.Apply(ExperienceAnalyzer.Attach(
+                AnalysisEngine.Analyze(store.Read(Math.Max(days, 60), id), settings, days, scene), store.ReadExperiences(days, id ?? "")), settings));
             if (days != windowDays || scene != analysisScene || settings != store.Settings || id != collector?.HardwareId) { refreshRequested = true; return; }
             report = result;
+            ExperienceList.ItemsSource = result.ExperienceEvents.Take(20);
+            ExperienceSummary.Text = $"最近 {days} 天 · {scene ?? "全部场景"} · {result.ExperienceEvents.Count} 条记录，显示最近 20 条";
             updatingSceneChoices = true;
             try
             {
@@ -188,7 +197,7 @@ public partial class MainWindow : Window
     private Border AdviceCard(Advice advice, bool expanded)
     {
         var stack = new StackPanel();
-        string label = advice.Status switch { "surplus" => "疑似过剩", "pressure" => "压力线索", "fit" => "保持观察", "changed" => "近期需求增加", "review" => "待验证降档", _ => "证据积累中" };
+        string label = advice.Status switch { "surplus" => "疑似过剩", "pressure" => "压力线索", "fit" => "保持观察", "changed" => "近期需求增加", "review" => "待验证降档", "experience" => "体验待核对", "requirements" => "新需求待验证", _ => "证据积累中" };
         string color = advice.Status switch { "surplus" => "#007F73", "pressure" or "changed" => "#BC7132", "review" => "#6378C8", _ => "#677A87" };
         var header = new DockPanel();
         header.Children.Add(new TextBlock { Text = advice.Name, FontSize = 13, Foreground = Brush("#677A87") });
@@ -228,6 +237,7 @@ public partial class MainWindow : Window
     private void TogglePause()
     {
         lock (recordingGate) { paused = !paused; recordingGeneration++; }
+        experienceContext.Clear();
         PauseButton.Content = paused ? "继续记录" : "暂停记录";
         RecordState.Text = paused ? "● 已暂停" : "● 正在恢复";
         tray.Text = paused ? "PerfCompass · 已暂停" : "PerfCompass · 正在记录";
@@ -247,10 +257,59 @@ public partial class MainWindow : Window
         analysisScene = item.Tag as string; _ = RefreshAnalysis();
     }
     private async void Refresh_Click(object sender, RoutedEventArgs e) => await RefreshAnalysis();
+    private async void RecordExperience_Click(object sender, RoutedEventArgs e)
+    {
+        if (collector == null || exiting) { ExperienceStatus.Text = "请等待采集器完成初始化。"; return; }
+        RecordExperienceButton.IsEnabled = false;
+        try
+        {
+            string symptom = ((ComboBoxItem)ExperienceKind.SelectedItem).Content.ToString()!;
+            var value = ExperienceAnalyzer.Create(DateTimeOffset.Now, collector.HardwareId, store.Settings.Scene, symptom,
+                ExperienceNote.Text, paused ? [] : experienceContext.ToArray());
+            await Task.Run(() => store.AppendExperience(value));
+            ExperienceNote.Clear();
+            ExperienceStatus.Text = "已保存。" + value.Conclusion;
+            await RefreshAnalysis();
+        }
+        catch (Exception ex) { store.Log(ex); ExperienceStatus.Text = "保存失败，请检查数据目录权限后重试。"; }
+        finally { RecordExperienceButton.IsEnabled = true; }
+    }
+    private async void ResolveExperience_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: ExperienceEvent value } button || value.Resolved) return;
+        button.IsEnabled = false;
+        try { await Task.Run(() => store.AppendExperience(value with { Resolved = true })); await RefreshAnalysis(); }
+        catch (Exception ex) { store.Log(ex); StatusLine.Text = "体验状态保存失败，请重试。"; button.IsEnabled = true; }
+    }
     private async void SaveSettings_Click(object sender, RoutedEventArgs e)
     {
-        store.SaveSettings(store.Settings with { Representative = RepresentativeCheck.IsChecked == true, FutureNeeds = FutureBox.Text.Trim() });
+        RequirementsPlan? confirmed = null;
+        if (RequirementsConfirm.IsChecked == true)
+        {
+            if (requirementDraft == null || requirementDraft.Source != FutureBox.Text.Trim())
+            { RequirementsStatus.Text = "描述已改变，请先重新解析并核对。"; return; }
+            try { confirmed = RequirementParser.Confirm(requirementDraft, ((ComboBoxItem)AiModeCombo.SelectedItem).Tag.ToString()!); }
+            catch (ArgumentException ex) { RequirementsStatus.Text = ex.Message; return; }
+        }
+        store.SaveSettings(store.Settings with { Representative = RepresentativeCheck.IsChecked == true, FutureNeeds = FutureBox.Text.Trim(), Requirements = confirmed });
+        RequirementsStatus.Text = confirmed == null ? "描述已保存，尚未确认的解析结果不参与配置建议。" : "已保存确认的需求，将用于配置建议；修改描述后需要重新解析。";
         StatusLine.Text = "设置已保存。"; await RefreshAnalysis();
+    }
+    private void ParseNeeds_Click(object sender, RoutedEventArgs e)
+    { ShowRequirementDraft(RequirementParser.Parse(FutureBox.Text)); RequirementsConfirm.IsChecked = false; }
+    private void ShowRequirementDraft(RequirementsPlan plan)
+    {
+        requirementDraft = plan;
+        RequirementsList.ItemsSource = plan.Facts.Select(f => $"{(f.Excluded ? "排除任务" : f.Future ? "未来需求" : "任务线索")}：{f.Label}\n依据：{f.Evidence}").Concat(plan.UnparsedClauses.Select(s => "未解析，不参与建议：" + s));
+        AiModeCombo.SelectedItem = AiModeCombo.Items.OfType<ComboBoxItem>().First(i => i.Tag.ToString() == plan.AiMode);
+        AiModePanel.Visibility = plan.Facts.Any(f => f.Key == "ai" && !f.Excluded) ? Visibility.Visible : Visibility.Collapsed;
+        RequirementsStatus.Text = plan.Facts.Count == 0 ? "规则未识别到支持的任务，原文会保留。此入口尚非通用语义理解。" : "当前为有限规则预解析，可能遗漏条件、时间与数值。请逐项核对；只有列出的字段在确认保存后参与建议。";
+    }
+    private void FutureBox_Changed(object sender, TextChangedEventArgs e)
+    {
+        if (!initialized) return;
+        requirementDraft = null; RequirementsList.ItemsSource = null; RequirementsConfirm.IsChecked = false;
+        RequirementsStatus.Text = "描述已修改，请重新解析。";
     }
     private void OpenData_Click(object sender, RoutedEventArgs e) => Process.Start(new ProcessStartInfo(store.Root) { UseShellExecute = true });
     private void Help_Click(object sender, RoutedEventArgs e)
