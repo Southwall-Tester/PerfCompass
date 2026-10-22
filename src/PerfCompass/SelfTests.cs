@@ -358,6 +358,7 @@ public static partial class SelfTests
             log.Add($"METRIC 30-day analysis: {timer.Elapsed.TotalMilliseconds:0} ms, {report.History.Count} chart bins");
         });
         Task.Run(() => RunSemanticTests(Check, Assert, () => Analyze(Fixture()))).GetAwaiter().GetResult();
+        RunComparisonTests(Check, Assert);
         Directory.CreateDirectory("artifacts");
         File.WriteAllLines("artifacts/self-tests.txt", log);
         return log.Any(x => x.StartsWith("FAIL")) ? 1 : 0;

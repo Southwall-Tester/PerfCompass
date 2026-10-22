@@ -14,7 +14,7 @@ public partial class MainWindow
         var output = Path.GetFullPath("artifacts/ui"); Directory.CreateDirectory(output);
         var results = new List<string>();
         File.WriteAllText(Path.Combine(output, "results.txt"), "RUNNING " + DateTimeOffset.Now.ToString("O"));
-        void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); if (!value) throw new Exception(name); }
+        void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); File.AppendAllText(Path.Combine(output, "results.txt"), "\n" + results[^1]); if (!value) throw new Exception(name); }
         async Task WaitForAnalysis(Func<bool> ready)
         {
             for (int i = 0; i < 200; i++) { if (!analyzing && !refreshRequested && ready()) return; await Task.Delay(50); }

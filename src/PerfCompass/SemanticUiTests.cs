@@ -54,6 +54,7 @@ public partial class MainWindow
             string html = ReportExporter.Html(report, live); File.WriteAllText(Path.Combine(output, "semantic-report.html"), html);
             require(html.Contains("逐项核对的购机条件") && html.Contains("GeoMystic 地质建模") && html.Contains("条件成立时需要"), "Report includes corrected open workload and conditional meaning");
             Click(AdviceNav); await wait(() => report!.Cards.Any(c => c.Key == "constraints")); await screenshot("12-semantic-advice");
+            await RunComparisonUiTests(output, require, screenshot, wait);
             Click(SettingsNav); FutureBox.Text = "现在只办公";
             require(semanticDraft == null && SemanticEditors.Items.Count == 0 && SemanticReviewConfirm.IsChecked == false, "Editing source invalidates the semantic review");
             Click(SaveRequirementsButton); await wait(() => report!.SemanticRequirements == null);

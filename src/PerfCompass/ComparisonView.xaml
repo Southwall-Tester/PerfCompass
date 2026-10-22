@@ -1,0 +1,76 @@
+<UserControl x:Class="PerfCompass.ComparisonView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:PerfCompass">
+ <UserControl.Resources>
+  <Style TargetType="DataGrid">
+   <Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="#E3EAEC"/><Setter Property="BorderThickness" Value="1"/>
+   <Setter Property="GridLinesVisibility" Value="Horizontal"/><Setter Property="HorizontalGridLinesBrush" Value="#E3EAEC"/><Setter Property="HeadersVisibility" Value="Column"/>
+   <Setter Property="RowBackground" Value="White"/><Setter Property="AlternatingRowBackground" Value="#F4F7F8"/><Setter Property="AlternationCount" Value="2"/>
+   <Setter Property="ColumnHeaderHeight" Value="42"/><Setter Property="RowHeaderWidth" Value="0"/><Setter Property="CanUserSortColumns" Value="False"/>
+  </Style>
+  <Style TargetType="DataGridColumnHeader"><Setter Property="Background" Value="#EDF3F4"/><Setter Property="Foreground" Value="#192A36"/><Setter Property="Padding" Value="8,6"/><Setter Property="BorderBrush" Value="#E3EAEC"/><Setter Property="BorderThickness" Value="0,0,1,1"/><Setter Property="HorizontalContentAlignment" Value="Left"/></Style>
+  <Style TargetType="DataGridCell"><Setter Property="BorderThickness" Value="0"/><Setter Property="VerticalContentAlignment" Value="Center"/><Style.Triggers><Trigger Property="IsSelected" Value="True"><Setter Property="Background" Value="#E5F3EE"/><Setter Property="Foreground" Value="#192A36"/></Trigger></Style.Triggers></Style>
+  <Style x:Key="TableText" TargetType="TextBlock"><Setter Property="Margin" Value="8,0"/><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="TextWrapping" Value="NoWrap"/><Setter Property="TextTrimming" Value="CharacterEllipsis"/><Setter Property="ToolTip" Value="{Binding Text, RelativeSource={RelativeSource Self}}"/></Style>
+ </UserControl.Resources>
+ <StackPanel>
+  <TextBlock Text="输入候选报价与配置，核对重要任务的最低要求。容量按配置表比较，性能按同一任务的实测结果比较。留空表示未知。" Foreground="{StaticResource Muted}" Margin="0,0,0,16"/>
+  <TextBlock x:Name="ContextStatus" Margin="0,0,0,14" Foreground="{StaticResource Accent}"/>
+  <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
+   <DockPanel Margin="0,0,0,12"><TextBlock Text="候选电脑 · 最多三套" FontSize="18" FontWeight="SemiBold"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Right"><Button x:Name="AddCandidateButton" Content="添加候选" Click="AddCandidate_Click" Margin="8,0"/><Button Content="删除选中候选" Click="RemoveCandidate_Click"/></StackPanel></DockPanel>
+   <DataGrid x:Name="CandidatesGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" Height="185" RowHeight="38" EnableRowVirtualization="False" FrozenColumnCount="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+    <DataGrid.Columns>
+     <DataGridTextColumn Header="名称" Binding="{Binding Name}" Width="145"/>
+     <DataGridTextColumn Header="报价 / 元" Binding="{Binding PriceCny}" Width="95"/>
+     <DataGridTextColumn Header="内存 / GB" Binding="{Binding MemoryGb}" Width="95"/>
+     <DataGridTextColumn Header="独立显存 / GB" Binding="{Binding VramGb}" Width="110"/>
+     <DataGridTextColumn Header="存储 / GB" Binding="{Binding StorageGb}" Width="95"/>
+     <DataGridTextColumn Header="CPU 型号" Binding="{Binding Cpu}" Width="170"/>
+     <DataGridTextColumn Header="GPU 型号" Binding="{Binding Gpu}" Width="170"/>
+     <DataGridTextColumn Header="配置与报价来源（含日期）" Binding="{Binding Source}" Width="300"/>
+    </DataGrid.Columns>
+   </DataGrid>
+   <TextBlock Text="来源可填报价单、商品页与日期；型号名称不用于猜测性能。内存、独立显存分别填写；共享内存不能当作独立显存。1 TB = 1000 GB；GiB/TiB 请先换算，核对厂商口径。" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,10,0,0"/>
+  </StackPanel></Border>
+  <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
+   <TextBlock Text="购机条件与任务目标" FontSize="18" FontWeight="SemiBold"/>
+   <TextBlock Text="导入已确认需求、近期负载增加和未解决的体验问题。逐项检查比较类型、目标值和触发条件后勾选“已核对”。过去需求不导入；否定需求按完整句子核对。" Foreground="{StaticResource Muted}" Margin="0,10,0,12"/>
+   <WrapPanel Margin="0,0,0,12"><Button x:Name="ImportCriteriaButton" Content="导入当前需求与近期任务" Click="ImportCriteria_Click" Margin="0,0,8,8"/><Button x:Name="AddCriterionButton" Content="补充条件 / 实测目标" Click="AddCriterion_Click" Margin="0,0,8,8"/><Button Content="删除选中条件" Click="RemoveCriterion_Click" Margin="0,0,0,8"/></WrapPanel>
+   <DataGrid x:Name="CriteriaGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Height="240" RowHeight="40" EnableRowVirtualization="False" FrozenColumnCount="2" SelectionMode="Single">
+    <DataGrid.Columns>
+     <DataGridCheckBoxColumn Header="已核对" Binding="{Binding Reviewed}" Width="65"/>
+     <DataGridTextColumn Header="条件或任务" Binding="{Binding Name}" Width="255"/>
+     <DataGridComboBoxColumn Header="比较类型" ItemsSource="{x:Static local:CandidateComparison.Metrics}" DisplayMemberPath="Label" SelectedValuePath="Key" SelectedValueBinding="{Binding Metric}" Width="155"/>
+     <DataGridComboBoxColumn Header="目标" ItemsSource="{x:Static local:CandidateComparison.Directions}" DisplayMemberPath="Label" SelectedValuePath="Key" SelectedValueBinding="{Binding Direction}" Width="105"/>
+     <DataGridTextColumn Header="目标值" Binding="{Binding Target}" Width="85"/>
+     <DataGridTextColumn Header="单位" Binding="{Binding Unit}" Width="70"/>
+     <DataGridTextColumn Header="触发条件（无条件则留空）" Binding="{Binding Condition}" Width="230"/>
+     <DataGridTextColumn Header="需求依据 / 原文" Binding="{Binding Evidence}" Width="280"/>
+     <DataGridTextColumn Header="统一测试步骤与环境" Binding="{Binding Procedure}" Width="300"/>
+    </DataGrid.Columns>
+   </DataGrid>
+   <TextBlock Text="“逐项核对”用于软件兼容性、排除项或尚未量化的目标；“实际任务测量”可填耗时、帧率、噪声等，需统一单位、软件版本、任务数据及设置。规格字段使用表头固定单位。" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,10,0,0"/>
+  </StackPanel></Border>
+  <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
+   <DockPanel Margin="0,0,0,12"><TextBlock Text="任务测试与逐项核对结果" FontSize="18" FontWeight="SemiBold"/><Button x:Name="PrepareMeasurementsButton" Content="生成 / 更新结果行" Click="PrepareMeasurements_Click" HorizontalAlignment="Right"/></DockPanel>
+   <DataGrid x:Name="ObservationsGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Height="240" RowHeight="40" EnableRowVirtualization="False" FrozenColumnCount="2">
+    <DataGrid.Columns>
+     <DataGridTextColumn Header="候选" Binding="{Binding CandidateName}" IsReadOnly="True" Width="130"/>
+     <DataGridTextColumn Header="条件或任务" Binding="{Binding CriterionName}" IsReadOnly="True" Width="220"/>
+     <DataGridTextColumn Header="实测数值" Binding="{Binding Value}" Width="100"/>
+     <DataGridComboBoxColumn Header="逐项核对" ItemsSource="{x:Static local:CandidateComparison.Verdicts}" DisplayMemberPath="Label" SelectedValuePath="Key" SelectedValueBinding="{Binding Verdict}" Width="100"/>
+     <DataGridCheckBoxColumn Header="已核对 / 测试可比" Binding="{Binding Comparable}" Width="130"/>
+     <DataGridTextColumn Header="测量记录或核对依据" Binding="{Binding Evidence}" Width="350"/>
+    </DataGrid.Columns>
+   </DataGrid>
+   <TextBlock Text="仅生成需要实测或人工核对的项目。填写依据并勾选后才使用；实测值与目标使用同一单位。步骤、软件或输入改变时，应重新测量。" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,10,0,0"/>
+  </StackPanel></Border>
+  <CheckBox x:Name="CoverageConfirm" Content="已核对条件覆盖重要任务、新需求、近期体验问题和需要保留的偶发任务" Margin="0,4,0,16"/>
+  <WrapPanel><Button x:Name="CompareButton" Content="保存并比较" Click="Compare_Click" Background="#007F73" Foreground="White" Margin="0,0,10,10"/><Button x:Name="ExportComparisonButton" Content="导出比较报告" Click="ExportComparison_Click" IsEnabled="False" Margin="0,0,0,10"/></WrapPanel>
+  <TextBlock x:Name="ComparisonStatus" Margin="0,4,0,16" Foreground="{StaticResource Muted}"/>
+  <TextBlock x:Name="ComparisonSummary" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
+  <ItemsControl x:Name="ComparisonScenarios" Margin="0,0,0,12"><ItemsControl.ItemTemplate><DataTemplate><Border Style="{StaticResource Card}" Margin="0,0,0,12"><TextBlock Text="{Binding}"/></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+  <ItemsControl x:Name="ComparisonTradeoffs" Margin="0,0,0,16"><ItemsControl.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" Margin="0,0,0,12"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+  <ItemsControl x:Name="ComparisonResults"><ItemsControl.ItemTemplate><DataTemplate><Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
+   <TextBlock Text="{Binding Name}" FontSize="19" FontWeight="SemiBold"/><TextBlock Text="{Binding StatusLabel}" Foreground="{Binding StatusBrush}" Margin="0,8,0,12"/>
+   <ItemsControl ItemsSource="{Binding Checks}"><ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,0,0,14"><TextBlock Text="{Binding Name}" FontWeight="SemiBold"/><TextBlock Text="{Binding Reading}"/><TextBlock Text="{Binding ConditionLabel}" Foreground="{StaticResource Muted}"/><TextBlock Text="{Binding Evidence}" FontSize="12" Foreground="{StaticResource Muted}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+  </StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+ </StackPanel>
+</UserControl>
