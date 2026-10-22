@@ -8,23 +8,75 @@ public sealed class LocalStore
     private readonly object gate = new();
     public string Root { get; }
     public Settings Settings { get; private set; }
+    public string SettingsNotice { get; private set; } = "";
+    public bool SettingsRecoveryPending { get; private set; }
+    private string RecoveryMarker => Path.Combine(Root, "settings-recovery-pending.json");
+    public bool RetentionProtected => File.Exists(Path.Combine(Root, "restore-protection.json")) || SettingsRecoveryPending;
     public static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = false };
     public LocalStore(string root)
     {
-        Root = root;
+        Root = Path.GetFullPath(root);
         Directory.CreateDirectory(root);
-        try { Settings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(Path.Combine(root, "settings.json"))) ?? new(); }
-        catch { Settings = new(); }
+        string path = Path.Combine(Root, "settings.json"), previous = Path.Combine(Root, "settings.previous.json");
+        Settings = new(); bool needsFallback = false;
+        if (File.Exists(path))
+        {
+            try { Settings = SettingsFile.Read(path); }
+            catch (Exception e) when (SettingsFile.IsInvalid(e))
+            {
+                string saved = PreserveSettings(path);
+                SettingsRecoveryPending = true;
+                needsFallback = true;
+                SettingsNotice = $"设置损坏，原件已另存到 recovery/{Path.GetFileName(saved)}。";
+            }
+        }
+        if (needsFallback || !File.Exists(path) && File.Exists(previous))
+        {
+            SettingsRecoveryPending = true;
+            try { Settings = SettingsFile.Read(previous); SettingsNotice += "已读取上次有效设置，请核对并保存。"; }
+            catch (FileNotFoundException) { SettingsNotice += "没有上次有效设置，暂用默认值，请重新核对需求。"; }
+            catch (Exception e) when (SettingsFile.IsInvalid(e))
+            { PreserveSettings(previous); SettingsNotice += "上次设置也已损坏并保留，暂用默认值，请重新核对需求。"; }
+        }
+        if (SettingsRecoveryPending && !File.Exists(RecoveryMarker))
+            SettingsFile.AtomicWrite(RecoveryMarker, JsonSerializer.SerializeToUtf8Bytes(new { Created = DateTimeOffset.UtcNow }));
+        if (File.Exists(RecoveryMarker))
+        {
+            SettingsRecoveryPending = true;
+            if (SettingsNotice.Length == 0) SettingsNotice = "此前的设置恢复尚未核对，请核对当前设置并保存恢复结果。";
+        }
         Cleanup();
     }
-    public void SaveSettings(Settings value)
+    private string PreserveSettings(string path)
+    {
+        string folder = Path.Combine(Root, "recovery"); Directory.CreateDirectory(folder);
+        string target = Path.Combine(folder, $"{Path.GetFileNameWithoutExtension(path)}-{DateTime.UtcNow:yyyyMMddTHHmmss}-{Guid.NewGuid():N}.json");
+        using var source = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using var destination = new FileStream(target, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+        source.CopyTo(destination); destination.Flush(true); return target;
+    }
+    public void SaveSettings(Settings value, bool acknowledgeRecovery = false)
     {
         lock (gate)
         {
             var path = Path.Combine(Root, "settings.json");
-            File.WriteAllText(path + ".tmp", JsonSerializer.Serialize(value));
-            File.Move(path + ".tmp", path, true);
+            byte[] bytes = SettingsFile.Encode(value);
+            if (File.Exists(path))
+            {
+                try
+                {
+                    _ = SettingsFile.Read(path);
+                    SettingsFile.AtomicWrite(Path.Combine(Root, "settings.previous.json"), File.ReadAllBytes(path));
+                }
+                catch (Exception e) when (SettingsFile.IsInvalid(e)) { PreserveSettings(path); }
+            }
+            SettingsFile.AtomicWrite(path, bytes);
             Settings = value;
+            if (acknowledgeRecovery)
+            {
+                if (File.Exists(RecoveryMarker)) File.Delete(RecoveryMarker);
+                SettingsRecoveryPending = false;
+            }
         }
     }
     public void Append(Sample sample)
@@ -62,12 +114,24 @@ public sealed class LocalStore
     }
     public void Cleanup()
     {
-        foreach (var file in Directory.GetFiles(Root, "samples-*.jsonl").Concat(Directory.GetFiles(Root, "experience-*.jsonl")))
+        lock (gate)
         {
-            string name = Path.GetFileNameWithoutExtension(file);
-            string suffix = name.StartsWith("experience-", StringComparison.Ordinal) ? name[11..] : name[8..];
-            if (DateTime.TryParseExact(suffix, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var date)
-                && date.Date < DateTime.Today.AddDays(-Math.Clamp(Settings.RetentionDays, 1, 90))) File.Delete(file);
+            if (RetentionProtected) return;
+            foreach (string file in ExpiredHistoryFiles()) File.Delete(file);
+        }
+    }
+    internal T WithDataLock<T>(Func<T> operation) { lock (gate) return operation(); }
+    public string[] ExpiredHistoryFiles() => Directory.GetFiles(Root, "samples-*.jsonl").Concat(Directory.GetFiles(Root, "experience-*.jsonl"))
+        .Where(file => { string name = Path.GetFileNameWithoutExtension(file); string suffix = name.StartsWith("experience-", StringComparison.Ordinal) ? name[11..] : name[8..];
+            return DateTime.TryParseExact(suffix, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var date) && date.Date < DateTime.Today.AddDays(-Settings.RetentionDays); }).ToArray();
+    public void EnableRetention()
+    {
+        lock (gate)
+        {
+            if (SettingsRecoveryPending) throw new InvalidOperationException("请先核对并保存恢复的设置。");
+            string marker = Path.Combine(Root, "restore-protection.json");
+            if (File.Exists(marker)) File.Delete(marker);
+            Cleanup();
         }
     }
     public void AppendExperience(ExperienceEvent value)

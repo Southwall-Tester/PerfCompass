@@ -1,6 +1,10 @@
 namespace PerfCompass;
 
-public record Settings(string Scene = "日常办公", bool Representative = false, string FutureNeeds = "", int RetentionDays = 90, bool CloseToTray = true, RequirementsPlan? Requirements = null, SemanticPlan? SemanticRequirements = null, string ModelEndpoint = "", string ModelName = "");
+public record Settings(string Scene = "日常办公", bool Representative = false, string FutureNeeds = "", int RetentionDays = 90, bool CloseToTray = true, RequirementsPlan? Requirements = null, SemanticPlan? SemanticRequirements = null, string ModelEndpoint = "", string ModelName = "")
+{
+    [System.Text.Json.Serialization.JsonExtensionData]
+    public Dictionary<string, System.Text.Json.JsonElement>? AdditionalFields { get; init; }
+}
 public record DiskInfo(string Name, double TotalGb, double UsedGb) { public double Percent => TotalGb > 0 ? UsedGb / TotalGb * 100 : 0; }
 public record AppUsage(string Name, double Cpu, double MemoryMb);
 public record Sample

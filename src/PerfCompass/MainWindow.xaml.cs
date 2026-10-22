@@ -64,12 +64,20 @@ public partial class MainWindow : Window
         menu.Items.Add("退出", null, (_, _) => Dispatcher.Invoke(Exit));
         tray = new Forms.NotifyIcon { Text = "PerfCompass · 正在记录", Icon = System.Drawing.Icon.ExtractAssociatedIcon(Environment.ProcessPath!) ?? System.Drawing.SystemIcons.Application, Visible = true, ContextMenuStrip = menu };
         tray.DoubleClick += (_, _) => Dispatcher.Invoke(Restore);
+        RefreshDataProtection();
+        if (store.SettingsRecoveryPending || store.RetentionProtected || Environment.GetCommandLineArgs().Contains("--paused"))
+        {
+            TogglePause();
+            Navigate("settings");
+            StatusLine.Text = "数据恢复保护中，请核对记录设置后再继续监测。";
+        }
         Closing += OnClosing;
         initialized = true;
         Loaded += async (_, _) =>
         {
             try
             {
+                if (Environment.GetCommandLineArgs().Contains("--recovery-ui-test")) { await RunRecoveryStartupUiTest(); return; }
                 collector = await Task.Run(() => new Collector(store));
                 collectionTask = Task.Run(CollectionLoop);
                 await RefreshAnalysis();
@@ -256,6 +264,7 @@ public partial class MainWindow : Window
     private void Pause_Click(object sender, RoutedEventArgs e) => TogglePause();
     private void TogglePause()
     {
+        if (protectionWindow != null && paused) { StatusLine.Text = "备份与恢复窗口打开期间暂停监测，请先完成或关闭该窗口。"; return; }
         if (semanticLocalRequest && paused) { StatusLine.Text = "本机模型正在解析，结束并停止服务后再继续监测。"; return; }
         if (measurementActive && paused) { StatusLine.Text = "任务测量仍在运行，结束并核对任务进程后再继续监测。"; return; }
         lock (recordingGate) { paused = !paused; recordingGeneration++; }
@@ -365,6 +374,7 @@ public partial class MainWindow : Window
         StartupRegistration.Set(StartupCheck.IsChecked == true);
         int retention = RetentionCombo.SelectedItem is ComboBoxItem choice ? int.Parse(choice.Tag.ToString()!) : store.Settings.RetentionDays;
         store.SaveSettings(store.Settings with { CloseToTray = CloseToTrayCheck.IsChecked == true, RetentionDays = retention });
+        RefreshDataProtection();
         RetentionLabel.Text = $"当前保存最近 {retention} 天 · 实时约 2 秒 · 历史记录约 10 秒";
         StatusLine.Text = "后台设置已保存。";
     }
@@ -379,6 +389,7 @@ public partial class MainWindow : Window
     private async void Exit()
     {
         if (exiting) return;
+        if (protectionWindow is { } maintenance) { maintenance.Close(); if (maintenance.Busy) return; }
         exiting = true; semanticCancellation?.Cancel(); TaskMeasurementPage.Cancel(); ModelApiKey.Clear(); stop.Cancel(); tray.Visible = false; tray.Dispose();
         if (TaskMeasurementPage.Running) await Task.WhenAny(TaskMeasurementPage.Completion, Task.Delay(7000));
         if (collectionTask != null)
