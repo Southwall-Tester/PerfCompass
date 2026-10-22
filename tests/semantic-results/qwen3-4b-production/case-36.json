@@ -1,0 +1,73 @@
+﻿{
+  "Id": "36",
+  "Source": "\u6211\u53EA\u529E\u516C\uFF0C\u4F46\u5BB6\u91CC\u4EBA\u5468\u672B\u4F1A\u7528\u8FD9\u53F0\u673A\u5668\u73A9\u6E38\u620F\uFF0C\u4E0D\u8981\u53EA\u6309\u6211\u7684\u4E60\u60EF\u7B97",
+  "Seconds": 15.6351556,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u6211\u53EA\u529E\u516C\uFF0C\u4F46\u5BB6\u91CC\u4EBA\u5468\u672B\u4F1A\u7528\u8FD9\u53F0\u673A\u5668\u73A9\u6E38\u620F\uFF0C\u4E0D\u8981\u53EA\u6309\u6211\u7684\u4E60\u60EF\u7B97",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u529E\u516C",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u529E\u516C",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6211\u53EA\u529E\u516C",
+        "Label": "\u529E\u516C \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u529E\u516C"
+      },
+      {
+        "Subject": "\u73A9\u6E38\u620F",
+        "Kind": "workload",
+        "Polarity": "excluded",
+        "Timeframe": "future",
+        "Value": "\u5468\u672B",
+        "Unit": "",
+        "Condition": "\u5BB6\u91CC\u4EBA\u5468\u672B\u4F1A\u7528\u8FD9\u53F0\u673A\u5668",
+        "Evidence": "\u5BB6\u91CC\u4EBA\u5468\u672B\u4F1A\u7528\u8FD9\u53F0\u673A\u5668",
+        "Label": "\u73A9\u6E38\u620F \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u672A\u6765",
+        "Detail": "\u5468\u672B\uFF1B\u6761\u4EF6\uFF1A\u5BB6\u91CC\u4EBA\u5468\u672B\u4F1A\u7528\u8FD9\u53F0\u673A\u5668"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u529E\u516C",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u529E\u516C",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6211\u53EA\u529E\u516C",
+        "Label": "\u529E\u516C \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u529E\u516C"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u73A9\u6E38\u620F",
+        "Kind": "workload",
+        "Polarity": "excluded",
+        "Timeframe": "future",
+        "Value": "\u5468\u672B",
+        "Unit": "",
+        "Condition": "\u5BB6\u91CC\u4EBA\u5468\u672B\u4F1A\u7528\u8FD9\u53F0\u673A\u5668",
+        "Evidence": "\u5BB6\u91CC\u4EBA\u5468\u672B\u4F1A\u7528\u8FD9\u53F0\u673A\u5668",
+        "Label": "\u73A9\u6E38\u620F \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u672A\u6765",
+        "Detail": "\u5468\u672B\uFF1B\u6761\u4EF6\uFF1A\u5BB6\u91CC\u4EBA\u5468\u672B\u4F1A\u7528\u8FD9\u53F0\u673A\u5668"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

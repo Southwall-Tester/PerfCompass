@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.Json;
 using PerfCompass;
 
+if (args.Length > 0 && args[0] == "--review") return PerfCompass.ModelProbe.SemanticReview.Run(args);
+if (args.Length == 2 && args[0] == "--review-self-test") return PerfCompass.ModelProbe.SemanticReviewTests.Run(args[1]);
 if (args.Length == 6 && args[0] == "--batch")
 {
     using var batchCancellation = new CancellationTokenSource();
@@ -48,7 +50,7 @@ if (args.Length == 6 && args[0] == "--batch")
 }
 if (args.Length != 4)
 {
-    Console.Error.WriteLine("Usage: ModelProbe <chat-endpoint> <model> <source-utf8-file> <output-json>");
+    Console.Error.WriteLine("Usage: ModelProbe <chat-endpoint> <model> <source-utf8-file> <output-json>\n--batch <loopback-chat-endpoint> <model> <case-file> <empty-output-dir> <ids-or-all>\n--review <corpus-json> <case-directory> <new-output-html> [review-notes-json]");
     return 2;
 }
 using var cancellation = new CancellationTokenSource();

@@ -1,0 +1,45 @@
+﻿{
+  "Id": "22",
+  "Source": "\u51FA\u79DF\u5C4B\u7535\u8DEF\u6709\u9650\u5236\uFF0C\u6574\u673A\u6EE1\u8F7D\u529F\u8017\u4E0D\u8981\u8D85\u8FC7300\u74E6",
+  "Seconds": 9.1945813,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u51FA\u79DF\u5C4B\u7535\u8DEF\u6709\u9650\u5236\uFF0C\u6574\u673A\u6EE1\u8F7D\u529F\u8017\u4E0D\u8981\u8D85\u8FC7300\u74E6",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u6574\u673A",
+        "Kind": "power",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E0D\u8D85\u8FC7",
+        "Unit": "\u74E6",
+        "Condition": "\u6EE1\u8F7D",
+        "Evidence": "\u6574\u673A\u6EE1\u8F7D\u529F\u8017\u4E0D\u8981\u8D85\u8FC7300\u74E6",
+        "Label": "\u6574\u673A \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E0D\u8D85\u8FC7\uFF1B\u74E6\uFF1B\u6761\u4EF6\uFF1A\u6EE1\u8F7D"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u6574\u673A",
+        "Kind": "power",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E0D\u8D85\u8FC7",
+        "Unit": "\u74E6",
+        "Condition": "\u6EE1\u8F7D",
+        "Evidence": "\u6574\u673A\u6EE1\u8F7D\u529F\u8017\u4E0D\u8981\u8D85\u8FC7300\u74E6",
+        "Label": "\u6574\u673A \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E0D\u8D85\u8FC7\uFF1B\u74E6\uFF1B\u6761\u4EF6\uFF1A\u6EE1\u8F7D"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

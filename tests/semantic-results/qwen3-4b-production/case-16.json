@@ -1,0 +1,80 @@
+﻿{
+  "Id": "16",
+  "Source": "\u4E0B\u53F0\u673A\u5668\u81F3\u5C1132GB\u5185\u5B58\uFF0C\u663E\u5B58\u6700\u597D16GB\u4EE5\u4E0A",
+  "Seconds": 15.4931915,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u4E0B\u53F0\u673A\u5668\u81F3\u5C1132GB\u5185\u5B58\uFF0C\u663E\u5B58\u6700\u597D16GB\u4EE5\u4E0A",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u5185\u5B58",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u81F3\u5C1132GB",
+        "Unit": "GB",
+        "Condition": "",
+        "Evidence": "\u4E0B\u53F0\u673A\u5668\u81F3\u5C1132GB\u5185\u5B58",
+        "Label": "\u5185\u5B58 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u81F3\u5C1132GB\uFF1BGB"
+      },
+      {
+        "Subject": "\u663E\u5B58",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6700\u597D16GB\u4EE5\u4E0A",
+        "Unit": "GB",
+        "Condition": "",
+        "Evidence": "\u4E0B\u53F0\u673A\u5668\u81F3\u5C1132GB\u5185\u5B58",
+        "Label": "\u663E\u5B58 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6700\u597D16GB\u4EE5\u4E0A\uFF1BGB"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u5185\u5B58",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u81F3\u5C1132GB",
+        "Unit": "GB",
+        "Condition": "",
+        "Evidence": "\u4E0B\u53F0\u673A\u5668\u81F3\u5C1132GB\u5185\u5B58",
+        "Label": "\u5185\u5B58 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u81F3\u5C1132GB\uFF1BGB"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": [
+        {
+          "Metric": "memory",
+          "Direction": "min",
+          "Target": 32,
+          "Unit": "GB"
+        }
+      ]
+    },
+    {
+      "Fact": {
+        "Subject": "\u663E\u5B58",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6700\u597D16GB\u4EE5\u4E0A",
+        "Unit": "GB",
+        "Condition": "",
+        "Evidence": "\u4E0B\u53F0\u673A\u5668\u81F3\u5C1132GB\u5185\u5B58",
+        "Label": "\u663E\u5B58 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6700\u597D16GB\u4EE5\u4E0A\uFF1BGB"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

@@ -70,4 +70,8 @@ try {
     Remove-Job $taskServer -Force
 }
 
+& $taskDotnet $taskProbe --review-self-test (Join-Path $taskData 'review-tests')
+if ($LASTEXITCODE -ne 0) { throw 'Review report regression failed' }
+& $taskDotnet $taskProbe --review (Join-Path $taskRoot 'tests\nlp-cases.json') (Join-Path $taskRoot 'tests\semantic-results\qwen3-4b-production') (Join-Path $taskData 'recorded-review.html') (Join-Path $taskRoot 'tests\semantic-results\qwen3-4b-production\review.json')
+if ($LASTEXITCODE -ne 0) { throw 'Recorded semantic review could not be reproduced' }
 $global:LASTEXITCODE = 0

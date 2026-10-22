@@ -1,0 +1,91 @@
+﻿{
+  "Id": "18",
+  "Source": "\u9884\u7B97\u516D\u5343\u5230\u516B\u5343\uFF0C\u663E\u793A\u5668\u952E\u9F20\u4E0D\u5305\u542B\u5728\u91CC\u9762",
+  "Seconds": 20.1212088,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u9884\u7B97\u516D\u5343\u5230\u516B\u5343\uFF0C\u663E\u793A\u5668\u952E\u9F20\u4E0D\u5305\u542B\u5728\u91CC\u9762",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u9884\u7B97",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u516D\u5343\u5230\u516B\u5343",
+        "Unit": "\u5143",
+        "Condition": "",
+        "Evidence": "\u9884\u7B97\u516D\u5343\u5230\u516B\u5343",
+        "Label": "\u9884\u7B97 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u516D\u5343\u5230\u516B\u5343\uFF1B\u5143"
+      },
+      {
+        "Subject": "\u663E\u793A\u5668",
+        "Kind": "resource",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u663E\u793A\u5668\u952E\u9F20\u4E0D\u5305\u542B\u5728\u91CC\u9762",
+        "Label": "\u663E\u793A\u5668 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": ""
+      }
+    ],
+    "Questions": [
+      "\u662F\u5426\u9700\u8981\u8003\u8651\u5176\u4ED6\u5916\u8BBE\u8D39\u7528\uFF1F",
+      "\u9884\u7B97\u8303\u56F4\u662F\u5426\u5305\u542B\u5176\u4ED6\u53EF\u80FD\u7684\u989D\u5916\u8D39\u7528\uFF1F",
+      "\u663E\u793A\u5668\u7684\u5177\u4F53\u89C4\u683C\u6216\u54C1\u724C\u662F\u5426\u6709\u7279\u522B\u8981\u6C42\uFF1F",
+      "\u662F\u5426\u9700\u8981\u5728\u9884\u7B97\u8303\u56F4\u5185\u4F18\u5148\u8003\u8651\u6027\u80FD\u8FD8\u662F\u54C1\u724C\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u9884\u7B97",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u516D\u5343\u5230\u516B\u5343",
+        "Unit": "\u5143",
+        "Condition": "",
+        "Evidence": "\u9884\u7B97\u516D\u5343\u5230\u516B\u5343",
+        "Label": "\u9884\u7B97 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u516D\u5343\u5230\u516B\u5343\uFF1B\u5143"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": [
+        {
+          "Metric": "price",
+          "Direction": "min",
+          "Target": 6000,
+          "Unit": "\u5143"
+        },
+        {
+          "Metric": "price",
+          "Direction": "max",
+          "Target": 8000,
+          "Unit": "\u5143"
+        }
+      ]
+    },
+    {
+      "Fact": {
+        "Subject": "\u663E\u793A\u5668",
+        "Kind": "resource",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u663E\u793A\u5668\u952E\u9F20\u4E0D\u5305\u542B\u5728\u91CC\u9762",
+        "Label": "\u663E\u793A\u5668 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": ""
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

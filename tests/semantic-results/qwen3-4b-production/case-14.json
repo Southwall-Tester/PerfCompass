@@ -1,0 +1,73 @@
+﻿{
+  "Id": "14",
+  "Source": "\u6BCF\u5929\u7528R\u5904\u7406\u4E94\u5343\u4E07\u884C\u6570\u636E\uFF0C\u5185\u5B58\u81F3\u5C11\u898164GB",
+  "Seconds": 15.157274,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u6BCF\u5929\u7528R\u5904\u7406\u4E94\u5343\u4E07\u884C\u6570\u636E\uFF0C\u5185\u5B58\u81F3\u5C11\u898164GB",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "R",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5904\u7406\u4E94\u5343\u4E07\u884C\u6570\u636E",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6BCF\u5929\u7528R\u5904\u7406\u4E94\u5343\u4E07\u884C\u6570\u636E",
+        "Label": "R \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5904\u7406\u4E94\u5343\u4E07\u884C\u6570\u636E"
+      },
+      {
+        "Subject": "\u5185\u5B58",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u81F3\u5C11\u898164GB",
+        "Unit": "GB",
+        "Condition": "",
+        "Evidence": "\u5185\u5B58\u81F3\u5C11\u898164GB",
+        "Label": "\u5185\u5B58 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u81F3\u5C11\u898164GB\uFF1BGB"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "R",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5904\u7406\u4E94\u5343\u4E07\u884C\u6570\u636E",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6BCF\u5929\u7528R\u5904\u7406\u4E94\u5343\u4E07\u884C\u6570\u636E",
+        "Label": "R \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5904\u7406\u4E94\u5343\u4E07\u884C\u6570\u636E"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u5185\u5B58",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u81F3\u5C11\u898164GB",
+        "Unit": "GB",
+        "Condition": "",
+        "Evidence": "\u5185\u5B58\u81F3\u5C11\u898164GB",
+        "Label": "\u5185\u5B58 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u81F3\u5C11\u898164GB\uFF1BGB"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

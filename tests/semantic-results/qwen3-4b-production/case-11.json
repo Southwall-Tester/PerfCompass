@@ -1,0 +1,78 @@
+﻿{
+  "Id": "11",
+  "Source": "\u7528SolidWorks\u5F00\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53\uFF0C\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684",
+  "Seconds": 22.7550278,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u7528SolidWorks\u5F00\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53\uFF0C\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "SolidWorks",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "2000",
+        "Unit": "\u96F6\u4EF6",
+        "Condition": "\u88C5\u914D\u4F53",
+        "Evidence": "\u7528SolidWorks\u5F00\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53",
+        "Label": "SolidWorks \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "2000\uFF1B\u96F6\u4EF6\uFF1B\u6761\u4EF6\uFF1A\u88C5\u914D\u4F53"
+      },
+      {
+        "Subject": "SolidWorks",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6D41\u7545",
+        "Unit": "\u65E0",
+        "Condition": "\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684",
+        "Evidence": "\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684",
+        "Label": "SolidWorks \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6D41\u7545\uFF1B\u65E0\uFF1B\u6761\u4EF6\uFF1A\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684"
+      }
+    ],
+    "Questions": [
+      "SolidWorks\u662F\u5426\u652F\u6301\u5904\u74062000\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53\uFF1F",
+      "SolidWorks\u7684\u65CB\u8F6C\u64CD\u4F5C\u662F\u5426\u9700\u8981\u9AD8\u89C4\u683C\u7684\u786C\u4EF6\u914D\u7F6E\uFF1F",
+      "SolidWorks\u7684\u6D41\u7545\u6027\u662F\u5426\u53D7\u88C5\u914D\u4F53\u590D\u6742\u5EA6\u5F71\u54CD\uFF1F",
+      "SolidWorks\u7684\u6027\u80FD\u662F\u5426\u4E0E\u786C\u4EF6\u914D\u7F6E\u76F8\u5173\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "SolidWorks",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "2000",
+        "Unit": "\u96F6\u4EF6",
+        "Condition": "\u88C5\u914D\u4F53",
+        "Evidence": "\u7528SolidWorks\u5F00\u4E24\u5343\u4E2A\u96F6\u4EF6\u7684\u88C5\u914D\u4F53",
+        "Label": "SolidWorks \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "2000\uFF1B\u96F6\u4EF6\uFF1B\u6761\u4EF6\uFF1A\u88C5\u914D\u4F53"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "SolidWorks",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6D41\u7545",
+        "Unit": "\u65E0",
+        "Condition": "\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684",
+        "Evidence": "\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684",
+        "Label": "SolidWorks \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6D41\u7545\uFF1B\u65E0\uFF1B\u6761\u4EF6\uFF1A\u65CB\u8F6C\u4E0D\u80FD\u4E00\u5361\u4E00\u5361\u7684"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

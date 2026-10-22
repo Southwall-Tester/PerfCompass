@@ -1,0 +1,101 @@
+﻿{
+  "Id": "21",
+  "Source": "\u9700\u8981\u88C5Linux\uFF0CCUDA\u5FC5\u987B\u80FD\u7528\uFF0C\u8F6F\u4EF6\u8FD8\u4F9D\u8D56x86\u63D2\u4EF6",
+  "Seconds": 20.8289514,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u9700\u8981\u88C5Linux\uFF0CCUDA\u5FC5\u987B\u80FD\u7528\uFF0C\u8F6F\u4EF6\u8FD8\u4F9D\u8D56x86\u63D2\u4EF6",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "Linux",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "true",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u9700\u8981\u88C5Linux",
+        "Label": "Linux \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "true"
+      },
+      {
+        "Subject": "CUDA",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "true",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "CUDA\u5FC5\u987B\u80FD\u7528",
+        "Label": "CUDA \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "true"
+      },
+      {
+        "Subject": "x86\u63D2\u4EF6",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "true",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u8F6F\u4EF6\u8FD8\u4F9D\u8D56x86\u63D2\u4EF6",
+        "Label": "x86\u63D2\u4EF6 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "true"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "Linux",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "true",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u9700\u8981\u88C5Linux",
+        "Label": "Linux \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "true"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "CUDA",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "true",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "CUDA\u5FC5\u987B\u80FD\u7528",
+        "Label": "CUDA \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "true"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "x86\u63D2\u4EF6",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "true",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u8F6F\u4EF6\u8FD8\u4F9D\u8D56x86\u63D2\u4EF6",
+        "Label": "x86\u63D2\u4EF6 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "true"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

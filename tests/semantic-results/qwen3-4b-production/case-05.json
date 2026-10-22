@@ -1,0 +1,45 @@
+﻿{
+  "Id": "05",
+  "Source": "\u521A\u624D\u7F16\u8BD1\u5F88\u6162",
+  "Seconds": 8.3970014,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u521A\u624D\u7F16\u8BD1\u5F88\u6162",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u7F16\u8BD1",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6162",
+        "Unit": "\u65E0",
+        "Condition": "\u65E0",
+        "Evidence": "\u521A\u624D\u7F16\u8BD1\u5F88\u6162",
+        "Label": "\u7F16\u8BD1 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6162\uFF1B\u65E0\uFF1B\u6761\u4EF6\uFF1A\u65E0"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u7F16\u8BD1",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6162",
+        "Unit": "\u65E0",
+        "Condition": "\u65E0",
+        "Evidence": "\u521A\u624D\u7F16\u8BD1\u5F88\u6162",
+        "Label": "\u7F16\u8BD1 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6162\uFF1B\u65E0\uFF1B\u6761\u4EF6\uFF1A\u65E0"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

@@ -1,0 +1,78 @@
+﻿{
+  "Id": "27",
+  "Source": "I don\u0027t play games. Mostly Excel, but next year I may try CAD.",
+  "Seconds": 19.6539094,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "I don\u0027t play games. Mostly Excel, but next year I may try CAD.",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "games",
+        "Kind": "experience",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "I don\u0027t play games.",
+        "Label": "games \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": ""
+      },
+      {
+        "Subject": "CAD",
+        "Kind": "workload",
+        "Polarity": "uncertain",
+        "Timeframe": "future",
+        "Value": "may try",
+        "Unit": "",
+        "Condition": "next year",
+        "Evidence": "next year I may try CAD.",
+        "Label": "CAD \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u672A\u6765",
+        "Detail": "may try\uFF1B\u6761\u4EF6\uFF1Anext year"
+      }
+    ],
+    "Questions": [
+      "What is the expected performance requirement for CAD software?",
+      "What is the budget for the new computer?",
+      "Are there any specific compatibility requirements for CAD software?",
+      "What is the preferred portability or mobility for the new computer?"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "games",
+        "Kind": "experience",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "I don\u0027t play games.",
+        "Label": "games \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": ""
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "CAD",
+        "Kind": "workload",
+        "Polarity": "uncertain",
+        "Timeframe": "future",
+        "Value": "may try",
+        "Unit": "",
+        "Condition": "next year",
+        "Evidence": "next year I may try CAD.",
+        "Label": "CAD \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u672A\u6765",
+        "Detail": "may try\uFF1B\u6761\u4EF6\uFF1Anext year"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

@@ -1,0 +1,50 @@
+﻿{
+  "Id": "25",
+  "Source": "\u6211\u7528Blender\u505A\u4EBA\u7269\u52A8\u753B\u3002\u5B83\u6BCF\u6B21\u70D8\u7119\u90FD\u8981\u534A\u5C0F\u65F6\uFF0C\u6211\u5E0C\u671B\u7F29\u5230\u5341\u5206\u949F",
+  "Seconds": 17.1217873,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u6211\u7528Blender\u505A\u4EBA\u7269\u52A8\u753B\u3002\u5B83\u6BCF\u6B21\u70D8\u7119\u90FD\u8981\u534A\u5C0F\u65F6\uFF0C\u6211\u5E0C\u671B\u7F29\u5230\u5341\u5206\u949F",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "Blender",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "10",
+        "Unit": "minutes",
+        "Condition": "per bake",
+        "Evidence": "\u6211\u7528Blender\u505A\u4EBA\u7269\u52A8\u753B\u3002\u5B83\u6BCF\u6B21\u70D8\u7119\u90FD\u8981\u534A\u5C0F\u65F6\uFF0C\u6211\u5E0C\u671B\u7F29\u5230\u5341\u5206\u949F",
+        "Label": "Blender \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "10\uFF1Bminutes\uFF1B\u6761\u4EF6\uFF1Aper bake"
+      }
+    ],
+    "Questions": [
+      "Blender\u7684\u70D8\u7119\u8FC7\u7A0B\u662F\u5426\u9700\u8981\u7279\u5B9A\u7684\u786C\u4EF6\u914D\u7F6E\u6765\u52A0\u901F\uFF1F",
+      "\u662F\u5426\u6709\u5176\u4ED6\u8F6F\u4EF6\u53EF\u4EE5\u66FF\u4EE3Blender\u4EE5\u63D0\u9AD8\u70D8\u7119\u6548\u7387\uFF1F",
+      "\u662F\u5426\u9700\u8981\u989D\u5916\u7684\u786C\u4EF6\uFF08\u5982GPU\uFF09\u6765\u52A0\u901FBlender\u7684\u70D8\u7119\u8FC7\u7A0B\uFF1F",
+      "Blender\u7684\u70D8\u7119\u8FC7\u7A0B\u662F\u5426\u53D7\u7CFB\u7EDF\u8D44\u6E90\uFF08\u5982\u5185\u5B58\u6216CPU\uFF09\u9650\u5236\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "Blender",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "10",
+        "Unit": "minutes",
+        "Condition": "per bake",
+        "Evidence": "\u6211\u7528Blender\u505A\u4EBA\u7269\u52A8\u753B\u3002\u5B83\u6BCF\u6B21\u70D8\u7119\u90FD\u8981\u534A\u5C0F\u65F6\uFF0C\u6211\u5E0C\u671B\u7F29\u5230\u5341\u5206\u949F",
+        "Label": "Blender \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "10\uFF1Bminutes\uFF1B\u6761\u4EF6\uFF1Aper bake"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

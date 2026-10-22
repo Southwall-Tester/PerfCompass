@@ -1,0 +1,73 @@
+﻿{
+  "Id": "34",
+  "Source": "\u4E00\u5E74\u53EA\u5BFC\u51FA\u4E24\u6B21\u89C6\u9891\uFF0C\u6BCF\u6B21\u7B49\u534A\u5C0F\u65F6\u53EF\u4EE5\u63A5\u53D7",
+  "Seconds": 15.9653607,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u4E00\u5E74\u53EA\u5BFC\u51FA\u4E24\u6B21\u89C6\u9891\uFF0C\u6BCF\u6B21\u7B49\u534A\u5C0F\u65F6\u53EF\u4EE5\u63A5\u53D7",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u89C6\u9891\u5BFC\u51FA",
+        "Kind": "frequency",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u4E24\u6B21",
+        "Unit": "\u6B21",
+        "Condition": "\u4E00\u5E74",
+        "Evidence": "\u4E00\u5E74\u53EA\u5BFC\u51FA\u4E24\u6B21\u89C6\u9891",
+        "Label": "\u89C6\u9891\u5BFC\u51FA \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u4E24\u6B21\uFF1B\u6B21\uFF1B\u6761\u4EF6\uFF1A\u4E00\u5E74"
+      },
+      {
+        "Subject": "\u5BFC\u51FA\u65F6\u95F4",
+        "Kind": "schedule",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u534A\u5C0F\u65F6",
+        "Unit": "\u5C0F\u65F6",
+        "Condition": "\u6BCF\u6B21",
+        "Evidence": "\u6BCF\u6B21\u7B49\u534A\u5C0F\u65F6\u53EF\u4EE5\u63A5\u53D7",
+        "Label": "\u5BFC\u51FA\u65F6\u95F4 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u534A\u5C0F\u65F6\uFF1B\u5C0F\u65F6\uFF1B\u6761\u4EF6\uFF1A\u6BCF\u6B21"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u89C6\u9891\u5BFC\u51FA",
+        "Kind": "frequency",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u4E24\u6B21",
+        "Unit": "\u6B21",
+        "Condition": "\u4E00\u5E74",
+        "Evidence": "\u4E00\u5E74\u53EA\u5BFC\u51FA\u4E24\u6B21\u89C6\u9891",
+        "Label": "\u89C6\u9891\u5BFC\u51FA \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u4E24\u6B21\uFF1B\u6B21\uFF1B\u6761\u4EF6\uFF1A\u4E00\u5E74"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u5BFC\u51FA\u65F6\u95F4",
+        "Kind": "schedule",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u534A\u5C0F\u65F6",
+        "Unit": "\u5C0F\u65F6",
+        "Condition": "\u6BCF\u6B21",
+        "Evidence": "\u6BCF\u6B21\u7B49\u534A\u5C0F\u65F6\u53EF\u4EE5\u63A5\u53D7",
+        "Label": "\u5BFC\u51FA\u65F6\u95F4 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u534A\u5C0F\u65F6\uFF1B\u5C0F\u65F6\uFF1B\u6761\u4EF6\uFF1A\u6BCF\u6B21"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

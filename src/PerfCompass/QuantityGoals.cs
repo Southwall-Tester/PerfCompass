@@ -11,7 +11,8 @@ public static class QuantityGoals
 {
     private const string Number = @"(?:\d+(?:\.\d+)?|[零〇一二两兩三四五六七八九十百千万萬亿億]+(?:点[零〇一二两三四五六七八九]+)?)";
     private const string Units = @"(?:TiB|GiB|MiB|TB|GB|MB|万元|人民币元|CNY|RMB|元|毫秒|微秒|分钟|小时|秒|ms|us|seconds?|minutes?|hours?|s|min|h|公斤|千克|克|kg|g|瓦特|瓦|W|dB\(A\)|dBA|dB|分贝|FPS|fps|帧/秒|帧|%)";
-    private const string Prefixes = @"(?:不低于|不少于|至少|起码|>=|≥|不高于|不超过|不得超过|不能超过|别超过|至多|最多|<=|≤|大于|高于|多于|超过|>|小于|低于|少于|不到|<|等于|正好|恰好|=)";
+    private const string Prefixes = @"(?:不得低于|不能低于|不要低于|不可低于|别低于|不低于|不小于|不少于|至少|起码|>=|≥|不得超过|不能超过|不要超过|不可超过|不得大于|不能大于|不高于|不大于|不多于|不超过|别超过|至多|最多|<=|≤|大于|高于|多于|超过|>|小于|低于|少于|不到|<|等于|正好|恰好|=)";
+    private const string Modal = @"(?:\s*(?:需要|要有|达到|要|需|有|为))?";
     private const string Suffixes = @"(?:及以上|及以下|以上|以下|以内|起步)";
     private const RegexOptions Options = RegexOptions.IgnoreCase | RegexOptions.CultureInvariant;
     private static Match Match(string value, string expression) => Regex.Match(value, expression, Options, TimeSpan.FromMilliseconds(100));
@@ -88,8 +89,8 @@ public static class QuantityGoals
         string p = prefix.ToLowerInvariant();
         string? before = p switch
         {
-            "不低于" or "不少于" or "至少" or "起码" or ">=" or "≥" => "min",
-            "不高于" or "不超过" or "不得超过" or "不能超过" or "别超过" or "至多" or "最多" or "<=" or "≤" => "max",
+            "不得低于" or "不能低于" or "不要低于" or "不可低于" or "别低于" or "不低于" or "不小于" or "不少于" or "至少" or "起码" or ">=" or "≥" => "min",
+            "不得超过" or "不能超过" or "不要超过" or "不可超过" or "不得大于" or "不能大于" or "不高于" or "不大于" or "不多于" or "不超过" or "别超过" or "至多" or "最多" or "<=" or "≤" => "max",
             "大于" or "高于" or "多于" or "超过" or ">" => "gt", "小于" or "低于" or "少于" or "不到" or "<" => "lt",
             "等于" or "正好" or "恰好" or "=" => "equal", _ => null
         };
@@ -112,12 +113,12 @@ public static class QuantityGoals
     private static bool SupportedBySource(SemanticFact fact, double value, Unit unit, string direction)
     {
         string raw = Clean(fact.Evidence);
-        if (IsMatch(raw, @"大约|大概|左右|上下|约\s*[0-9零一二两三四五六七八九十]")) return false;
+        if (IsMatch(raw, @"大约|大概|左右|上下|约\s*[0-9零一二两三四五六七八九十]|不要求|不需要|无需|不必|不用|不打算|不准备|并非|避免|防止|拒绝|排除|禁止|不能不|不得不|不一定|可能|也许|或许|未必")) return false;
         var matches = Regex.Matches(raw, "(?<![0-9A-Za-z.])(?<n>" + Number + @")\s*(?<u>" + Units + @"(?![A-Za-z/]))?", Options, TimeSpan.FromMilliseconds(100));
         for (int i = 0; i < matches.Count; i++)
         {
             var item = matches[i]; Unit? sourceUnit = ReadUnit(item.Groups["u"].Value);
-            var before = Match(raw[..item.Index], "(?<p>" + Prefixes + @")\s*$");
+            var before = Match(raw[..item.Index], "(?<p>" + Prefixes + ")" + Modal + @"\s*$");
             var after = Match(raw[(item.Index + item.Length)..], @"^\s*(?<s>" + Suffixes + ")");
             string? sourceDirection = Direction(before.Groups["p"].Value, after.Groups["s"].Value);
             if (sourceDirection == null && i + 1 < matches.Count && IsMatch(raw[(item.Index + item.Length)..matches[i + 1].Index], @"^\s*(到|至|[-–~～]|to)\s*$")) sourceDirection = "min";
@@ -139,10 +140,22 @@ public static class QuantityGoals
         }
         return false;
     }
+    private static string QuantityText(string text)
+    {
+        // Models sometimes keep the measured object before the quantity. Lift only an entire,
+        // single bound/range with a short, non-numeric, positive name prefix; never discard negation.
+        string scalar = Prefixes + Modal + @"\s*" + Number + @"\s*(?:" + Units + @")?\s*(?:" + Suffixes + ")?";
+        string range = Number + @"\s*(?:" + Units + @")?\s*(?:到|至|[-–~～]|to)\s*" + Number + @"\s*(?:" + Units + ")?";
+        var match = Match(text, @"^(?<name>[^0-9零〇一二两兩三四五六七八九十百千万萬亿億<>≥≤=]{1,80}?)[：:\s]*(?<quantity>(?:" + scalar + "|" + range + "))$");
+        if (!match.Success) return text;
+        string name = match.Groups["name"].Value;
+        if (IsMatch(name, @"不|无|未|没|否|别|可能|也许|或|约|大概|最好|若|如果|仅当|避免|防止|拒绝|排除|禁止|\b(?:not|no|or|maybe|approximately|if|unless|prefer)\b")) return text;
+        return match.Groups["quantity"].Value;
+    }
     public static List<QuantityGoal> Compile(SemanticFact fact)
     {
         if (fact.Polarity is not ("required" or "conditional") || fact.Timeframe is not ("current" or "future")) return [];
-        string text = Clean(fact.Value), suppliedUnit = Clean(fact.Unit);
+        string text = QuantityText(Clean(fact.Value)), suppliedUnit = Clean(fact.Unit);
         var range = Match(text, @"^(?<a>" + Number + @")\s*(?<au>" + Units + @")?\s*(?:到|至|[-–~～]|to)\s*(?<b>" + Number + @")\s*(?<bu>" + Units + @")?$");
         var rawBounds = new List<(string Number, string Unit, string Direction)>();
         if (range.Success)
@@ -153,7 +166,7 @@ public static class QuantityGoals
         }
         else
         {
-            var scalar = Match(text, @"^(?<p>" + Prefixes + @")?\s*(?<n>" + Number + @")\s*(?<u>" + Units + @")?\s*(?<s>" + Suffixes + @")?$");
+            var scalar = Match(text, @"^(?<p>" + Prefixes + ")?" + Modal + @"\s*(?<n>" + Number + @")\s*(?<u>" + Units + @")?\s*(?<s>" + Suffixes + @")?$");
             if (!scalar.Success) return [];
             string? direction = Direction(scalar.Groups["p"].Value, scalar.Groups["s"].Value);
             if (direction == "invalid") return [];

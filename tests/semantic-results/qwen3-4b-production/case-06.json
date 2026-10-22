@@ -1,0 +1,73 @@
+﻿{
+  "Id": "06",
+  "Source": "\u51C6\u5907\u73A9\u6E38\u620F\uFF0C\u76EE\u6807144\u5E27\uFF0C\u5347\u7EA74K\u663E\u793A\u5668",
+  "Seconds": 15.0021309,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u51C6\u5907\u73A9\u6E38\u620F\uFF0C\u76EE\u6807144\u5E27\uFF0C\u5347\u7EA74K\u663E\u793A\u5668",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u6E38\u620F",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "144",
+        "Unit": "\u5E27/\u79D2",
+        "Condition": "",
+        "Evidence": "\u51C6\u5907\u73A9\u6E38\u620F\uFF0C\u76EE\u6807144\u5E27",
+        "Label": "\u6E38\u620F \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "144\uFF1B\u5E27/\u79D2"
+      },
+      {
+        "Subject": "\u663E\u793A\u5668",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "4K",
+        "Unit": "\u5206\u8FA8\u7387",
+        "Condition": "",
+        "Evidence": "\u5347\u7EA74K\u663E\u793A\u5668",
+        "Label": "\u663E\u793A\u5668 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "4K\uFF1B\u5206\u8FA8\u7387"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u6E38\u620F",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "144",
+        "Unit": "\u5E27/\u79D2",
+        "Condition": "",
+        "Evidence": "\u51C6\u5907\u73A9\u6E38\u620F\uFF0C\u76EE\u6807144\u5E27",
+        "Label": "\u6E38\u620F \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "144\uFF1B\u5E27/\u79D2"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u663E\u793A\u5668",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "4K",
+        "Unit": "\u5206\u8FA8\u7387",
+        "Condition": "",
+        "Evidence": "\u5347\u7EA74K\u663E\u793A\u5668",
+        "Label": "\u663E\u793A\u5668 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "4K\uFF1B\u5206\u8FA8\u7387"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

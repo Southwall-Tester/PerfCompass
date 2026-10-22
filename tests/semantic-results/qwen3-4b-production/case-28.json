@@ -1,0 +1,136 @@
+﻿{
+  "Id": "28",
+  "Source": "\u505AUE5\u573A\u666F\uFF0CLumen\u8981\u5F00\uFF0Cviewport\u81F3\u5C1160fps\uFF0C\u4E0D\u8981\u6C42\u79BB\u7EBFrender\u5FEB",
+  "Seconds": 27.9146152,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u505AUE5\u573A\u666F\uFF0CLumen\u8981\u5F00\uFF0Cviewport\u81F3\u5C1160fps\uFF0C\u4E0D\u8981\u6C42\u79BB\u7EBFrender\u5FEB",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "UE5\u573A\u666F",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u652F\u6301",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u505AUE5\u573A\u666F",
+        "Label": "UE5\u573A\u666F \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u652F\u6301"
+      },
+      {
+        "Subject": "Lumen",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5F00\u542F",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "Lumen\u8981\u5F00",
+        "Label": "Lumen \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5F00\u542F"
+      },
+      {
+        "Subject": "viewport",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u81F3\u5C1160fps",
+        "Unit": "fps",
+        "Condition": "",
+        "Evidence": "viewport\u81F3\u5C1160fps",
+        "Label": "viewport \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u81F3\u5C1160fps\uFF1Bfps"
+      },
+      {
+        "Subject": "\u79BB\u7EBFrender",
+        "Kind": "resource",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4E0D\u8981\u6C42\u79BB\u7EBFrender\u5FEB",
+        "Label": "\u79BB\u7EBFrender \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": ""
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "UE5\u573A\u666F",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u652F\u6301",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u505AUE5\u573A\u666F",
+        "Label": "UE5\u573A\u666F \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u652F\u6301"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "Lumen",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5F00\u542F",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "Lumen\u8981\u5F00",
+        "Label": "Lumen \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5F00\u542F"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "viewport",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u81F3\u5C1160fps",
+        "Unit": "fps",
+        "Condition": "",
+        "Evidence": "viewport\u81F3\u5C1160fps",
+        "Label": "viewport \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u81F3\u5C1160fps\uFF1Bfps"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": [
+        {
+          "Metric": "task",
+          "Direction": "min",
+          "Target": 60,
+          "Unit": "FPS"
+        }
+      ]
+    },
+    {
+      "Fact": {
+        "Subject": "\u79BB\u7EBFrender",
+        "Kind": "resource",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4E0D\u8981\u6C42\u79BB\u7EBFrender\u5FEB",
+        "Label": "\u79BB\u7EBFrender \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": ""
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

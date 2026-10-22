@@ -1,0 +1,50 @@
+﻿{
+  "Id": "02",
+  "Source": "\u4E0D\u73A9\u6E38\u620F\uFF0C\u53EA\u505A\u529E\u516C",
+  "Seconds": 14.4205981,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u4E0D\u73A9\u6E38\u620F\uFF0C\u53EA\u505A\u529E\u516C",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u4EFB\u52A1",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u529E\u516C",
+        "Unit": "\u4EFB\u52A1\u7C7B\u578B",
+        "Condition": "",
+        "Evidence": "\u4E0D\u73A9\u6E38\u620F\uFF0C\u53EA\u505A\u529E\u516C",
+        "Label": "\u4EFB\u52A1 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u529E\u516C\uFF1B\u4EFB\u52A1\u7C7B\u578B"
+      }
+    ],
+    "Questions": [
+      "\u60A8\u9700\u8981\u652F\u6301\u54EA\u4E9B\u7279\u5B9A\u7684\u529E\u516C\u8F6F\u4EF6\u6216\u5E94\u7528\uFF1F",
+      "\u60A8\u5BF9\u529E\u516C\u4EFB\u52A1\u7684\u6027\u80FD\u6709\u5177\u4F53\u8981\u6C42\u5417\uFF1F",
+      "\u60A8\u662F\u5426\u9700\u8981\u8003\u8651\u591A\u4EFB\u52A1\u5904\u7406\u6216\u540C\u65F6\u8FD0\u884C\u591A\u4E2A\u529E\u516C\u5E94\u7528\uFF1F",
+      "\u60A8\u5BF9\u529E\u516C\u8BBE\u5907\u7684\u4FBF\u643A\u6027\u6216\u7EED\u822A\u6709\u7279\u522B\u8981\u6C42\u5417\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u4EFB\u52A1",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u529E\u516C",
+        "Unit": "\u4EFB\u52A1\u7C7B\u578B",
+        "Condition": "",
+        "Evidence": "\u4E0D\u73A9\u6E38\u620F\uFF0C\u53EA\u505A\u529E\u516C",
+        "Label": "\u4EFB\u52A1 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u529E\u516C\uFF1B\u4EFB\u52A1\u7C7B\u578B"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

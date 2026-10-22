@@ -1,0 +1,78 @@
+﻿{
+  "Id": "15",
+  "Source": "\u6D4F\u89C8\u5668\u7ECF\u5E38\u4E00\u767E\u591A\u4E2A\u6807\u7B7E\uFF0C\u65C1\u8FB9\u518D\u5F00\u7F51\u8BFE\u548C\u5FAE\u4FE1",
+  "Seconds": 20.8659113,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u6D4F\u89C8\u5668\u7ECF\u5E38\u4E00\u767E\u591A\u4E2A\u6807\u7B7E\uFF0C\u65C1\u8FB9\u518D\u5F00\u7F51\u8BFE\u548C\u5FAE\u4FE1",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u6D4F\u89C8\u5668",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E00\u767E\u591A\u4E2A\u6807\u7B7E",
+        "Unit": "\u6807\u7B7E\u6570",
+        "Condition": "",
+        "Evidence": "\u6D4F\u89C8\u5668\u7ECF\u5E38\u4E00\u767E\u591A\u4E2A\u6807\u7B7E",
+        "Label": "\u6D4F\u89C8\u5668 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E00\u767E\u591A\u4E2A\u6807\u7B7E\uFF1B\u6807\u7B7E\u6570"
+      },
+      {
+        "Subject": "\u6D4F\u89C8\u5668",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u65C1\u8FB9\u518D\u5F00\u7F51\u8BFE\u548C\u5FAE\u4FE1",
+        "Unit": "\u540C\u65F6\u8FD0\u884C\u7684\u8F6F\u4EF6",
+        "Condition": "",
+        "Evidence": "\u6D4F\u89C8\u5668\u7ECF\u5E38\u4E00\u767E\u591A\u4E2A\u6807\u7B7E\uFF0C\u65C1\u8FB9\u518D\u5F00\u7F51\u8BFE\u548C\u5FAE\u4FE1",
+        "Label": "\u6D4F\u89C8\u5668 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u65C1\u8FB9\u518D\u5F00\u7F51\u8BFE\u548C\u5FAE\u4FE1\uFF1B\u540C\u65F6\u8FD0\u884C\u7684\u8F6F\u4EF6"
+      }
+    ],
+    "Questions": [
+      "\u60A8\u9700\u8981\u6D4F\u89C8\u5668\u652F\u6301\u591A\u5C11\u4E2A\u6807\u7B7E\u540C\u65F6\u6253\u5F00\uFF1F",
+      "\u60A8\u9700\u8981\u6D4F\u89C8\u5668\u540C\u65F6\u8FD0\u884C\u54EA\u4E9B\u8F6F\u4EF6\uFF1F",
+      "\u60A8\u5BF9\u6D4F\u89C8\u5668\u7684\u6027\u80FD\u6709\u5177\u4F53\u8981\u6C42\u5417\uFF1F",
+      "\u60A8\u662F\u5426\u9700\u8981\u6D4F\u89C8\u5668\u652F\u6301\u591A\u4EFB\u52A1\u5904\u7406\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u6D4F\u89C8\u5668",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E00\u767E\u591A\u4E2A\u6807\u7B7E",
+        "Unit": "\u6807\u7B7E\u6570",
+        "Condition": "",
+        "Evidence": "\u6D4F\u89C8\u5668\u7ECF\u5E38\u4E00\u767E\u591A\u4E2A\u6807\u7B7E",
+        "Label": "\u6D4F\u89C8\u5668 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E00\u767E\u591A\u4E2A\u6807\u7B7E\uFF1B\u6807\u7B7E\u6570"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u6D4F\u89C8\u5668",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u65C1\u8FB9\u518D\u5F00\u7F51\u8BFE\u548C\u5FAE\u4FE1",
+        "Unit": "\u540C\u65F6\u8FD0\u884C\u7684\u8F6F\u4EF6",
+        "Condition": "",
+        "Evidence": "\u6D4F\u89C8\u5668\u7ECF\u5E38\u4E00\u767E\u591A\u4E2A\u6807\u7B7E\uFF0C\u65C1\u8FB9\u518D\u5F00\u7F51\u8BFE\u548C\u5FAE\u4FE1",
+        "Label": "\u6D4F\u89C8\u5668 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u65C1\u8FB9\u518D\u5F00\u7F51\u8BFE\u548C\u5FAE\u4FE1\uFF1B\u540C\u65F6\u8FD0\u884C\u7684\u8F6F\u4EF6"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

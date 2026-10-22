@@ -73,5 +73,19 @@ public static partial class SelfTests
             assert(editor.QuantityPreview.Contains("0.01 秒") && editor.QuantityPreview.Contains("严格小于"), "preview conversion wrong");
             editor.Value = "不超过10"; assert(changed && notifications == 1 && editor.QuantityPreview.Contains("逐项核对"), "changed boundary retained an old numeric preview");
         });
+        check("Real provider noun prefixes and modal words compile without removing negation or context", () =>
+        {
+            SemanticFact Fact(string value, string evidence, string subject = "录音监听", string kind = "experience", string unit = "毫秒") => new(subject, kind, "required", "current", value, unit, "", evidence);
+            var latency = QuantityGoals.Compile(Fact("延迟低于10毫秒", "录音监听延迟希望低于10毫秒"));
+            assert(latency.Count == 1 && latency[0].Direction == "lt" && latency[0].Target == .01, "provider latency noun prefix lost");
+            var memory = QuantityGoals.Compile(Fact("至少要64GB", "内存至少要64GB", "内存", "resource", "GB"));
+            assert(memory.Count == 1 && memory[0].Direction == "min" && memory[0].Target == 64, "modal between bound and value lost");
+            var range = QuantityGoals.Compile(Fact("预算：六千到八千", "预算六千到八千", "预算", "budget", "元"));
+            assert(range.Count == 2 && range[0].Target == 6000 && range[1].Target == 8000, "positive quantity label prefix rejected");
+            assert(QuantityGoals.Compile(Fact("不超过10毫秒", "监听延迟不要超过10毫秒")).Single().Direction == "max", "negated upper relation inverted");
+            assert(QuantityGoals.Compile(Fact("至少64GB", "内存不能低于64GB", "内存", "resource", "GB")).Single().Direction == "min", "negated lower relation inverted");
+            foreach (var fact in new[] { Fact("低于10毫秒", "不要求监听延迟低于10毫秒"), Fact("避免延迟低于10毫秒", "避免延迟低于10毫秒"), Fact("10轨时延迟低于10毫秒", "10轨时延迟低于10毫秒"), Fact("延迟可能低于10毫秒", "延迟可能低于10毫秒"), Fact("低于10毫秒", "延迟可能低于10毫秒"), Fact("低于10毫秒", "延迟不一定低于10毫秒"), Fact("延迟低于10毫秒或者不超过20毫秒", "延迟低于10毫秒或者不超过20毫秒") })
+                assert(QuantityGoals.Compile(fact).Count == 0, "context or negation discarded: " + fact.Value);
+        });
     }
 }

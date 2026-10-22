@@ -1,0 +1,20 @@
+{
+    "Notice":  "Synthetic inputs only. Real model inference; not semantic accuracy or purchasing validation.",
+    "Started":  "2026-10-22T14:39:58.1681389+00:00",
+    "Model":  "Qwen3-4B-Q4_K_M.gguf",
+    "ModelSha256":  "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
+    "RunnerSha256":  "5F21762997FBD96D98134D1FA6710604BD96AA6184086E80E76B81846B3E82AA",
+    "PromptSha256":  "BF75DCD00CF7A5F663DE1261576F54677D9C1BDD959AB75BA40D3A473E3800E5",
+    "SchemaSha256":  "68421E466A8B8B785BFF72C42AD7DF351DAB8C76D9F3FFDD0923202F269398CB",
+    "CorpusSha256":  "8867CA420E9A8AEB74A74CC29E15BB317C53E69F51A5B8966A60E72E216D291B",
+    "CaseIds":  "all",
+    "ServerPid":  17032,
+    "Port":  4036,
+    "Threads":  4,
+    "GpuLayers":  0,
+    "Context":  8192,
+    "ProductCommit":  "2dc4f1d5f1ba4644a7ce09b1cdf76bb153f920f5",
+    "Outcome":  "completed",
+    "ServerExited":  true,
+    "Finished":  "2026-10-22T14:50:44.1249917+00:00"
+}
