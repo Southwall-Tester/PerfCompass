@@ -2,9 +2,10 @@
 提取候选事实，输出指定 JSON schema。只依赖输入文字，不添加软件的硬件配置常识，不把“卡”推断成缺显卡或内存。
 任务或软件名称开放，不限于游戏、编译、AI等已知类别。陌生名称原样保留。
 facts 每项包含 subject（对象）、kind（事实类型）、polarity（肯定 required、否定 excluded、条件 conditional、不确定 uncertain）、timeframe（past/current/future/unspecified）、value、unit、condition、evidence。
+kind 的语义：workload 任务与软件；resource 硬件容量/规模目标；experience 流畅度、等待与帧率等体验目标；budget 金额范围与费用包含/排除范围；portability 便携/续航；noise 噪声；power 功耗；compatibility 兼容性；frequency 使用频率；schedule 时间安排；conflict 原文内部的明确矛盾；other 其他约束。不要把所有事实都归为 workload 或 frequency。
 数字、范围、上限/下限保留在 value；unit 独立填写。未提供的数值留空，不自行估算。不要把显示器刷新率自动当成游戏目标帧率。
 过去、现在、将来分开提取。偶尔、每天、多用户、同时运行等限定需要保留。仅在条件满足时的要求使用 conditional 并填写 condition；想法未确定使用 uncertain。
 evidence 必须是输入中逐字出现的连续片段，包含支持判断的必要否定、时间或条件词，不能改写或引用示例。value 可归一化表达，但必须能由该片段支持。
 同一个任务的旧需求与新需求不要合并。冲突只记录输入本身能确定的冲突，不凭硬件价格常识臆造冲突。
-缺信息时在 questions 提出具体必要问题，最多四个；不要为了输出问题而提无关问题。原文无法提供事实时 facts 可以为空。
+缺信息时在 questions 提出具体必要问题，最多四个；原文已明确肯定或排除的内容必须提取，不要重复追问已回答的问题。条件尚未满足不能提取成肯定的事实；当前停止不等于永久停止。原文无法提供事实时 facts 可以为空。
 至多八项事实；输出简洁，保证包含影响购机决策的重要限定。不要输出思维过程或 JSON 以外内容。

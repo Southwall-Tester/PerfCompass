@@ -1,0 +1,689 @@
+[
+    {
+        "Id":  "11",
+        "Group":  "unseen-workload",
+        "Source":  "用SolidWorks开两千个零件的装配体，旋转不能一卡一卡的",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  23.5760084,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "SolidWorks",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "开两千个零件的装配体",
+                                             "unit":  "个",
+                                             "condition":  "旋转不能一卡一卡的",
+                                             "evidence":  "用SolidWorks开两千个零件的装配体，旋转不能一卡一卡的"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "需要多少内存来运行SolidWorks处理两千个零件的装配体？",
+                                             "SolidWorks处理大型装配体时，是否需要特定的硬件配置？",
+                                             "旋转装配体时，是否需要优化模型以减少卡顿？",
+                                             "是否有其他软件可以更高效地处理大型装配体？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  154,
+                      "prompt_tokens":  785,
+                      "total_tokens":  939,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  0
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "12",
+        "Group":  "unseen-workload",
+        "Source":  "Cubase同时开一百轨，录音监听延迟希望低于10毫秒",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  13.206105599999999,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "Cubase",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "同时开一百轨",
+                                             "unit":  "轨",
+                                             "condition":  "录音监听延迟希望低于10毫秒",
+                                             "evidence":  "Cubase同时开一百轨，录音监听延迟希望低于10毫秒"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "录音监听延迟的具体要求是什么？",
+                                             "10毫秒的延迟是否适用于所有音频轨道？",
+                                             "是否有特定的音频格式或采样率需要考虑？",
+                                             "是否需要考虑其他软件或硬件的兼容性？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  139,
+                      "prompt_tokens":  784,
+                      "total_tokens":  923,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "14",
+        "Group":  "unseen-workload",
+        "Source":  "每天用R处理五千万行数据，内存至少要64GB",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  11.988501699999999,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "R",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "处理五千万行数据",
+                                             "unit":  "次/天",
+                                             "condition":  "每天",
+                                             "evidence":  "每天用R处理五千万行数据"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "处理五千万行数据的具体需求是什么？",
+                                             "内存至少要64GB是否适用于所有情况？",
+                                             "R处理五千万行数据是否需要其他硬件资源？",
+                                             "是否有其他软件或任务与R处理五千万行数据冲突？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  127,
+                      "prompt_tokens":  782,
+                      "total_tokens":  909,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "18",
+        "Group":  "purchase-constraints",
+        "Source":  "预算六千到八千，显示器键鼠不包含在里面",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  10.4425446,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "预算",
+                                             "kind":  "budget",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "六千到八千",
+                                             "unit":  "元",
+                                             "condition":  "",
+                                             "evidence":  "预算六千到八千"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "是否需要考虑显示器和键盘鼠标的价格范围？",
+                                             "是否有特定的品牌或型号偏好？",
+                                             "是否需要支持高刷新率的显示器？",
+                                             "是否需要考虑未来升级的可能性？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  107,
+                      "prompt_tokens":  780,
+                      "total_tokens":  887,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "19",
+        "Group":  "purchase-constraints",
+        "Source":  "每天背去学校，重量别超过1.5公斤，续航要六小时",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  10.9210963,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "背包",
+                                             "kind":  "portability",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "重量别超过1.5公斤",
+                                             "unit":  "公斤",
+                                             "condition":  "每天背去学校",
+                                             "evidence":  "重量别超过1.5公斤"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "学校的具体距离和频率是多少？",
+                                             "是否需要考虑其他携带物品的重量？",
+                                             "是否需要更长的续航时间？",
+                                             "是否有其他便携性要求？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  114,
+                      "prompt_tokens":  784,
+                      "total_tokens":  898,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "20",
+        "Group":  "purchase-constraints",
+        "Source":  "放宿舍晚上用，风扇安静比跑分更重要",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  10.9186999,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "风扇",
+                                             "kind":  "noise",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "安静",
+                                             "unit":  "dB(A)",
+                                             "condition":  "放宿舍晚上用",
+                                             "evidence":  "放宿舍晚上用"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "风扇的噪音水平是否符合安静的要求？",
+                                             "风扇的噪音水平是否在允许的范围内？",
+                                             "风扇的噪音水平是否在使用过程中保持稳定？",
+                                             "风扇的噪音水平是否受到环境因素的影响？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  114,
+                      "prompt_tokens":  778,
+                      "total_tokens":  892,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "21",
+        "Group":  "compatibility",
+        "Source":  "需要装Linux，CUDA必须能用，软件还依赖x86插件",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  11.444015799999999,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "CUDA",
+                                             "kind":  "compatibility",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "能用",
+                                             "unit":  "兼容性",
+                                             "condition":  "Linux系统",
+                                             "evidence":  "需要装Linux，CUDA必须能用"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "需要确认Linux系统是否支持CUDA插件",
+                                             "需要确认x86插件是否与Linux系统兼容",
+                                             "需要确认CUDA版本是否与Linux系统匹配",
+                                             "需要确认x86插件是否需要特定硬件支持"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  120,
+                      "prompt_tokens":  784,
+                      "total_tokens":  904,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "23",
+        "Group":  "temporal",
+        "Source":  "以前天天玩游戏，现在已经不玩了，以后主要写论文",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  10.058669799999999,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "游戏",
+                                             "kind":  "workload",
+                                             "polarity":  "excluded",
+                                             "timeframe":  "past",
+                                             "value":  "天天",
+                                             "unit":  "天",
+                                             "condition":  "以前",
+                                             "evidence":  "以前天天玩游戏"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "未来主要使用电脑进行什么任务？",
+                                             "未来写论文是否需要特定的硬件配置？",
+                                             "未来是否需要考虑便携性？",
+                                             "未来是否需要考虑噪音水平？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  104,
+                      "prompt_tokens":  780,
+                      "total_tokens":  884,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "24",
+        "Group":  "conditional",
+        "Source":  "如果下学期选上图形学才会做三维渲染，否则只办公",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  11.310817,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "图形学",
+                                             "kind":  "workload",
+                                             "polarity":  "conditional",
+                                             "timeframe":  "future",
+                                             "value":  "三维渲染",
+                                             "unit":  "none",
+                                             "condition":  "选上",
+                                             "evidence":  "如果下学期选上图形学才会做三维渲染"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "下学期是否选上图形学？",
+                                             "如果选上图形学，是否需要支持三维渲染？",
+                                             "如果未选上图形学，是否仅用于办公？",
+                                             "办公需求的具体硬件要求是什么？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  120,
+                      "prompt_tokens":  782,
+                      "total_tokens":  902,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "25",
+        "Group":  "coreference",
+        "Source":  "我用Blender做人物动画。它每次烘焙都要半小时，我希望缩到十分钟",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  11.4630248,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "Blender",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "烘焙",
+                                             "unit":  "次",
+                                             "condition":  "每次",
+                                             "evidence":  "我用Blender做人物动画。它每次烘焙都要半小时，我希望缩到十分钟"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "Blender烘焙的当前时间是多少？",
+                                             "Blender烘焙的期望时间是多少？",
+                                             "Blender烘焙的当前时间是否可以缩短？",
+                                             "Blender烘焙的期望时间是否可行？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  121,
+                      "prompt_tokens":  785,
+                      "total_tokens":  906,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "27",
+        "Group":  "multilingual",
+        "Source":  "I don\u0027t play games. Mostly Excel, but next year I may try CAD.",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  10.3335201,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "software",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "Excel",
+                                             "unit":  "software",
+                                             "condition":  "none",
+                                             "evidence":  "I don\u0027t play games. Mostly Excel, but next year I may try CAD."
+                                         }
+                                     ],
+                           "questions":  [
+                                             "What is the budget for the computer?",
+                                             "What is the preferred processor type?",
+                                             "What is the preferred RAM capacity?",
+                                             "What is the preferred storage type?"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  109,
+                      "prompt_tokens":  789,
+                      "total_tokens":  898,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "28",
+        "Group":  "multilingual",
+        "Source":  "做UE5场景，Lumen要开，viewport至少60fps，不要求离线render快",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  25.6997042,
+        "FinishReason":  "stop",
+        "Facts":  4,
+        "GroundedFacts":  4,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "UE5场景",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "UE5场景",
+                                             "unit":  "none",
+                                             "condition":  "none",
+                                             "evidence":  "做UE5场景"
+                                         },
+                                         {
+                                             "subject":  "Lumen",
+                                             "kind":  "resource",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "开",
+                                             "unit":  "none",
+                                             "condition":  "none",
+                                             "evidence":  "Lumen要开"
+                                         },
+                                         {
+                                             "subject":  "viewport",
+                                             "kind":  "experience",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "至少60fps",
+                                             "unit":  "fps",
+                                             "condition":  "none",
+                                             "evidence":  "viewport至少60fps"
+                                         },
+                                         {
+                                             "subject":  "离线render",
+                                             "kind":  "experience",
+                                             "polarity":  "excluded",
+                                             "timeframe":  "current",
+                                             "value":  "不要求",
+                                             "unit":  "none",
+                                             "condition":  "none",
+                                             "evidence":  "不要求离线render快"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "是否需要支持高分辨率显示？",
+                                             "是否需要支持多显示器？",
+                                             "是否需要支持高刷新率？",
+                                             "是否需要支持高帧率？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  275,
+                      "prompt_tokens":  789,
+                      "total_tokens":  1064,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "29",
+        "Group":  "unseen-workload",
+        "Source":  "每天跑一次MATLAB仿真，能接受夜里慢慢算完，别影响白天上课",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  11.5390663,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "MATLAB仿真",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "每天跑一次",
+                                             "unit":  "次/天",
+                                             "condition":  "每天",
+                                             "evidence":  "每天跑一次MATLAB仿真"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "是否需要更高的计算性能来加速MATLAB仿真？",
+                                             "是否需要额外的硬件来支持MATLAB仿真？",
+                                             "是否需要支持夜间运行的电源管理设置？",
+                                             "是否需要确保MATLAB仿真不会影响白天上课？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  122,
+                      "prompt_tokens":  785,
+                      "total_tokens":  907,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "32",
+        "Group":  "conflict",
+        "Source":  "总预算不超过3000元，但又要求最低花费8000元，并且只能全新",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  6.6656749999999994,
+        "FinishReason":  "stop",
+        "Facts":  0,
+        "GroundedFacts":  0,
+        "Extraction":  {
+                           "facts":  [
+
+                                     ],
+                           "questions":  [
+                                             "总预算不超过3000元和要求最低花费8000元是否存在矛盾？",
+                                             "是否允许购买非全新设备？",
+                                             "总预算和最低花费的具体范围是否明确？",
+                                             "是否需要考虑其他费用（如税费、运费等）？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  66,
+                      "prompt_tokens":  790,
+                      "total_tokens":  856,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "33",
+        "Group":  "uncertainty",
+        "Source":  "也许会学三维渲染，但没有确定，不要按每天都用来买",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  9.818686099999999,
+        "FinishReason":  "stop",
+        "Facts":  1,
+        "GroundedFacts":  1,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "三维渲染",
+                                             "kind":  "workload",
+                                             "polarity":  "uncertain",
+                                             "timeframe":  "future",
+                                             "value":  "可能",
+                                             "unit":  "不确定",
+                                             "condition":  "可能",
+                                             "evidence":  "也许会学三维渲染"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "是否需要考虑显卡性能？",
+                                             "是否需要支持多用户？",
+                                             "是否需要考虑未来软件兼容性？",
+                                             "是否需要考虑便携性？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  102,
+                      "prompt_tokens":  782,
+                      "total_tokens":  884,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "36",
+        "Group":  "multi-user",
+        "Source":  "我只办公，但家里人周末会用这台机器玩游戏，不要只按我的习惯算",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "PromptSha256":  "f85c4438c410fb633316427d8abeb74f5cc68e8f9099ac03e22e3323471cee6d",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  18.5390318,
+        "FinishReason":  "stop",
+        "Facts":  2,
+        "GroundedFacts":  2,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "办公使用",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "办公",
+                                             "unit":  "任务类型",
+                                             "condition":  "",
+                                             "evidence":  "我只办公"
+                                         },
+                                         {
+                                             "subject":  "游戏使用",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "future",
+                                             "value":  "游戏",
+                                             "unit":  "任务类型",
+                                             "condition":  "周末",
+                                             "evidence":  "家里人周末会用这台机器玩游戏"
+                                         }
+                                     ],
+                           "questions":  [
+                                             "您对办公和游戏使用的硬件配置有何具体要求？",
+                                             "是否需要考虑其他使用场景或任务？",
+                                             "是否有特定的预算限制？",
+                                             "是否需要支持多用户同时使用？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  198,
+                      "prompt_tokens":  788,
+                      "total_tokens":  986,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  757
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    }
+]

@@ -1,0 +1,204 @@
+[
+    {
+        "Id":  "11",
+        "Group":  "unseen-workload",
+        "Source":  "用SolidWorks开两千个零件的装配体，旋转不能一卡一卡的",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  24.458997399999998,
+        "FinishReason":  "stop",
+        "Facts":  3,
+        "GroundedFacts":  3,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "SolidWorks",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "2000",
+                                             "unit":  "parts",
+                                             "condition":  "",
+                                             "evidence":  "开两千个零件的装配体"
+                                         },
+                                         {
+                                             "subject":  "SolidWorks",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "rotation",
+                                             "unit":  "operation",
+                                             "condition":  "",
+                                             "evidence":  "旋转"
+                                         },
+                                         {
+                                             "subject":  "SolidWorks",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "current",
+                                             "value":  "smooth",
+                                             "unit":  "operation",
+                                             "condition":  "",
+                                             "evidence":  "不能一卡一卡的"
+                                         }
+                                     ],
+                           "questions":  [
+
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  218,
+                      "prompt_tokens":  403,
+                      "total_tokens":  621,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  0
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "18",
+        "Group":  "purchase-constraints",
+        "Source":  "预算六千到八千，显示器键鼠不包含在里面",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  6.043267,
+        "FinishReason":  "stop",
+        "Facts":  0,
+        "GroundedFacts":  0,
+        "Extraction":  {
+                           "facts":  [
+
+                                     ],
+                           "questions":  [
+                                             "预算范围是六千到八千，是否包含其他设备如键盘和鼠标？",
+                                             "显示器是否包含在预算范围内？",
+                                             "是否需要考虑其他设备如键盘和鼠标的价格？",
+                                             "预算六千到八千是否包含显示器的费用？"
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  64,
+                      "prompt_tokens":  398,
+                      "total_tokens":  462,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  375
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "23",
+        "Group":  "temporal",
+        "Source":  "以前天天玩游戏，现在已经不玩了，以后主要写论文",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  18.2878153,
+        "FinishReason":  "stop",
+        "Facts":  3,
+        "GroundedFacts":  3,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "游戏",
+                                             "kind":  "frequency",
+                                             "polarity":  "required",
+                                             "timeframe":  "past",
+                                             "value":  "每天",
+                                             "unit":  "次/天",
+                                             "condition":  "",
+                                             "evidence":  "以前天天玩游戏"
+                                         },
+                                         {
+                                             "subject":  "游戏",
+                                             "kind":  "frequency",
+                                             "polarity":  "excluded",
+                                             "timeframe":  "future",
+                                             "value":  "",
+                                             "unit":  "",
+                                             "condition":  "",
+                                             "evidence":  "现在已经不玩了"
+                                         },
+                                         {
+                                             "subject":  "论文写作",
+                                             "kind":  "frequency",
+                                             "polarity":  "required",
+                                             "timeframe":  "future",
+                                             "value":  "主要",
+                                             "unit":  "",
+                                             "condition":  "",
+                                             "evidence":  "以后主要写论文"
+                                         }
+                                     ],
+                           "questions":  [
+
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  200,
+                      "prompt_tokens":  398,
+                      "total_tokens":  598,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  375
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    },
+    {
+        "Id":  "24",
+        "Group":  "conditional",
+        "Source":  "如果下学期选上图形学才会做三维渲染，否则只办公",
+        "Model":  "Qwen3-4B-Q4_K_M",
+        "Runner":  "llama.cpp b11815 CPU 4 threads",
+        "Seconds":  22.5560644,
+        "FinishReason":  "stop",
+        "Facts":  3,
+        "GroundedFacts":  3,
+        "Extraction":  {
+                           "facts":  [
+                                         {
+                                             "subject":  "图形学课程",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "future",
+                                             "value":  "下学期选上",
+                                             "unit":  "",
+                                             "condition":  "",
+                                             "evidence":  "如果下学期选上图形学才会做三维渲染"
+                                         },
+                                         {
+                                             "subject":  "三维渲染",
+                                             "kind":  "workload",
+                                             "polarity":  "conditional",
+                                             "timeframe":  "future",
+                                             "value":  "如果下学期选上图形学",
+                                             "unit":  "",
+                                             "condition":  "下学期选上图形学",
+                                             "evidence":  "如果下学期选上图形学才会做三维渲染"
+                                         },
+                                         {
+                                             "subject":  "办公",
+                                             "kind":  "workload",
+                                             "polarity":  "required",
+                                             "timeframe":  "future",
+                                             "value":  "否则只办公",
+                                             "unit":  "",
+                                             "condition":  "下学期未选上图形学",
+                                             "evidence":  "如果下学期选上图形学才会做三维渲染"
+                                         }
+                                     ],
+                           "questions":  [
+
+                                         ]
+                       },
+        "Usage":  {
+                      "completion_tokens":  250,
+                      "prompt_tokens":  400,
+                      "total_tokens":  650,
+                      "prompt_tokens_details":  {
+                                                    "cached_tokens":  375
+                                                }
+                  },
+        "Note":  "Source grounding and valid JSON do not establish semantic correctness. Manual review required."
+    }
+]

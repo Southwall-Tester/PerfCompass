@@ -5,7 +5,7 @@ namespace PerfCompass;
 public record RequirementFact(string Key, string Label, string Evidence, bool Excluded, bool Future);
 public record RequirementsPlan(string Source, string RuleVersion, List<RequirementFact> Facts, string AiMode)
 {
-    public string AiModeLabel => AiMode switch { "local" => "本地运行、训练或微调", "cloud" => "在线服务或云端 API", "both" => "本地与云端都会使用", _ => "尚未明确" };
+    public string AiModeLabel => !Facts.Any(f => f.Key == "ai" && !f.Excluded) ? "不涉及 AI 任务" : AiMode switch { "local" => "本地运行、训练或微调", "cloud" => "在线服务或云端 API", "both" => "本地与云端都会使用", _ => "尚未明确" };
     public bool NeedsAiChoice => Facts.Any(f => f.Key == "ai" && !f.Excluded) && AiMode == "unspecified";
     public string[] UnparsedClauses => Regex.Split(Source, @"[，,。；;！!？?\r\n]|但是|不过|但|而是")
         .Select(s => s.Trim()).Where(s => s.Length > 0 && !Facts.Any(f => f.Evidence == s)).ToArray();
