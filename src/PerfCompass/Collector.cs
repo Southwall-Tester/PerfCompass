@@ -24,6 +24,7 @@ public sealed class Collector : IDisposable
     internal Action<IHardware>? HardwareUpdateOverride;
     internal volatile Func<SamplingInstant>? TimingReadOverride;
     internal volatile Func<CpuCounterFrame?>? CpuReadOverride;
+    internal volatile Func<IReadOnlyList<GpuLoadObservation>>? GpuReadOverride;
     private SamplingInstant ReadTime() => TimingReadOverride?.Invoke() ?? SamplingInstant.Now();
     private CpuCounterFrame? ReadCpuTimes() => CpuReadOverride is { } readCpu ? readCpu() : CpuTimes();
     public Collector(LocalStore store)
@@ -65,6 +66,8 @@ public sealed class Collector : IDisposable
         var cpuHw = computer.Hardware.FirstOrDefault(h => h.HardwareType == HardwareType.Cpu);
         var gpuHw = Gpus().FirstOrDefault();
         var gpu = sensors.Value(gpuHw, SensorType.Load, "GPU Core", "GPU D3D 3D", "D3D 3D");
+        var gpuEngines = GpuReadOverride is { } readGpu ? readGpu() : sensors.GpuLoads(gpuHw);
+        double? knownEngineLoad = gpuEngines.Select(e => e.Load).DefaultIfEmpty().Max();
         var vramUsed = sensors.Value(gpuHw, SensorType.SmallData, "GPU Memory Used", "D3D Dedicated Memory Used");
         var vramTotal = sensors.Value(gpuHw, SensorType.SmallData, "GPU Memory Total");
         double? cpuTemp = sensors.Value(cpuHw, SensorType.Temperature, "CPU Package", "Core (Tctl/Tdie)", "Core (Tdie)", "Core Average");
@@ -104,12 +107,13 @@ public sealed class Collector : IDisposable
             .OrderByDescending(a => a.Cpu).ThenByDescending(a => a.MemoryMb).Take(8).ToList();
         }
         // Count attended usage or substantial background work, not an idle desktop overnight.
-        bool active = ActivityRules.IsActive(IdleSeconds(), cpu, core, gpu, diskBusy, diskRead, diskWrite);
+        bool active = ActivityRules.IsActive(IdleSeconds(), cpu, core, gpu, diskBusy, diskRead, diskWrite, knownEngineLoad);
         var sample = new Sample
         {
             Time = now, HardwareId = HardwareId, Seconds = dt, SamplingIssue = tick.Issue, Active = active, ObservationVersion = ActivityRules.Version, Scene = store.Settings.Scene,
             Cpu = cpu, CoreMax = core, MemoryTotalGb = mem.Total, MemoryUsedGb = mem.Used, CommitGb = mem.Commit,
             Gpu = gpu, VramUsedGb = vramUsed / 1024, VramTotalGb = vramTotal / 1024, CpuTemp = cpuTemp, GpuTemp = gpuTemp,
+            GpuEngineVersion = GpuEngineEvidence.Version, GpuEngines = GpuEngineEvidence.Current(gpuEngines),
             DiskReadMbps = diskRead, DiskWriteMbps = diskWrite, DiskBusy = diskBusy,
             MaxDiskPercent = disks.Count > 0 ? disks.Max(d => d.Percent) : 0,
             DiskUsedGb = disks.Sum(d => d.UsedGb), DiskTotalGb = disks.Sum(d => d.TotalGb)

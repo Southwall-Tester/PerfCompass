@@ -15,6 +15,7 @@ public static class AnalysisEngine
     {
         var now = asOf ?? DateTimeOffset.Now;
         var temporal = new TemporalDemandAnalyzer(now);
+        var gpuEngines = new GpuEngineAnalysis(now, windowDays);
         var cpu = new WeightedSeries(); var core = new WeightedSeries(); var memory = new WeightedSeries();
         var commit = new WeightedSeries(); var gpu = new WeightedSeries(); var vram = new WeightedSeries();
         var sceneStats = new Dictionary<string, SceneAccumulator>(StringComparer.Ordinal);
@@ -31,7 +32,7 @@ public static class AnalysisEngine
             if (!string.IsNullOrWhiteSpace(hardwareId) && s.HardwareId != hardwareId) continue;
             if (s.Time >= now.AddDays(-Math.Max(windowDays, 60))) hardwareIds.Add(s.HardwareId ?? "");
             var measured = s with { Seconds = (selectedScene == null ? s.UniqueObservationSeconds : s.UniqueSceneSeconds) ?? s.Seconds };
-            if (selectedScene == null || s.Scene == selectedScene) temporal.Add(measured);
+            if (selectedScene == null || s.Scene == selectedScene) { temporal.Add(measured); gpuEngines.Add(measured); }
             if (s.Time < now.AddDays(-windowDays)) continue;
             if (!sceneStats.TryGetValue(s.Scene, out var scene)) sceneStats[s.Scene] = scene = new SceneAccumulator(s.Scene);
             scene.Add(s);
@@ -89,10 +90,10 @@ public static class AnalysisEngine
         bool rareGpuWork = gpuPeak >= 90 && g95 < 30;
         string gs = temporal.HasRecentPressure("gpu") ? "pressure" : ready && gpuSeconds >= seconds * .9 && temporal.HasFreshEvidence("gpu") && g95 < 30 && !rareGpuWork ? "review" : State(ready && gpuSeconds >= seconds * .9 && temporal.HasFreshEvidence("gpu") && gpu.Maximum.HasValue);
         cards.Add(new("gpu", "显卡", gs,
-            !gpu.Maximum.HasValue ? "GPU 负载数据尚不可用" : gs == "review" ? "负载偏低，降档仍需验证" : gs == "pressure" ? "GPU 存在持续高负载" : rareGpuWork ? "存在偶发重负载，保留该任务需求" : "观察图形与计算任务需求",
-            $"覆盖 {gpuSeconds / Math.Max(seconds, 1) * 100:0}% 有效时段；GPU P95 {F(g95)}，峰值 {F(gpuPeak)}；显存分配峰值 {F(vram.Maximum, " GiB")}。",
+            !gpu.Maximum.HasValue ? "GPU 核心/3D负载数据尚不可用" : gs == "review" ? "核心/3D负载偏低，降档仍需验证" : gs == "pressure" ? "GPU 核心/3D存在持续高负载" : rareGpuWork ? "存在偶发重负载，保留该任务需求" : "观察图形与计算任务需求",
+            $"核心/3D读数覆盖 {gpuSeconds / Math.Max(seconds, 1) * 100:0}% 有效时段；P95 {F(g95)}，峰值 {F(gpuPeak)}；显存分配峰值 {F(vram.Maximum, " GiB")}。",
             rareGpuWork ? "在场景明细中找出重负载任务，再用候选显卡验证该任务的帧率、耗时与功能。" : "核对目标分辨率、帧率、编码、CUDA/AI 和多屏需求。只有低档候选卡也满足这些条件，才有降档依据。",
-            "本版没有帧时间、编码引擎与候选卡基准测试。低利用率可能来自锁帧或 CPU 瓶颈，不直接判定独显过剩。多显卡仅分析界面标明的卡。"));
+            "核心/3D为既有记录口径，分引擎观测另列。本版没有帧时间与候选卡基准测试。低利用率可能来自锁帧或 CPU 瓶颈，不直接判定独显过剩。多显卡仅分析界面标明的卡。"));
         cards.Add(new("disk", "存储", diskPeak >= 90 ? "pressure" : State(ready),
             diskPeak >= 90 ? "至少一个分区空间曾接近用满" : "容量和速度需要分别评估",
             $"当前固定卷合计已用 {latest?.DiskUsedGb:0} / {latest?.DiskTotalGb:0} GiB；观测到最高分区使用率 {diskPeak:0.0}%。",
@@ -100,8 +101,10 @@ public static class AnalysisEngine
             "分区不等于物理硬盘。低读写吞吐不能证明高端 SSD 无用；本版不据此推荐降速或具体型号。"));
         if (count == 0)
             cards = cards.Select(c => c with { Status = "unknown", Title = "等待真实使用记录", Evidence = "当前时间范围内尚无记录。" }).ToList();
-        var trends = temporal.Build();
+        var trends = temporal.Build().Select(t => t.Key == "gpu" ? t with
+            { Name = "GPU 核心/3D", Summary = t.Summary.Replace("显卡", "GPU 核心/3D", StringComparison.Ordinal) } : t).ToList();
         if (!quality.HasIssues) cards = TemporalDemandAnalyzer.PrioritizeRecent(cards, trends);
+        cards = cards.Select(c => c.Key == "gpu" ? c with { Title = c.Title.Replace("近期显卡", "近期GPU 核心/3D", StringComparison.Ordinal) } : c).ToList();
         if (hardwareIds.Count > 0 && string.IsNullOrWhiteSpace(scopeHardwareId))
         {
             cards = cards.Select(c => c with { Status = "unknown", Title = "请先隔离同一硬件配置的记录", Suggestion = coverage.Message }).ToList();
@@ -110,10 +113,10 @@ public static class AnalysisEngine
         var result = new AnalysisReport(now, windowDays, count, seconds / 3600, dates.Count, ready, scenes.Order().ToArray(), cards,
             bins.Select(kv => new HistoryPoint(DateTimeOffset.FromUnixTimeSeconds(kv.Key * 3600), kv.Value.Cn > 0 ? kv.Value.C / kv.Value.Cn : null,
                 kv.Value.Mn > 0 ? kv.Value.M / kv.Value.Mn : null, kv.Value.Gn > 0 ? kv.Value.G / kv.Value.Gn : null)).ToList(), settings.FutureNeeds)
-            { HardwareId = scopeHardwareId, RepresentativeConfirmed = coverage.Confirmed, CoverageMessage = coverage.Message, SamplingGapCount = samplingGaps,
+            { HardwareId = scopeHardwareId, RepresentativeConfirmed = coverage.Confirmed, CoverageMessage = coverage.Message, SamplingGapCount = samplingGaps, HistoryQuality = quality,
                 SelectedScene = selectedScene, DemandTrends = trends, FreshActiveHours = temporal.FreshHours, FreshActiveDays = temporal.FreshDays,
                 SceneProfiles = sceneStats.Values.Select(s => s.Profile()).OrderByDescending(p => p.ActiveHours).ThenBy(p => p.Name).ToList() };
-        return HistoryAnalysis.Apply(result, quality);
+        return HistoryAnalysis.Apply(gpuEngines.Apply(result), quality);
     }
 
     private static Sample Sanitize(Sample sample)

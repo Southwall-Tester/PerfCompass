@@ -70,6 +70,7 @@ public static class HistoryAnalysis
                     RecentHeavyScenes = quality.HasIntervalConflicts ? [] : t.RecentHeavyScenes,
                     RecentP95 = quality.HasIntervalConflicts ? null : t.RecentP95, PreviousP95 = quality.HasIntervalConflicts ? null : t.PreviousP95 }).ToList(),
             History = quality.HasIntervalConflicts ? [] : report.History,
+            GpuEngineProfiles = quality.HasIntervalConflicts ? [] : report.GpuEngineProfiles,
             SceneProfiles = quality.HasIntervalConflicts ? report.SceneProfiles.Select(p => p with { CpuP95 = null, CoreP95 = null, GpuP95 = null, MemoryPeakGb = null, GpuPeak = null }).ToList() : report.SceneProfiles
         };
     }

@@ -91,9 +91,22 @@ public sealed partial class LocalStore
                         if (!root.TryGetProperty("Seconds", out var seconds) || !seconds.TryGetDouble(out double duration) || !double.IsFinite(duration) || duration is < 0 or > 15)
                             throw new InvalidDataException("采样时长缺失或超出 0–15 秒");
                         if (!root.TryGetProperty("Active", out var active) || active.ValueKind is not (JsonValueKind.True or JsonValueKind.False)) throw new InvalidDataException("缺少有效使用状态");
+                        // System.Text.Json otherwise accepts duplicate object members
+                        // with the last value winning, which can erase an engine peak
+                        // or change its declared source/coverage before validation.
+                        if (root.TryGetProperty("GpuEngines", out var engines) && engines.ValueKind == JsonValueKind.Array)
+                            foreach (var engine in engines.EnumerateArray())
+                            {
+                                if (engine.ValueKind != JsonValueKind.Object) continue;
+                                var engineNames = new HashSet<string>(StringComparer.Ordinal);
+                                foreach (var property in engine.EnumerateObject())
+                                    if (!engineNames.Add(property.Name)) throw new InvalidDataException("显卡引擎对象存在重复字段");
+                            }
                         sample = root.Deserialize<Sample>();
-                        if (sample != null && !string.IsNullOrEmpty(sample.ObservationVersion) && sample.ObservationVersion != ActivityRules.Version)
+                        if (sample != null && !string.IsNullOrEmpty(sample.ObservationVersion) && !ActivityRules.KnownVersion(sample.ObservationVersion))
                             throw new InvalidDataException("采样活动规则版本未知，暂不解释此记录");
+                        if (sample != null && (!string.IsNullOrEmpty(sample.GpuEngineVersion) ? !GpuEngineEvidence.Valid(sample) : sample.GpuEngines?.Count > 0))
+                            throw new InvalidDataException("显卡引擎记录的版本、来源或观测范围无效");
                         if (sample != null && !string.IsNullOrEmpty(sample.SamplingIssue)
                             && (!SamplingClock.KnownIssue(sample.SamplingIssue) || sample.Seconds != 0))
                             throw new InvalidDataException("采样中断状态无效，或中断记录包含有效时长");

@@ -8,7 +8,7 @@ public static class WorkloadCoverage
         if (!settings.Representative) return (false, "完成常用及偶发的重要任务后，在记录设置中确认当前硬件配置的任务覆盖情况。");
         if (string.IsNullOrWhiteSpace(settings.RepresentativeHardwareId)) return (false, "以前的典型任务确认未绑定硬件配置，请重新勾选并保存。");
         if (settings.RepresentativeHardwareId != hardwareId) return (false, "硬件配置已改变，请在当前配置上完成典型任务后重新勾选并保存。");
-        if (settings.RepresentativeObservationVersion != ActivityRules.Version) return (false, "采集规则已更新，请在当前版本重新运行典型任务后确认，包括无人值守的单核或磁盘任务。旧版漏记的时长无法补回。");
+        if (settings.RepresentativeObservationVersion != ActivityRules.Version) return (false, "采集规则已更新，请在当前版本重新运行典型任务后确认，包括无人值守的单核、磁盘及显卡计算或视频任务。旧版漏记的时长无法补回。");
         return (true, "当前硬件配置的典型任务覆盖已确认。");
     }
 

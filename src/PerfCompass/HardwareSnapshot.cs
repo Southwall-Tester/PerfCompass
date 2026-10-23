@@ -42,4 +42,6 @@ internal sealed class HardwareSnapshot
                     && (type != SensorType.SmallData || value >= 0)) return value;
         return null;
     }
+    internal IReadOnlyList<GpuLoadObservation> GpuLoads(IHardware? device) => device != null && readings.TryGetValue(device, out var values)
+        ? GpuLoadObservations.Normalize(values.Where(v => v.Type == SensorType.Load).Select(v => (v.Name, (double?)v.Value))) : [];
 }

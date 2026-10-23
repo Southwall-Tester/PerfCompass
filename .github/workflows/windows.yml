@@ -49,6 +49,23 @@ jobs:
         with:
           name: native-cpu-recovery
           path: artifacts/ui-cpu-focused/
+      - name: Native GPU engine scope flow
+        shell: pwsh
+        run: |
+          $root = Join-Path $PWD 'artifacts/ci-gpu-ui/data'
+          $p = Start-Process ./release-next/PerfCompass.exe -ArgumentList @('--ui-test','--ui-test-gpu-only','--data-dir',('"' + $root + '"')) -PassThru -WindowStyle Hidden
+          if (-not $p.WaitForExit(90000)) { $p.Kill(); throw 'Native GPU engine flow exceeded its bounded check.' }
+          if ($p.ExitCode -ne 0) { throw 'Native GPU engine flow failed.' }
+          $report = Join-Path $PWD 'artifacts/ui-gpu-focused/results.txt'
+          if (-not (Test-Path -LiteralPath $report)) { throw 'Native GPU engine results are missing.' }
+          $checks = Get-Content -LiteralPath $report
+          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 12 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Native GPU engine checks are incomplete.' }
+      - name: Native GPU engine evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-gpu-engine-scope
+          path: artifacts/ui-gpu-focused/
       - name: Record Windows telemetry reference pairs
         shell: pwsh
         run: |

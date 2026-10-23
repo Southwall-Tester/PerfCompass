@@ -158,7 +158,9 @@ public partial class MainWindow : Window
         MemoryValue.Text = Percent(memPct); MemoryBar.Value = memPct ?? 0;
         MemoryDetail.Text = $"{s.MemoryUsedGb:0.0} / {s.MemoryTotalGb:0.0} GiB";
         GpuValue.Text = Percent(s.Gpu); GpuBar.Value = s.Gpu ?? 0;
-        GpuDetail.Text = s.Gpu.HasValue ? (s.VramUsedGb.HasValue ? $"显存 {s.VramUsedGb:0.0} GiB" : "显存数据待采集") + (s.GpuTemp.HasValue ? $" · {s.GpuTemp:0}°C" : "") : "负载传感器不可用";
+        GpuDetail.Text = s.Gpu.HasValue ? (s.VramUsedGb.HasValue ? $"显存 {s.VramUsedGb:0.0} GiB" : "显存数据待采集") + (s.GpuTemp.HasValue ? $" · {s.GpuTemp:0}°C" : "") : "核心/3D传感器不可用";
+        GpuEngineLiveDetails.Text = GpuEngineEvidence.Describe(s);
+        GpuEngineLiveVersion.Text = $"分引擎记录规则：{(string.IsNullOrWhiteSpace(s.GpuEngineVersion) ? "未记录" : s.GpuEngineVersion)} · 上方核心/3D读数与各引擎分别保留。";
         DiskValue.Text = Percent(s.DiskBusy); DiskBar.Value = s.DiskBusy ?? 0;
         DiskDetail.Text = s.DiskReadMbps.HasValue ? $"读 {s.DiskReadMbps:0.0} / 写 {s.DiskWriteMbps:0.0} MiB/s" : "计数器不可用";
         CpuNameLabel.Text = snapshot.CpuName; GpuNameLabel.Text = snapshot.GpuName;
@@ -214,6 +216,20 @@ public partial class MainWindow : Window
             SceneProfileList.ItemsSource = result.SceneProfiles;
             SceneProfileSummary.Text = result.HistoryQuality.HasIntervalConflicts ? "场景时段互有重叠，不能相加；负载值暂待核对" : "有效使用时段统计 · P95 按采样时长加权";
             SceneEmptyLabel.Visibility = result.SceneProfiles.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            GpuEngineHistoryNotice.Text = result.HistoryQuality.HasIntervalConflicts ? "时段重叠，分引擎负载与时长暂不解释；请先核对历史来源。"
+                : string.IsNullOrWhiteSpace(result.HardwareId) ? "请先隔离同一硬件配置的记录，再查看分引擎历史。"
+                : "仅统计当前范围已暴露的引擎节点。P95 按已取得读数的时长加权，部分读数可能低估同类最大负载；类别完整时长不等于全GPU覆盖。时期对照仅用同来源、读数完整的观测，可能与这里的 P95 不同。缺失保留未知，不同引擎占用不能相加。";
+            GpuEngineProfileList.ItemsSource = result.GpuEngineProfiles
+                .OrderByDescending(p => p.ObservedHours > 0 || p.Sources.Length > 0)
+                .ThenByDescending(p => p.HeavyMinutes > 0 || p.Peak >= 80)
+                .ThenByDescending(p => p.HeavyMinutes).ThenByDescending(p => p.Peak).ThenByDescending(p => p.ObservedHours)
+                .Select(p => new
+            {
+                p.Name,
+                Readings = $"已观察 P95 {(p.P95.HasValue ? $"{p.P95:0.0}%" : "缺失")} · 峰值 {(p.Peak.HasValue ? $"{p.Peak:0.0}%" : "缺失")} · ≥80% 累计 {p.HeavyMinutes:0.0} 分钟",
+                Durations = $"已观察 {DurationText.FromHours(p.ObservedHours)} · 类别完整 {DurationText.FromHours(p.CompleteHours)}",
+                Sources = p.Sources.Length == 0 ? "来源：未取得该类别记录；不能解释为零负载或不支持该功能。" : "来源：" + string.Join("、", p.Sources)
+            }).ToList();
             DemandTrendList.ItemsSource = result.DemandTrends;
             var changed = result.DemandTrends.Where(t => t.Status == "increased").OrderBy(t => t.Days).FirstOrDefault();
             DemandTrendHeader.Text = changed == null ? "近期需求变化 · " + (result.DemandTrends.Any(t => t.Status == "similar" || t.Status == "decreased") ? "查看时期对照" : "对照记录积累中") : $"近期需求变化 · {changed.Name}增加（{changed.Days} 天对照）";
@@ -247,7 +263,7 @@ public partial class MainWindow : Window
         header.Children.Add(new TextBlock { Text = advice.Name, FontSize = 13, Foreground = Brush("#677A87") });
         header.Children.Add(new TextBlock { Text = label, Foreground = Brush(color), HorizontalAlignment = System.Windows.HorizontalAlignment.Right, FontSize = 12 });
         stack.Children.Add(header);
-        stack.Children.Add(new TextBlock { Text = advice.Title, FontSize = 18, FontWeight = FontWeights.SemiBold, Margin = new(0, 10, 0, 10) });
+        stack.Children.Add(new TextBlock { Text = advice.Title, FontSize = 18, FontWeight = FontWeights.SemiBold, Margin = new(0, 10, 0, 10), TextWrapping = TextWrapping.Wrap });
         stack.Children.Add(new TextBlock { Text = advice.Suggestion, Foreground = Brush("#45606C"), LineHeight = 23 });
         var detail = new StackPanel();
         detail.Children.Add(new TextBlock { Text = advice.Evidence, Margin = new(0, 12, 0, 8), LineHeight = 22 });

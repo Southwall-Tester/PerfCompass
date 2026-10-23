@@ -6,7 +6,7 @@ Windows 原生电脑占用监测与购机配置分析工具。C# / .NET 10 / WPF
 
 GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.com/Southwall-Tester/PerfCompass/actions/workflows/windows.yml) 中成功的运行下载 `PerfCompass-Windows-x64` 产物，解压后运行 `PerfCompass.exe`。当前为开发试用版，尚未完成商业级验证。
 
-0.8.11 校验整机 CPU 计时的完整性：处理器记录缺失、计时无增量或回退、空闲增量超过总增量时，本次整机与最忙单核占用保留未知，重建基线后再采集；内存与 GPU 独立继续。完整读数按忙碌时间与总时间求整机比例，不将部分处理器冒充整机，也不把异常裁剪成 0% / 100%。详见 [验证记录](docs/VALIDATION.md)。
+0.8.12 补充分引擎 GPU 观测：核心、3D、计算、视频编解码、视频处理与复制按实际取得的传感器分别显示，保留原始标签、峰值及覆盖时长。近期引擎重负载会约束降档方向；旧核心/3D历史保持原口径，缺失引擎不补成零。没有单独的编码标签不表示硬件不支持编码，类别完整也不证明全部GPU或驱动新鲜度。详见 [分析方法](docs/DEMAND_MODEL.md#显卡引擎范围) 与 [验证记录](docs/VALIDATION.md)。
 
 ![近期任务变化分析](docs/images/recent-demand.png)
 

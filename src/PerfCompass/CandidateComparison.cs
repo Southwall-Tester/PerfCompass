@@ -89,6 +89,17 @@ public static partial class CandidateComparison
         report.FutureNeeds, report.SemanticRequirements, report.ConfirmedRequirements, report.SelectedScene, report.WindowDays, report.MethodVersion,
         report.HardwareId, report.RepresentativeConfirmed,
         Scenes = report.Scenes.Order().ToArray(),
+        // Bind changes in observed scope and task clues, not every new percentage or
+        // elapsed second. A second busy engine can be hidden by an unchanged GPU card.
+        GpuEngines = report.GpuEngineProfiles.OrderBy(p => p.Kind, StringComparer.Ordinal).Select(p => new
+        {
+            p.Kind, Sources = p.Sources.Order(StringComparer.Ordinal).ToArray(),
+            SourceScopes = (p.SourceScopes.Length > 0 ? p.SourceScopes : [JsonSerializer.Serialize(p.Sources.Order(StringComparer.Ordinal).ToArray())])
+                .Order(StringComparer.Ordinal).ToArray(),
+            Coverage = p.ObservedHours <= 0 ? "missing"
+                : p.CompleteHours + 1e-7 < Math.Max(p.ObservedHours, report.ActiveHours) ? "partial" : "complete",
+            Heavy = p.HeavyMinutes > 0 || p.Peak >= 80
+        }).ToArray(),
         Trends = report.DemandTrends.Where(t => t.Status == "increased").Select(t => t.Key + ":" + t.Days + ":" + string.Join("/", t.RecentHeavyScenes.Order())).Order().ToArray(),
         Experiences = report.ExperienceEvents.Where(e => !e.Resolved).Select(e => e.Id).Order().ToArray(),
         Signals = report.Cards.Where(c => c.Key is "cpu" or "gpu" or "memory").Select(c => c.Key + ":" + c.Status + ":" + c.Title).Order().ToArray()
@@ -117,6 +128,20 @@ public static partial class CandidateComparison
             result.Add(new() { OriginId = "raw:" + Hash(report.FutureNeeds), Name = "核对尚未结构化的需求全文", Evidence = report.FutureNeeds });
         foreach (var scene in report.SceneProfiles.Where(s => s.ActiveHours > 0 && (report.SelectedScene == null || report.SelectedScene == s.Name)))
             result.Add(new() { OriginId = "scene:" + scene.Name, Name = "验证已有场景：" + scene.Name, Evidence = "已有观测 " + scene.DurationLabel + "；请包含重要和偶发任务，按候选电脑实际表现核对。" });
+        foreach (var engine in report.GpuEngineProfiles.Where(p => p.ObservedHours > 0 && (p.HeavyMinutes > 0 || p.Peak >= 80)))
+        {
+            // A generic scene may contain several engine tasks. Keep a stable checklist
+            // origin for each busy category without inventing a capacity or speed target.
+            var sources = engine.Sources.Order(StringComparer.Ordinal).ToArray();
+            string nodes = sources.Length == 0 ? "来源未取得" : string.Join("、", sources.Take(8));
+            if (sources.Length > 8) nodes += $"；另 {sources.Length - 8} 个节点未在此展开，完整来源见分引擎历史";
+            result.Add(new()
+            {
+                OriginId = "gpu-engine:" + engine.Kind, Name = "核对已观测的" + engine.Name + "重负载任务",
+                Evidence = $"类别：{engine.Name}；已暴露节点：{nodes}；峰值 {(engine.Peak.HasValue ? $"{engine.Peak:0.##}%" : "未取得")}；负载≥80% 累计 {engine.HeavyMinutes:G6} 分钟。"
+                    + "已知节点的重负载线索不证明瓶颈或升级收益，也不证明所有引擎覆盖完整。请确认对应任务是否仍需运行，并在候选电脑核对功能与实际表现。"
+            });
+        }
         foreach (var trend in report.DemandTrends.Where(t => t.Status == "increased").GroupBy(t => t.Key).Select(g => g.First()))
             result.Add(new() { OriginId = "trend:" + trend.Key, Name = "验证近期增加的" + trend.Name + "任务", Evidence = trend.Summary + "；" + string.Join("、", trend.RecentHeavyScenes) });
         foreach (var e in report.ExperienceEvents.Where(e => !e.Resolved))

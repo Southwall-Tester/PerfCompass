@@ -34,6 +34,8 @@ public record Sample
     public double? MemoryTotalGb { get; init; }
     public double? CommitGb { get; init; }
     public double? Gpu { get; init; }
+    public string GpuEngineVersion { get; init; } = "";
+    public List<GpuEngineSample>? GpuEngines { get; init; }
     public double? GpuPeak { get; init; }
     public double? CpuHighSeconds { get; init; }
     public double? GpuHeavySeconds { get; init; }
@@ -54,6 +56,20 @@ public record LiveSnapshot(Sample Sample, string CpuName, string GpuName, string
 {
     public string[] SensorFailures { get; init; } = [];
     public string CpuObservationIssue { get; init; } = "";
+}
+public record GpuEngineSample(string Kind, string[] Sources, double? Load)
+{
+    public bool Complete { get; init; }
+    public double? Peak { get; init; }
+    public double? ObservedSeconds { get; init; }
+    public double? CoverageSeconds { get; init; }
+    public double? HeavySeconds { get; init; }
+    public double? HighSeconds { get; init; }
+}
+public record GpuEngineProfile(string Kind, string Name, double ObservedHours, double CompleteHours,
+    double? P95, double? Peak, double HeavyMinutes, string[] Sources)
+{
+    public string[] SourceScopes { get; init; } = [];
 }
 public record Advice(string Key, string Name, string Status, string Title, string Evidence, string Suggestion, string Limits);
 public record HistoryPoint(DateTimeOffset Time, double? Cpu, double? Memory, double? Gpu);
@@ -85,6 +101,7 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     bool Ready, string[] Scenes, List<Advice> Cards, List<HistoryPoint> History, string FutureNeeds)
 {
     public List<SceneProfile> SceneProfiles { get; init; } = [];
+    public List<GpuEngineProfile> GpuEngineProfiles { get; init; } = [];
     public string? SelectedScene { get; init; }
     public List<DemandTrend> DemandTrends { get; init; } = [];
     public List<ExperienceEvent> ExperienceEvents { get; init; } = [];
@@ -95,7 +112,7 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public string HardwareId { get; init; } = "";
     public bool RepresentativeConfirmed { get; init; }
     public string CoverageMessage { get; init; } = "";
-    public string MethodVersion { get; init; } = "1.10";
+    public string MethodVersion { get; init; } = "1.11";
     public HistoryQuality HistoryQuality { get; init; } = HistoryQuality.Unchecked;
     public int SamplingGapCount { get; init; }
     public string SamplingGapSummary => SamplingGapCount > 0 ? $"本范围记录到 {SamplingGapCount} 次采样中断；中断段未计入有效使用，也未作为空闲负载。" : "";

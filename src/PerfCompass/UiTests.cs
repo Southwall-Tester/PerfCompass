@@ -15,7 +15,8 @@ public partial class MainWindow
         bool timingOnly = Environment.GetCommandLineArgs().Contains("--ui-test-timing-only");
         bool retentionOnly = Environment.GetCommandLineArgs().Contains("--ui-test-retention-only");
         bool cpuOnly = Environment.GetCommandLineArgs().Contains("--ui-test-cpu-only");
-        var output = Path.GetFullPath(cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
+        bool gpuOnly = Environment.GetCommandLineArgs().Contains("--ui-test-gpu-only");
+        var output = Path.GetFullPath(gpuOnly ? "artifacts/ui-gpu-focused" : cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
         var results = new List<string>();
         File.WriteAllText(Path.Combine(output, "results.txt"), "RUNNING " + DateTimeOffset.Now.ToString("O"));
         void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); File.AppendAllText(Path.Combine(output, "results.txt"), "\n" + results[^1]); if (!value) throw new Exception(name); }
@@ -41,6 +42,7 @@ public partial class MainWindow
             Require(live?.Sample.MemoryTotalGb > 0, "Real memory sample available");
             Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
             if (cpuOnly) { await RunCpuCounterUiTests(output, Require, Screenshot); return; }
+            if (gpuOnly) { await RunGpuEngineUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (retentionOnly) { await RunRetentionSafetyUiTests(output, Require); return; }
             if (timingOnly) { await RunSamplingClockUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (historyOnly)
@@ -116,7 +118,7 @@ public partial class MainWindow
                         VramUsedGb = day < 7 ? 5 : 1, DiskTotalGb = 1024, DiskUsedGb = 200, MaxDiskPercent = 20 });
             });
             await RefreshAnalysis(); await WaitForAnalysis(() => report!.DemandTrends.Any(t => t.Key == "gpu" && t.Days == 7 && t.Status == "increased"));
-            Require(DemandTrendHeader.Text.Contains("显卡增加"), "Recent GPU demand shift reaches the UI");
+            Require(DemandTrendHeader.Text.Contains("核心/3D增加"), "Recent GPU demand shift reaches the UI with its legacy metric scope");
             Require(report!.Cards.Single(c => c.Key == "gpu").Status == "changed", "Recent workload overrides historical sizing in the UI");
             WindowCombo.SelectedItem = WindowCombo.Items.OfType<ComboBoxItem>().Single(x => x.Tag.ToString() == "90");
             await WaitForAnalysis(() => report!.WindowDays == 90);
