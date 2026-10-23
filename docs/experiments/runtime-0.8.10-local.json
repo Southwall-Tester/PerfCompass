@@ -1,0 +1,78 @@
+{
+    "Source":  "Local published executable; aggregate evidence only; raw telemetry not uploaded",
+    "Version":  "0.8.10+b8dd66068b784df3c7df8d428cf2b21e33fa2fce",
+    "ExecutableSha256":  "4AA31A47858EF169F9C8EDDE736E1AFA2E9CC1B909E1554CE9725AE41B8289A3",
+    "ProductCommit":  "b8dd66068b784df3c7df8d428cf2b21e33fa2fce",
+    "PublishedSelfTests":  {
+                               "Passed":  210,
+                               "ExitCode":  0
+                           },
+    "WpfFlowChecks":  142,
+    "RemoteCi":  {
+                     "Run":  39908492789,
+                     "Conclusion":  "success"
+                 },
+    "Telemetry":  {
+                      "Issues":  [
+
+                                 ],
+                      "WorkerExit":  0,
+                      "Pairs":  19,
+                      "ObservedSeconds":  41.8291432,
+                      "PhysicalTotalGiB":  {
+                                               "Pairs":  19,
+                                               "MeanAbsolute":  0,
+                                               "MaximumAbsolute":  0
+                                           },
+                      "CorePercentagePoints":  {
+                                                   "Pairs":  19,
+                                                   "MeanAbsolute":  0.15452200435639496,
+                                                   "MaximumAbsolute":  0.8605700017314106
+                                               },
+                      "CommitGiB":  {
+                                        "Pairs":  19,
+                                        "MeanAbsolute":  0.014930925871196547,
+                                        "MaximumAbsolute":  0.08411407470703125
+                                    },
+                      "PhysicalUsedGiB":  {
+                                              "Pairs":  19,
+                                              "MeanAbsolute":  0.011549497905530427,
+                                              "MaximumAbsolute":  0.09026718139648438
+                                          },
+                      "HighCoreLowTotal":  4,
+                      "ProbeExit":  0,
+                      "CpuPercentagePoints":  {
+                                                  "Pairs":  19,
+                                                  "MeanAbsolute":  0.2533877626884391,
+                                                  "MaximumAbsolute":  0.6068464922408943
+                                              },
+                      "RawSha256":  "E0A7F9C2A4F22064B5CC3F82191E2FF28ECE2229389A1F64027A613987525242",
+                      "WorkerObservedSeconds":  16.0042771,
+                      "InactiveHighCoreLowTotal":  0
+                  },
+    "ShortSoak":  {
+                      "ObservedSeconds":  10.0934563,
+                      "RequestedSeconds":  10,
+                      "Heartbeats":  5,
+                      "ChecksPassed":  true,
+                      "CollectorStopped":  true,
+                      "SavedSamples":  2,
+                      "Status":  "completed"
+                  },
+    "EarlyStop":  {
+                      "ObservedSeconds":  10.4014898,
+                      "RequestedSeconds":  60,
+                      "ChecksPassed":  false,
+                      "CollectorStopped":  true,
+                      "Status":  "stopped",
+                      "ErrorLogExists":  false
+                  },
+    "FirstEightHourAttempt":  {
+                                  "ProcessLive":  false,
+                                  "SystemEvidence":  "Windows recorded an unexpected reboot at 2026-10-23 14:18 local and bugcheck 0x116. Cause and relation to this process are unproven.",
+                                  "ChecksPassed":  false,
+                                  "State":  "missing-terminal-result"
+                              },
+    "EightHourCompleted":  false,
+    "Scope":  "One local machine. Shared-kernel counter agreement is not independent physical truth, cross-hardware accuracy, task coverage, or long-term stability. Stopped or missing terminal results do not pass."
+}
