@@ -11,7 +11,7 @@ public sealed class Collector : IDisposable
 {
     private readonly Computer computer = new() { IsCpuEnabled = true, IsGpuEnabled = true };
     private readonly LocalStore store;
-    private ProcPerf[]? previous;
+    private CpuCounterFrame? previous;
     private readonly Dictionary<int, (TimeSpan Cpu, long Start)> processes = new();
     private readonly SamplingClock clock;
     private long? previousAppsTimestamp;
@@ -23,7 +23,9 @@ public sealed class Collector : IDisposable
     public string HardwareId { get; private set; } = "";
     internal Action<IHardware>? HardwareUpdateOverride;
     internal volatile Func<SamplingInstant>? TimingReadOverride;
+    internal volatile Func<CpuCounterFrame?>? CpuReadOverride;
     private SamplingInstant ReadTime() => TimingReadOverride?.Invoke() ?? SamplingInstant.Now();
+    private CpuCounterFrame? ReadCpuTimes() => CpuReadOverride is { } readCpu ? readCpu() : CpuTimes();
     public Collector(LocalStore store)
     {
         this.store = store;
@@ -45,7 +47,7 @@ public sealed class Collector : IDisposable
         catch (Exception e) { store.Log(e); read?.Dispose(); write?.Dispose(); idle?.Dispose(); read = write = idle = null; }
         var mem = Memory();
         HardwareId = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes($"{CpuName}|{GpuName}|{mem.Total:0}|{Environment.ProcessorCount}")))[..16];
-        previous = CpuTimes();
+        previous = ReadCpuTimes();
         clock = new(ReadTime());
     }
     private IEnumerable<IHardware> Gpus() => computer.Hardware.Where(h => h.HardwareType is HardwareType.GpuNvidia or HardwareType.GpuAmd or HardwareType.GpuIntel)
@@ -55,20 +57,10 @@ public sealed class Collector : IDisposable
         var instant = ReadTime(); var tick = clock.Next(instant); var now = tick.Time;
         double dt = tick.Seconds; bool discontinuity = tick.Issue.Length > 0;
         if (discontinuity) { processes.Clear(); lastApps = []; previousAppsTimestamp = null; }
-        double? cpu = null, core = null;
-        var current = CpuTimes();
-        if (!discontinuity && current != null && previous != null && current.Length == previous.Length)
-        {
-            var loads = new List<double>();
-            for (int i = 0; i < current.Length; i++)
-            {
-                long total = current[i].Kernel + current[i].User - previous[i].Kernel - previous[i].User;
-                long idleDelta = current[i].Idle - previous[i].Idle;
-                if (total > 0) loads.Add(Math.Clamp((1 - (double)idleDelta / total) * 100, 0, 100));
-            }
-            if (loads.Count > 0) { cpu = loads.Average(); core = loads.Max(); }
-        }
-        previous = current;
+        var current = ReadCpuTimes();
+        var cpuLoads = discontinuity ? new CpuLoads(null, null) : CpuLoads.Calculate(previous, current);
+        double? cpu = cpuLoads.Total, core = cpuLoads.Maximum;
+        previous = CpuLoads.Complete(current) ? current : null;
         var sensors = HardwareSnapshot.Capture(computer.Hardware, store.Log, HardwareUpdateOverride);
         var cpuHw = computer.Hardware.FirstOrDefault(h => h.HardwareType == HardwareType.Cpu);
         var gpuHw = Gpus().FirstOrDefault();
@@ -122,23 +114,39 @@ public sealed class Collector : IDisposable
             MaxDiskPercent = disks.Count > 0 ? disks.Max(d => d.Percent) : 0,
             DiskUsedGb = disks.Sum(d => d.UsedGb), DiskTotalGb = disks.Sum(d => d.TotalGb)
         };
-        return new(sample, CpuName, GpuName, sensorStatus, disks, lastApps) { SensorFailures = sensors.Failures };
+        return new(sample, CpuName, GpuName, sensorStatus, disks, lastApps)
+        {
+            SensorFailures = sensors.Failures,
+            CpuObservationIssue = !discontinuity && !cpu.HasValue
+                ? "CPU 计时不完整或尚未建立基线，本次整机与最忙单核占用未知；正在重建基线。其他指标独立采集。" : ""
+        };
     }
-    public void ResetTiming() { clock.Reset(ReadTime()); previous = CpuTimes(); processes.Clear(); previousAppsTimestamp = null; lastApps = []; }
+    public void ResetTiming() { clock.Reset(ReadTime()); previous = ReadCpuTimes(); processes.Clear(); previousAppsTimestamp = null; lastApps = []; }
     public void Dispose() { computer.Close(); read?.Dispose(); write?.Dispose(); idle?.Dispose(); }
 
     [StructLayout(LayoutKind.Sequential)] private struct ProcPerf { public long Idle, Kernel, User, Dpc, Interrupt; public uint InterruptCount; }
     [DllImport("ntdll.dll")] private static extern int NtQuerySystemInformation(int infoClass, IntPtr info, int length, out int returned);
-    private static ProcPerf[]? CpuTimes()
+    [DllImport("kernel32.dll")] private static extern uint GetActiveProcessorCount(ushort group);
+    [DllImport("kernel32.dll")] private static extern ushort GetActiveProcessorGroupCount();
+    private static CpuCounterFrame? CpuTimes()
     {
-        int size = Marshal.SizeOf<ProcPerf>(); int length = size * Math.Max(256, Environment.ProcessorCount);
+        uint expected = GetActiveProcessorCount(0xffff); ushort groups = GetActiveProcessorGroupCount();
+        // Bound allocation and refuse a changing/incomplete topology. The process's
+        // affinity-limited Environment.ProcessorCount is not the machine count.
+        if (expected is 0 or > 65536 || groups == 0) return null;
+        int size = Marshal.SizeOf<ProcPerf>(); int length = checked(size * Math.Max(256, (int)expected));
         var ptr = Marshal.AllocHGlobal(length);
         try
         {
-            if (NtQuerySystemInformation(8, ptr, length, out int actual) != 0) return null;
-            var result = new ProcPerf[actual / size];
-            for (int i = 0; i < result.Length; i++) result[i] = Marshal.PtrToStructure<ProcPerf>(ptr + i * size);
-            return result;
+            if (NtQuerySystemInformation(8, ptr, length, out int actual) != 0 || actual <= 0 || actual > length || actual % size != 0
+                || actual / size != expected || GetActiveProcessorCount(0xffff) != expected || GetActiveProcessorGroupCount() != groups) return null;
+            var result = new ProcessorTimes[actual / size];
+            for (int i = 0; i < result.Length; i++)
+            {
+                var value = Marshal.PtrToStructure<ProcPerf>(ptr + i * size);
+                result[i] = new(value.Idle, value.Kernel, value.User);
+            }
+            return new((int)expected, groups, result);
         }
         finally { Marshal.FreeHGlobal(ptr); }
     }

@@ -368,6 +368,7 @@ public static partial class SelfTests
         RunDataProtectionTests(Check, Assert);
         RunBackgroundSettingsTests(Check, Assert);
         RunHardwareSnapshotTests(Check, Assert);
+        RunCpuCounterTests(Check, Assert, Fixture);
         RunHistoryQualityTests(Check, Assert, Fixture);
         RunHistoryIntervalTests(Check, Assert, Fixture);
         RunDataRootLeaseTests(Check, Assert);

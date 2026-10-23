@@ -167,6 +167,8 @@ public partial class MainWindow : Window
         SensorLabel.Text = snapshot.SensorStatus;
         SensorHealthBanner.Text = snapshot.SensorFailures.Length == 0 ? "" : "本次传感器更新失败：" + string.Join("、", snapshot.SensorFailures) + "。对应读数留空，基础采集继续；下次自动重试。";
         SensorHealthBanner.Visibility = snapshot.SensorFailures.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
+        CpuObservationBanner.Text = snapshot.CpuObservationIssue;
+        CpuObservationBanner.Visibility = snapshot.CpuObservationIssue.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
         SamplingTimingBanner.Text = SamplingClock.Describe(s.SamplingIssue);
         SamplingTimingBanner.Visibility = s.SamplingIssue.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         RecordState.Text = "● " + (s.SamplingIssue.Length > 0 ? "采样时间中断" : s.Active ? "正在记录 · 有效使用" : "正在记录 · 空闲");

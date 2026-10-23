@@ -14,7 +14,8 @@ public partial class MainWindow
         bool historyOnly = Environment.GetCommandLineArgs().Contains("--ui-test-history-only");
         bool timingOnly = Environment.GetCommandLineArgs().Contains("--ui-test-timing-only");
         bool retentionOnly = Environment.GetCommandLineArgs().Contains("--ui-test-retention-only");
-        var output = Path.GetFullPath(retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
+        bool cpuOnly = Environment.GetCommandLineArgs().Contains("--ui-test-cpu-only");
+        var output = Path.GetFullPath(cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
         var results = new List<string>();
         File.WriteAllText(Path.Combine(output, "results.txt"), "RUNNING " + DateTimeOffset.Now.ToString("O"));
         void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); File.AppendAllText(Path.Combine(output, "results.txt"), "\n" + results[^1]); if (!value) throw new Exception(name); }
@@ -39,6 +40,7 @@ public partial class MainWindow
             Require(live?.Sample.Cpu is >= 0 and <= 100, "Real CPU sample available");
             Require(live?.Sample.MemoryTotalGb > 0, "Real memory sample available");
             Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
+            if (cpuOnly) { await RunCpuCounterUiTests(output, Require, Screenshot); return; }
             if (retentionOnly) { await RunRetentionSafetyUiTests(output, Require); return; }
             if (timingOnly) { await RunSamplingClockUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (historyOnly)
@@ -60,6 +62,7 @@ public partial class MainWindow
             File.WriteAllText(Path.Combine(output, "hardware.json"), JsonSerializer.Serialize(live, new JsonSerializerOptions { WriteIndented = true }));
             await RunSamplingClockUiTests(output, Require, Screenshot, WaitForAnalysis);
             await RunHardwareSnapshotUiTests(output, Require, Screenshot);
+            await RunCpuCounterUiTests(output, Require, Screenshot);
             PauseButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
             Require(paused && PauseButton.Content.ToString() == "继续记录", "Pause button changes collection state");
             int before = store.Read(7).Count(); await Task.Delay(11000);
@@ -139,8 +142,19 @@ public partial class MainWindow
             Require(new FileInfo(Path.Combine(output, "samples.csv")).Length > 1000, "CSV exported");
             PauseButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
             Require(!paused, "Resume button restores recording");
-            DateTimeOffset resumeAt = DateTimeOffset.Now; await Task.Delay(14000);
-            Require(store.Read(7).Any(s => s.Time > resumeAt && s.Seconds <= 15), "Resume excludes pause duration");
+            DateTimeOffset resumeAt = DateTimeOffset.Now;
+            var resumeWatch = System.Diagnostics.Stopwatch.StartNew(); Sample[] resumed = [];
+            while (resumeWatch.Elapsed.TotalSeconds < 30)
+            {
+                resumed = store.Read(7, collector!.HardwareId).Where(s => s.Time > resumeAt).ToArray();
+                if (resumed.Any(s => s.Seconds > 0)) break;
+                await Task.Delay(200);
+            }
+            File.WriteAllText(Path.Combine(output, "resume-observation.json"), JsonSerializer.Serialize(new
+            { ResumeAt = resumeAt, WaitedSeconds = resumeWatch.Elapsed.TotalSeconds, Samples = resumed.Select(s => new { s.Time, s.Seconds, s.SamplingIssue }) }));
+            Require(resumed.Any(s => s.Seconds is > 0 and <= 15)
+                && resumed.All(s => s.Seconds is >= 0 and <= 15 && s.Time.AddSeconds(-s.Seconds) >= resumeAt.AddMilliseconds(-1)),
+                "Resume excludes pause duration");
             SettingsNav.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
             FutureBox.Text = "准备做 AI";
             ParseNeedsButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));

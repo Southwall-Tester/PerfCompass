@@ -53,6 +53,7 @@ public record Sample
 public record LiveSnapshot(Sample Sample, string CpuName, string GpuName, string SensorStatus, List<DiskInfo> Disks, List<AppUsage> Apps)
 {
     public string[] SensorFailures { get; init; } = [];
+    public string CpuObservationIssue { get; init; } = "";
 }
 public record Advice(string Key, string Name, string Status, string Title, string Evidence, string Suggestion, string Limits);
 public record HistoryPoint(DateTimeOffset Time, double? Cpu, double? Memory, double? Gpu);
@@ -94,7 +95,7 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public string HardwareId { get; init; } = "";
     public bool RepresentativeConfirmed { get; init; }
     public string CoverageMessage { get; init; } = "";
-    public string MethodVersion { get; init; } = "1.9";
+    public string MethodVersion { get; init; } = "1.10";
     public HistoryQuality HistoryQuality { get; init; } = HistoryQuality.Unchecked;
     public int SamplingGapCount { get; init; }
     public string SamplingGapSummary => SamplingGapCount > 0 ? $"本范围记录到 {SamplingGapCount} 次采样中断；中断段未计入有效使用，也未作为空闲负载。" : "";
