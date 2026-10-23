@@ -1,0 +1,39 @@
+﻿{
+    "Version":  "0.8.17+0c32692a2ca99b2b17a7ff5782980e583a82fdd4",
+    "MethodVersion":  "1.15",
+    "ProductCommit":  "0c32692a2ca99b2b17a7ff5782980e583a82fdd4",
+    "ExecutableSha256":  "D37DBA81A801E099D2DDE4181EFA9D8F4BD355E78D0DD3E3A1902E8C504BE293",
+    "Checks":  [
+                   {
+                       "Name":  "SelfTests",
+                       "Completed":  true,
+                       "Exit":  0,
+                       "Passed":  394,
+                       "Failed":  0
+                   },
+                   {
+                       "Name":  "FullWpf",
+                       "Completed":  true,
+                       "Exit":  0,
+                       "Passed":  145,
+                       "Failed":  0
+                   },
+                   {
+                       "Name":  "ObservationWpf",
+                       "Completed":  true,
+                       "Exit":  0,
+                       "Passed":  44,
+                       "Failed":  0
+                   }
+               ],
+    "Ci":  {
+               "Id":  39981072625,
+               "Status":  "completed",
+               "Conclusion":  "success",
+               "Head":  "0c32692a2ca99b2b17a7ff5782980e583a82fdd4",
+               "Url":  "https://github.com/Southwall-Tester/PerfCompass/actions/runs/39981072625"
+           },
+    "InitialFullObservation":  "145 result checks passed; process exit status was not retained after the 150-second observation deadline. Original process was confirmed absent before the final run in a new empty data directory.",
+    "Scope":  "Synthetic analysis and native WPF flows in isolated empty directories; real startup collection separate. No long-term or cross-hardware accuracy claim.",
+    "PersonalHistoryUnchanged":  true
+}
