@@ -1,0 +1,62 @@
+{
+    "Source":  "Local published executable and isolated development validation; no user history included",
+    "Version":  "0.8.12+e93b08e1146c33dbaa027a32a11352ee115985ac",
+    "ProductCommit":  "e93b08e1146c33dbaa027a32a11352ee115985ac",
+    "ExecutableSha256":  "D9BE5BA80701A3F6BA02D587D8614B9362FCD9DA7482548FEC7FF8702E26BB6C",
+    "PublishedSelfTests":  {
+                               "Exit":  0,
+                               "Failed":  0,
+                               "Passed":  265
+                           },
+    "FullWpfFlow":  {
+                        "Exit":  0,
+                        "Build":  "Local Release build before product commit; no subsequent product source changes",
+                        "Failed":  0,
+                        "Passed":  145
+                    },
+    "PublishedGpuFocusedWpfFlow":  {
+                                       "Scope":  "Injected engine readings and isolated synthetic history; recovery uses actual sensors; no physical GPU workload or driver fault",
+                                       "Exit":  0,
+                                       "SharedHardwarePrerequisites":  3,
+                                       "Failed":  0,
+                                       "Passed":  12
+                                   },
+    "PublishedShortSoak":  {
+                               "Exit":  0,
+                               "ObservedSeconds":  10.2832563,
+                               "ErrorLogExists":  false,
+                               "Heartbeats":  5,
+                               "HistoryIssues":  0,
+                               "SavedSamples":  1,
+                               "ChecksPassed":  true,
+                               "Scope":  "Ten-second completion check run alongside other isolated validation; not an overhead benchmark or long-run stability proof",
+                               "TimingGaps":  0,
+                               "CollectorStopped":  true,
+                               "Status":  "completed"
+                           },
+    "RemoteCi":  {
+                     "Run":  39942014816,
+                     "NativeCpuRecovery":  "success",
+                     "Conclusion":  "success",
+                     "TelemetryRecording":  "success",
+                     "BuildTestPublish":  "success",
+                     "ProductCommit":  "e93b08e1146c33dbaa027a32a11352ee115985ac",
+                     "NativeGpuEngineScope":  "success"
+                 },
+    "EarlierVersionLongRunSnapshot":  {
+                                          "Version":  "0.8.10+b8dd660",
+                                          "RequestedSeconds":  28800,
+                                          "State":  "running",
+                                          "ElapsedSeconds":  4113.0215763,
+                                          "ProcessLive":  true,
+                                          "BinaryMatches":  true,
+                                          "Scope":  "Unfinished earlier frozen binary; cannot validate 0.8.12",
+                                          "Updated":  "2026-10-23T10:54:21.9715512+00:00"
+                                      },
+    "Limits":  [
+                   "Known sensor categories only; complete category is not all GPU engines",
+                   "LHM internal cached values and calendar-time sampling remain unverified",
+                   "No busy physical GPU workload, cross-hardware calibration or long-term stability conclusion",
+                   "Published focused and full UI flows share prerequisites; counts must not be added"
+               ]
+}

@@ -10,7 +10,8 @@
 - 36例真实8B输出的开发审阅已完成：7完整、11遗漏、18错误、0失败；绑定原始文件摘要。开发代理审阅不是独立人工标注或通用准确率，24例扩展输入尚未运行。没有默认启用模型或重新启动服务，数量转换修复不提升原模型成绩；详见 `SEMANTIC_EVALUATION.md`。
 - 本机Release构建0警告、0错误；265项产品回归通过。新增45项涵盖标签分类、部分读数、时长/峰值、同名节点与来源变化、真实历史读取/嵌套重复字段诊断、近期压力/周月对照、比较范围失效、具体核对条目及HTML/CSV往返。原硬件故障fixture也补充了分引擎清空、其他设备独立与恢复断言。这些是合成输入与开发回归，不是实际驱动故障或跨硬件验证。
 - 完整原生WPF流程145项通过，实际进程退出0。另有GPU定向流程12项通过，公共硬件前置与完整流程重叠，不相加计算。定向流程从生产Collector注入计算96%、编码88%、无效功率标签及部分缺失，验证显示后恢复真实采集；之后从独立目录的720条明确标记合成记录，经实际HistoryAnalysis、控件绑定和导出回读验证。截图已查看，真实恢复节点清单只保留本机。真实空闲节点读数不证明繁忙负载准确性，也不代表用户任务覆盖。
-- 正式便携包和远端CI结果待后续核对。旧版0.8.10的冻结八小时试验仍在运行，不能验证本轮EXE；尚无本版本长期稳定性、跨硬件或实际繁忙编解码/计算负载的独立实测结论。
+- 正式便携包 `0.8.12+e93b08e` 的265项自检、12项GPU定向原生检查均实际退出0。已查看正式包的分引擎历史与960×640窗口截图：已观测重负载优先显示，类别完整与部分缺失说明可见。10秒短流程完成，保存1条历史、5次心跳，无历史异常/计时间断/错误日志，Collector正常结束；该次与其他隔离验证并行，不作为开销基准或长期稳定性证明。产品提交的[远端CI](https://github.com/Southwall-Tester/PerfCompass/actions/runs/39942014816)已通过，GPU定向、CPU恢复和参考读数记录步骤均实际成功。摘要见 `experiments/runtime-0.8.12-local.json`。
+- 旧版0.8.10冻结八小时试验在本次核对时仍为running，进程与文件摘要匹配，尚未完成，不能验证本轮EXE。仍无本版本长期稳定性、跨硬件或实际繁忙编解码/计算负载的独立实测结论。
 
 参考：[Microsoft GPU引擎统计说明](https://devblogs.microsoft.com/directx/gpus-in-the-task-manager/)、[锁定版本LibreHardwareMonitor的Nvidia采样](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/blob/3d331e3370efb858411f19511373eff65a218701/LibreHardwareMonitorLib/Hardware/Gpu/NvidiaGpu.cs)、[D3D节点与日历计时](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/blob/3d331e3370efb858411f19511373eff65a218701/LibreHardwareMonitorLib/Hardware/D3DDisplayDevice.cs)。依赖内部查询失败但外层更新正常返回时仍可能保留缓存，本次分引擎扩展不宣称解决该问题。
 
