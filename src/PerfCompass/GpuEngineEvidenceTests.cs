@@ -78,7 +78,7 @@ public static partial class SelfTests
                 store.Append(merged);
                 var saved = store.Read(7, hardware).Single(); var report = Analyze(store);
                 var profile = report.GpuEngineProfiles.Single(p => p.Kind == "copy");
-                assert(saved.GpuEngines!.Single().Load == value && saved.GpuEngines.Single().Peak == value
+                assert(saved.GpuEngines!.Single().Load == value && saved.GpuEngines!.Single().Peak == value
                     && report.SampleCount == 1 && !report.HistoryQuality.HasIssues
                     && profile.P95 == value && profile.Peak == value && Near(profile.ObservedHours, seconds / 3600),
                     "newly written real-value regression row was rejected by the production history path");
@@ -115,7 +115,7 @@ public static partial class SelfTests
                     if (i == 3) assert(Near(engine.Load, .25), "bounding the mean replaced unequal duration weights with an endpoint or simple average");
                     var secondMerge = SampleBatch.Merge([merged]);
                     assert(secondMerge.GpuEngines!.Single().Load == engine.Load
-                        && secondMerge.GpuEngines.Single().Peak == engine.Peak && GpuEngineEvidence.Valid(secondMerge),
+                        && secondMerge.GpuEngines!.Single().Peak == engine.Peak && GpuEngineEvidence.Valid(secondMerge),
                         "remerging an aggregate introduced another mean/peak contradiction");
                     store.Append(secondMerge);
                 }
