@@ -31,9 +31,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-notices.ps1
 源码包附有独立的 `NuGet.Config`。解压后可使用 .NET 10 SDK 构建库：
 
 ```powershell
-dotnet restore LibreHardwareMonitorLib/LibreHardwareMonitorLib.csproj --configfile NuGet.Config --locked-mode -r win-x64
-dotnet build LibreHardwareMonitorLib/LibreHardwareMonitorLib.csproj -c Release -r win-x64 --no-restore
+dotnet restore LibreHardwareMonitorLib/LibreHardwareMonitorLib.csproj --configfile NuGet.Config --locked-mode -r win-x64 -p:PublishSingleFile=true
+dotnet build LibreHardwareMonitorLib/LibreHardwareMonitorLib.csproj -c Release -r win-x64 --no-restore -p:PublishSingleFile=true
 ```
+
+发布源码包的锁文件包含 `Microsoft.NET.ILLink.Tasks`，两条命令中的 `PublishSingleFile` 属性用于匹配生成该锁时的依赖图；这里执行库的 build，不是将库发布为单文件程序。省略此属性的锁定还原会报告 NU1004，不能据此修改或忽略锁文件。
 
 首次还原需要下载锁文件中指定的 NuGet 依赖。包内 `Resources/PawnIo/*.bin` 是构建所需的上游资源，不是应排除的 `bin/` 构建目录。
 
