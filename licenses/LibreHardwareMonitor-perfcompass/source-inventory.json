@@ -5,9 +5,9 @@
     "UpstreamVersion":  "0.9.6",
     "PatchedVersion":  "0.9.6-perfcompass.1",
     "PerfCompassRepository":  "https://github.com/Southwall-Tester/PerfCompass",
-    "PerfCompassCheckoutCommit":  "74204eabf92ac3e240e6bce7fd11938d50713695",
-    "SourceTreeDirty":  true,
-    "SourceSnapshotSha256":  "1a9cfd391c4c67bebbf1d2d9bc8e5bbeb8b5c2500a85d4888508e35c7cc06385",
+    "PerfCompassCheckoutCommit":  "d866847d25c1108b28e34d9b4054aab30ea5dead",
+    "SourceTreeDirty":  false,
+    "SourceSnapshotSha256":  "e6a7b5e3279f4d11adacc38a109ae984f6457844b66ef486daa2acfad5285849",
     "Files":  [
                   {
                       "Path":  ".gitattributes",
@@ -995,8 +995,8 @@
                   },
                   {
                       "Path":  "LibreHardwareMonitorLib/packages.lock.json",
-                      "Bytes":  14702,
-                      "Sha256":  "d042b165c029b6eeafec410f309c3c2eb4ca082c8d85fc8ed8e3894c55d3d2f6",
+                      "Bytes":  14962,
+                      "Sha256":  "eaf0b0b26a6da782518e252b68b5efa2998be92b080d0c81dbdbc93972f1efe1",
                       "Origin":  "added"
                   },
                   {
@@ -1175,8 +1175,8 @@
                   },
                   {
                       "Path":  "PATCHES.md",
-                      "Bytes":  5042,
-                      "Sha256":  "2f155e12baf58f2b40069455d292b2d1ac3ef0e2af73ae37ae8190d7b6631808",
+                      "Bytes":  5402,
+                      "Sha256":  "c535633ea3935b8a09a17b94df0c90758204dc9be9f149203573f2059df5cd68",
                       "Origin":  "metadata"
                   },
                   {

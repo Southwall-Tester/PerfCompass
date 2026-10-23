@@ -1,0 +1,106 @@
+{
+    "Source":  "Local published executable and isolated validation; no user history or raw device identity included",
+    "Version":  "0.8.13+60e980247ec1051c19a2e1ba0cf47f8e16f97a79",
+    "ProductCommit":  "60e980247ec1051c19a2e1ba0cf47f8e16f97a79",
+    "ExecutableSha256":  "9701D62017355F381C2C459A4D37604675ABAC81C15DEC76B49D86F562AB810B",
+    "Build":  {
+                  "Warnings":  0,
+                  "Errors":  0
+              },
+    "PublishedSelfTests":  {
+                               "Passed":  320,
+                               "Failed":  0,
+                               "Exit":  0
+                           },
+    "FullWpfFlow":  {
+                        "Passed":  145,
+                        "Build":  "Local Release before final product commit; subsequent application changes were only nullable annotations in regression fixtures",
+                        "Failed":  0,
+                        "Exit":  0
+                    },
+    "PublishedGpuFocusedWpfFlow":  {
+                                       "Passed":  12,
+                                       "Scope":  "Injected engine values, explicitly synthetic history and actual post-restore sensor readings",
+                                       "SharedHardwarePrerequisites":  3,
+                                       "Failed":  0,
+                                       "Exit":  0
+                                   },
+    "PublishedGpuFreshnessWpfFlow":  {
+                                         "Passed":  14,
+                                         "Scope":  "Production native-query boundary injection and actual recovery; not a physical driver fault or workload accuracy test",
+                                         "SharedHardwarePrerequisites":  3,
+                                         "Failed":  0,
+                                         "Exit":  0
+                                     },
+    "PublishedShortSoak":  {
+                               "Exit":  0,
+                               "ObservedSeconds":  11.0004091,
+                               "ErrorLogExists":  false,
+                               "Heartbeats":  5,
+                               "HistoryIssues":  0,
+                               "SavedSamples":  1,
+                               "ChecksPassed":  true,
+                               "Scope":  "Requested 10 seconds alongside other isolated validation; not an overhead benchmark or long-run validation",
+                               "TimingGaps":  0,
+                               "CollectorStopped":  true,
+                               "Status":  "completed"
+                           },
+    "HardwareSource":  {
+                           "UpstreamCommit":  "3d331e3370efb858411f19511373eff65a218701",
+                           "PatchedVersion":  "0.9.6-perfcompass.1",
+                           "SnapshotSha256":  "e6a7b5e3279f4d11adacc38a109ae984f6457844b66ef486daa2acfad5285849",
+                           "SourceTreeDirty":  false,
+                           "IndependentBuild":  {
+                                                    "Scope":  "Matching published source and lock files built from an isolated archive; final archive additionally updates build instructions and commit metadata",
+                                                    "RequiresPublishSingleFileProperty":  true,
+                                                    "Errors":  0,
+                                                    "RestoreExit":  0,
+                                                    "BuildExit":  0,
+                                                    "Warnings":  0
+                                                },
+                           "CheckoutCommit":  "d866847d25c1108b28e34d9b4054aab30ea5dead",
+                           "Files":  198,
+                           "ProvenanceChecks":  6,
+                           "ArchiveSha256":  "e6ffca35bbd34ba0383b1d4875ff180206fb9ef6ffb338ca2e7e7c84131245de"
+                       },
+    "NativeGpuIdentityProbe":  {
+                                   "Scope":  "One local NVIDIA adapter via NVAPI, Windows and NVML; no multi-card or accuracy claim",
+                                   "Matched":  true
+                               },
+    "UiDirectoryGuard":  {
+                             "NonemptyDirectoryExit":  3,
+                             "MissingExplicitDirectoryExit":  3,
+                             "ExistingMarkerPreserved":  true
+                         },
+    "RemoteCi":  {
+                     "Run":  39951889588,
+                     "NativeCpuRecovery":  "success",
+                     "Conclusion":  "success",
+                     "TelemetryRecording":  "success",
+                     "BuildTestPublish":  "success",
+                     "ProductCommit":  "60e980247ec1051c19a2e1ba0cf47f8e16f97a79",
+                     "NativeGpuEngineScope":  "success"
+                 },
+    "EarlierVersionLongRunSnapshot":  {
+                                          "Version":  "0.8.10+b8dd660",
+                                          "SleepResumeConfirmedByWindowsEvents":  true,
+                                          "RequestedSeconds":  28800,
+                                          "State":  "running",
+                                          "ElapsedSeconds":  9320.7372231,
+                                          "ProcessLive":  true,
+                                          "StaleSamples":  1,
+                                          "BinaryMatches":  true,
+                                          "ProtectionChecks":  36,
+                                          "Scope":  "Unfinished older binary encountered sleep and RTC time correction; unchanged cumulative criteria cannot pass; does not validate this version",
+                                          "ExpectedChecksPassed":  false,
+                                          "ObservationGaps":  1,
+                                          "Updated":  "2026-10-23T12:20:57.9116573+00:00"
+                                      },
+    "Limits":  [
+                   "API success does not prove driver-internal freshness or physical accuracy",
+                   "Known node categories and names are not all GPU capabilities or stable cross-driver identities",
+                   "No AMD or Intel discrete physical validation, multi-card experiment or busy GPU independent accuracy measurement",
+                   "Full and focused UI counts overlap and must not be added",
+                   "No completed passing long-run validation for this version"
+               ]
+}
