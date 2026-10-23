@@ -56,7 +56,8 @@ public static partial class SelfTests
         check("Reset and offset changes establish a fresh baseline without counting paused time", () =>
         {
             var clock = new SamplingClock(At(0, 0)); clock.Reset(At(600, 600));
-            var tick = clock.Next(At(602, 602) with { Time = origin.AddSeconds(602).ToOffset(TimeSpan.FromHours(-7)) });
+            var differentOffset = origin.Offset == TimeSpan.Zero ? TimeSpan.FromHours(1) : TimeSpan.Zero;
+            var tick = clock.Next(At(602, 602) with { Time = origin.AddSeconds(602).ToOffset(differentOffset) });
             assert(tick.Seconds == 2 && tick.Issue == "", "pause or a UTC-equivalent time-zone offset became elapsed usage");
         });
         check("Elapsed schedules keep their cadence independently of calendar clock changes", () =>

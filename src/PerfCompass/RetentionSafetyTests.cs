@@ -121,7 +121,8 @@ public static partial class SelfTests
         check("Time-zone changes and a later read-only file cannot silently advance automatic deletion", () =>
         {
             var instant = At(0, 0); var s = new LocalStore(Path.Combine(Path.GetTempPath(), "PerfCompass-retention-zone-" + Guid.NewGuid().ToString("N")), () => instant);
-            string a = FileAt(s, -121), b = FileAt(s, -120); instant = At(2, 2) with { Time = origin.AddSeconds(2).ToOffset(TimeSpan.FromHours(-7)) }; s.Cleanup();
+            var differentOffset = origin.Offset == TimeSpan.Zero ? TimeSpan.FromHours(1) : TimeSpan.Zero;
+            string a = FileAt(s, -121), b = FileAt(s, -120); instant = At(2, 2) with { Time = origin.AddSeconds(2).ToOffset(differentOffset) }; s.Cleanup();
             assert(s.RetentionProtected && File.Exists(a) && File.Exists(b), "offset change was silently trusted");
             instant = At(3, 3); var preview = s.PreviewRetention(); File.SetAttributes(b, FileAttributes.ReadOnly);
             try { Reject(() => s.EnableRetention(preview)); assert(File.Exists(a) && File.Exists(b) && s.RetentionProtected, "read-only later file caused partial deletion"); }
