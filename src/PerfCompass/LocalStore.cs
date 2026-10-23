@@ -11,10 +11,12 @@ public sealed partial class LocalStore
     public string SettingsNotice { get; private set; } = "";
     public bool SettingsRecoveryPending { get; private set; }
     private string RecoveryMarker => Path.Combine(Root, "settings-recovery-pending.json");
-    public bool RetentionProtected => File.Exists(Path.Combine(Root, "restore-protection.json")) || SettingsRecoveryPending;
+    public bool RetentionProtected => retentionBlocked || File.Exists(Path.Combine(Root, "restore-protection.json")) || SettingsRecoveryPending;
     public static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = false };
-    public LocalStore(string root)
+    public LocalStore(string root) : this(root, SamplingInstant.Now) { }
+    internal LocalStore(string root, Func<SamplingInstant> timeSource)
     {
+        retentionTime = timeSource; retentionBaseline = timeSource();
         Root = Path.GetFullPath(root);
         Directory.CreateDirectory(root);
         string path = Path.Combine(Root, "settings.json"), previous = Path.Combine(Root, "settings.previous.json");
@@ -97,28 +99,7 @@ public sealed partial class LocalStore
         }
     }
     public IEnumerable<Sample> Read(int days, string? hardwareId = null) => ReadChecked(days, hardwareId, DateTimeOffset.Now, null);
-    public void Cleanup()
-    {
-        lock (gate)
-        {
-            if (RetentionProtected) return;
-            foreach (string file in ExpiredHistoryFiles()) File.Delete(file);
-        }
-    }
     internal T WithDataLock<T>(Func<T> operation) { lock (gate) return operation(); }
-    public string[] ExpiredHistoryFiles() => Directory.GetFiles(Root, "samples-*.jsonl").Concat(Directory.GetFiles(Root, "experience-*.jsonl"))
-        .Where(file => { string name = Path.GetFileNameWithoutExtension(file); string suffix = name.StartsWith("experience-", StringComparison.Ordinal) ? name[11..] : name[8..];
-            return DateTime.TryParseExact(suffix, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var date) && date.Date < DateTime.Today.AddDays(-Settings.RetentionDays); }).ToArray();
-    public void EnableRetention()
-    {
-        lock (gate)
-        {
-            if (SettingsRecoveryPending) throw new InvalidOperationException("请先核对并保存恢复的设置。");
-            string marker = Path.Combine(Root, "restore-protection.json");
-            if (File.Exists(marker)) File.Delete(marker);
-            Cleanup();
-        }
-    }
     public void AppendExperience(ExperienceEvent value)
     {
         lock (gate)

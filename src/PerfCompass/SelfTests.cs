@@ -372,6 +372,7 @@ public static partial class SelfTests
         RunHistoryIntervalTests(Check, Assert, Fixture);
         RunDataRootLeaseTests(Check, Assert);
         RunSamplingClockTests(Check, Assert);
+        RunRetentionSafetyTests(Check, Assert);
         Task.Run(() => RunTaskMeasurementTests(Check, Assert)).GetAwaiter().GetResult();
         Directory.CreateDirectory("artifacts");
         File.WriteAllLines("artifacts/self-tests.txt", log);

@@ -175,6 +175,7 @@ public static partial class SelfTests
             {
                 // Only files created in this uniquely named benchmark directory are removed.
                 foreach (string file in Directory.GetFiles(root, "samples-*.jsonl")) File.Delete(file);
+                File.Delete(Path.Combine(root, "retention-state.json"));
                 Directory.Delete(root);
             }
         });

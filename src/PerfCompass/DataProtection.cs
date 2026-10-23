@@ -8,11 +8,11 @@ public partial class MainWindow
     internal Action<DataProtectionWindow>? ProtectionWindowReady;
     private void RefreshDataProtection()
     {
-        DataProtectionLabel.Text = store.SettingsNotice + (store.RetentionProtected ? " 自动清理保护中，现存记录继续保留。" : "")
+        DataProtectionLabel.Text = store.SettingsNotice + (store.RetentionProtected ? " 自动清理保护中，现存记录继续保留。" + store.RetentionNotice : "")
             + "\n备份历史、需求和候选比较，恢复到新目录。";
         ConfirmRecoveredSettingsButton.Visibility = store.SettingsRecoveryPending ? Visibility.Visible : Visibility.Collapsed;
         RecoveryBanner.Visibility = store.RetentionProtected ? Visibility.Visible : Visibility.Collapsed;
-        RecoveryBanner.Text = store.SettingsRecoveryPending ? "设置恢复后需核对，原件已保留。请查看记录设置。" : "恢复数据保护中，历史自动清理已暂停。";
+        RecoveryBanner.Text = store.SettingsRecoveryPending ? "设置恢复后需核对，原件已保留。请查看记录设置。" : "历史自动清理已暂停，请在记录设置核对日期与到期文件。";
     }
     private void ConfirmRecoveredSettings_Click(object sender, RoutedEventArgs e)
     {

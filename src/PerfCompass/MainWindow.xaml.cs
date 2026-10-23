@@ -65,7 +65,7 @@ public partial class MainWindow : Window
         tray = new Forms.NotifyIcon { Text = "PerfCompass · 正在记录", Icon = System.Drawing.Icon.ExtractAssociatedIcon(Environment.ProcessPath!) ?? System.Drawing.SystemIcons.Application, Visible = true, ContextMenuStrip = menu };
         tray.DoubleClick += (_, _) => Dispatcher.Invoke(Restore);
         RefreshDataProtection();
-        if (store.SettingsRecoveryPending || store.RetentionProtected || Environment.GetCommandLineArgs().Contains("--paused"))
+        if (store.RequiresPausedStart || Environment.GetCommandLineArgs().Contains("--paused"))
         {
             TogglePause();
             Navigate("settings");
@@ -98,6 +98,7 @@ public partial class MainWindow : Window
             while (!stop.IsCancellationRequested)
             {
                 await Task.Delay(2000, stop.Token);
+                if (store.ObserveRetentionTime()) await Dispatcher.InvokeAsync(RefreshDataProtection);
                 if (paused || generation != Volatile.Read(ref recordingGeneration))
                 {
                     collector!.ResetTiming(); batch.Clear(); generation = Volatile.Read(ref recordingGeneration); continue;
@@ -181,6 +182,7 @@ public partial class MainWindow : Window
                 HistoryAnalysis.Analyze(store, settings, days, scene, hardwareId: id), store.ReadExperiences(days, id ?? "")), settings), settings));
             if (days != windowDays || scene != analysisScene || settings != store.Settings || id != collector?.HardwareId) { refreshRequested = true; return; }
             report = result;
+            RefreshDataProtection();
             HistoryQualityNotice.Visibility = result.HistoryQuality.HasNotices ? Visibility.Visible : Visibility.Collapsed;
             HistoryQualityNotice.Header = result.HistoryQuality.HasIssues ? $"历史记录异常 · {result.HistoryQuality.IssueCount} 处（点击查看位置）" : $"已排除重复记录 · {result.HistoryQuality.DuplicateCount} 条（点击查看位置）";
             HistoryQualityDetails.Text = result.HistoryQuality.Message + "\n" + result.HistoryQuality.Details + "\n原文件保留。可在记录设置备份，并从已核对的备份恢复到新目录。";

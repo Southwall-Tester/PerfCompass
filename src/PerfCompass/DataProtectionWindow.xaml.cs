@@ -30,7 +30,7 @@ public partial class DataProtectionWindow : Window
     }
     private void RefreshProtection()
     {
-        ProtectionLabel.Text = store.RetentionProtected ? "自动清理已暂停，现存记录继续保留。过旧记录不会因此被视为当前需求证据。" + (store.SettingsRecoveryPending ? "请先在主窗口核对并保存恢复的设置。" : "") : $"按当前设置保留最近 {store.Settings.RetentionDays} 天的历史。备份文件不受此处清理影响。";
+        ProtectionLabel.Text = store.RetentionProtected ? "自动清理已暂停，现存记录继续保留。" + store.RetentionNotice + (store.SettingsRecoveryPending ? "请先在主窗口核对并保存恢复的设置。" : "") : $"按当前设置保留最近 {store.Settings.RetentionDays} 天的历史。备份文件不受此处清理影响。";
         EnableRetentionButton.IsEnabled = store.RetentionProtected && !store.SettingsRecoveryPending && !Busy;
     }
     private void SetBusy(bool value)
@@ -94,17 +94,19 @@ public partial class DataProtectionWindow : Window
         try { LaunchRestored(restoredRoot); OperationStatus.Text = "已请求打开恢复目录，新的监测窗口初始暂停。"; }
         catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException) { OperationStatus.Text = "打开失败：" + ex.Message; }
     }
-    private void EnableRetention_Click(object sender, RoutedEventArgs e)
+    private async void EnableRetention_Click(object sender, RoutedEventArgs e)
     {
         if (Busy || !EnableRetentionButton.IsEnabled) return;
-        try
+        await Work("正在核对到期文件内容…", async token =>
         {
-            string[] files = store.ExpiredHistoryFiles();
-            string text = $"将重新启用最近 {store.Settings.RetentionDays} 天的自动清理。\n当前会删除 {files.Length} 个过期历史文件。\n" + (files.Length > 0 ? string.Join("\n", files.Select(Path.GetFileName).Order().Take(5)) + (files.Length > 5 ? "\n…" : "") + "\n" : "") + "删除无法撤销，请先保存备份。是否继续？";
-            if (!ConfirmCleanup(text)) return;
-            store.EnableRetention(); RefreshProtection(); OperationStatus.Text = "已重新启用自动清理。";
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException) { OperationStatus.Text = "清理未完成：" + ex.Message; }
+            var reviewed = await Task.Run(() => store.PreviewRetention(token), token);
+            string text = $"请先核对系统日期：{reviewed.Date}。\n将重新启用最近 {reviewed.Days} 天的自动清理。\n当前会删除 {reviewed.Files.Length} 个过期历史文件。\n" + (reviewed.Files.Length > 0 ? string.Join("\n", reviewed.Files.Select(f => f.Name).Take(5)) + (reviewed.Files.Length > 5 ? "\n…" : "") + "\n" : "") + "日期、名单与内容变化时需重新核对。校验阶段可取消，删除开始后无法取消本批次。删除无法撤销，请先保存备份。是否继续？";
+            token.ThrowIfCancellationRequested();
+            if (!ConfirmCleanup(text)) { OperationStatus.Text = "已取消清理，保护状态继续保留。"; return; }
+            OperationStatus.Text = "正在重新校验并清理核对文件…";
+            await Task.Run(() => store.EnableRetention(reviewed, token), token);
+            RefreshProtection(); OperationStatus.Text = "已按核对名单完成清理，并重新启用自动清理。";
+        });
     }
     private void Cancel_Click(object sender, RoutedEventArgs e) { cancellation?.Cancel(); }
     private void Close_Click(object sender, RoutedEventArgs e) => Close();

@@ -100,7 +100,7 @@ public static partial class SelfTests
             var reopened = new LocalStore(restored); reopened.Cleanup();
             assert(reopened.RetentionProtected && File.Exists(Path.Combine(restored, oldName)) && reopened.Read(7, "backup-fixture").Count() == 1, "restore deleted old data or lost current evidence");
             assert(reopened.Settings.FutureNeeds.Contains("中文需求") && reopened.ReadExperiences(7, "backup-fixture").Count == 1, "requirements or experience lost");
-            reopened.EnableRetention(); assert(!File.Exists(Path.Combine(restored, oldName)) && File.Exists(Path.Combine(source.Root, oldName)), "explicit cleanup crossed source boundary");
+            reopened.EnableRetention(reopened.PreviewRetention()); assert(!File.Exists(Path.Combine(restored, oldName)) && File.Exists(Path.Combine(source.Root, oldName)), "explicit cleanup crossed source boundary");
         });
         check("Restoring twice always creates separate directories", () =>
         {

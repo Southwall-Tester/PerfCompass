@@ -45,7 +45,7 @@ public static class DataBackup
             string device = part.Split('.')[0];
             if (Regex.IsMatch(device, @"^(CON|CONIN\$|CONOUT\$|PRN|AUX|NUL|COM[0-9¹²³]|LPT[0-9¹²³])$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) return false;
         }
-        if (parts.Length == 1) return path.ToLowerInvariant() is "settings.json" or "settings.previous.json" or "settings-recovery-pending.json" or "comparison.json"
+        if (parts.Length == 1) return path.ToLowerInvariant() is "settings.json" or "settings.previous.json" or "settings-recovery-pending.json" or "comparison.json" or "retention-state.json"
             || Regex.IsMatch(path, @"^(samples-|experience-)[^/]+\.jsonl$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
         return parts.Length == 2 && parts[0].ToLowerInvariant() is "measurements" or "recovery" && parts[1].EndsWith(".json", StringComparison.OrdinalIgnoreCase);
     }

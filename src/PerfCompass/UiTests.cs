@@ -13,7 +13,8 @@ public partial class MainWindow
     {
         bool historyOnly = Environment.GetCommandLineArgs().Contains("--ui-test-history-only");
         bool timingOnly = Environment.GetCommandLineArgs().Contains("--ui-test-timing-only");
-        var output = Path.GetFullPath(timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
+        bool retentionOnly = Environment.GetCommandLineArgs().Contains("--ui-test-retention-only");
+        var output = Path.GetFullPath(retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
         var results = new List<string>();
         File.WriteAllText(Path.Combine(output, "results.txt"), "RUNNING " + DateTimeOffset.Now.ToString("O"));
         void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); File.AppendAllText(Path.Combine(output, "results.txt"), "\n" + results[^1]); if (!value) throw new Exception(name); }
@@ -38,6 +39,7 @@ public partial class MainWindow
             Require(live?.Sample.Cpu is >= 0 and <= 100, "Real CPU sample available");
             Require(live?.Sample.MemoryTotalGb > 0, "Real memory sample available");
             Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
+            if (retentionOnly) { await RunRetentionSafetyUiTests(output, Require); return; }
             if (timingOnly) { await RunSamplingClockUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (historyOnly)
             {
@@ -193,6 +195,7 @@ public partial class MainWindow
             await RunDataProtectionUiTests(output, Require);
             await RunSettingsFailureUiTests(output, Require, Screenshot, WaitForAnalysis);
             await RunHistoryQualityUiTests(output, Require, Screenshot, WaitForAnalysis);
+            await RunRetentionSafetyUiTests(output, Require);
             File.WriteAllText(Path.Combine(output, "NOTICE.txt"), "01-live.png and hardware.json use real telemetry. Populated analysis and historical captures use isolated synthetic test data; they are not a recommendation for this computer.");
         }
         catch (Exception e) { store.Log(e); results.Add("FAIL " + e); }

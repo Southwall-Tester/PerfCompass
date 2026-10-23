@@ -69,9 +69,11 @@ public partial class MainWindow
         {
             string? reviewed = null; protection.ConfirmCleanup = text => { reviewed = text; return false; };
             Click(protection.EnableRetentionButton);
+            await protection.Completion;
             require(File.Exists(old) && restoredStore.RetentionProtected && reviewed?.Contains("1 个过期历史文件") == true, "Cleanup previews expired file count and cancellation keeps protected records");
             protection.EnableRetentionButton.BringIntoView(); await Capture(protection, "20-restored-retention");
             protection.ConfirmCleanup = _ => true; Click(protection.EnableRetentionButton);
+            await protection.Completion;
             require(!File.Exists(old) && !restoredStore.RetentionProtected && !protection.EnableRetentionButton.IsEnabled, "Explicit cleanup applies only to the isolated restored directory");
         }
         finally { protection.Close(); }
