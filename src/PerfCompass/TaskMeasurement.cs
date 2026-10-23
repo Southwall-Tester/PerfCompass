@@ -37,10 +37,7 @@ public static class TaskMeasurements
     {
         Need(result != null && result.Version == Version && result.Recipe != null && result.Machine != null && result.Attempts != null, "测量文件版本或内容无效。");
         var r = result.Recipe; var m = result.Machine;
-        Need(Text(r.Name, 150) && !string.IsNullOrWhiteSpace(r.Name) && Text(r.ExecutableName, 200) && !string.IsNullOrWhiteSpace(r.ExecutableName) && Hash(r.ExecutableSha256)
-            && Text(r.Arguments, 4000) && Text(r.SoftwareVersion, 200) && !string.IsNullOrWhiteSpace(r.SoftwareVersion) && Text(r.InputName, 200) && Hash(r.InputSha256)
-            && Text(r.Procedure, 2000) && !string.IsNullOrWhiteSpace(r.Procedure) && r.Repeats is >= 3 and <= 9 && r.TimeoutSeconds is >= 1 and <= 600, "测量协议的程序、输入、版本、步骤或次数无效。");
-        Need(Path.GetFileName(r.ExecutableName) == r.ExecutableName && Path.GetFileName(r.InputName) == r.InputName && r.InputName.Length > 0, "测量文件名不能包含目录。");
+        ValidateRecipe(r);
         Need(Text(m.Cpu, 200) && Text(m.Gpu, 200) && Text(m.OperatingSystem, 300) && m.PowerSource is "Online" or "Offline" or "Unknown" && Text(m.PowerProfile, 200) && !string.IsNullOrWhiteSpace(m.PowerProfile)
             && (m.MemoryGiB == null || double.IsFinite(m.MemoryGiB.Value) && m.MemoryGiB is > 0 and < 100000), "测量机器或电源信息无效。");
         Need(result.Outcome is "completed" or "failed" or "cancelled" or "timeout" && Text(result.Detail, 1000) && result.Started >= DateTimeOffset.UnixEpoch && result.Started <= DateTimeOffset.Now.AddMinutes(5), "测量状态或时间无效。");
@@ -53,6 +50,13 @@ public static class TaskMeasurements
             if (a.Outcome == "completed") Need(a.RootExited && a.ExitCode == 0 && a.Seconds > 0, "成功轮次必须有正常退出的证据。");
         }
         if (result.Outcome == "completed") Need(result.Attempts.Count == r.Repeats + (r.Warmup ? 1 : 0) && result.Attempts.All(a => a.Outcome == "completed"), "测量尚未完整结束。");
+    }
+    internal static void ValidateRecipe(TaskRecipe r)
+    {
+        Need(r != null && Text(r.Name, 150) && !string.IsNullOrWhiteSpace(r.Name) && Text(r.ExecutableName, 200) && !string.IsNullOrWhiteSpace(r.ExecutableName) && Hash(r.ExecutableSha256)
+            && Text(r.Arguments, 4000) && Text(r.SoftwareVersion, 200) && !string.IsNullOrWhiteSpace(r.SoftwareVersion) && Text(r.InputName, 200) && Hash(r.InputSha256)
+            && Text(r.Procedure, 2000) && !string.IsNullOrWhiteSpace(r.Procedure) && r.Repeats is >= 3 and <= 9 && r.TimeoutSeconds is >= 1 and <= 600, "测量协议的程序、输入、版本、步骤或次数无效。");
+        Need(Path.GetFileName(r.ExecutableName) == r.ExecutableName && Path.GetFileName(r.InputName) == r.InputName && r.InputName.Length > 0, "测量文件名不能包含目录。");
     }
     public static bool Comparable(TaskMeasurementResult result)
     {
@@ -84,7 +88,25 @@ public static class TaskMeasurements
     }
     public static void Save(string path, TaskMeasurementResult result)
     {
-        Validate(result); File.WriteAllText(path + ".tmp", JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true }), new UTF8Encoding(false)); File.Move(path + ".tmp", path, true);
+        Validate(result);
+        byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(result, new JsonSerializerOptions { WriteIndented = true });
+        string target = Path.GetFullPath(path);
+        string temporary = target + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        bool created = false;
+        try
+        {
+            using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+            {
+                created = true; stream.Write(bytes); stream.Flush(flushToDisk: true);
+            }
+            File.Move(temporary, target, overwrite: true);
+        }
+        finally
+        {
+            if (created)
+                try { File.Delete(temporary); }
+                catch (Exception error) when (error is IOException or UnauthorizedAccessException) { }
+        }
     }
     public static string PowerSource() => System.Windows.Forms.SystemInformation.PowerStatus.PowerLineStatus.ToString();
     private static async Task<string> FileHash(string path, CancellationToken cancellation)
@@ -99,12 +121,19 @@ public static class TaskMeasurements
         Need(Path.IsPathFullyQualified(request.Executable) && File.Exists(request.Executable) && Path.GetExtension(request.Executable).Equals(".exe", StringComparison.OrdinalIgnoreCase), "请选择实际的 EXE，不使用文件关联或脚本自动打开。");
         Need(Path.IsPathFullyQualified(request.WorkingDirectory) && Directory.Exists(request.WorkingDirectory) && Path.IsPathFullyQualified(request.InputFile) && File.Exists(request.InputFile), "请选择有效的工作目录和任务输入文件或输入清单。");
     }
-    public static async Task<TaskMeasurementResult> RunAsync(TaskRunRequest request, TaskMachine machine, IProgress<TaskRunProgress>? progress, CancellationToken cancellation)
+    internal static async Task<TaskRecipe> ReadRecipeAsync(TaskRunRequest request, CancellationToken cancellation)
+    {
+        ValidateRequest(request);
+        string executableHash = await FileHash(request.Executable, cancellation).ConfigureAwait(false), inputHash = await FileHash(request.InputFile, cancellation).ConfigureAwait(false);
+        return new(request.Name, Path.GetFileName(request.Executable), executableHash, request.Arguments, request.SoftwareVersion,
+            Path.GetFileName(request.InputFile), inputHash, request.Procedure, request.Repeats, request.Warmup, request.TimeoutSeconds);
+    }
+    public static async Task<TaskMeasurementResult> RunAsync(TaskRunRequest request, TaskMachine machine, IProgress<TaskRunProgress>? progress, CancellationToken cancellation, TaskPlan? expectedPlan = null)
     {
         ValidateRequest(request);
         progress?.Report(new("正在校验程序与输入文件", 0, request.Repeats));
-        string executableHash = await FileHash(request.Executable, cancellation).ConfigureAwait(false), inputHash = await FileHash(request.InputFile, cancellation).ConfigureAwait(false);
-        var recipe = new TaskRecipe(request.Name, Path.GetFileName(request.Executable), executableHash, request.Arguments, request.SoftwareVersion, Path.GetFileName(request.InputFile), inputHash, request.Procedure, request.Repeats, request.Warmup, request.TimeoutSeconds);
+        var recipe = await ReadRecipeAsync(request, cancellation).ConfigureAwait(false);
+        if (expectedPlan != null) TaskPlans.Verify(expectedPlan, recipe, machine);
         var result = new TaskMeasurementResult(Version, DateTimeOffset.Now, recipe, machine, [], "failed", "未执行");
         Validate(result);
         for (int i = 0; i < request.Repeats + (request.Warmup ? 1 : 0); i++)
@@ -117,7 +146,7 @@ public static class TaskMeasurements
             progress?.Report(new(warmup ? "预热完成" : "本轮完成", i + 1 - (request.Warmup ? 1 : 0), request.Repeats, attempt.Seconds));
         }
         progress?.Report(new("正在复核程序与输入未改变", request.Repeats, request.Repeats));
-        if (executableHash != await FileHash(request.Executable, cancellation).ConfigureAwait(false) || inputHash != await FileHash(request.InputFile, cancellation).ConfigureAwait(false)) return result with { Outcome = "failed", Detail = "程序或输入文件在测量中改变，请恢复同一输入后重新测试。" };
+        if (recipe.ExecutableSha256 != await FileHash(request.Executable, cancellation).ConfigureAwait(false) || recipe.InputSha256 != await FileHash(request.InputFile, cancellation).ConfigureAwait(false)) return result with { Outcome = "failed", Detail = "程序或输入文件在测量中改变，请恢复同一输入后重新测试。" };
         return result with { Outcome = "completed", Detail = "重复测量完成。结果不证明任务输出正确；请核对实际产物、机器和测试条件。" };
     }
     private static async Task<TaskAttempt> RunOne(TaskRunRequest request, int number, bool warmup, CancellationToken cancellation)

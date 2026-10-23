@@ -18,6 +18,8 @@ public partial class MainWindow : Window
     private readonly Forms.NotifyIcon tray;
     private volatile bool paused;
     private bool exiting, initialized, analyzing, refreshRequested;
+    private bool exitPending;
+    internal Func<bool>? DiscardUnsavedMeasurementOnExit;
     private bool measurementActive;
     private int recordingGeneration;
     private readonly object recordingGate = new();
@@ -40,13 +42,13 @@ public partial class MainWindow : Window
         ApplicationVersionLabel.Text = "本地记录 · v" + typeof(MainWindow).Assembly.GetName().Version?.ToString(3);
         ComparisonPage.OpenTaskMeasurement = () => Navigate("measurement");
         TaskMeasurementPage.Initialize(store,
-            () => new(live?.CpuName ?? "", live?.GpuName ?? "", live?.Sample.MemoryTotalGb, Environment.OSVersion.VersionString, TaskMeasurements.PowerSource(), TaskMeasurementPage.PowerProfileBox.Text.Trim()),
+            () => new(live?.CpuName ?? "", live?.GpuName ?? "", live?.Sample.MemoryTotalGb, Environment.OSVersion.VersionString, TaskMeasurements.PowerSource(), TaskMeasurementPage.DeclaredPowerProfile),
             active =>
             {
-                if (active && semanticCancellation != null) throw new ArgumentException("模型解析尚未结束，请结束后再进行任务测量。");
+                if (active && semanticCancellation != null) throw new ArgumentException("模型解析尚未结束，请结束后再进行测量操作。");
                 bool wasActive = measurementActive; measurementActive = active;
                 if (active && !paused) TogglePause();
-                if (!active && wasActive) StatusLine.Text = "任务测量已结束。核对任务进程后，可继续监测。";
+                if (!active && wasActive) StatusLine.Text = "测量操作已结束。若启动过任务，请核对其进程后再继续监测。";
             });
         SelectSavedScene();
         RepresentativeCheck.IsChecked = false;
@@ -334,7 +336,7 @@ public partial class MainWindow : Window
     {
         if (protectionWindow != null && paused) { StatusLine.Text = "备份与恢复窗口打开期间暂停监测，请先完成或关闭该窗口。"; return; }
         if (semanticLocalRequest && paused) { StatusLine.Text = "本机模型正在解析，结束并停止服务后再继续监测。"; return; }
-        if (measurementActive && paused) { StatusLine.Text = "任务测量仍在运行，结束并核对任务进程后再继续监测。"; return; }
+        if (measurementActive && paused) { StatusLine.Text = "测量操作仍在进行，结束后再继续监测。"; return; }
         lock (recordingGate) { paused = !paused; recordingGeneration++; }
         experienceContext.Clear();
         PauseButton.Content = paused ? "继续记录" : "暂停记录";
@@ -468,10 +470,28 @@ public partial class MainWindow : Window
     private void Exit_Click(object sender, RoutedEventArgs e) => Exit();
     private async void Exit()
     {
-        if (exiting) return;
+        if (exiting || exitPending) return;
         if (protectionWindow is { } maintenance) { maintenance.Close(); if (maintenance.Busy) return; }
-        exiting = true; semanticCancellation?.Cancel(); TaskMeasurementPage.Cancel(); ModelApiKey.Clear(); stop.Cancel(); tray.Visible = false; tray.Dispose();
+        exitPending = true;
+        semanticCancellation?.Cancel(); TaskMeasurementPage.Cancel();
         if (TaskMeasurementPage.Running) await Task.WhenAny(TaskMeasurementPage.Completion, Task.Delay(7000));
+        if (TaskMeasurementPage.Running)
+        {
+            exitPending = false; Restore(); Navigate("measurement");
+            StatusLine.Text = "正在结束测量操作，请等待结果保存后再退出。"; return;
+        }
+        if (TaskMeasurementPage.HasUnsavedResult)
+        {
+            Restore(); Navigate("measurement");
+            bool discard = DiscardUnsavedMeasurementOnExit?.Invoke() ?? System.Windows.MessageBox.Show(this,
+                "上次测量尚未保存。是否放弃这份结果并退出？\n选择“否”返回测量页，可导出到其他目录。", "保留未保存的测量", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes;
+            if (!discard)
+            {
+                exitPending = false; TaskMeasurementPage.TaskResultPanel.BringIntoView();
+                StatusLine.Text = "测量结果已保留。请先导出，再退出程序。"; return;
+            }
+        }
+        exiting = true; ModelApiKey.Clear(); stop.Cancel(); tray.Visible = false; tray.Dispose();
         if (collectionTask != null)
         {
             var finished = await Task.WhenAny(collectionTask, Task.Delay(5000));

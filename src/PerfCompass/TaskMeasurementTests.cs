@@ -95,6 +95,30 @@ public static partial class SelfTests
             string path = Path.Combine(request.WorkingDirectory, "result.json"); TaskMeasurements.Save(path, data); var reopened = TaskMeasurements.Load(path);
             assert(reopened.ProtocolFingerprint == data.ProtocolFingerprint && reopened.MedianSeconds == 9 && !File.Exists(sentinel), "file loading ran a task or lost evidence");
         });
+        check("Measurement save failures preserve the target and other writers' temporary files before a successful retry", () =>
+        {
+            var request = Request("exit /b 0\r\n"); string path = Path.Combine(request.WorkingDirectory, "result.json");
+            var original = MeasurementFixture(8, 9, 10); TaskMeasurements.Save(path, original);
+            byte[] bytes = File.ReadAllBytes(path);
+            string foreignTemporary = path + ".tmp"; File.WriteAllText(foreignTemporary, "another writer's file", new UTF8Encoding(false));
+            var replacement = MeasurementFixture(5, 6, 7); bool failed = false;
+            using (var held = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                try { TaskMeasurements.Save(path, replacement); }
+                catch (Exception error) when (error is IOException or UnauthorizedAccessException) { failed = true; }
+                assert(failed && File.ReadAllBytes(path).SequenceEqual(bytes), "failed measurement replacement modified the existing target");
+            }
+            assert(Directory.GetFiles(request.WorkingDirectory, "result.json.*.tmp").Length == 0
+                && File.ReadAllText(foreignTemporary) == "another writer's file",
+                "measurement failure left its own temporary or overwrote another writer's fixed .tmp file");
+            TaskMeasurements.Save(path, replacement);
+            var restored = TaskMeasurements.Load(path);
+            assert(restored.Version == TaskMeasurements.Version && restored.ProtocolFingerprint == replacement.ProtocolFingerprint
+                && restored.MedianSeconds == 6 && restored.Attempts.SequenceEqual(replacement.Attempts)
+                && Directory.GetFiles(request.WorkingDirectory, "result.json.*.tmp").Length == 0
+                && File.ReadAllText(foreignTemporary) == "another writer's file",
+                "successful retry did not publish the complete replacement or interfered with an unrelated temporary");
+        });
         check("Legacy workspace upgrades preserve reviewed data and save a schema older clients reject", () =>
         {
             var goal = new PurchaseCriterion { Name = "旧内存目标", Metric = "memory", Target = 32, Unit = "GB", Reviewed = true };

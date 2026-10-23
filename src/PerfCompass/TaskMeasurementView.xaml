@@ -1,21 +1,29 @@
 <UserControl x:Class="PerfCompass.TaskMeasurementView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
  <StackPanel>
   <TextBlock Text="测量编译、转码、批处理等会自行退出的任务。记录所选程序从启动到根进程退出的时间；不适用于游戏帧率、交互延迟或分离后台任务的完整完成时间。" Foreground="{StaticResource Muted}" Margin="0,0,0,16"/>
+  <Border x:Name="TaskPlanPanel" Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
+   <TextBlock Text="把同一任务带到另一台电脑" FontSize="18" FontWeight="SemiBold"/>
+   <TextBlock Text="保存当前测量方案，在候选电脑导入后重新选择本机文件。方案保留参数、步骤与重复方式；只在点击运行时启动程序。" Foreground="{StaticResource Muted}" Margin="0,10,0,12"/>
+   <WrapPanel x:Name="TaskPlanButtons"><Button x:Name="ImportTaskPlanButton" Content="导入方案或既有测量" Click="ImportTaskPlan_Click" Margin="0,0,10,10"/><Button x:Name="ExportTaskPlanButton" Content="保存测量方案" Click="ExportTaskPlan_Click" Margin="0,0,10,10"/><Button x:Name="NewTaskPlanButton" Content="作为新方案编辑" Click="NewTaskPlan_Click" IsEnabled="False" Margin="0,0,0,10"/></WrapPanel>
+   <TextBlock x:Name="TaskPlanStatus" Text="填写下方任务后即可保存方案，无需先运行。跨电脑请使用相同的文件名和相对路径参数。" Foreground="{StaticResource Muted}"/>
+   <TextBlock x:Name="TaskPlanEvidence" Margin="0,8,0,0"/>
+  </StackPanel></Border>
   <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel x:Name="TaskInputs">
    <TextBlock Text="任务与运行方式" FontSize="18" FontWeight="SemiBold"/>
    <TextBlock Text="任务名称" Margin="0,14,0,5"/><TextBox x:Name="TaskNameBox" MaxLength="150" Padding="8" AutomationProperties.Name="测量任务名称"/>
-   <TextBlock Text="要重复运行的程序（EXE）" Margin="0,12,0,5"/><DockPanel><Button Content="选择程序" Click="ChooseExecutable_Click" DockPanel.Dock="Right" Margin="10,0,0,0"/><TextBox x:Name="ExecutableBox" Padding="8" AutomationProperties.Name="测量程序路径"/></DockPanel>
+   <TextBlock Text="要重复运行的程序（EXE）" Margin="0,12,0,5"/><DockPanel><Button x:Name="ChooseExecutableButton" Content="选择程序" Click="ChooseExecutable_Click" DockPanel.Dock="Right" Margin="10,0,0,0"/><TextBox x:Name="ExecutableBox" Padding="8" AutomationProperties.Name="测量程序路径"/></DockPanel>
    <TextBlock Text="参数（原样传给所选程序；跨机器请使用一致的相对路径）" Margin="0,12,0,5"/><TextBox x:Name="ArgumentsBox" MaxLength="4000" TextWrapping="Wrap" Padding="8" AutomationProperties.Name="测量程序参数"/>
-   <TextBlock Text="工作目录" Margin="0,12,0,5"/><DockPanel><Button Content="选择目录" Click="ChooseWorkingDirectory_Click" DockPanel.Dock="Right" Margin="10,0,0,0"/><TextBox x:Name="WorkingDirectoryBox" Padding="8"/></DockPanel>
+   <TextBlock Text="工作目录" Margin="0,12,0,5"/><DockPanel><Button x:Name="ChooseWorkingDirectoryButton" Content="选择目录" Click="ChooseWorkingDirectory_Click" DockPanel.Dock="Right" Margin="10,0,0,0"/><TextBox x:Name="WorkingDirectoryBox" Padding="8"/></DockPanel>
    <TextBlock Text="软件版本" Margin="0,12,0,5"/><TextBox x:Name="SoftwareVersionBox" MaxLength="200" Padding="8"/>
-   <TextBlock Text="任务输入文件或输入清单（校验同一输入；不会自动作为程序参数）" Margin="0,12,0,5"/><DockPanel><Button Content="选择输入" Click="ChooseInput_Click" DockPanel.Dock="Right" Margin="10,0,0,0"/><TextBox x:Name="InputFileBox" Padding="8"/></DockPanel>
+   <TextBlock Text="任务输入文件或输入清单（校验同一输入；不会自动作为程序参数）" Margin="0,12,0,5"/><DockPanel><Button x:Name="ChooseInputButton" Content="选择输入" Click="ChooseInput_Click" DockPanel.Dock="Right" Margin="10,0,0,0"/><TextBox x:Name="InputFileBox" Padding="8"/></DockPanel>
    <TextBlock Text="统一步骤与环境（数据集、设置、产物如何核对）" Margin="0,12,0,5"/><TextBox x:Name="ProcedureBox" MaxLength="2000" TextWrapping="Wrap" AcceptsReturn="True" MinHeight="70" Padding="8"/>
    <TextBlock Text="电源 / 性能模式（例如：插电、系统平衡模式、原厂散热设置）" Margin="0,12,0,5"/><TextBox x:Name="PowerProfileBox" MaxLength="200" Padding="8"/>
+   <CheckBox x:Name="PlanEnvironmentConfirmedCheck" Content="已在本机核对方案要求的电源模式、软件设置和输入安排" Visibility="Collapsed" Margin="0,12,0,0"/>
    <WrapPanel Margin="0,16,0,0"><TextBlock Text="正式重复" VerticalAlignment="Center" Margin="0,0,10,0"/><ComboBox x:Name="RepeatsCombo" SelectedIndex="0" MinWidth="85" Margin="0,0,20,0"><ComboBoxItem Content="3 次" Tag="3"/><ComboBoxItem Content="5 次" Tag="5"/><ComboBoxItem Content="7 次" Tag="7"/></ComboBox><CheckBox x:Name="WarmupCheck" Content="先预热一次，不计入结果" IsChecked="True" VerticalAlignment="Center"/></WrapPanel>
    <StackPanel Orientation="Horizontal" Margin="0,14,0,0"><TextBlock Text="单轮超时 / 秒（1–600）" VerticalAlignment="Center" Margin="0,0,12,0"/><TextBox x:Name="TimeoutBox" Text="120" Width="90" Padding="8"/></StackPanel>
    <TextBlock Text="测量会运行上述程序并重复执行参数指定的任务。输入校验会读取文件，不代表冷缓存测试。任务参数、校验值和机器信息随测量保存，程序输出不保存；请核对实际产物，退出码 0 不证明任务内容正确。" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,16,0,0"/>
   </StackPanel></Border>
-  <WrapPanel><Button x:Name="RunTaskButton" Content="运行并重复测量" Click="RunTask_Click" Background="#007F73" Foreground="White" Margin="0,0,10,12"/><Button x:Name="CancelTaskButton" Content="取消本次测量" Click="CancelTask_Click" IsEnabled="False" Margin="0,0,10,12"/><Button x:Name="ExportTaskButton" Content="导出测量文件" Click="ExportTask_Click" IsEnabled="False" Margin="0,0,0,12"/></WrapPanel>
+  <WrapPanel><Button x:Name="RunTaskButton" Content="运行并重复测量" Click="RunTask_Click" Background="#007F73" Foreground="White" Margin="0,0,10,12"/><Button x:Name="CancelTaskButton" Content="取消本次操作" Click="CancelTask_Click" IsEnabled="False" Margin="0,0,10,12"/><Button x:Name="ExportTaskButton" Content="导出测量文件" Click="ExportTask_Click" IsEnabled="False" Margin="0,0,0,12"/></WrapPanel>
   <ProgressBar x:Name="TaskProgressBar" Height="6" Visibility="Collapsed" Margin="0,0,0,10"/>
   <TextBlock x:Name="TaskProgressLabel" Margin="0,0,0,10"/>
   <TextBlock x:Name="TaskStatus" Foreground="{StaticResource Muted}" Margin="0,0,0,16"/>
