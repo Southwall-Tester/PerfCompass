@@ -1,0 +1,94 @@
+{
+    "Source":  "Final local published executable and isolated validation; no user history or raw device identity included",
+    "Version":  "0.8.15+21aae33938bd9141c5de81910131e660248911e0",
+    "ProductCommit":  "21aae33938bd9141c5de81910131e660248911e0",
+    "ExecutableSha256":  "89B578C5B9F14A594AE192B7C67C90E295E716E4214083BDE65FEAED2CAF525E",
+    "Build":  {
+                  "Warnings":  0,
+                  "Errors":  0
+              },
+    "PublishedSelfTests":  {
+                               "Passed":  367,
+                               "Failed":  0,
+                               "Exit":  0
+                           },
+    "PublishedFullWpfFlow":  {
+                                 "Passed":  145,
+                                 "Failed":  0,
+                                 "Exit":  0
+                             },
+    "PublishedObservationWpfFlow":  {
+                                        "Passed":  31,
+                                        "Failed":  0,
+                                        "Exit":  0
+                                    },
+    "PublishedHistoryWpfFlow":  {
+                                    "Passed":  12,
+                                    "Failed":  0,
+                                    "Exit":  0
+                                },
+    "PublishedShortSoak":  {
+                               "Exit":  0,
+                               "Status":  "completed",
+                               "RequestedSeconds":  10,
+                               "ObservedSeconds":  10.3958349,
+                               "ChecksPassed":  true,
+                               "CollectorStopped":  true,
+                               "SavedSamples":  1,
+                               "Heartbeats":  5,
+                               "HistoryIssues":  0,
+                               "TimingGaps":  0,
+                               "ErrorLogExists":  false,
+                               "Scope":  "Short concurrent isolated validation only; not an overhead benchmark or long-run validation"
+                           },
+    "HardwareSource":  {
+                           "UpstreamCommit":  "3d331e3370efb858411f19511373eff65a218701",
+                           "CheckoutCommit":  "21aae33938bd9141c5de81910131e660248911e0",
+                           "SourceTreeDirty":  false,
+                           "Files":  198,
+                           "SnapshotSha256":  "e6a7b5e3279f4d11adacc38a109ae984f6457844b66ef486daa2acfad5285849",
+                           "ArchiveSha256":  "71b1f4e702b4b5d886468ea333d128a312509796130bd9a937fb0d50662b916e",
+                           "Verification":  "Identical vendor snapshot to independently built 0.8.13 source; this package updates checkout metadata"
+                       },
+    "RemoteCi":  {
+                     "Run":  39969035019,
+                     "ProductCommit":  "21aae33938bd9141c5de81910131e660248911e0",
+                     "Conclusion":  "success",
+                     "BuildTestPublish":  "success",
+                     "NativeCpuRecovery":  "success",
+                     "NativeGpuEngineScope":  "success",
+                     "NativeObservationAndSingleCandidate":  "success",
+                     "NativeHourlyHistoryWeighting":  "success",
+                     "TelemetryRecording":  "success"
+                 },
+    "PreservedFailures":  [
+                              {
+                                  "Failed":  1,
+                                  "CiRun":  39968660718,
+                                  "Stage":  "An existing missing-price assertion depended on the former generic summary",
+                                  "Kind":  "test-summary-wording",
+                                  "Fix":  "Assert preserved independent passes and absence of price savings when quotes are missing; product rule unchanged",
+                                  "PassedBeforeFailure":  366
+                              }
+                          ],
+    "EarlierVersionLongRunSnapshot":  {
+                                          "Version":  "0.8.10",
+                                          "State":  "running",
+                                          "Updated":  "2026-10-23T14:29:24.7226026+00:00",
+                                          "ElapsedSeconds":  17036.4565681,
+                                          "RequestedSeconds":  28800,
+                                          "ObservationGaps":  2,
+                                          "StaleSamples":  1,
+                                          "ProtectionChecks":  230,
+                                          "ExpectedChecksPassed":  false,
+                                          "Scope":  "Frozen older binary encountered Windows sleep and RTC correction; unchanged cumulative criteria cannot pass; does not validate this version"
+                                      },
+    "Limits":  [
+                   "Per-resource hourly means use recorded intervals; partial coverage across boundaries is allocated proportionally and identified as estimated",
+                   "Hourly means include recorded idle periods and do not replace short peaks or active-use purchase analysis",
+                   "Non-empty quotation source text is not independent authentication",
+                   "Manual evidence and raw repeated task measurements remain distinct; reviewed conditional tasks retain their explicit triggers",
+                   "Native UI flows use synthetic isolated task records after actual startup checks; counts overlap",
+                   "Commercial maturity and long-run/cross-hardware/independent semantic validation remain incomplete"
+               ]
+}
