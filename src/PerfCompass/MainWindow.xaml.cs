@@ -84,6 +84,12 @@ public partial class MainWindow : Window
                 await RefreshAnalysis();
                 if (Environment.GetCommandLineArgs().Contains("--ui-test")) _ = RunUiTests();
                 if (Environment.GetCommandLineArgs().Contains("--smoke-test")) _ = RunSmokeTest();
+                var validation = ValidationRunOptions.Parse(Environment.GetCommandLineArgs());
+                if (validation?.Mode == "soak") soakTask = Task.Run(async () =>
+                {
+                    try { await RunSoakTest(validation); }
+                    catch (Exception error) { store.Log(error); soakFinished = true; Environment.ExitCode = 1; await Dispatcher.InvokeAsync(Exit); }
+                });
             }
             catch (Exception ex) { store.Log(ex); StatusLine.Text = "采集启动失败，请查看 data/errors.log 后重试。"; RecordState.Text = "● 启动失败"; }
         };
@@ -423,6 +429,11 @@ public partial class MainWindow : Window
         {
             var finished = await Task.WhenAny(collectionTask, Task.Delay(5000));
             if (finished != collectionTask) store.Log(new TimeoutException("Collector shutdown exceeded five seconds."));
+        }
+        if (soakTask != null && !soakFinished)
+        {
+            var finished = await Task.WhenAny(soakTask, Task.Delay(5000));
+            if (finished != soakTask) store.Log(new TimeoutException("Validation result shutdown exceeded five seconds."));
         }
         Close(); System.Windows.Application.Current.Shutdown(Environment.ExitCode);
     }

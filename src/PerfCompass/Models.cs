@@ -3,6 +3,7 @@ namespace PerfCompass;
 public record Settings(string Scene = "日常办公", bool Representative = false, string FutureNeeds = "", int RetentionDays = 90, bool CloseToTray = true, RequirementsPlan? Requirements = null, SemanticPlan? SemanticRequirements = null, string ModelEndpoint = "", string ModelName = "")
 {
     public string RepresentativeHardwareId { get; init; } = "";
+    public string RepresentativeObservationVersion { get; init; } = "";
     [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, System.Text.Json.JsonElement>? AdditionalFields { get; init; }
 }
@@ -25,6 +26,7 @@ public record Sample
     public double? CommitCoverage { get; init; }
     public double? GpuCoverage { get; init; }
     public bool Active { get; init; }
+    public string ObservationVersion { get; init; } = "";
     public double? Cpu { get; init; }
     public double? CoreMax { get; init; }
     public double? MemoryUsedGb { get; init; }
@@ -92,7 +94,7 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public string HardwareId { get; init; } = "";
     public bool RepresentativeConfirmed { get; init; }
     public string CoverageMessage { get; init; } = "";
-    public string MethodVersion { get; init; } = "1.8";
+    public string MethodVersion { get; init; } = "1.9";
     public HistoryQuality HistoryQuality { get; init; } = HistoryQuality.Unchecked;
     public int SamplingGapCount { get; init; }
     public string SamplingGapSummary => SamplingGapCount > 0 ? $"本范围记录到 {SamplingGapCount} 次采样中断；中断段未计入有效使用，也未作为空闲负载。" : "";

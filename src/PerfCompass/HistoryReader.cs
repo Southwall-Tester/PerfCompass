@@ -92,6 +92,8 @@ public sealed partial class LocalStore
                             throw new InvalidDataException("采样时长缺失或超出 0–15 秒");
                         if (!root.TryGetProperty("Active", out var active) || active.ValueKind is not (JsonValueKind.True or JsonValueKind.False)) throw new InvalidDataException("缺少有效使用状态");
                         sample = root.Deserialize<Sample>();
+                        if (sample != null && !string.IsNullOrEmpty(sample.ObservationVersion) && sample.ObservationVersion != ActivityRules.Version)
+                            throw new InvalidDataException("采样活动规则版本未知，暂不解释此记录");
                         if (sample != null && !string.IsNullOrEmpty(sample.SamplingIssue)
                             && (!SamplingClock.KnownIssue(sample.SamplingIssue) || sample.Seconds != 0))
                             throw new InvalidDataException("采样中断状态无效，或中断记录包含有效时长");

@@ -112,7 +112,7 @@ public static partial class SelfTests
                     }
                     var sample = SampleBatch.Merge(raw); assert(sample.Seconds == 10 && sample.Gpu == 5 && sample.GpuCoverage == 8, "failed poll became a zero or gained coverage"); trace.Add(sample);
                 }
-            var report = AnalysisEngine.Analyze(trace, new Settings(Representative: true) { RepresentativeHardwareId = "sensor-test" }, 7, asOf: now, hardwareId: "sensor-test");
+            var report = AnalysisEngine.Analyze(trace, new Settings(Representative: true) { RepresentativeHardwareId = "sensor-test", RepresentativeObservationVersion = ActivityRules.Version }, 7, asOf: now, hardwareId: "sensor-test");
             assert(report.Ready && report.ActiveHours == 10 && report.Cards.Single(c => c.Key == "gpu").Status == "unknown"
                 && report.Cards.Single(c => c.Key == "cpu").Status == "surplus", "GPU failure hidden by average or suppressed independent CPU evidence");
         });

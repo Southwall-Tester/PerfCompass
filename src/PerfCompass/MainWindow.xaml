@@ -18,7 +18,7 @@
     <StackPanel DockPanel.Dock="Bottom">
      <Border Background="#1E3B46" CornerRadius="10" Padding="12" Margin="0,20,0,16"><StackPanel><TextBlock x:Name="RecordState" Text="● 正在准备" Foreground="#70DCC6" FontSize="12"/><TextBlock x:Name="LastTime" Text="等待首次采样" Foreground="#9EBBC4" FontSize="11" Margin="0,7,0,0"/></StackPanel></Border>
      <Button Content="退出程序" Click="Exit_Click" Background="Transparent" Foreground="#BCCED4"/>
-     <TextBlock Text="本地记录 · v0.8.9" Foreground="#7898A4" FontSize="10" Margin="10,16,0,0"/>
+     <TextBlock Text="本地记录 · v0.8.10" Foreground="#7898A4" FontSize="10" Margin="10,16,0,0"/>
     </StackPanel>
     <Grid/>
    </DockPanel>
@@ -110,7 +110,7 @@
        <Button x:Name="SaveSemanticButton" Content="保存选用事项并用于建议" Click="SaveSemantic_Click" HorizontalAlignment="Left" Background="#007F73" Foreground="White"/>
       </StackPanel></Expander></Border><Border Style="{StaticResource Card}" Margin="0,0,0,20"><StackPanel><TextBlock Text="后台记录" FontSize="18" FontWeight="SemiBold"/><CheckBox x:Name="CloseToTrayCheck" Content="关闭窗口后继续在系统托盘记录" Margin="0,18,0,14"/><CheckBox x:Name="StartupCheck" Content="登录 Windows 后自动开始记录" Margin="0,0,0,18"/><TextBlock Text="托盘菜单可暂停或退出；休眠与暂停间隔从有效时长中排除。" Foreground="{StaticResource Muted}" Margin="0,0,0,16"/><StackPanel Orientation="Horizontal" Margin="0,0,0,12"><TextBlock Text="历史保留" VerticalAlignment="Center" Margin="0,0,14,0"/><ComboBox x:Name="RetentionCombo" AutomationProperties.Name="历史保留天数"><ComboBoxItem Content="30 天" Tag="30"/><ComboBoxItem Content="60 天" Tag="60"/><ComboBoxItem Content="90 天" Tag="90"/></ComboBox></StackPanel><TextBlock x:Name="RetentionLabel"/><TextBlock x:Name="BackgroundSaveStatus" Foreground="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,8,0,0"/><Button x:Name="SaveBackgroundButton" Content="保存后台设置" Click="SaveBackground_Click" HorizontalAlignment="Left" Margin="0,16,0,0"/><TextBlock x:Name="SensorLabel" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,12,0,0"/></StackPanel></Border>
       <Border Style="{StaticResource Card}" Margin="0,0,0,20"><StackPanel><TextBlock Text="数据保护" FontSize="18" FontWeight="SemiBold"/><TextBlock x:Name="DataProtectionLabel" Text="备份历史、需求和候选比较，恢复到新目录。" Margin="0,12,0,12"/><Button x:Name="DataProtectionButton" Content="备份与恢复…" Click="DataProtection_Click" HorizontalAlignment="Left"/><Button x:Name="ConfirmRecoveredSettingsButton" Content="已核对当前设置，保存恢复结果" Click="ConfirmRecoveredSettings_Click" HorizontalAlignment="Left" Margin="0,12,0,0" Visibility="Collapsed"/></StackPanel></Border>
-      <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="分析方法" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="有效使用包含近期键鼠活动和明显的后台任务。配置判断结合按时长加权的 P95、峰值、持续压力和传感器覆盖率；各项依据可在配置分析中展开。" Margin="0,14,0,14" Foreground="{StaticResource Muted}"/><TextBlock Text="采集：Windows API + LibreHardwareMonitor。规则版本 1.8。" FontSize="12"/><Button Content="打开使用说明" Click="Help_Click" HorizontalAlignment="Left" Margin="0,16,0,0"/></StackPanel></Border>
+      <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="分析方法" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="有效使用包含近期键鼠活动和明显的后台任务。配置判断结合按时长加权的 P95、峰值、持续压力和传感器覆盖率；各项依据可在配置分析中展开。" Margin="0,14,0,14" Foreground="{StaticResource Muted}"/><TextBlock Text="采集：Windows API + LibreHardwareMonitor。规则版本 1.9。" FontSize="12"/><Button Content="打开使用说明" Click="Help_Click" HorizontalAlignment="Left" Margin="0,16,0,0"/></StackPanel></Border>
      </StackPanel>
     </Grid>
    </ScrollViewer>

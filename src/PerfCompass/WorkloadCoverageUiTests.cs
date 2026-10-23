@@ -16,6 +16,11 @@ public partial class MainWindow
         InitializeWorkloadCoverage(); await RefreshAnalysis();
         require(RepresentativeCheck.IsChecked == false && RepresentativeStatus.Text.Contains("以前") && report?.Ready == false,
             "Legacy global confirmation opens unchecked and cannot authorize surplus in the native UI");
+        store.SaveSettings(WorkloadCoverage.Select(store.Settings, true, collector!.HardwareId) with { RepresentativeObservationVersion = "" });
+        InitializeWorkloadCoverage(); await RefreshAnalysis();
+        require(RepresentativeCheck.IsChecked == false && RepresentativeStatus.Text.Contains("采集规则") && report?.Ready == false,
+            "Native coverage review does not promote an old observation-rule confirmation after activity detection changes");
+        ShowCoverage(); await screenshot("42-observation-coverage-stale");
         store.SaveSettings(store.Settings with { Representative = true, RepresentativeHardwareId = "previous-configuration" });
         InitializeWorkloadCoverage(); await RefreshAnalysis();
         require(RepresentativeCheck.IsChecked == false && RepresentativeStatus.Text.Contains("已改变") && report!.Cards.All(c => c.Status != "surplus"),
@@ -23,7 +28,7 @@ public partial class MainWindow
         ShowCoverage(); await screenshot("26-hardware-coverage-stale");
         RepresentativeCheck.IsChecked = true; Click(SaveRequirementsButton);
         await wait(() => report?.RepresentativeConfirmed == true);
-        require(store.Settings.RepresentativeHardwareId == collector!.HardwareId && report!.Ready && RepresentativeStatus.Text.Contains("已确认"),
+        require(store.Settings.RepresentativeHardwareId == collector!.HardwareId && store.Settings.RepresentativeObservationVersion == ActivityRules.Version && report!.Ready && RepresentativeStatus.Text.Contains("已确认"),
             "Explicit native settings save binds task coverage to the identified current configuration");
         require(WorkloadCoverage.For(new LocalStore(store.Root).Settings, collector.HardwareId).Confirmed,
             "Hardware-bound task confirmation survives settings reopening");

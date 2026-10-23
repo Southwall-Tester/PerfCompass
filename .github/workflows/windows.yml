@@ -32,6 +32,24 @@ jobs:
       - name: Model batch transport regression
         shell: pwsh
         run: ./tests/model-probe-batch.ps1
+      - name: Record Windows telemetry reference pairs
+        shell: pwsh
+        run: |
+          $root = Join-Path $PWD 'artifacts/ci-telemetry/data'
+          $p = Start-Process ./release-next/PerfCompass.exe -ArgumentList @('--telemetry-check','--validation-seconds','10','--data-dir',('"' + $root + '"')) -PassThru -WindowStyle Hidden
+          if (-not $p.WaitForExit(45000)) { $p.Kill(); throw 'Telemetry recording exceeded its bounded check.' }
+          if ($p.ExitCode -notin @(0,2)) { throw 'Telemetry recorder failed.' }
+          $report = Join-Path $root 'validation/telemetry-cross-check.json'
+          if (-not (Test-Path -LiteralPath $report)) { throw 'Telemetry recording report is missing.' }
+          $data = Get-Content -LiteralPath $report -Raw | ConvertFrom-Json
+          if ($data.Rows.Count -lt 2) { throw 'Telemetry recording has too few observation rows.' }
+          Write-Output ('Comparable CPU pairs: ' + $data.CpuPercentagePoints.Pairs + '; exit code: ' + $p.ExitCode)
+      - name: Windows telemetry reference recording
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-telemetry-reference
+          path: artifacts/ci-telemetry/data/validation/telemetry-cross-check.json
       - name: NLP diagnostic baseline
         shell: pwsh
         run: |

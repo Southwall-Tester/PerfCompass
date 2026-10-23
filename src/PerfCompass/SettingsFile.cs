@@ -32,6 +32,7 @@ internal static class SettingsFile
     {
         if (value.Scene == null || value.FutureNeeds == null || value.ModelEndpoint == null || value.ModelName == null
             || value.RepresentativeHardwareId == null || value.RepresentativeHardwareId.Length > 200
+            || value.RepresentativeObservationVersion == null || value.RepresentativeObservationVersion.Length > 64
             || value.RetentionDays is < 1 or > 90) throw new InvalidDataException("设置字段缺失或历史保留天数无效。");
         if (value.Requirements is { } r && (r.Source == null || r.RuleVersion == null || r.AiMode == null || r.Facts == null
             || r.Facts.Any(f => f == null || f.Key == null || f.Label == null || f.Evidence == null)))

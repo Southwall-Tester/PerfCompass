@@ -112,10 +112,10 @@ public sealed class Collector : IDisposable
             .OrderByDescending(a => a.Cpu).ThenByDescending(a => a.MemoryMb).Take(8).ToList();
         }
         // Count attended usage or substantial background work, not an idle desktop overnight.
-        bool active = IdleSeconds() < 300 || cpu >= 20 || gpu >= 20 || diskRead + diskWrite >= 20;
+        bool active = ActivityRules.IsActive(IdleSeconds(), cpu, core, gpu, diskBusy, diskRead, diskWrite);
         var sample = new Sample
         {
-            Time = now, HardwareId = HardwareId, Seconds = dt, SamplingIssue = tick.Issue, Active = active, Scene = store.Settings.Scene,
+            Time = now, HardwareId = HardwareId, Seconds = dt, SamplingIssue = tick.Issue, Active = active, ObservationVersion = ActivityRules.Version, Scene = store.Settings.Scene,
             Cpu = cpu, CoreMax = core, MemoryTotalGb = mem.Total, MemoryUsedGb = mem.Used, CommitGb = mem.Commit,
             Gpu = gpu, VramUsedGb = vramUsed / 1024, VramTotalGb = vramTotal / 1024, CpuTemp = cpuTemp, GpuTemp = gpuTemp,
             DiskReadMbps = diskRead, DiskWriteMbps = diskWrite, DiskBusy = diskBusy,

@@ -10,11 +10,19 @@ public partial class App : System.Windows.Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        ValidationRunOptions? validation;
+        try { validation = ValidationRunOptions.Parse(e.Args); }
+        catch (ArgumentException) { Shutdown(3); return; }
         if (e.Args.Contains("--self-test")) { Shutdown(SelfTests.Run()); return; }
         if (e.Args.Contains("--nlp-evaluate")) { Shutdown(NlpEvaluation.Run()); return; }
         string root = Path.Combine(AppContext.BaseDirectory, "data");
         int idx = Array.IndexOf(e.Args, "--data-dir");
         if (idx >= 0 && idx + 1 < e.Args.Length) root = Path.GetFullPath(e.Args[idx + 1]);
+        if (validation != null)
+        {
+            try { ValidationRunOptions.RequireEmptyRoot(root, idx >= 0 && idx + 1 < e.Args.Length); }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException or InvalidDataException) { Shutdown(3); return; }
+        }
         if (e.Args.Contains("--recovery-ui-test") && (idx < 0 || !File.Exists(Path.Combine(root, ".recovery-test-data"))))
         { System.Windows.MessageBox.Show("恢复启动检查需要显式指定带测试标记的独立数据目录。", "PerfCompass"); Shutdown(3); return; }
         if (e.Args.Contains("--ui-test") && (idx < 0 || (Directory.Exists(root) && (Directory.GetFiles(root, "samples-*.jsonl").Length > 0 || Directory.GetFiles(root, "experience-*.jsonl").Length > 0))))
@@ -33,6 +41,12 @@ public partial class App : System.Windows.Application
         try { store = new LocalStore(root); }
         catch (Exception ex) { System.Windows.MessageBox.Show("无法安全打开数据目录或设置：\n" + ex.Message, "PerfCompass"); Shutdown(1); return; }
         DispatcherUnhandledException += (_, args) => { store.Log(args.Exception); System.Windows.MessageBox.Show("操作未完成，请重试。错误已记录到 data/errors.log。", "PerfCompass"); args.Handled = true; };
+        if (validation?.Mode == "telemetry")
+        {
+            try { int code = await Task.Run(() => TelemetryCrossCheck.RunAsync(store, validation.Seconds)); Shutdown(code); }
+            catch (Exception error) { store.Log(error); Shutdown(1); }
+            return;
+        }
         if (e.Args.Contains("--diagnose"))
         {
             try

@@ -1,6 +1,31 @@
 # 验证记录
 
-日期：2026-10-23。当前候选版本 0.8.9，分析方法 1.8、比较文件 comparison-1.2、测量文件 task-measurement-1.0；商业级目标仍在推进。
+日期：2026-10-23。当前候选版本 0.8.10，分析方法 1.9、比较文件 comparison-1.2、测量文件 task-measurement-1.0；商业级目标仍在推进。
+
+## 0.8.10 增量验证
+
+- Release 构建 0 警告、0 错误；210 项产品回归通过。新增验证模式参数/目录保护、资源统计、心跳质量及实际子进程启动拒绝检查；活动规则检查覆盖无人值守单核、低吞吐繁忙磁盘、缺失和无效值、时长与内存峰值经合并保存后仍参与分析，以及旧确认的规则绑定、持久化和 CSV 来源。未知活动版本进入历史异常诊断，不能凭当前确认解释未来版本的数据。
+- Windows 真实对照使用生产 Collector 与 PDH 的各逻辑处理器忙碌时间、提交字节，以及 GlobalMemoryStatusEx 的物理内存。首轮普通负载 15 组中，总 CPU 平均绝对差约 0.22 个百分点、最忙单核约 0.17 个百分点，物理总量一致。这是同一 Windows 内核的两条采集路径，不是独立物理真值或所有负载的精度保证；顺序调用仍有时间偏差。CPU 度量为忙碌时间，不能直接等同 Task Manager 的频率归一化 Processor Utility。多处理器组的 CPU 对照不支持时保留未知，缺失读数不填零。
+- 受控单核任务复现了产品缺口：一次开发构建中，6 组单核 ≥80% 且整机 CPU <20% 的读数有 5 组被原规则标成空闲。两次各约 40 秒对照使用持续约 16 秒的固定逻辑处理器辅助进程；修正后另一轮 7 组对应读数无漏记。原始记录保留在本机 `artifacts/single-core-before-*`、`single-core-after-*`，未上传用户采样。两轮后台负载不同，不作性能收益对比；开发构建的程序集版本不能单独标识完整代码。正式验证会记录 EXE 摘要，非单文件运行另记录托管程序集摘要。
+- 典型任务确认需绑定 activity-1.1。旧硬件绑定确认不自动变为当前规则确认；原始状态保留，持续压力仍独立呈现，旧版漏记的秒数不重算。原生流程新增通过设置与实际分析检查旧规则提示、重新核对和保存，完整流程 142 项通过。实际截图 `artifacts/ui/42-observation-coverage-stale.png` 展示升级提示；界面控件与渲染检查不等于系统鼠标或文件对话框自动化。
+- 新增 `--soak-test` 与 `--telemetry-check`，仅接受显式空的普通目录。心跳记录进程 CPU、工作集、托管堆、句柄、Dispatcher 队列响应与采样新鲜度；按运行结束原因分别记录 completed/stopped/interrupted/failed，再计算检查是否通过。提前停止不算完成。一次 30 秒短流程完成并保存终态；另一次请求 60 秒、约 5 秒时停止，结果为 stopped 且 ChecksPassed=false。短流程不证明 8 小时稳定性。
+- 仓库工具 `scripts/validation-soak.ps1` 会冻结已验证的便携 EXE，记录 PID、启动时间、路径和 SHA256，后续构建不覆盖运行文件；Status/Stop 核对实际进程身份。`scripts/check-telemetry.ps1` 的单核辅助负载仅在显式选择时运行，结束恢复辅助进程原亲和性。上述工具不会读取或改写用户的 `release/data`。CI 新增短时参考读数记录及附件；退出码 2 表示对照不完整，CI 的记录步骤不把它当精度通过。
+- 持续运行结果位于独立数据目录的 `validation/run.json`、`heartbeats.jsonl`、`progress.json`、`result.json`；没有终态记录或进程身份不符时不能据旧状态宣布通过。启动、资源和实际采样证据分别记录，GPU 缺失仅说明覆盖不足。验证带有自身开销，资源统计不构成普遍 CPU/内存预算；休眠恢复、跨硬件、长期任务覆盖与独立语义复核仍未完成，商业级目标保持未完成。
+
+参考：[PDH 语言无关计数器](https://learn.microsoft.com/en-us/windows/win32/api/pdh/nf-pdh-pdhaddenglishcounterw)、[GlobalMemoryStatusEx 的易变读数](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-globalmemorystatusex)。
+
+仓库中的可复现入口（从项目根目录运行，先完成发布并核对 `release-next/READY`）：
+
+```powershell
+# 默认不产生人工负载；显式选择后，辅助进程在一个逻辑处理器上运行 16 秒
+.\scripts\check-telemetry.ps1 -Seconds 40 -SingleCoreSeconds 16
+# 默认 8 小时；先冻结 EXE，再在新的独立目录记录，不写入用户数据
+.\scripts\validation-soak.ps1 -Action Start -Seconds 28800
+.\scripts\validation-soak.ps1 -Action Status
+.\scripts\validation-soak.ps1 -Action Stop
+```
+
+Status 核对实际 PID、启动时间、路径和副本摘要。进程仍在时只表示正在观察；提前 Stop 会保存 stopped 结果。退出码 0 的短流程仅证明该时长内的检查完成，不能替代较长时段。没有有效终态文件时保留为未完成，不自动重启并覆盖已有证据。
 
 ## 0.8.9 增量验证
 
