@@ -45,7 +45,10 @@ public record Sample
     public double DiskUsedGb { get; init; }
     public double DiskTotalGb { get; init; }
 }
-public record LiveSnapshot(Sample Sample, string CpuName, string GpuName, string SensorStatus, List<DiskInfo> Disks, List<AppUsage> Apps);
+public record LiveSnapshot(Sample Sample, string CpuName, string GpuName, string SensorStatus, List<DiskInfo> Disks, List<AppUsage> Apps)
+{
+    public string[] SensorFailures { get; init; } = [];
+}
 public record Advice(string Key, string Name, string Status, string Title, string Evidence, string Suggestion, string Limits);
 public record HistoryPoint(DateTimeOffset Time, double? Cpu, double? Memory, double? Gpu);
 public record SceneProfile(string Name, int SampleCount, double ActiveHours, double? CpuP95, double? CoreP95,

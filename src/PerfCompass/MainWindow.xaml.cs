@@ -157,9 +157,11 @@ public partial class MainWindow : Window
         DriveLabel.Text = string.Join("\n", snapshot.Disks.Select(d => $"{d.Name}  {d.UsedGb:0} / {d.TotalGb:0} GiB"));
         AppList.ItemsSource = snapshot.Apps;
         SensorLabel.Text = snapshot.SensorStatus;
+        SensorHealthBanner.Text = snapshot.SensorFailures.Length == 0 ? "" : "本次传感器更新失败：" + string.Join("、", snapshot.SensorFailures) + "。对应读数留空，基础采集继续；下次自动重试。";
+        SensorHealthBanner.Visibility = snapshot.SensorFailures.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
         RecordState.Text = "● " + (s.Active ? "正在记录 · 有效使用" : "正在记录 · 空闲");
         LastTime.Text = $"更新于 {s.Time.LocalDateTime:HH:mm:ss}";
-        StatusLine.Text = historyWriteFailed ? "实时采集继续，历史保存失败。请检查数据目录权限与磁盘空间；程序会自动重试。" : $"采集正常 · 历史记录每 10 秒保存 · {snapshot.SensorStatus}";
+        StatusLine.Text = historyWriteFailed ? "实时采集继续，历史保存失败。请检查数据目录权限与磁盘空间；程序会自动重试。" : $"采集继续 · 历史记录约 10 秒保存 · {snapshot.SensorStatus}";
         livePoints.Add(new(s.Time, s.Cpu, memPct, s.Gpu));
         livePoints.RemoveAll(p => p.Time < s.Time.AddMinutes(-4));
         LiveChart.SetPoints(livePoints);

@@ -38,6 +38,7 @@ public partial class MainWindow
             Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
             await Task.Delay(6000); await Screenshot("01-live");
             File.WriteAllText(Path.Combine(output, "hardware.json"), JsonSerializer.Serialize(live, new JsonSerializerOptions { WriteIndented = true }));
+            await RunHardwareSnapshotUiTests(output, Require, Screenshot);
             PauseButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
             Require(paused && PauseButton.Content.ToString() == "继续记录", "Pause button changes collection state");
             int before = store.Read(7).Count(); await Task.Delay(11000);

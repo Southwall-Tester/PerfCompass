@@ -363,6 +363,7 @@ public static partial class SelfTests
         RunQuantityGoalTests(Check, Assert);
         RunDataProtectionTests(Check, Assert);
         RunBackgroundSettingsTests(Check, Assert);
+        RunHardwareSnapshotTests(Check, Assert);
         Task.Run(() => RunTaskMeasurementTests(Check, Assert)).GetAwaiter().GetResult();
         Directory.CreateDirectory("artifacts");
         File.WriteAllLines("artifacts/self-tests.txt", log);

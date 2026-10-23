@@ -21,6 +21,7 @@ public sealed class Collector : IDisposable
     public string CpuName { get; private set; } = Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER") ?? "CPU";
     public string GpuName { get; private set; } = "等待显卡识别";
     public string HardwareId { get; private set; } = "";
+    internal Action<IHardware>? HardwareUpdateOverride;
     public Collector(LocalStore store)
     {
         this.store = store;
@@ -46,16 +47,6 @@ public sealed class Collector : IDisposable
     }
     private IEnumerable<IHardware> Gpus() => computer.Hardware.Where(h => h.HardwareType is HardwareType.GpuNvidia or HardwareType.GpuAmd or HardwareType.GpuIntel)
         .OrderBy(h => h.HardwareType == HardwareType.GpuIntel ? 1 : 0);
-    private static double? Sensor(IHardware? hw, SensorType type, params string[] names)
-    {
-        if (hw == null) return null;
-        foreach (var name in names)
-        {
-            var sensor = hw.Sensors.FirstOrDefault(s => s.SensorType == type && s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-            if (sensor?.Value is float f && float.IsFinite(f)) return f;
-        }
-        return null;
-    }
     public LiveSnapshot Collect()
     {
         var now = DateTimeOffset.Now;
@@ -77,18 +68,14 @@ public sealed class Collector : IDisposable
             if (loads.Count > 0) { cpu = loads.Average(); core = loads.Max(); }
         }
         previous = current;
-        foreach (var hw in computer.Hardware)
-        {
-            try { hw.Update(); foreach (var child in hw.SubHardware) child.Update(); }
-            catch (Exception e) { store.Log(e); }
-        }
+        var sensors = HardwareSnapshot.Capture(computer.Hardware, store.Log, HardwareUpdateOverride);
         var cpuHw = computer.Hardware.FirstOrDefault(h => h.HardwareType == HardwareType.Cpu);
         var gpuHw = Gpus().FirstOrDefault();
-        var gpu = Sensor(gpuHw, SensorType.Load, "GPU Core", "GPU D3D 3D", "D3D 3D");
-        var vramUsed = Sensor(gpuHw, SensorType.SmallData, "GPU Memory Used", "D3D Dedicated Memory Used");
-        var vramTotal = Sensor(gpuHw, SensorType.SmallData, "GPU Memory Total");
-        double? cpuTemp = Sensor(cpuHw, SensorType.Temperature, "CPU Package", "Core (Tctl/Tdie)", "Core (Tdie)", "Core Average");
-        double? gpuTemp = Sensor(gpuHw, SensorType.Temperature, "GPU Core");
+        var gpu = sensors.Value(gpuHw, SensorType.Load, "GPU Core", "GPU D3D 3D", "D3D 3D");
+        var vramUsed = sensors.Value(gpuHw, SensorType.SmallData, "GPU Memory Used", "D3D Dedicated Memory Used");
+        var vramTotal = sensors.Value(gpuHw, SensorType.SmallData, "GPU Memory Total");
+        double? cpuTemp = sensors.Value(cpuHw, SensorType.Temperature, "CPU Package", "Core (Tctl/Tdie)", "Core (Tdie)", "Core Average");
+        double? gpuTemp = sensors.Value(gpuHw, SensorType.Temperature, "GPU Core");
         var mem = Memory();
         var disks = new List<DiskInfo>();
         foreach (var drive in DriveInfo.GetDrives())
@@ -134,7 +121,7 @@ public sealed class Collector : IDisposable
             MaxDiskPercent = disks.Count > 0 ? disks.Max(d => d.Percent) : 0,
             DiskUsedGb = disks.Sum(d => d.UsedGb), DiskTotalGb = disks.Sum(d => d.TotalGb)
         };
-        return new(sample, CpuName, GpuName, sensorStatus, disks, lastApps);
+        return new(sample, CpuName, GpuName, sensorStatus, disks, lastApps) { SensorFailures = sensors.Failures };
     }
     public void ResetTiming() { previousTime = DateTimeOffset.Now; previous = CpuTimes(); processes.Clear(); previousAppsTime = DateTimeOffset.MinValue; }
     public void Dispose() { computer.Close(); read?.Dispose(); write?.Dispose(); idle?.Dispose(); }
