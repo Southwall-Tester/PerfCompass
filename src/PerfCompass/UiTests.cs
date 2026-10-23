@@ -17,7 +17,8 @@ public partial class MainWindow
         bool cpuOnly = Environment.GetCommandLineArgs().Contains("--ui-test-cpu-only");
         bool gpuOnly = Environment.GetCommandLineArgs().Contains("--ui-test-gpu-only");
         bool gpuFreshnessOnly = Environment.GetCommandLineArgs().Contains("--ui-test-gpu-freshness-only");
-        var output = Path.GetFullPath(gpuFreshnessOnly ? "artifacts/ui-gpu-freshness-focused" : gpuOnly ? "artifacts/ui-gpu-focused" : cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
+        bool observationOnly = Environment.GetCommandLineArgs().Contains("--ui-test-observation-only");
+        var output = Path.GetFullPath(observationOnly ? "artifacts/ui-observation-focused" : gpuFreshnessOnly ? "artifacts/ui-gpu-freshness-focused" : gpuOnly ? "artifacts/ui-gpu-focused" : cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
         var results = new List<string>();
         File.WriteAllText(Path.Combine(output, "results.txt"), "RUNNING " + DateTimeOffset.Now.ToString("O"));
         void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); File.AppendAllText(Path.Combine(output, "results.txt"), "\n" + results[^1]); if (!value) throw new Exception(name); }
@@ -42,6 +43,7 @@ public partial class MainWindow
             Require(live?.Sample.Cpu is >= 0 and <= 100, "Real CPU sample available");
             Require(live?.Sample.MemoryTotalGb > 0, "Real memory sample available");
             Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
+            if (observationOnly) { await RunResourceObservationUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (gpuFreshnessOnly) { await RunGpuFreshnessUiTests(output, Require, Screenshot); return; }
             if (cpuOnly) { await RunCpuCounterUiTests(output, Require, Screenshot); return; }
             if (gpuOnly) { await RunGpuEngineUiTests(output, Require, Screenshot, WaitForAnalysis); return; }

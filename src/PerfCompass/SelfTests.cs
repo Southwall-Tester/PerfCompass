@@ -374,6 +374,8 @@ public static partial class SelfTests
         RunGpuVendorPollTests(Check, Assert);
         RunIntelTelemetryTests(Check, Assert);
         RunGpuObservationScopeTests(Check, Assert);
+        RunResourceObservationTests(Check, Assert);
+        RunCandidateEvidenceLevelTests(Check, Assert);
         RunGpuEngineEvidenceTests(Check, Assert);
         RunGpuEngineAnalysisTests(Check, Assert);
         RunGpuEngineExportTests(Check, Assert);

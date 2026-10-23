@@ -59,9 +59,11 @@ public static class HistoryAnalysis
         {
             Ready = false, HistoryQuality = quality,
             Cards = report.Cards.Select(c => quality.HasIntervalConflicts ? c with
-                { Status = "unknown", Title = "时段重叠，先核对记录来源", Evidence = "同一配置的记录时间片重叠，无法确定负载份额。", Suggestion = quality.Message }
+                { Status = "unknown", Title = "时段重叠，先核对记录来源", Evidence = "同一配置的记录时间片重叠，无法确定负载份额。", Suggestion = quality.Message, Observation = null }
                 : c.Status is "surplus" or "review" or "changed" ? c with
-                { Status = "unknown", Title = "历史异常，先核对记录", Suggestion = quality.Message } : c).ToList(),
+                { Status = "unknown", Title = "历史异常，先核对记录", Suggestion = quality.Message,
+                    Observation = c.Observation?.State == "light" ? null : c.Observation }
+                : c.Observation?.State == "light" ? c with { Observation = null } : c).ToList(),
             DemandTrends = report.DemandTrends.Select(t => t with
                 { Status = "insufficient", Summary = "历史读取存在异常，时期对照暂不成立。", Suggestion = quality.Message,
                     LoadStatisticsAvailable = !quality.HasIntervalConflicts,

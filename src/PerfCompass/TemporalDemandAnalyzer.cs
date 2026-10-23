@@ -10,6 +10,8 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
         public readonly HashSet<string> GpuSources = new(StringComparer.Ordinal);
         public double ActiveSeconds;
         public double CpuHighSeconds, GpuHeavySeconds, GpuHighSeconds, MemoryHighSeconds;
+        public double CommitCapacitySeconds;
+        public double? GpuPeak, MemoryPeak, MemoryPeakPercent, CommitPeakPercent, PhysicalHeadroom;
         public readonly Dictionary<string, double> GpuHeavyScenes = [], CpuHeavyScenes = [];
         public void Add(Sample s)
         {
@@ -21,11 +23,26 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
             Cpu.Add(s.Cpu, cpuSeconds, max: 100); Core.Add(s.CoreMax, coreSeconds, max: 100);
             Gpu.Add(s.Gpu, gpuSeconds, max: 100); Memory.Add(s.MemoryUsedGb, memorySeconds); Commit.Add(s.CommitGb, commitSeconds);
             if (s.MemoryTotalGb is > 0) MemoryLoad.Add(s.MemoryUsedGb / s.MemoryTotalGb * 100, memorySeconds, max: 100);
+            if (s.Gpu.HasValue && gpuSeconds > 0) GpuPeak = Math.Max(GpuPeak ?? 0, s.GpuPeak ?? s.Gpu.Value);
+            if (s.MemoryTotalGb is > 0 && s.MemoryUsedGb.HasValue && memorySeconds > 0)
+            {
+                double peak = s.MemoryPeakGb ?? s.MemoryUsedGb.Value;
+                MemoryPeak = Math.Max(MemoryPeak ?? 0, peak);
+                MemoryPeakPercent = Math.Max(MemoryPeakPercent ?? 0, peak / s.MemoryTotalGb.Value * 100);
+                // Compare each peak with its own capacity, not the last sample's capacity.
+                double headroom = s.MemoryTotalGb.Value - peak;
+                PhysicalHeadroom = Math.Min(PhysicalHeadroom ?? headroom, headroom);
+            }
+            if (s.MemoryTotalGb is > 0 && s.CommitGb.HasValue && commitSeconds > 0)
+            {
+                CommitCapacitySeconds += commitSeconds;
+                CommitPeakPercent = Math.Max(CommitPeakPercent ?? 0, s.CommitGb.Value / s.MemoryTotalGb.Value * 100);
+            }
             double Exposure(double? measured, bool high, double covered) => Math.Clamp(measured ?? (high ? covered : 0), 0, covered);
-            CpuHighSeconds += Exposure(s.CpuHighSeconds, s.Cpu >= 90, cpuSeconds);
-            GpuHeavySeconds += Exposure(s.GpuHeavySeconds, s.Gpu >= 80, gpuSeconds);
-            GpuHighSeconds += Exposure(s.GpuHighSeconds, s.Gpu >= 95, gpuSeconds);
-            MemoryHighSeconds += Exposure(s.MemoryHighSeconds, s.MemoryTotalGb is > 0 && s.MemoryUsedGb / s.MemoryTotalGb >= .9, memorySeconds);
+            CpuHighSeconds += s.Cpu.HasValue ? Exposure(s.CpuHighSeconds, s.Cpu >= 90, cpuSeconds) : 0;
+            GpuHeavySeconds += s.Gpu.HasValue ? Exposure(s.GpuHeavySeconds, s.Gpu >= 80, gpuSeconds) : 0;
+            GpuHighSeconds += s.Gpu.HasValue ? Exposure(s.GpuHighSeconds, s.Gpu >= 95, gpuSeconds) : 0;
+            MemoryHighSeconds += s.MemoryUsedGb.HasValue ? Exposure(s.MemoryHighSeconds, s.MemoryTotalGb is > 0 && s.MemoryUsedGb / s.MemoryTotalGb >= .9, memorySeconds) : 0;
             if (s.Cpu.HasValue && cpuSeconds > 0) CpuDays.Add(s.Time.LocalDateTime.Date);
             if (s.Gpu.HasValue && gpuSeconds > 0)
             {
@@ -44,6 +61,60 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
     public double FreshHours => week.ActiveSeconds / 3600;
     public int FreshDays => week.ActiveDays.Count;
     public bool FreshObservationReady => week.ActiveSeconds >= 1800 && week.ActiveDays.Count >= 2;
+
+    /// <summary>
+    /// Describes recent measured behavior only. This does not change the longer
+    /// coverage and representative-workload gates used for purchase advice.
+    /// </summary>
+    internal ResourceObservation? Observe(string key, string? scene)
+    {
+        string scope = "最近 7 天 · " + (scene ?? "全部场景");
+        string P(double? value, string unit = "%") => value.HasValue ? $"{value:0.0}{unit}" : "缺失";
+        double Coverage(double seconds) => week.ActiveSeconds > 0 ? Math.Clamp(seconds / week.ActiveSeconds, 0, 1) : 0;
+        bool Enough(double seconds, double coverage) => seconds >= 300 && Coverage(seconds) >= coverage;
+        ResourceObservation Result(string state, string title, string evidence, string action, string component, double seconds)
+            => new(state, title, evidence, action, scope + " · " + component, seconds / 3600, Coverage(seconds));
+        if (key == "cpu")
+        {
+            bool cpuBusy = week.Cpu.Maximum >= 80 || week.CpuHighSeconds > 0, coreBusy = week.Core.Maximum >= 80;
+            double seconds = Math.Min(week.Cpu.Seconds, week.Core.Seconds);
+            string evidence = $"CPU P95 {P(week.Cpu.Quantile(.95))}；最忙逻辑核心峰值 {P(week.Core.Maximum)}；CPU ≥90% 累计 {week.CpuHighSeconds:0.0} 秒。";
+            if (cpuBusy || coreBusy)
+                return Result("busy", cpuBusy ? "已观察到处理器繁忙" : "已观察到单核繁忙", evidence,
+                    "重跑出现繁忙的任务，记录耗时或卡顿，再核对升级收益。", "CPU 与逻辑核心", Math.Max(cpuBusy ? week.Cpu.Seconds : 0, coreBusy ? week.Core.Seconds : 0));
+            if (!Enough(seconds, .95)) return null;
+            bool light = week.Cpu.Quantile(.95) < 25 && week.Core.Maximum < 70;
+            return Result(light ? "light" : "observed", light ? "已测处理器负载偏低" : "处理器已有实际负载", evidence,
+                light ? "可先比较较少核心、单核性能相近的CPU，并用最重任务筛选。" : "记录主要任务的完成时间，再与候选机器实测比较。",
+                "CPU 与逻辑核心", seconds);
+        }
+        if (key == "memory")
+        {
+            double seconds = Math.Min(week.Memory.Seconds, week.CommitCapacitySeconds);
+            string evidence = $"物理使用峰值 {P(week.MemoryPeak, " GiB")}（当时容量的 {P(week.MemoryPeakPercent)}）；已测物理余量最少 {P(week.PhysicalHeadroom, " GiB")}；提交量峰值 {P(week.Commit.Maximum, " GiB")}。";
+            if (week.MemoryPeakPercent >= 90 || week.MemoryHighSeconds > 0)
+                return Result("busy", "已观察到内存余量偏低", evidence,
+                    "复现峰值任务，核对分页与卡顿是否同时发生。", "物理容量与提交量", week.Memory.Seconds);
+            if (!Enough(seconds, .95)) return null;
+            bool light = week.MemoryPeakPercent <= 70 && week.CommitPeakPercent <= 90;
+            return Result(light ? "light" : "observed", light ? "已测内存容量有余量" : "已记录内存容量需求", evidence,
+                "用峰值筛选候选容量，并在候选机器上重跑最重的多任务组合。", "物理容量与提交量", seconds);
+        }
+        if (key == "gpu")
+        {
+            bool mixed = week.GpuSources.Count > 1;
+            string evidence = $"已测核心/3D P95 {P(mixed ? null : week.Gpu.Quantile(.95))}；峰值 {P(week.GpuPeak)}；≥80% 累计 {week.GpuHeavySeconds:0.0} 秒。";
+            if (week.GpuPeak >= 80 || week.GpuHeavySeconds > 0 || week.GpuHighSeconds > 0)
+                return Result("busy", "已观察到核心/3D重负载", evidence + (mixed ? " 来源混合，未合并 P95。" : ""),
+                    "找出重负载任务，在候选显卡上核对帧率、耗时与功能。", "已测核心/3D，其他引擎另核对", week.Gpu.Seconds);
+            if (!Enough(week.Gpu.Seconds, .9) || week.GpuSources.Count != 1) return null;
+            bool light = week.Gpu.Quantile(.95) < 30;
+            return Result(light ? "light" : "observed", light ? "已测核心/3D负载偏低" : "核心/3D已有实际负载", evidence,
+                light ? "可先比较较低档显卡，并用目标画质/帧率、计算和编码任务筛选。" : "在候选显卡上核对目标帧率、任务耗时、显存与软件功能。",
+                "已测核心/3D，其他引擎另核对", week.Gpu.Seconds);
+        }
+        return null;
+    }
     public bool HasFreshEvidence(string key) => key switch
     {
         "cpu" => week.Cpu.Seconds >= 1800 && week.CpuDays.Count >= 2 && week.Core.Seconds >= 1800 && week.CoreDays.Count >= 2,

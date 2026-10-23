@@ -123,6 +123,16 @@ public static class AnalysisEngine
             cards = cards.Select(c => c with { Status = "unknown", Title = "请先隔离同一硬件配置的记录", Suggestion = coverage.Message }).ToList();
             trends.Clear();
         }
+        if (count > 0 && !string.IsNullOrWhiteSpace(scopeHardwareId))
+            cards = cards.Select(card =>
+            {
+                var observation = temporal.Observe(card.Key, selectedScene);
+                // Recent readings support a scoped observation, not an exception
+                // to history integrity or the existing purchase-eligibility gates.
+                if (quality.HasIntervalConflicts || observation?.State == "light"
+                    && (quality.HasIssues || card.Key == "gpu" && gpuMetricScopes.Count > 1)) observation = null;
+                return card with { Observation = observation };
+            }).ToList();
         var result = new AnalysisReport(now, windowDays, count, seconds / 3600, dates.Count, ready, scenes.Order().ToArray(), cards,
             bins.Select(kv => new HistoryPoint(DateTimeOffset.FromUnixTimeSeconds(kv.Key * 3600), kv.Value.Cn > 0 ? kv.Value.C / kv.Value.Cn : null,
                 kv.Value.Mn > 0 ? kv.Value.M / kv.Value.Mn : null, gpuHistoryScopes.Count == 1 && kv.Value.Gn > 0 ? kv.Value.G / kv.Value.Gn : null)

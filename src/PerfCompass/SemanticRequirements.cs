@@ -115,6 +115,8 @@ public static class SemanticRequirements
             return c with { Status = replace ? "requirements" : c.Status,
                 Title = replace ? "先验证已确认的任务与目标，再评估降档" : c.Title,
                 Evidence = c.Evidence + " 已确认的结构化需求见购机条件；条件与不确定事项不作为必然需求。",
+                Observation = !replace && pending && c.Observation is { } observation
+                    ? observation with { Action = observation.Action + " 另外分别比较条件需求成立与不成立时的配置。" } : c.Observation,
                 Suggestion = replace ? "历史占用不足以覆盖已确认的新任务或资源/体验目标。先在候选配置上验证这些条件，再判断余量；未据此推导具体型号。" : c.Suggestion + (pending ? " 当前占用结论仅覆盖已测任务；另外比较条件成立与不成立时的配置。" : "") };
         }).ToList();
         cards.Add(new("constraints", "购机条件", "constraints", pending ? "分开核对确定需求与条件需求" : "按已确认条件验证候选电脑",

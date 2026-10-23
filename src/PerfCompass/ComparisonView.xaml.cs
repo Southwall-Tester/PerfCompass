@@ -23,13 +23,25 @@ public partial class ComparisonView : UserControl
     {
         InitializeComponent();
         foreach (var grid in new[] { CandidatesGrid, CriteriaGrid, ObservationsGrid })
+        {
             foreach (var column in grid.Columns.OfType<DataGridTextColumn>()) column.ElementStyle = (Style)FindResource("TableText");
-        AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler((_, _) => Invalidate()));
-        AddHandler(ToggleButton.CheckedEvent, new RoutedEventHandler((sender, e) => { if (e.OriginalSource != CoverageConfirm) Invalidate(); }));
-        AddHandler(ToggleButton.UncheckedEvent, new RoutedEventHandler((sender, e) => { if (e.OriginalSource != CoverageConfirm) Invalidate(); }));
-        AddHandler(Selector.SelectionChangedEvent, new SelectionChangedEventHandler((_, e) => { if (e.OriginalSource is ComboBox) Invalidate(); }));
+            grid.BeginningEdit += (_, _) => Invalidate();
+        }
+        // Display-mode combo boxes also emit selection events when WPF creates
+        // their bindings during layout. Only actual cell editing invalidates a
+        // result; scrolling or realizing a row must not erase it.
+        AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler((_, e) => { if (IsEditingCell(e.OriginalSource)) Invalidate(); }));
+        AddHandler(ToggleButton.CheckedEvent, new RoutedEventHandler((_, e) => { if (IsEditingCell(e.OriginalSource)) Invalidate(); }));
+        AddHandler(ToggleButton.UncheckedEvent, new RoutedEventHandler((_, e) => { if (IsEditingCell(e.OriginalSource)) Invalidate(); }));
+        AddHandler(Selector.SelectionChangedEvent, new SelectionChangedEventHandler((_, e) => { if (e.OriginalSource is ComboBox && IsEditingCell(e.OriginalSource)) Invalidate(); }));
         CoverageConfirm.Checked += (_, _) => { if (!updating) DropResult(); };
         CoverageConfirm.Unchecked += (_, _) => { if (!updating) DropResult(); };
+    }
+    private static bool IsEditingCell(object source)
+    {
+        for (var current = source as DependencyObject; current != null; current = VisualTreeHelper.GetParent(current))
+            if (current is DataGridCell cell) return cell.IsEditing;
+        return false;
     }
     internal void RefreshLoadedContext(LocalStore localStore, AnalysisReport report)
     {
@@ -169,14 +181,14 @@ public partial class ComparisonView : UserControl
         {
             workspace.CoverageConfirmed = CoverageConfirm.IsChecked == true;
             CandidateComparison.Save(store.Root, workspace);
-            if (workspace.Candidates.Count < 2) { DropResult(); ComparisonStatus.Text = "草稿已保存；至少添加两套候选配置后比较。"; return; }
+            if (workspace.Candidates.Count == 0) { DropResult(); ComparisonStatus.Text = "草稿已保存；添加一套候选即可核对目标，添加更多候选后可比较报价。"; return; }
             comparison = CandidateComparison.Evaluate(workspace, context);
             ComparisonSummary.Text = comparison.Summary;
             ComparisonConflicts.ItemsSource = comparison.Conflicts;
             ComparisonTradeoffs.ItemsSource = comparison.Tradeoffs;
             ComparisonScenarios.ItemsSource = comparison.ScenarioSummaries;
-            ComparisonResults.ItemsSource = comparison.Candidates.Select(a => new { a.Name, StatusLabel = a.State == "pass" ? "必需条件通过 · 条件需求另行核对" : a.State == "fail" ? "存在不满足的必需条件" : "待验证，暂不能确认满足需求", StatusBrush = a.State == "pass" ? "#007F73" : a.State == "fail" ? "#BC7132" : "#677A87", Checks = a.Checks.Select(c => new { c.Name, Reading = (c.State == "pass" ? "满足：" : c.State == "fail" ? "不满足：" : "待验证：") + c.Reading, c.Evidence, ConditionLabel = c.Condition.Length > 0 ? "触发条件：" + c.Condition : "必需条件" }) }).ToList();
-            ExportComparisonButton.IsEnabled = true; ComparisonStatus.Text = "已保存比较。报价与测试记录由用户提供，未独立验证真实性。";
+            ComparisonResults.ItemsSource = comparison.Candidates.Select(a => new { a.Name, StatusLabel = a.State == "pass" ? "必需条件通过 · 条件需求另行核对" : a.State == "fail" ? "存在不满足的必需条件" : "待验证，暂不能确认满足需求", StatusBrush = a.State == "pass" ? "#007F73" : a.State == "fail" ? "#BC7132" : "#677A87", Checks = a.Checks.Select(c => new { c.Name, c.EvidenceKind, c.EvidenceLabel, Reading = c.EvidenceLabel + " · " + (c.State == "pass" ? "满足：" : c.State == "fail" ? "不满足：" : "待验证：") + c.Reading, c.Evidence, ConditionLabel = c.Condition.Length > 0 ? "触发条件：" + c.Condition : "必需条件" }) }).ToList();
+            ExportComparisonButton.IsEnabled = true; ComparisonStatus.Text = "已保存目标核对结果；各项已标明规格资料、人工记录或重复测量依据。";
         }
         catch (ArgumentException ex) { ComparisonStatus.Text = ex.Message; }
         catch (Exception ex) { store.Log(ex); ComparisonStatus.Text = "比较或保存失败，请检查数据目录权限。"; }

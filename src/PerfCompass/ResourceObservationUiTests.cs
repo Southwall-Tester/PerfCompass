@@ -1,0 +1,266 @@
+using System.IO;
+using System.Net;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
+
+namespace PerfCompass;
+
+public partial class MainWindow
+{
+    private async Task RunResourceObservationUiTests(string output, Action<bool, string> require,
+        Func<string, Task> screenshot, Func<Func<bool>, Task> waitForAnalysis)
+    {
+        void Click(Button button) => button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+        IEnumerable<DependencyObject> Descendants(DependencyObject parent)
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                yield return child;
+                foreach (var nested in Descendants(child)) yield return nested;
+            }
+        }
+        bool InViewport(FrameworkElement element)
+        {
+            if (!element.IsVisible || element.ActualWidth <= 0 || element.ActualHeight <= 0) return false;
+            var surface = (FrameworkElement)Content;
+            var bounds = element.TransformToAncestor(surface).TransformBounds(new Rect(element.RenderSize));
+            var visible = bounds;
+            visible.Intersect(new Rect(surface.RenderSize));
+            for (var ancestor = VisualTreeHelper.GetParent(element); ancestor != null && ancestor != surface;
+                ancestor = VisualTreeHelper.GetParent(ancestor))
+                if (ancestor is FrameworkElement frame && (frame.ClipToBounds || frame is ScrollContentPresenter))
+                    visible.Intersect(frame.TransformToAncestor(surface).TransformBounds(new Rect(frame.RenderSize)));
+            // A small sliver is not a readable title or status. Permit only the
+            // subpixel difference caused by layout rounding at a clipping edge.
+            return !visible.IsEmpty && visible.Width > 8 && visible.Height > 8
+                && visible.Width >= bounds.Width - .5 && visible.Height >= bounds.Height - .5;
+        }
+        Border Card(string key) => AdviceList.Items.OfType<Border>().Single(card => card.Tag as string == key);
+        async Task RevealLeadingArea(FrameworkElement anchor, IEnumerable<FrameworkElement> labels)
+        {
+            UpdateLayout();
+            double bottom = labels
+                .Select(label => label.TransformToAncestor(anchor).TransformBounds(new Rect(label.RenderSize)).Bottom)
+                .DefaultIfEmpty(0).Max();
+            // Request the complete leading area containing both labels, not a
+            // one-pixel border point which can sit at the viewport's bottom.
+            anchor.BringIntoView(new Rect(0, 0, anchor.ActualWidth, Math.Min(anchor.ActualHeight, bottom + 12)));
+            // The main page scrolls in pixels. Align the resource or comparison
+            // result near its top so the screenshot also shows nearby evidence.
+            for (var ancestor = VisualTreeHelper.GetParent(anchor); ancestor != null;
+                ancestor = VisualTreeHelper.GetParent(ancestor))
+                if (ancestor is ScrollViewer scroll)
+                {
+                    if (!scroll.CanContentScroll && scroll.Content is Visual content)
+                    {
+                        double top = anchor.TransformToAncestor(content).Transform(new Point()).Y;
+                        scroll.ScrollToVerticalOffset(Math.Max(0, top - 12));
+                    }
+                    break;
+                }
+            await Task.Delay(100); UpdateLayout();
+        }
+        async Task PreserveVisibilityFailure(string capture, string key, string title, string status, TextBlock[] text)
+        {
+            // Capture the failed layout before throwing, including failures on
+            // the very first resource card or the final comparison decision.
+            await screenshot(capture + "-visibility-failure");
+            var surface = (FrameworkElement)Content;
+            File.WriteAllText(Path.Combine(output, capture + "-visibility-failure.json"), JsonSerializer.Serialize(new
+            {
+                Key = key, DisplayTitle = title, StatusLabel = status, Width, Height,
+                Text = text.Select(t => new
+                {
+                    t.Text, t.IsVisible, t.ActualWidth, t.ActualHeight, FullyInViewport = InViewport(t),
+                    Bounds = t.TransformToAncestor(surface).TransformBounds(new Rect(t.RenderSize)).ToString()
+                }).ToArray()
+            }, new JsonSerializerOptions { WriteIndented = true }));
+        }
+        async Task ShowCard(string key, string capture)
+        {
+            var advice = report!.Cards.Single(card => card.Key == key);
+            var card = Card(key);
+            UpdateLayout();
+            var text = Descendants(card).OfType<TextBlock>().ToArray();
+            var title = text.FirstOrDefault(t => t.Text == advice.DisplayTitle);
+            var status = text.FirstOrDefault(t => t.Text == advice.StatusLabel);
+            await RevealLeadingArea(card, new[] { title, status }.OfType<TextBlock>());
+            bool visible = title != null && status != null && InViewport(title) && InViewport(status);
+            if (!visible)
+                await PreserveVisibilityFailure(capture, key, advice.DisplayTitle, advice.StatusLabel, text);
+            require(visible,
+                $"Rendered {key} observation title and status are visible inside the current viewport before capture");
+            await screenshot(capture);
+        }
+        void SaveReport(string name, AnalysisReport current, params Advice[] expected)
+        {
+            string html = ReportExporter.Html(current, live);
+            File.WriteAllText(Path.Combine(output, name + ".html"), html);
+            File.WriteAllText(Path.Combine(output, name + ".json"), JsonSerializer.Serialize(current,
+                new JsonSerializerOptions { WriteIndented = true }));
+            require(expected.All(card => card.Observation is { } observation
+                    && html.Contains(WebUtility.HtmlEncode(card.DisplayTitle))
+                    && html.Contains(WebUtility.HtmlEncode(card.StatusLabel))
+                    && html.Contains(WebUtility.HtmlEncode(observation.Evidence))
+                    && html.Contains(WebUtility.HtmlEncode(observation.Scope))
+                    && html.Contains(WebUtility.HtmlEncode(card.DisplaySuggestion))),
+                "HTML export uses the same observation title, evidence, scope and action as the native resource cards");
+        }
+
+        if (!paused) Click(PauseButton);
+        require(paused && RecordState.Text.Contains("已暂停") && collector != null
+            && Environment.GetCommandLineArgs().Contains("--ui-test"),
+            "Resource observation fixture pauses production recording inside the guarded isolated UI-test session");
+        const string scene = "资源初步判断（合成10分钟任务）";
+        var now = DateTimeOffset.Now;
+        var beginning = new DateTimeOffset(now.Date.AddDays(-1).AddHours(12), now.Offset);
+        Sample Frame(int index) => new()
+        {
+            Time = beginning.AddSeconds((index + 1) * 10), HardwareId = collector!.HardwareId,
+            Scene = scene, Seconds = 10, Active = true, ObservationVersion = ActivityRules.Version,
+            Cpu = 5, CoreMax = 15, CpuCoverage = 10, CoreCoverage = 10, CpuHighSeconds = 0,
+            MemoryUsedGb = 8, MemoryPeakGb = 9, MemoryTotalGb = 32, CommitGb = 10,
+            MemoryCoverage = 10, CommitCoverage = 10, MemoryHighSeconds = 0,
+            Gpu = 3, GpuPeak = 3, GpuCoverage = 10, GpuHeavySeconds = 0, GpuHighSeconds = 0,
+            GpuMetricSource = "GPU Core", GpuEngineVersion = GpuEngineEvidence.Version,
+            GpuEngines = [new("core", ["GPU Core"], 3) { Complete = true }],
+            VramUsedGb = .5, VramTotalGb = 8, DiskUsedGb = 100, DiskTotalGb = 1000, MaxDiskPercent = 10
+        };
+        await Task.Run(() =>
+        {
+            for (int index = 0; index < 60; index++) store.Append(Frame(index));
+        });
+        Click(AdviceNav); await RefreshAnalysis();
+        await waitForAnalysis(() => report!.SceneProfiles.Any(profile => profile.Name == scene));
+        AnalysisSceneCombo.SelectedItem = AnalysisSceneCombo.Items.OfType<ComboBoxItem>()
+            .Single(item => item.Tag as string == scene);
+        await waitForAnalysis(() => report!.SelectedScene == scene && report.SampleCount == 60);
+        var light = report!;
+        var lightCards = new[] { "cpu", "memory", "gpu" }.Select(key => light.Cards.Single(card => card.Key == key)).ToArray();
+        require(!light.Ready && !light.RepresentativeConfirmed && light.ActiveDays == 1
+            && Math.Abs(light.ActiveHours - 1d / 6) < 1e-7 && !light.HistoryQuality.HasIssues
+            && lightCards.All(card => card.Observation is { State: "light", ObservedHours: > 0, Coverage: >= .95 }
+                && card.Observation.Scope.Contains(scene) && card.UsesObservation
+                && card.DisplayTitle == card.Observation.Title && card.StatusLabel == "初步判断"),
+            "One isolated ten-minute synthetic task produces concrete CPU memory and GPU light observations without purchase readiness or representative confirmation");
+        require(AnalysisSummary.Text.Contains("初步判断") && CoverageLabel.Text.Contains(scene)
+            && lightCards.All(card => Descendants(Card(card.Key)).OfType<TextBlock>().Any(text => text.Text == card.DisplayTitle)),
+            "Native analysis summary and all three resource card titles reflect the selected task observations instead of the old generic waiting titles");
+        SaveReport("resource-observation-light", light, lightCards);
+        await ShowCard("cpu", "55-resource-observation-cpu-light");
+        await ShowCard("memory", "55-resource-observation-memory-light");
+        await ShowCard("gpu", "55-resource-observation-gpu-light");
+        string oldGpuTitle = lightCards.Single(card => card.Key == "gpu").DisplayTitle;
+
+        var partial = Frame(60) with
+        {
+            GpuEngines =
+            [
+                new("core", ["GPU Core"], 3) { Complete = true },
+                new("compute", ["D3D Compute_0", "D3D Compute_1"], 96)
+                {
+                    Complete = false, Peak = 96, ObservedSeconds = 10, CoverageSeconds = 0,
+                    HeavySeconds = 10, HighSeconds = 10
+                }
+            ]
+        };
+        await Task.Run(() => store.Append(partial));
+        await RefreshAnalysis();
+        await waitForAnalysis(() => report!.SelectedScene == scene && report.SampleCount == 61
+            && report.Cards.Single(card => card.Key == "gpu").Observation?.State == "busy");
+        var busy = report!; var gpu = busy.Cards.Single(card => card.Key == "gpu");
+        var compute = busy.GpuEngineProfiles.Single(profile => profile.Kind == "compute");
+        require(!busy.Ready && !busy.RepresentativeConfirmed && !busy.HistoryQuality.HasIssues
+            && gpu.Observation is { State: "busy" } observation && observation.Evidence.Contains("96.0%")
+            && observation.Evidence.Contains("部分读数") && observation.Scope.Contains(scene)
+            && gpu.UsesObservation && gpu.DisplayTitle != oldGpuTitle && gpu.StatusLabel == "初步判断"
+            && compute.Peak == 96 && compute.CompleteHours == 0 && Math.Abs(compute.ObservedHours - 10d / 3600) < 1e-7
+            && busy.SceneProfiles.Single(profile => profile.Name == scene).GpuP95 == 3,
+            "A single known 96-percent partial compute node replaces GPU light observation while core P95 stays low and whole-task readiness stays false");
+        require(!Descendants(Card("gpu")).OfType<TextBlock>().Any(text => text.Text == oldGpuTitle)
+            && busy.Cards.Where(card => card.Key is "cpu" or "memory").All(card => card.Observation?.State == "light"),
+            "The GPU card no longer displays its old light title and independent CPU or memory observations remain scoped to their own readings");
+        SaveReport("resource-observation-busy", busy, gpu);
+        await ShowCard("gpu", "56-resource-observation-partial-compute-busy");
+        double originalWidth = Width, originalHeight = Height; var originalState = WindowState;
+        try
+        {
+            WindowState = WindowState.Normal; Width = MinWidth; Height = MinHeight;
+            await ShowCard("gpu", "57-resource-observation-minimum-window");
+        }
+        finally { Width = originalWidth; Height = originalHeight; WindowState = originalState; }
+
+        var comparisonButton = Descendants(Card("gpu")).OfType<Button>()
+            .Single(button => button.Tag as string == "compare:gpu");
+        comparisonButton.BringIntoView(); await Task.Delay(100); UpdateLayout();
+        require(comparisonButton.Content?.ToString() == "比较候选配置" && comparisonButton.IsEnabled && InViewport(comparisonButton),
+            "The busy GPU observation exposes a visible enabled real candidate-comparison action");
+        Click(comparisonButton);
+        await waitForAnalysis(() => ComparisonPage.Visibility == Visibility.Visible && PageTitle.Text == "候选配置");
+        var view = ComparisonPage;
+        require(view.Workspace.Candidates.Count == 0 && view.Workspace.Criteria.Count == 0 && view.CoverageConfirm.IsChecked != true,
+            "The resource card action opens the real empty comparison workspace without manufacturing candidates or confirmation");
+        Click(view.AddCandidateButton);
+        await EditComparisonCell(view.CandidatesGrid, 0, 0, "合成单候选（尚未验证）");
+        await EditComparisonCell(view.CandidatesGrid, 0, 1, 6000);
+        await EditComparisonCell(view.CandidatesGrid, 0, 2, 32);
+        await EditComparisonCell(view.CandidatesGrid, 0, 5, "合成 CPU（非商品）");
+        await EditComparisonCell(view.CandidatesGrid, 0, 6, "合成 GPU（非商品）");
+        await EditComparisonCell(view.CandidatesGrid, 0, 7, "独立 UI 合成输入，不是商品报价或实测依据");
+        Click(view.AddCriterionButton);
+        await EditComparisonCell(view.CriteriaGrid, 0, 1, "原有合成任务条件（仍待核对）");
+        string originalCriterion = ((PurchaseCriterion)view.CriteriaGrid.Items[0]).Id;
+        Click(view.ImportCriteriaButton);
+        require(view.Workspace.Candidates.Count == 1 && view.Workspace.Criteria.Count > 1
+            && view.Workspace.Criteria.Any(criterion => criterion.Id == originalCriterion && !criterion.Reviewed)
+            && view.Workspace.Criteria.Any(criterion => criterion.OriginId == "gpu-engine:compute")
+            && view.Workspace.Criteria.All(criterion => !criterion.Reviewed) && view.CoverageConfirm.IsChecked != true,
+            "Importing the actual busy-engine observation preserves the existing condition and leaves every condition and coverage unreviewed");
+        Click(view.CompareButton);
+        require(view.Result is { Candidates.Count: 1 } && view.Result.Candidates.Single().State == "unknown"
+            && view.Workspace.Criteria.All(criterion => !criterion.Reviewed) && view.CoverageConfirm.IsChecked != true
+            && view.ComparisonResults.Items.Count == 1 && view.ComparisonSummary.Text == view.Result.Summary,
+            "The real compare button evaluates one candidate instead of requiring two while retaining unknown results for unreviewed conditions");
+        var reopened = CandidateComparison.Load(store.Root);
+        require(reopened.Candidates.Count == 1 && !reopened.CoverageConfirmed
+            && reopened.Criteria.Any(criterion => criterion.Id == originalCriterion)
+            && reopened.Criteria.All(criterion => !criterion.Reviewed),
+            "Saving the single-candidate comparison does not silently confirm the original or newly imported conditions");
+        File.WriteAllText(Path.Combine(output, "resource-observation-single-candidate.html"), view.ExportHtml());
+        UpdateLayout();
+        require(view.Result is { Candidates.Count: 1 } && view.ComparisonResults.Items.Count == 1,
+            "Creating display-mode grid bindings during layout preserves the computed single-candidate result");
+        var resultText = Descendants(view.ComparisonResults).OfType<TextBlock>().ToArray();
+        string candidateName = view.Result!.Candidates.Single().Name;
+        const string unknownLabel = "待验证，暂不能确认满足需求";
+        var resultTitle = resultText.FirstOrDefault(text => text.Text == candidateName);
+        var resultStatus = resultText.FirstOrDefault(text => text.Text == unknownLabel);
+        await RevealLeadingArea(view.ComparisonResults, new[] { resultTitle, resultStatus }.OfType<TextBlock>());
+        bool resultVisible = resultTitle != null && resultStatus != null && InViewport(resultTitle) && InViewport(resultStatus);
+        if (!resultVisible)
+            await PreserveVisibilityFailure("57-resource-observation-single-candidate", "comparison", candidateName, unknownLabel, resultText);
+        require(resultVisible,
+            "The single-candidate name and unknown decision are fully rendered inside the viewport before capture");
+        await screenshot("57-resource-observation-single-candidate");
+        foreach (var edit in new (DataGrid Grid, int Column, object Value, string Kind)[]
+        {
+            (view.CandidatesGrid, 1, 6100, "text"),
+            (view.CriteriaGrid, 2, "price", "selection"),
+            (view.CriteriaGrid, 0, true, "checkbox")
+        })
+        {
+            view.CoverageConfirm.IsChecked = true;
+            Click(view.CompareButton);
+            await EditComparisonCell(edit.Grid, 0, edit.Column, edit.Value);
+            require(view.Result == null && view.ComparisonResults.Items.Count == 0
+                && view.CoverageConfirm.IsChecked != true && !view.Workspace.CoverageConfirmed,
+                $"Editing a real {edit.Kind} cell still invalidates the previous result and coverage confirmation");
+        }
+        File.WriteAllText(Path.Combine(output, "resource-observation-NOTICE.txt"),
+            "The initial three common checks use actual local CPU/memory collection. This flow then pauses the collector and appends 60 ten-second synthetic rows, followed by one partial 96% compute-engine row, only to the guarded empty UI-test data directory. The separately selected scene is explicitly synthetic and excludes startup telemetry. Dates occupy one local day; 10 minutes do not satisfy purchase-readiness or representative-coverage requirements. Native store/history analysis, card text and visible rendering, the actual comparison action and grids, single-candidate evaluation, saved review state and HTML export are exercised. Candidate names and prices are synthetic; no condition or task result is claimed to be verified. Screenshots, reports and this notice are written only to the provided test output folder. No workload, model, hardware setting or production history is changed.");
+    }
+}

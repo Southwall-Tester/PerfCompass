@@ -76,7 +76,21 @@ public record GpuEngineProfile(string Kind, string Name, double ObservedHours, d
     [System.Text.Json.Serialization.JsonIgnore]
     public string ScopeNotice => HasMixedSources ? "来源或规则混合，未合并 P95；峰值与重载时长仅保留为已观察线索。" : "";
 }
-public record Advice(string Key, string Name, string Status, string Title, string Evidence, string Suggestion, string Limits);
+public record ResourceObservation(string State, string Title, string Evidence, string Action, string Scope, double ObservedHours, double Coverage);
+
+public record Advice(string Key, string Name, string Status, string Title, string Evidence, string Suggestion, string Limits)
+{
+    public ResourceObservation? Observation { get; init; }
+    public bool UsesObservation => Observation != null && Status is "unknown" or "fit";
+    public string DisplayTitle => UsesObservation ? Observation!.Title : Title;
+    public string DisplaySuggestion => UsesObservation ? Observation!.Action : Suggestion;
+    public string StatusLabel => UsesObservation ? "初步判断" : Status switch
+    {
+        "surplus" => "疑似过剩", "pressure" => "压力线索", "fit" => "保持观察", "changed" => "近期需求增加",
+        "review" => "可比较降档", "experience" => "体验待核对", "requirements" => "新需求待验证",
+        "constraints" => "已确认条件", _ => "等待观测"
+    };
+}
 public record HistoryPoint(DateTimeOffset Time, double? Cpu, double? Memory, double? Gpu)
 {
     public string GpuScope { get; init; } = "";
@@ -127,12 +141,16 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public string HardwareId { get; init; } = "";
     public bool RepresentativeConfirmed { get; init; }
     public string CoverageMessage { get; init; } = "";
-    public string MethodVersion { get; init; } = "1.12";
+    public string MethodVersion { get; init; } = "1.13";
     public HistoryQuality HistoryQuality { get; init; } = HistoryQuality.Unchecked;
     public int SamplingGapCount { get; init; }
     public string SamplingGapSummary => SamplingGapCount > 0 ? $"本范围记录到 {SamplingGapCount} 次采样中断；中断段未计入有效使用，也未作为空闲负载。" : "";
     [System.Text.Json.Serialization.JsonIgnore]
     public string DurationLabel => DurationText.FromHours(ActiveHours);
     public string Level => Ready ? "较充分" : ActiveHours >= .5 ? "初步观察" : "积累中";
-    public string Summary => HistoryQuality.HasIssues ? "历史记录存在异常，先核对数据再判断配置余量" : Cards.Any(c => c.Status == "experience") ? "近期有体验问题，先核对原因再评估余量" : Cards.Any(c => c.Status == "requirements") ? "已确认配置目标，先核对候选机器的表现" : DemandTrends.Any(t => t.Status == "increased") ? "近期任务负载增加，优先核对新的配置需求" : Ready ? $"{Cards.Count(c => c.Status == "surplus")} 项疑似过剩 · {Cards.Count(c => c.Status == "pressure")} 项压力线索" : "先记录真实使用，再决定配置预算";
+    public string Summary => HistoryQuality.HasIssues ? "历史记录存在异常，先核对数据再判断配置余量" : Cards.Any(c => c.Status == "experience") ? "近期有体验问题，先核对原因再评估余量" : Cards.Any(c => c.Status == "requirements") ? "已确认配置目标，先核对候选机器的表现" : DemandTrends.Any(t => t.Status == "increased") ? "近期任务负载增加，优先核对新的配置需求" : Ready ? $"{Cards.Count(c => c.Status == "surplus")} 项疑似过剩 · {Cards.Count(c => c.Status == "review")} 项可比较降档 · {Cards.Count(c => c.Status == "pressure")} 项压力线索" : Cards.Any(c => c.Observation != null)
+        ? Cards.Any(c => c.Observation?.State is "light" or "busy")
+            ? $"初步判断：{Cards.Count(c => c.Observation?.State == "light")} 项有余量线索 · {Cards.Count(c => c.Observation?.State == "busy")} 项曾出现繁忙"
+            : $"已形成 {Cards.Count(c => c.Observation != null)} 项资源使用判断，查看各项实际负载"
+        : "正在记录任务，采到负载后逐项给出判断";
 }

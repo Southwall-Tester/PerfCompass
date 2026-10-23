@@ -37,6 +37,7 @@ public partial class MainWindow : Window
     {
         this.store = store;
         InitializeComponent();
+        ApplicationVersionLabel.Text = "本地记录 · v" + typeof(MainWindow).Assembly.GetName().Version?.ToString(3);
         ComparisonPage.OpenTaskMeasurement = () => Navigate("measurement");
         TaskMeasurementPage.Initialize(store,
             () => new(live?.CpuName ?? "", live?.GpuName ?? "", live?.Sample.MemoryTotalGb, Environment.OSVersion.VersionString, TaskMeasurements.PowerSource(), TaskMeasurementPage.PowerProfileBox.Text.Trim()),
@@ -239,7 +240,9 @@ public partial class MainWindow : Window
             AnalysisSummary.Text = result.Summary;
             CoverageLabel.Text = $"{scene ?? "全部场景"} · {result.Level}  ·  有效使用 {result.DurationLabel}  ·  覆盖 {result.ActiveDays} 天  ·  {result.SampleCount:N0} 条记录";
             RepresentativeStatus.Text = result.CoverageMessage;
-            CoverageNext.Text = result.HistoryQuality.HasIssues ? result.HistoryQuality.Message : !result.RepresentativeConfirmed ? result.CoverageMessage : result.Ready ? "已满足基础观察门槛；近期任务变化会优先约束配置建议。" : result.ActiveHours >= 10 && result.ActiveDays >= 3 && (result.FreshActiveHours < .5 || result.FreshActiveDays < 2) ? "还需补充最近 7 天至少 30 分钟、2 天的有效记录，再判断当前配置余量。" : "观察目标：10 小时 / 3 天。" + result.CoverageMessage;
+            CoverageNext.Text = result.HistoryQuality.HasIssues ? result.HistoryQuality.Message : result.Ready ? "已覆盖典型任务，可比较降档方向；近期新增任务会更新判断。" : result.Cards.Any(c => c.Observation != null)
+                ? "下方已给出当前任务的判断。完成常用与偶发任务后，在记录设置确认覆盖范围，进一步评估配置预算。"
+                : "正常使用电脑即可积累观测；发现繁忙任务会先显示，轻负载判断从有效记录中逐项形成。";
             var expanded = AdviceList.Items.OfType<Border>().Select(b => b.Child).OfType<StackPanel>()
                 .SelectMany(s => s.Children.OfType<Expander>()).Where(x => x.IsExpanded).Select(x => x.Tag?.ToString()).ToHashSet();
             AdviceList.Items.Clear();
@@ -262,19 +265,30 @@ public partial class MainWindow : Window
     private Border AdviceCard(Advice advice, bool expanded)
     {
         var stack = new StackPanel();
-        string label = advice.Status switch { "surplus" => "疑似过剩", "pressure" => "压力线索", "fit" => "保持观察", "changed" => "近期需求增加", "review" => "待验证降档", "experience" => "体验待核对", "requirements" => "新需求待验证", "constraints" => "已确认条件", _ => "证据积累中" };
-        string color = advice.Status switch { "surplus" => "#007F73", "pressure" or "changed" => "#BC7132", "review" => "#6378C8", _ => "#677A87" };
+        string label = advice.StatusLabel;
+        string color = advice.Status switch { "surplus" => "#007F73", "pressure" or "changed" => "#BC7132", "review" => "#6378C8", _ => advice.Observation?.State == "light" ? "#007F73" : advice.Observation?.State == "busy" ? "#BC7132" : "#677A87" };
         var header = new DockPanel();
         header.Children.Add(new TextBlock { Text = advice.Name, FontSize = 13, Foreground = Brush("#677A87") });
         header.Children.Add(new TextBlock { Text = label, Foreground = Brush(color), HorizontalAlignment = System.Windows.HorizontalAlignment.Right, FontSize = 12 });
         stack.Children.Add(header);
-        stack.Children.Add(new TextBlock { Text = advice.Title, FontSize = 18, FontWeight = FontWeights.SemiBold, Margin = new(0, 10, 0, 10), TextWrapping = TextWrapping.Wrap });
-        stack.Children.Add(new TextBlock { Text = advice.Suggestion, Foreground = Brush("#45606C"), LineHeight = 23 });
+        stack.Children.Add(new TextBlock { Text = advice.DisplayTitle, FontSize = 18, FontWeight = FontWeights.SemiBold, Margin = new(0, 10, 0, 10), TextWrapping = TextWrapping.Wrap });
+        if (advice.Observation is { } observation)
+        {
+            stack.Children.Add(new TextBlock { Text = observation.Evidence, Foreground = Brush("#45606C"), LineHeight = 23, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 6) });
+            stack.Children.Add(new TextBlock { Text = $"{observation.Scope} · 有效观测 {DurationText.FromHours(observation.ObservedHours)} · 读数覆盖 {observation.Coverage:P0}", Foreground = Brush("#677A87"), FontSize = 12, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 10) });
+        }
+        stack.Children.Add(new TextBlock { Text = advice.DisplaySuggestion, Foreground = Brush("#45606C"), LineHeight = 23, TextWrapping = TextWrapping.Wrap });
+        if (advice.Key is "cpu" or "memory" or "gpu" or "disk" && (advice.Observation != null || advice.Status is "surplus" or "review" or "pressure" or "changed"))
+        {
+            var compare = new Button { Tag = "compare:" + advice.Key, Content = "比较候选配置", HorizontalAlignment = System.Windows.HorizontalAlignment.Left, Margin = new(0, 12, 0, 0) };
+            compare.Click += (_, _) => Navigate("comparison");
+            stack.Children.Add(compare);
+        }
         var detail = new StackPanel();
         detail.Children.Add(new TextBlock { Text = advice.Evidence, Margin = new(0, 12, 0, 8), LineHeight = 22 });
         detail.Children.Add(new TextBlock { Text = advice.Limits, Foreground = Brush("#677A87"), FontSize = 12, LineHeight = 21 });
         stack.Children.Add(new Expander { Tag = advice.Key, IsExpanded = expanded, Header = "查看依据与选型条件", Content = detail, Margin = new(0, 16, 0, 0), Foreground = Brush("#007F73") });
-        return new Border { Style = (Style)FindResource("Card"), Child = stack, Margin = new(0, 0, 0, 14) };
+        return new Border { Tag = advice.Key, Style = (Style)FindResource("Card"), Child = stack, Margin = new(0, 0, 0, 14) };
     }
     private void Navigate(string page)
     {

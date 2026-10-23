@@ -86,8 +86,8 @@ public static partial class RequirementParser
             string evidence = " 已确认需求：" + string.Join("；", relevant.Select(f => $"{f.Label}（原文：{f.Evidence}）")) + "。";
             return c with
             {
-                Status = protect && c.Status is "surplus" or "review" ? "requirements" : c.Status,
-                Title = protect && c.Status is "surplus" or "review" ? "先验证已确认的新需求，再评估降档" : c.Title,
+                Status = protect && (c.Status is "surplus" or "review" || c.Status is ("unknown" or "fit") && c.Observation?.State == "light") ? "requirements" : c.Status,
+                Title = protect && (c.Status is "surplus" or "review" || c.Status is ("unknown" or "fit") && c.Observation?.State == "light") ? "先验证已确认的新需求，再评估降档" : c.Title,
                 Evidence = c.Evidence + evidence,
                 Suggestion = c.Suggestion + (protect ? " 已确认的新任务不能由历史闲置证明可降档。请补充任务规模与目标，在候选配置上重跑验证。" : " 用已确认任务核对上述判断。")
             };

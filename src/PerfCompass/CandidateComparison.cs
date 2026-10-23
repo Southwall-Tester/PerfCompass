@@ -60,7 +60,11 @@ public sealed class PurchaseWorkspace
     public List<PurchaseCriterion> Criteria { get; set; } = [];
     public List<PurchaseObservation> Observations { get; set; } = [];
 }
-public record PurchaseCheck(string Name, string State, string Reading, string Evidence, string Condition);
+public record PurchaseCheck(string Name, string State, string Reading, string Evidence, string Condition)
+{
+    public string EvidenceKind { get; init; } = "none";
+    public string EvidenceLabel { get; init; } = "待补依据";
+}
 public record PurchaseAssessment(string Id, string Name, string State, double? PriceCny, List<PurchaseCheck> Checks);
 public record PurchaseConflict(string Metric, string Condition, string[] CriterionIds, string Message);
 public record PurchaseComparison(string Summary, List<PurchaseAssessment> Candidates, string[] Context, string ContextStamp)
@@ -103,7 +107,8 @@ public static partial class CandidateComparison
         }).ToArray(),
         Trends = report.DemandTrends.Where(t => t.Status == "increased").Select(t => t.Key + ":" + t.Days + ":" + string.Join("/", t.RecentHeavyScenes.Order())).Order().ToArray(),
         Experiences = report.ExperienceEvents.Where(e => !e.Resolved).Select(e => e.Id).Order().ToArray(),
-        Signals = report.Cards.Where(c => c.Key is "cpu" or "gpu" or "memory").Select(c => c.Key + ":" + c.Status + ":" + c.Title).Order().ToArray()
+        Signals = report.Cards.Where(c => c.Key is "cpu" or "gpu" or "memory").Select(c => c.Key + ":" + c.Status + ":" + c.Title
+            + (c.Observation is { } observation ? ":observation:" + Hash(new { observation.State, observation.Scope }) : "")).Order().ToArray()
     })))) + (report.HistoryQuality.HasIssues ? ":history:" + report.HistoryQuality.Signature : "");
     public static List<PurchaseCriterion> Drafts(AnalysisReport report)
     {
@@ -185,6 +190,15 @@ public static partial class CandidateComparison
                 string source = c.Metric is "check" or "task" ? o?.Evidence ?? "" : candidate.Source;
                 bool evidence = !string.IsNullOrWhiteSpace(source);
                 string state = "unknown", reading = "待补充结果与来源";
+                string evidenceKind = c.Metric switch
+                {
+                    "check" => "manual-check",
+                    "task" when o?.Measurement != null => "repeated-measurement",
+                    "task" when c.MeasurementProtocol.Length > 0 => "none",
+                    "task" => "manual-measurement",
+                    _ => "specification"
+                };
+                bool repeatedAssessed = false;
                 bool proofCurrent = o?.Comparable == true && o.ProofStamp == ObservationStamp(candidate, c);
                 if (!c.Reviewed || c.ReviewStamp != CriterionStamp(c)) reading = "条件已修改或尚未核对，请重新勾选已核对";
                 else if (c.Metric == "check")
@@ -195,14 +209,27 @@ public static partial class CandidateComparison
                 else if (value.HasValue && c.Target.HasValue && evidence && (c.Metric != "task" || proofCurrent && !string.IsNullOrWhiteSpace(c.Procedure) && !string.IsNullOrWhiteSpace(c.Unit)))
                 {
                     if (c.Metric == "task" && (o?.Measurement != null || c.MeasurementProtocol.Length > 0))
+                    {
                         (state, reading) = o?.Measurement == null ? ("unknown", "此目标已绑定测量协议，请导入匹配的原始测量文件") : TaskMeasurements.Assess(o.Measurement, c, value);
+                        repeatedAssessed = o?.Measurement != null;
+                    }
                     else
                     {
                         state = Meets(value.Value, c.Target.Value, c.Direction) ? "pass" : "fail";
                         reading = $"{value:G} {c.Unit}；目标{DirectionLabel(c.Direction)} {c.Target:G} {c.Unit}";
                     }
                 }
-                checks.Add(new(c.Name, state, reading, source, c.Condition));
+                string evidenceLabel = evidenceKind switch
+                {
+                    "specification" => "规格 / 报价资料",
+                    "manual-check" => "人工核对",
+                    "manual-measurement" => "手填任务数值",
+                    "repeated-measurement" when repeatedAssessed && state == "pass" => "重复耗时测量达标",
+                    "repeated-measurement" when repeatedAssessed && state == "fail" => "重复耗时测量未达标",
+                    "repeated-measurement" => "重复耗时测量待核对",
+                    _ => "尚缺原始重复测量"
+                };
+                checks.Add(new(c.Name, state, reading, source, c.Condition) { EvidenceKind = evidenceKind, EvidenceLabel = evidenceLabel });
             }
             var required = checks.Where(c => string.IsNullOrWhiteSpace(c.Condition)).ToArray();
             string overall = requiredConflict ? "unknown" : required.Any(c => c.State == "fail") ? "fail" : !current || !workspace.CoverageConfirmed || required.Length == 0 || required.Any(c => c.State != "pass") ? "unknown" : "pass";
@@ -210,17 +237,20 @@ public static partial class CandidateComparison
         }
         var passing = assessments.Where(a => a.State == "pass" && a.PriceCny.HasValue).OrderBy(a => a.PriceCny).ToArray();
         string summary = requiredConflict ? "必需条件存在数值冲突。请先核对冲突项目的方向、数值和触发条件，再比较候选电脑。" : !current ? "需求或近期任务已改变，请重新核对条件覆盖范围。" : !workspace.CoverageConfirmed ? "请先核对是否覆盖重要任务、新需求和近期体验问题。"
+            : assessments.Count == 1 ? $"候选「{assessments[0].Name}」：" + (assessments[0].State == "pass" ? "必需条件已通过。" : assessments[0].State == "fail" ? "存在不满足的必需条件。" : "仍有待验证的必需条件。")
+                + (assessments[0].PriceCny.HasValue ? $" 已记录整机报价 {assessments[0].PriceCny:0.##} 元；单台验证不计算候选价差。" : " 报价未填写，任务与规格目标可单独判断。")
             : passing.Length == 0 ? "当前没有同时通过必需条件且有报价的候选。调整不满足条件的候选，或补齐待验证项。"
             : "必需条件已通过且有报价的候选中，最低报价为 " + string.Join("、", passing.Where(p => p.PriceCny == passing[0].PriceCny).Select(p => p.Name)) + $"（{passing[0].PriceCny:0.##} 元）。";
-        if (passing.Length > 0)
+        if (passing.Length > 1)
         {
             var max = passing.Max(p => p.PriceCny)!.Value;
             if (max > passing[0].PriceCny) summary += $" 与通过条件的最高报价相比可少花 {max - passing[0].PriceCny:0.##} 元；更高价格的收益需看具体任务结果。";
         }
         if (workspace.Criteria.Any(c => !string.IsNullOrWhiteSpace(c.Condition))) summary += " 条件需求单列；触发时还需通过对应项目。";
-        var context = new[] { $"分析范围：最近 {report.WindowDays} 天 / {report.SelectedScene ?? "全部场景"}；已观测 {report.DurationLabel}。比较结论覆盖已核对的条件，条件需求按触发情况另行判断。" }
+        var context = new[] { $"分析范围：最近 {report.WindowDays} 天 / {report.SelectedScene ?? "全部场景"}；已观测 {report.DurationLabel}。比较结论覆盖已核对的条件，条件需求按触发情况另行判断。",
+                "证据类型逐项列出。重复耗时测量达标仅表示所附原始正式轮次全部达到该目标；机器对应关系与实际产物仍由用户核对。" }
             .Concat(report.HistoryQuality.HasIssues ? new[] { report.HistoryQuality.Message + " 候选结果仅限已逐项核对的条件，不覆盖无法读取的历史任务。", report.HistoryQuality.Details } : [])
-            .Concat(report.Cards.Where(c => c.Key is "cpu" or "gpu" or "memory").Select(c => c.Name + "：" + c.Title + "；" + c.Suggestion)).ToArray();
+            .Concat(report.Cards.Where(c => c.Key is "cpu" or "gpu" or "memory").Select(c => c.Name + "：" + c.DisplayTitle + "；" + c.DisplaySuggestion)).ToArray();
         var tradeoffs = new List<string>();
         if (passing.Length > 0)
         {
@@ -271,7 +301,7 @@ public static partial class CandidateComparison
             + string.Join("", comparison.Conflicts.Select(c => "<section><h2>条件数值冲突</h2><p>" + E(c.Message) + "</p></section>"))
             + string.Join("", comparison.ScenarioSummaries.Select(t => "<section><h2>条件情景</h2><p>" + E(t) + "</p></section>"))
             + string.Join("", comparison.Tradeoffs.Select(t => "<section><p>" + E(t) + "</p></section>"))
-            + string.Join("", comparison.Candidates.Select(a => { var candidate = workspace.Candidates.Single(c => c.Id == a.Id); return "<section><h2>" + E(a.Name) + " · 必需条件：" + State(a.State) + "</h2><p>" + E(candidate.Cpu) + " / " + E(candidate.Gpu) + "；报价 " + E(a.PriceCny?.ToString("0.##")) + " 元</p><p>配置/报价来源：" + E(candidate.Source) + "</p><table><tr><th>条件</th><th>结果</th><th>依据</th></tr>" + string.Join("", a.Checks.Select(c => "<tr><td>" + E(c.Name) + (c.Condition.Length > 0 ? "<br>条件：" + E(c.Condition) : "") + "</td><td>" + State(c.State) + "<br>" + E(c.Reading) + "</td><td>" + E(c.Evidence) + "</td></tr>")) + "</table></section>"; }))
+            + string.Join("", comparison.Candidates.Select(a => { var candidate = workspace.Candidates.Single(c => c.Id == a.Id); return "<section><h2>" + E(a.Name) + " · 必需条件：" + State(a.State) + "</h2><p>" + E(candidate.Cpu) + " / " + E(candidate.Gpu) + "；报价 " + (a.PriceCny.HasValue ? E(a.PriceCny.Value.ToString("0.##")) + " 元" : "未填写") + "</p><p>配置/报价来源：" + E(candidate.Source) + "</p><table><tr><th>条件</th><th>结果</th><th>依据类型与记录</th></tr>" + string.Join("", a.Checks.Select(c => "<tr><td>" + E(c.Name) + (c.Condition.Length > 0 ? "<br>条件：" + E(c.Condition) : "") + "</td><td>" + State(c.State) + "<br>" + E(c.Reading) + "</td><td><b>" + E(c.EvidenceLabel) + "</b><br>" + E(c.Evidence) + "</td></tr>")) + "</table></section>"; }))
             + "<section><h2>历史与近期任务依据</h2>" + string.Join("", comparison.Context.Select(c => "<p>" + E(c) + "</p>")) + "</section><section><h2>目标、条件与测试步骤</h2>" + string.Join("", workspace.Criteria.Select(c => "<p><b>" + E(c.Name) + "</b><br>需求依据：" + E(c.Evidence) + "<br>测试步骤：" + E(c.Procedure) + "</p>")) + "</section></html>";
     }
 }

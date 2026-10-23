@@ -61,7 +61,7 @@ public static class ExperienceAnalyzer
         var selected = events.Where(e => e.Time <= report.Generated && e.Time >= report.Generated.AddDays(-report.WindowDays)
             && (report.SelectedScene == null || e.Scene == report.SelectedScene)).OrderByDescending(e => e.Time).ToList();
         bool pending = selected.Any(e => !e.Resolved && e.Time >= report.Generated.AddDays(-7));
-        var cards = report.Cards.Select(c => pending && c.Status is "surplus" or "review" ? c with
+        var cards = report.Cards.Select(c => pending && (c.Status is "surplus" or "review" || c.Status is ("unknown" or "fit") && c.Observation?.State == "light") ? c with
         {
             Status = "experience", Title = "先核对近期体验，再判断配置余量",
             Evidence = c.Evidence + " 最近 7 天有尚未处理的卡顿或等待记录。",

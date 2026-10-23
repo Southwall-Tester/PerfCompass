@@ -88,7 +88,8 @@ internal sealed class GpuEngineAnalysis(DateTimeOffset now, int windowDays)
         // The surrounding analyzer normally enforces this already. Keep the same
         // protection here so this extension cannot pool engines across machines.
         if (string.IsNullOrWhiteSpace(report.HardwareId) || hardwareIds.Any(id => id != report.HardwareId))
-            return report with { GpuEngineProfiles = [], DemandTrends = report.DemandTrends.Where(t => !t.Key.StartsWith("gpu-engine/", StringComparison.Ordinal)).ToList() };
+            return report with { Cards = report.Cards.Select(c => c with { Observation = null }).ToList(),
+                GpuEngineProfiles = [], DemandTrends = report.DemandTrends.Where(t => !t.Key.StartsWith("gpu-engine/", StringComparison.Ordinal)).ToList() };
 
         var profiles = engines.Select(pair => new GpuEngineProfile(pair.Key, Name(pair.Key),
             pair.Value.Observations.Seconds / 3600, pair.Value.CompleteSeconds / 3600,
@@ -108,7 +109,21 @@ internal sealed class GpuEngineAnalysis(DateTimeOffset now, int windowDays)
         var cards = report.Cards.Select(card =>
         {
             if (card.Key != "gpu") return card;
-            var result = card with { Evidence = card.Evidence + " " + evidence, Limits = card.Limits + " " + limits };
+            var observation = card.Observation;
+            // Any known heavy node is positive task evidence, including a partial
+            // category. Do not average it away with a quiet core or call it sustained.
+            if (heavyProfiles.Length > 0)
+            {
+                double hours = heavyProfiles.Max(p => p.ObservedHours);
+                observation = new("busy", "已观察到GPU引擎重负载",
+                    string.Join("；", heavyProfiles.Select(p => $"{p.Name}峰值 {Percent(p.Peak)}，≥80% 累计 {p.HeavyMinutes * 60:0.0} 秒" + (p.CompleteHours + 1e-7 < p.ObservedHours ? "（部分读数）" : ""))) + "。",
+                    "保留这些任务需求，在候选显卡上核对耗时、帧率和功能。",
+                    $"所选 {report.WindowDays} 天 · {report.SelectedScene ?? "全部场景"} · 已暴露的GPU引擎",
+                    hours, report.ActiveHours > 0 ? Math.Clamp(hours / report.ActiveHours, 0, 1) : 0);
+            }
+            else if (observation?.State == "light" && (report.HistoryQuality.HasIssues || profiles.Any(p => p.HasMixedSources))) observation = null;
+            if (report.HistoryQuality.HasIntervalConflicts) observation = null;
+            var result = card with { Evidence = card.Evidence + " " + evidence, Limits = card.Limits + " " + limits, Observation = observation };
             if (pressured.Length > 0)
                 return result with
                 {
