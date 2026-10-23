@@ -1,0 +1,19 @@
+{
+    "Package":  "LibreHardwareMonitorLib/0.9.6-perfcompass.1",
+    "Type":  "project",
+    "Authors":  "LibreHardwareMonitor contributors; PerfCompass contributors",
+    "License":  "MPL-2.0",
+    "LicenseType":  "expression",
+    "Project":  "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+    "Repository":  "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+    "Commit":  "3d331e3370efb858411f19511373eff65a218701",
+    "UpstreamVersion":  "0.9.6",
+    "PatchedVersion":  "0.9.6-perfcompass.1",
+    "PerfCompassRepository":  "https://github.com/Southwall-Tester/PerfCompass",
+    "PerfCompassCheckoutCommit":  "74204eabf92ac3e240e6bce7fd11938d50713695",
+    "SourceTreeDirty":  true,
+    "SourceSnapshotSha256":  "1a9cfd391c4c67bebbf1d2d9bc8e5bbeb8b5c2500a85d4888508e35c7cc06385",
+    "SourceZip":  "LibreHardwareMonitor-perfcompass/LibreHardwareMonitor-0.9.6-perfcompass.1-source.zip",
+    "SourceZipSha256":  "15f8205bcb35a88244cddc7dc79082fdb12bc916d65d579acfa40f5b370b0e54",
+    "SourceFiles":  198
+}

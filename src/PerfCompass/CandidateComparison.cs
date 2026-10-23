@@ -88,6 +88,7 @@ public static partial class CandidateComparison
     {
         report.FutureNeeds, report.SemanticRequirements, report.ConfirmedRequirements, report.SelectedScene, report.WindowDays, report.MethodVersion,
         report.HardwareId, report.RepresentativeConfirmed,
+        GpuMetricScopes = report.GpuMetricScopes.Order(StringComparer.Ordinal).ToArray(),
         Scenes = report.Scenes.Order().ToArray(),
         // Bind changes in observed scope and task clues, not every new percentage or
         // elapsed second. A second busy engine can be hidden by an unchanged GPU card.

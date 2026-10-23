@@ -16,7 +16,8 @@ public partial class MainWindow
         bool retentionOnly = Environment.GetCommandLineArgs().Contains("--ui-test-retention-only");
         bool cpuOnly = Environment.GetCommandLineArgs().Contains("--ui-test-cpu-only");
         bool gpuOnly = Environment.GetCommandLineArgs().Contains("--ui-test-gpu-only");
-        var output = Path.GetFullPath(gpuOnly ? "artifacts/ui-gpu-focused" : cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
+        bool gpuFreshnessOnly = Environment.GetCommandLineArgs().Contains("--ui-test-gpu-freshness-only");
+        var output = Path.GetFullPath(gpuFreshnessOnly ? "artifacts/ui-gpu-freshness-focused" : gpuOnly ? "artifacts/ui-gpu-focused" : cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
         var results = new List<string>();
         File.WriteAllText(Path.Combine(output, "results.txt"), "RUNNING " + DateTimeOffset.Now.ToString("O"));
         void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); File.AppendAllText(Path.Combine(output, "results.txt"), "\n" + results[^1]); if (!value) throw new Exception(name); }
@@ -41,6 +42,7 @@ public partial class MainWindow
             Require(live?.Sample.Cpu is >= 0 and <= 100, "Real CPU sample available");
             Require(live?.Sample.MemoryTotalGb > 0, "Real memory sample available");
             Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
+            if (gpuFreshnessOnly) { await RunGpuFreshnessUiTests(output, Require, Screenshot); return; }
             if (cpuOnly) { await RunCpuCounterUiTests(output, Require, Screenshot); return; }
             if (gpuOnly) { await RunGpuEngineUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (retentionOnly) { await RunRetentionSafetyUiTests(output, Require); return; }
@@ -77,10 +79,14 @@ public partial class MainWindow
             await Screenshot("02-advice-empty");
             // Synthetic long-term trace is written only under the explicitly isolated test data directory.
             var syntheticNow = DateTimeOffset.Now.AddMinutes(-10);
+            // This flow compares task changes under one measurement protocol.
+            // Mixed legacy/current protocols have separate explicit regression cases.
+            string syntheticGpuSource = live!.Sample.GpuMetricSource;
             await Task.Run(() => {
             for (int day = 2; day >= 0; day--)
                 for (int i = 0; i < 1250; i++)
                     store.Append(new Sample { Time = syntheticNow.AddDays(-day).AddSeconds(-(1250-i) * 10), HardwareId = collector!.HardwareId,
+                        GpuEngineVersion = GpuEngineEvidence.Version, GpuEngines = [], GpuMetricSource = syntheticGpuSource,
                         Seconds = 10, Active = true, Cpu = 8, CoreMax = 25, MemoryTotalGb = 64, MemoryUsedGb = 9, MemoryPeakGb = 10, CommitGb = 11,
                         Gpu = 5, VramUsedGb = 1, DiskTotalGb = 1024, DiskUsedGb = 200, MaxDiskPercent = 20, Scene = "开发编译" });
             });
@@ -92,6 +98,7 @@ public partial class MainWindow
             await Screenshot("03-advice-populated");
             await Task.Run(() => {
                 for (int i = 0; i < 10; i++) store.Append(new Sample { Time = syntheticNow.AddSeconds(10 + i * 10), HardwareId = collector!.HardwareId,
+                    GpuEngineVersion = GpuEngineEvidence.Version, GpuEngines = [], GpuMetricSource = syntheticGpuSource,
                     Seconds = 10, Active = true, Scene = "游戏娱乐", Cpu = 60, CoreMax = 100, MemoryTotalGb = 64, MemoryUsedGb = 20, CommitGb = 24,
                     Gpu = 100, VramUsedGb = 5, DiskTotalGb = 1024, DiskUsedGb = 200, MaxDiskPercent = 20 });
             });
@@ -113,6 +120,7 @@ public partial class MainWindow
             await Task.Run(() => {
                 foreach (int day in new[] { 8, 9, 1, 2 })
                     for (int i = 0; i < 180; i++) store.Append(new Sample { Time = syntheticNow.AddDays(-day).AddHours(-5).AddSeconds(-i * 10),
+                        GpuEngineVersion = GpuEngineEvidence.Version, GpuEngines = [], GpuMetricSource = syntheticGpuSource,
                         HardwareId = collector!.HardwareId, Seconds = 10, Active = true, Scene = day < 7 ? "AI 与虚拟机" : "日常办公",
                         Cpu = 8, CoreMax = 25, MemoryTotalGb = 64, MemoryUsedGb = 9, CommitGb = 11, Gpu = day < 7 ? 85 : 2,
                         VramUsedGb = day < 7 ? 5 : 1, DiskTotalGb = 1024, DiskUsedGb = 200, MaxDiskPercent = 20 });
@@ -214,7 +222,12 @@ public partial class MainWindow
             await RunRetentionSafetyUiTests(output, Require);
             File.WriteAllText(Path.Combine(output, "NOTICE.txt"), "01-live.png and hardware.json use real telemetry. Populated analysis and historical captures use isolated synthetic test data; they are not a recommendation for this computer.");
         }
-        catch (Exception e) { store.Log(e); results.Add("FAIL " + e); }
+        catch (Exception e)
+        {
+            store.Log(e); results.Add("FAIL " + e);
+            if (report != null) File.WriteAllText(Path.Combine(output, "failed-analysis.json"),
+                JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true }));
+        }
         finally { File.WriteAllLines(Path.Combine(output, "results.txt"), results); Environment.ExitCode = results.Any(x => x.StartsWith("FAIL")) ? 1 : 0; Exit(); }
     }
 }

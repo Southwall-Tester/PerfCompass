@@ -36,6 +36,7 @@ public record Sample
     public double? Gpu { get; init; }
     public string GpuEngineVersion { get; init; } = "";
     public List<GpuEngineSample>? GpuEngines { get; init; }
+    public string GpuMetricSource { get; init; } = "";
     public double? GpuPeak { get; init; }
     public double? CpuHighSeconds { get; init; }
     public double? GpuHeavySeconds { get; init; }
@@ -70,12 +71,22 @@ public record GpuEngineProfile(string Kind, string Name, double ObservedHours, d
     double? P95, double? Peak, double HeavyMinutes, string[] Sources)
 {
     public string[] SourceScopes { get; init; } = [];
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool HasMixedSources => SourceScopes.Distinct(StringComparer.Ordinal).Skip(1).Any();
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string ScopeNotice => HasMixedSources ? "来源或规则混合，未合并 P95；峰值与重载时长仅保留为已观察线索。" : "";
 }
 public record Advice(string Key, string Name, string Status, string Title, string Evidence, string Suggestion, string Limits);
-public record HistoryPoint(DateTimeOffset Time, double? Cpu, double? Memory, double? Gpu);
+public record HistoryPoint(DateTimeOffset Time, double? Cpu, double? Memory, double? Gpu)
+{
+    public string GpuScope { get; init; } = "";
+}
 public record SceneProfile(string Name, int SampleCount, double ActiveHours, double? CpuP95, double? CoreP95,
     double? MemoryPeakGb, double? GpuP95, double? GpuPeak, double CpuCoverage, double GpuCoverage)
 {
+    public string[] GpuMetricScopes { get; init; } = [];
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool GpuHasMixedSources => GpuMetricScopes.Length > 1;
     [System.Text.Json.Serialization.JsonIgnore]
     public string DurationLabel => DurationText.FromHours(ActiveHours);
 }
@@ -88,11 +99,13 @@ public record DemandTrend(string Key, string Name, string Unit, int Days, string
     double RecentBusyMinutes, double PreviousBusyMinutes, int RecentActiveDays, int PreviousActiveDays,
     string[] RecentHeavyScenes, string Summary, string Suggestion)
 {
-    public bool LoadStatisticsAvailable { get; init; } = true;
+    private bool loadStatisticsAvailable = true;
+    public bool LoadStatisticsAvailable { get => loadStatisticsAvailable && StatisticsUnavailableReason.Length == 0; init => loadStatisticsAvailable = value; }
+    public string StatisticsUnavailableReason { get; init; } = "";
     public string StatusLabel => Status switch { "increased" => "近期增加", "decreased" => "近期减少", "similar" => "相近", _ => "对照积累中" };
     public string ComparisonLabel => $"最近 {Days} 天 / 此前 {Days} 天";
     public string ReadingsLabel => $"P95：{Format(RecentP95)} / {Format(PreviousP95)} · 有效观测 {DurationText.FromHours(RecentHours)} / {DurationText.FromHours(PreviousHours)}";
-    public string BusyLabel => !LoadStatisticsAvailable ? "重叠时段的负载比例无法确认" : Key == "memory" ? "" : $"负载 ≥80% 累计 {RecentBusyMinutes:0.0} / {PreviousBusyMinutes:0.0} 分钟（有效观测占比 {Share(RecentBusyMinutes, RecentHours)} / {Share(PreviousBusyMinutes, PreviousHours)}）";
+    public string BusyLabel => !LoadStatisticsAvailable ? (StatisticsUnavailableReason.Length > 0 ? StatisticsUnavailableReason : "重叠时段的负载比例无法确认") : Key == "memory" ? "" : $"负载 ≥80% 累计 {RecentBusyMinutes:0.0} / {PreviousBusyMinutes:0.0} 分钟（有效观测占比 {Share(RecentBusyMinutes, RecentHours)} / {Share(PreviousBusyMinutes, PreviousHours)}）";
     public string SceneLabel => LoadStatisticsAvailable && RecentHeavyScenes.Length > 0 ? "近期重负载场景：" + string.Join("、", RecentHeavyScenes) : "";
     private string Format(double? value) => value.HasValue ? $"{value:0.0}{Unit}" : "缺失";
     private static string Share(double minutes, double hours) => hours > 0 ? $"{minutes / (hours * 60) * 100:0.0}%" : "缺失";
@@ -102,6 +115,8 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
 {
     public List<SceneProfile> SceneProfiles { get; init; } = [];
     public List<GpuEngineProfile> GpuEngineProfiles { get; init; } = [];
+    public string[] GpuMetricScopes { get; init; } = [];
+    public bool GpuHistoryHasMixedSources { get; init; }
     public string? SelectedScene { get; init; }
     public List<DemandTrend> DemandTrends { get; init; } = [];
     public List<ExperienceEvent> ExperienceEvents { get; init; } = [];
@@ -112,7 +127,7 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public string HardwareId { get; init; } = "";
     public bool RepresentativeConfirmed { get; init; }
     public string CoverageMessage { get; init; } = "";
-    public string MethodVersion { get; init; } = "1.11";
+    public string MethodVersion { get; init; } = "1.12";
     public HistoryQuality HistoryQuality { get; init; } = HistoryQuality.Unchecked;
     public int SamplingGapCount { get; init; }
     public string SamplingGapSummary => SamplingGapCount > 0 ? $"本范围记录到 {SamplingGapCount} 次采样中断；中断段未计入有效使用，也未作为空闲负载。" : "";

@@ -65,7 +65,8 @@ public sealed class Collector : IDisposable
         var sensors = HardwareSnapshot.Capture(computer.Hardware, store.Log, HardwareUpdateOverride);
         var cpuHw = computer.Hardware.FirstOrDefault(h => h.HardwareType == HardwareType.Cpu);
         var gpuHw = Gpus().FirstOrDefault();
-        var gpu = sensors.Value(gpuHw, SensorType.Load, "GPU Core", "GPU D3D 3D", "D3D 3D");
+        var gpuMetric = sensors.Observe(gpuHw, SensorType.Load, "GPU Core", "GPU D3D 3D", "D3D 3D");
+        var gpu = gpuMetric.Value;
         var gpuEngines = GpuReadOverride is { } readGpu ? readGpu() : sensors.GpuLoads(gpuHw);
         double? knownEngineLoad = gpuEngines.Select(e => e.Load).DefaultIfEmpty().Max();
         var vramUsed = sensors.Value(gpuHw, SensorType.SmallData, "GPU Memory Used", "D3D Dedicated Memory Used");
@@ -112,7 +113,7 @@ public sealed class Collector : IDisposable
         {
             Time = now, HardwareId = HardwareId, Seconds = dt, SamplingIssue = tick.Issue, Active = active, ObservationVersion = ActivityRules.Version, Scene = store.Settings.Scene,
             Cpu = cpu, CoreMax = core, MemoryTotalGb = mem.Total, MemoryUsedGb = mem.Used, CommitGb = mem.Commit,
-            Gpu = gpu, VramUsedGb = vramUsed / 1024, VramTotalGb = vramTotal / 1024, CpuTemp = cpuTemp, GpuTemp = gpuTemp,
+            Gpu = gpu, GpuMetricSource = gpuMetric.Source, VramUsedGb = vramUsed / 1024, VramTotalGb = vramTotal / 1024, CpuTemp = cpuTemp, GpuTemp = gpuTemp,
             GpuEngineVersion = GpuEngineEvidence.Version, GpuEngines = GpuEngineEvidence.Current(gpuEngines),
             DiskReadMbps = diskRead, DiskWriteMbps = diskWrite, DiskBusy = diskBusy,
             MaxDiskPercent = disks.Count > 0 ? disks.Max(d => d.Percent) : 0,

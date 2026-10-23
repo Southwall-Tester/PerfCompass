@@ -1,0 +1,24 @@
+{
+  "Format": "perfcompass-hardware-patches-1.0",
+  "UpstreamCommit": "3d331e3370efb858411f19511373eff65a218701",
+  "UpstreamManifestSha256": "ef4224dde07888e38a780f10a95cc2cf2d24863080213d3e0184f1d249824c1b",
+  "PatchedVersion": "0.9.6-perfcompass.1",
+  "ModifiedFiles": [
+    { "Path": "Directory.Build.props", "Reason": "Identify the modified library version." },
+    { "Path": "LibreHardwareMonitorLib/LibreHardwareMonitorLib.csproj", "Reason": "Build the pinned source library for .NET 10 and Windows x64 with dependency locking." },
+    { "Path": "LibreHardwareMonitorLib/Hardware/D3DDisplayDevice.cs", "Reason": "Close native adapter handles on every path and expose adapter identity and monotonic query timestamps." },
+    { "Path": "LibreHardwareMonitorLib/Hardware/Gpu/AmdGpu.cs", "Reason": "Clear dynamic poll values, reject invalid activity percentages, preserve static capacity and current-poll fallbacks, verify PMLog timestamp progress, and use checked D3D node observations." },
+    { "Path": "LibreHardwareMonitorLib/Hardware/Gpu/NvidiaGpu.cs", "Reason": "Clear dynamic poll values, map sparse domains, bind unique NVAPI/D3D/NVML identities without index assumptions, and use checked D3D node observations." },
+    { "Path": "LibreHardwareMonitorLib/Hardware/Gpu/IntelIntegratedGpu.cs", "Reason": "Clear failed dynamic observations, preserve current-poll ordering, and use checked D3D node observations." },
+    { "Path": "LibreHardwareMonitorLib/Hardware/Gpu/IntelDiscreteGpu.cs", "Reason": "Validate cumulative telemetry with explicit units and timestamps, recover baselines after missing data, and preserve device identity." }
+  ],
+  "AddedFiles": [
+    { "Path": ".gitattributes", "Reason": "Preserve canonical source bytes for upstream hash verification." },
+    { "Path": "LibreHardwareMonitorLib/packages.lock.json", "Reason": "Record the resolved dependencies of the modified source project." },
+    { "Path": "LibreHardwareMonitorLib/PerfCompassAssemblyInfo.cs", "Reason": "Allow PerfCompass regression tests to exercise internal pure sampling logic." },
+    { "Path": "LibreHardwareMonitorLib/Hardware/D3DNodeSampler.cs", "Reason": "Validate monotonic per-node counters, topology, elapsed time and baseline recovery." },
+    { "Path": "LibreHardwareMonitorLib/Hardware/D3DNodeSensors.cs", "Reason": "Bind validated node identities to sensors and retain missing values explicitly." },
+    { "Path": "LibreHardwareMonitorLib/Hardware/Gpu/GpuVendorPoll.cs", "Reason": "Provide explicit dynamic clearing, sparse-domain mapping, strict adapter matching and provider timestamp tracking." },
+    { "Path": "LibreHardwareMonitorLib/Hardware/Gpu/IntelTelemetryCounters.cs", "Reason": "Validate Intel cumulative telemetry independently of hardware access." }
+  ]
+}

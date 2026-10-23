@@ -3,22 +3,27 @@ namespace PerfCompass;
 internal static class GpuEngineEvidence
 {
     internal const string Version = GpuLoadObservations.Version;
-    internal static readonly string[] Kinds = ["core", "3d", "compute", "video", "encode", "decode", "processing", "copy"];
+    internal static bool KnownVersion(string? value) => value is "gpu-engines-1.0" or Version;
+    internal static string MetricScope(Sample sample) => (string.IsNullOrEmpty(sample.GpuEngineVersion) ? "legacy" : sample.GpuEngineVersion)
+        + "/" + (string.IsNullOrEmpty(sample.GpuMetricSource) ? "core-or-3d-unspecified" : sample.GpuMetricSource);
+    internal static readonly string[] Kinds = ["core", "3d", "compute", "video", "encode", "decode", "processing", "copy", "render-compute", "media"];
     internal static string Label(string kind) => kind switch
     {
         "core" => "核心", "3d" => "3D", "compute" => "计算", "video" => "视频引擎（合并）",
-        "encode" => "编码", "decode" => "解码", "processing" => "视频处理", "copy" => "复制", _ => "未知"
+        "encode" => "编码", "decode" => "解码", "processing" => "视频处理", "copy" => "复制",
+        "render-compute" => "渲染/计算（合并）", "media" => "媒体引擎（合并）", _ => "未知"
     };
     private static bool Percent(double? value) => value == null || value is >= 0 and <= 100 && double.IsFinite(value.Value);
     private static bool Duration(double? value, double seconds) => value == null || value >= 0 && value <= seconds + 1e-7 && double.IsFinite(value.Value);
     internal static bool Valid(Sample sample)
     {
-        if (sample.GpuEngineVersion != Version || sample.GpuEngines == null || sample.GpuEngines.Count > Kinds.Length
+        if (!KnownVersion(sample.GpuEngineVersion) || sample.GpuEngines == null || sample.GpuEngines.Count > Kinds.Length
             || !double.IsFinite(sample.Seconds) || sample.Seconds is < 0 or > 15) return false;
         var seen = new HashSet<string>(StringComparer.Ordinal);
         foreach (var engine in sample.GpuEngines)
         {
             if (engine == null || !Kinds.Contains(engine.Kind) || !seen.Add(engine.Kind) || engine.Sources == null
+                || sample.GpuEngineVersion == "gpu-engines-1.0" && engine.Kind is "render-compute" or "media"
                 || engine.Sources.Length is < 1 or > 256 || engine.Sources.Any(s => string.IsNullOrWhiteSpace(s) || s.Length > 160)
                 || !Percent(engine.Load) || !Percent(engine.Peak) || engine.Peak < engine.Load
                 || engine.Complete && !engine.Load.HasValue || !Duration(engine.ObservedSeconds, sample.Seconds)
@@ -57,6 +62,18 @@ internal static class GpuEngineEvidence
             bool sameSources = readings.Select(r => string.Join("\n", r.Engine.Sources.Order(StringComparer.Ordinal))).Distinct(StringComparer.Ordinal).Count() == 1;
             double covered = sameSources ? readings.Sum(r => Covered(r.Sample, r.Engine)) : 0;
             var values = readings.Where(r => Observed(r.Sample, r.Engine) > 0).ToArray();
+            double? mean = null;
+            if (values.Length == 1) mean = values[0].Engine.Load;
+            else if (values.Length > 1)
+            {
+                // Valid input percentages with positive observed weights form a
+                // convex combination. Floating-point multiply/sum/divide can
+                // exceed an endpoint by one ULP; contain only that computed mean,
+                // never invalid source readings or the independently observed peak.
+                double minimum = values.Min(r => r.Engine.Load!.Value);
+                double maximum = values.Max(r => r.Engine.Load!.Value);
+                mean = Math.Clamp(values.Sum(r => r.Engine.Load!.Value * Observed(r.Sample, r.Engine)) / observed, minimum, maximum);
+            }
             // One category may expose different node names over time. Preserve every
             // observed name; neither their count nor completeness proves GPU capability.
             var sources = readings.SelectMany(r => r.Engine.Sources.GroupBy(s => s, StringComparer.Ordinal).Select(g => (Name: g.Key, Count: g.Count())))
@@ -65,7 +82,7 @@ internal static class GpuEngineEvidence
             // The bounded history format cannot safely preserve an oversized scope.
             // Keep that category unknown rather than write a truncated complete scope.
             if (sources.Length > 256) continue;
-            result.Add(new(kind, sources, observed > 0 ? values.Sum(r => r.Engine.Load!.Value * Observed(r.Sample, r.Engine)) / observed : null)
+            result.Add(new(kind, sources, mean)
             {
                 Complete = observed > 0 && sameSources && readings.All(r => r.Engine.Complete) && covered >= (duration > 0 ? duration : source.Sum(s => s.Seconds)) - 1e-7,
                 Peak = values.Length > 0 ? values.Max(r => r.Engine.Peak ?? r.Engine.Load) : null,

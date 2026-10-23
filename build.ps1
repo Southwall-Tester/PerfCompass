@@ -10,6 +10,7 @@ $taskProject = Join-Path $taskRoot 'src\PerfCompass\PerfCompass.csproj'
 $taskPublishRoot = [System.IO.Path]::GetFullPath($(if ([System.IO.Path]::IsPathRooted($OutputDirectory)) { $OutputDirectory } else { Join-Path $taskRoot $OutputDirectory }))
 Push-Location $taskRoot
 try {
+    & (Join-Path $taskRoot 'scripts\verify-hardware-source.ps1')
     & $taskDotnet build $taskProject -c Release
     if ($LASTEXITCODE -ne 0) { throw 'Build failed' }
     if ($Test) {

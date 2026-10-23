@@ -60,6 +60,93 @@ public static partial class SelfTests
                 && engine.HeavySeconds == 2 && engine.HighSeconds == 2 && GpuEngineEvidence.Valid(merged),
                 "sample count or missing seconds changed the weighted mean, peak, or high-load exposure");
         });
+        check("Actual fractional GPU copy reading survives a single-frame flush without a one-ULP mean above its peak", () =>
+        {
+            // Values copied from the isolated real UI run's rejected line 4.
+            // No runtime dependency on, or modification of, that original file.
+            const double value = 0.029961103573441505, seconds = 2.7672551;
+            double previousMean = value * seconds / seconds;
+            assert(previousMean == Math.BitIncrement(value) && previousMean > value,
+                "real one-ULP regression fixture no longer reproduces the previous multiply/divide error");
+            var frame = Frame(seconds, Enumerable.Repeat(("D3D Copy", (double?)value), 6).ToArray());
+            var merged = SampleBatch.Merge([frame]); var engine = merged.GpuEngines!.Single();
+            assert(engine.Load == value && engine.Peak == value && engine.ObservedSeconds == seconds
+                && engine.Sources.Length == 6 && GpuEngineEvidence.Valid(merged),
+                "single-frame flush changed the original copy load or exceeded its measured peak");
+            InStore(store =>
+            {
+                store.Append(merged);
+                var saved = store.Read(7, hardware).Single(); var report = Analyze(store);
+                var profile = report.GpuEngineProfiles.Single(p => p.Kind == "copy");
+                assert(saved.GpuEngines!.Single().Load == value && saved.GpuEngines.Single().Peak == value
+                    && report.SampleCount == 1 && !report.HistoryQuality.HasIssues
+                    && profile.P95 == value && profile.Peak == value && Near(profile.ObservedHours, seconds / 3600),
+                    "newly written real-value regression row was rejected by the production history path");
+            });
+        });
+        check("Fractional and unequal GPU weights stay within valid input endpoints through real history round trips", () =>
+        {
+            const double copy = 0.029961103573441505;
+            (double Load, double Seconds)[][] cases =
+            [
+                [(.1, .1), (.1, .2), (.1, .3)],
+                [(copy, 2.7672551), (copy, .03333333333333333)],
+                [(copy, .17), (Math.BitIncrement(copy), 2.7672551), (copy, .27)],
+                [(.1, 1), (.3, 3)],
+                [(.1, 2.7672551), (.3, 1.23456789), (Math.BitDecrement(100), .0000001)],
+                [(0, .000001), (100, 14), (80, .0001)],
+                [(double.Epsilon, .25), (Math.BitIncrement(double.Epsilon), .75)]
+            ];
+            InStore(store =>
+            {
+                for (int i = 0; i < cases.Length; i++)
+                {
+                    double elapsed = 0;
+                    var frames = cases[i].Select(reading =>
+                    {
+                        elapsed += reading.Seconds;
+                        return Frame(reading.Seconds, ("D3D Copy", reading.Load)) with { Time = start.AddSeconds(i * 30 + elapsed) };
+                    }).ToArray();
+                    var merged = SampleBatch.Merge(frames); var engine = merged.GpuEngines!.Single();
+                    double minimum = cases[i].Min(v => v.Load), maximum = cases[i].Max(v => v.Load);
+                    assert(engine.Load >= minimum && engine.Load <= maximum && engine.Peak == maximum
+                        && GpuEngineEvidence.Valid(merged), "positive fractional weights created a load outside their validated endpoints");
+                    if (minimum == maximum) assert(engine.Load == minimum, "equal input values acquired a rounding-only workload change");
+                    if (i == 3) assert(Near(engine.Load, .25), "bounding the mean replaced unequal duration weights with an endpoint or simple average");
+                    var secondMerge = SampleBatch.Merge([merged]);
+                    assert(secondMerge.GpuEngines!.Single().Load == engine.Load
+                        && secondMerge.GpuEngines.Single().Peak == engine.Peak && GpuEngineEvidence.Valid(secondMerge),
+                        "remerging an aggregate introduced another mean/peak contradiction");
+                    store.Append(secondMerge);
+                }
+                var report = Analyze(store); var rows = store.Read(7, hardware).ToArray();
+                assert(report.SampleCount == cases.Length && rows.Length == cases.Length && !report.HistoryQuality.HasIssues
+                    && rows.All(GpuEngineEvidence.Valid) && report.GpuEngineProfiles.Single(p => p.Kind == "copy").Peak == 100,
+                    "fractional merged rows were self-rejected or lost their independent peaks during real history analysis");
+            });
+        });
+        check("Mean roundoff protection does not relax invalid source ranges or a persisted peak below its load", () =>
+        {
+            const double value = 0.029961103573441505;
+            var good = Frame(2.7672551, ("D3D Copy", value)); var original = good.GpuEngines!.Single();
+            foreach (double invalid in new[] { -double.Epsilon, Math.BitIncrement(100), double.NaN, double.PositiveInfinity })
+            {
+                var bad = good with { GpuEngines = [original with { Load = invalid }] };
+                assert(!GpuEngineEvidence.Valid(bad) && GpuEngineEvidence.Merge([bad]).Count == 0
+                    && (double.IsNaN(invalid) ? double.IsNaN(bad.GpuEngines.Single().Load!.Value) : bad.GpuEngines.Single().Load == invalid),
+                    "mean endpoint protection repaired an invalid source percentage into credible workload");
+            }
+            var contradiction = good with { Time = start.AddSeconds(20), GpuEngines = [original with { Load = Math.BitIncrement(value), Peak = value }] };
+            assert(!GpuEngineEvidence.Valid(contradiction), "reader peak consistency was globally relaxed to hide a writer error");
+            InStore(store =>
+            {
+                string path = Path.Combine(store.Root, $"samples-{start.LocalDateTime:yyyy-MM-dd}.jsonl");
+                File.WriteAllLines(path, [JsonSerializer.Serialize(SampleBatch.Merge([good])), JsonSerializer.Serialize(contradiction)], new UTF8Encoding(false));
+                byte[] bytes = File.ReadAllBytes(path); var report = Analyze(store);
+                assert(report.SampleCount == 1 && report.HistoryQuality.IssueCount == 1 && report.HistoryQuality.Issues.Single().Line == 2
+                    && File.ReadAllBytes(path).SequenceEqual(bytes), "previously inconsistent history was silently normalized or overwritten");
+            });
+        });
         check("Partial node observations retain positive workload but only complete polls contribute category coverage", () =>
         {
             var merged = SampleBatch.Merge([

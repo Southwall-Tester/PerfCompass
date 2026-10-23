@@ -2,27 +2,6 @@
   "version": 1,
   "dependencies": {
     "net10.0-windows7.0": {
-      "LibreHardwareMonitorLib": {
-        "type": "Direct",
-        "requested": "[0.9.6, )",
-        "resolved": "0.9.6",
-        "contentHash": "W4hQ5Ja51/1cEDZnh9kG5UHFBwjjY2+oIpSUhSsgeYXKRKezrkw3sEFrhQkrOuo53xkXyfWV8ZErMqQuGqWIMQ==",
-        "dependencies": {
-          "DiskInfoToolkit": "1.1.2",
-          "HidSharp": "2.6.4",
-          "Mono.Posix.NETStandard": "1.0.0",
-          "RAMSPDToolkit-NDD": "1.4.2",
-          "System.IO.FileSystem.AccessControl": "5.0.0",
-          "System.IO.Ports": "10.0.3",
-          "System.Management": "10.0.2"
-        }
-      },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[10.0.13, )",
-        "resolved": "10.0.13",
-        "contentHash": "40yrBMsLEcjixBR4G+FiUaBPvxXIPSKJ2OgSrbOZcmSDBda4Sb0k7BWrfDpIvn3IvvDzwOL/tEPa6gDQfh6aRw=="
-      },
       "BlackSharp.Core": {
         "type": "Transitive",
         "resolved": "1.0.7",
@@ -175,24 +154,21 @@
         "type": "Transitive",
         "resolved": "10.0.2",
         "contentHash": "eFftuy3i844lVKCb4lJvvjKfcvPVcW8KrAdSaIOcRL42/Fisj46hwUs8Bky+4avzMe5Snm5t7aSayOI1mybYXg=="
+      },
+      "librehardwaremonitorlib": {
+        "type": "Project",
+        "dependencies": {
+          "DiskInfoToolkit": "[1.1.2, )",
+          "HidSharp": "[2.6.4, )",
+          "Mono.Posix.NETStandard": "[1.0.0, )",
+          "RAMSPDToolkit-NDD": "[1.4.2, )",
+          "System.IO.FileSystem.AccessControl": "[5.0.0, )",
+          "System.IO.Ports": "[10.0.3, )",
+          "System.Management": "[10.0.2, )"
+        }
       }
     },
     "net10.0-windows7.0/win-x64": {
-      "LibreHardwareMonitorLib": {
-        "type": "Direct",
-        "requested": "[0.9.6, )",
-        "resolved": "0.9.6",
-        "contentHash": "W4hQ5Ja51/1cEDZnh9kG5UHFBwjjY2+oIpSUhSsgeYXKRKezrkw3sEFrhQkrOuo53xkXyfWV8ZErMqQuGqWIMQ==",
-        "dependencies": {
-          "DiskInfoToolkit": "1.1.2",
-          "HidSharp": "2.6.4",
-          "Mono.Posix.NETStandard": "1.0.0",
-          "RAMSPDToolkit-NDD": "1.4.2",
-          "System.IO.FileSystem.AccessControl": "5.0.0",
-          "System.IO.Ports": "10.0.3",
-          "System.Management": "10.0.2"
-        }
-      },
       "Mono.Posix.NETStandard": {
         "type": "Transitive",
         "resolved": "1.0.0",

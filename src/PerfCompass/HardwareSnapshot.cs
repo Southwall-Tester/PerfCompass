@@ -32,15 +32,16 @@ internal sealed class HardwareSnapshot
         return snapshot;
     }
 
-    internal double? Value(IHardware? device, SensorType type, params string[] names)
+    internal double? Value(IHardware? device, SensorType type, params string[] names) => Observe(device, type, names).Value;
+    internal (double? Value, string Source) Observe(IHardware? device, SensorType type, params string[] names)
     {
-        if (device == null || !readings.TryGetValue(device, out var values)) return null;
+        if (device == null || !readings.TryGetValue(device, out var values)) return (null, "");
         foreach (var name in names)
             foreach (var reading in values.Where(s => s.Type == type && s.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
                 if (reading.Value is float value && float.IsFinite(value)
                     && (type != SensorType.Load || value is >= 0 and <= 100)
-                    && (type != SensorType.SmallData || value >= 0)) return value;
-        return null;
+                    && (type != SensorType.SmallData || value >= 0)) return (value, reading.Name);
+        return (null, "");
     }
     internal IReadOnlyList<GpuLoadObservation> GpuLoads(IHardware? device) => device != null && readings.TryGetValue(device, out var values)
         ? GpuLoadObservations.Normalize(values.Where(v => v.Type == SensorType.Load).Select(v => (v.Name, (double?)v.Value))) : [];

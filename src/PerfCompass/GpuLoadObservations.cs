@@ -10,7 +10,7 @@ internal sealed record GpuLoadObservation(string Kind, string Label, string[] So
 
 internal static class GpuLoadObservations
 {
-    internal const string Version = "gpu-engines-1.0";
+    internal const string Version = "gpu-engines-1.1";
 
     // These are execution-engine names exposed by LibreHardwareMonitor 0.9.6.
     // D3D OTHER nodes may have driver-provided names, such as Compute_0; accept
@@ -54,6 +54,8 @@ internal static class GpuLoadObservations
         if (string.IsNullOrWhiteSpace(name)) return null;
         string normalized = name.Trim();
         if (normalized.Equals("GPU Core", StringComparison.OrdinalIgnoreCase)) return ("core", "核心");
+        if (normalized.Equals("GPU Render/Compute", StringComparison.OrdinalIgnoreCase)) return ("render-compute", "渲染/计算（合并）");
+        if (normalized.Equals("GPU Media", StringComparison.OrdinalIgnoreCase)) return ("media", "媒体引擎（合并）");
         // The vendor Video Engine reading does not distinguish encode from decode.
         if (normalized.Equals("GPU Video Engine", StringComparison.OrdinalIgnoreCase)) return ("video", "视频引擎（合并）");
         if (normalized.StartsWith("GPU D3D ", StringComparison.OrdinalIgnoreCase)) normalized = normalized[4..];

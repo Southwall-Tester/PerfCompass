@@ -21,6 +21,8 @@ public static class AnalysisEngine
         var sceneStats = new Dictionary<string, SceneAccumulator>(StringComparer.Ordinal);
         var dates = new HashSet<DateTime>(); var scenes = new HashSet<string>();
         var hardwareIds = new HashSet<string>(StringComparer.Ordinal);
+        var gpuMetricScopes = new HashSet<string>(StringComparer.Ordinal);
+        var gpuHistoryScopes = new HashSet<string>(StringComparer.Ordinal);
         // Only keep one hourly aggregate, not raw snapshots, in the report.
         var bins = new SortedDictionary<long, (double C, int Cn, double M, int Mn, double G, int Gn)>();
         double seconds = 0, cpuSeconds = 0, cpuHigh = 0, memorySeconds = 0, gpuSeconds = 0, coreSeconds = 0, commitSeconds = 0;
@@ -45,7 +47,8 @@ public static class AnalysisEngine
                 bins.TryGetValue(bin, out var b);
                 if (s.Cpu is double c) { b.C += c; b.Cn++; }
                 if (s.MemoryUsedGb is double m && s.MemoryTotalGb is > 0) { b.M += m / s.MemoryTotalGb.Value * 100; b.Mn++; }
-                if (s.Gpu is double g) { b.G += g; b.Gn++; }
+                if (s.Gpu is double g && (s.GpuCoverage ?? s.Seconds) > 0)
+                { b.G += g; b.Gn++; gpuHistoryScopes.Add(GpuEngineEvidence.MetricScope(s)); }
                 bins[bin] = b;
             }
             diskPeak = Math.Max(diskPeak, s.MaxDiskPercent);
@@ -57,7 +60,11 @@ public static class AnalysisEngine
             if (s.CoreMax is double co) { core.Add(co, Coverage(s.CoreCoverage)); coreSeconds += Coverage(s.CoreCoverage); }
             if (s.MemoryUsedGb is double mv && s.MemoryTotalGb is > 0 && Coverage(s.MemoryCoverage) > 0) { memory.Add(mv, Coverage(s.MemoryCoverage)); memoryPeak = Math.Max(memoryPeak ?? 0, s.MemoryPeakGb ?? mv); memorySeconds += Coverage(s.MemoryCoverage); }
             if (s.CommitGb is double cm) { commit.Add(cm, Coverage(s.CommitCoverage)); commitSeconds += Coverage(s.CommitCoverage); }
-            if (s.Gpu is double gv) { gpu.Add(gv, Coverage(s.GpuCoverage)); gpuSeconds += Coverage(s.GpuCoverage); if (Coverage(s.GpuCoverage) > 0) gpuPeak = Math.Max(gpuPeak ?? 0, s.GpuPeak ?? gv); }
+            if (s.Gpu is double gv)
+            {
+                gpu.Add(gv, Coverage(s.GpuCoverage)); gpuSeconds += Coverage(s.GpuCoverage);
+                if (Coverage(s.GpuCoverage) > 0) { gpuPeak = Math.Max(gpuPeak ?? 0, s.GpuPeak ?? gv); gpuMetricScopes.Add(GpuEngineEvidence.MetricScope(s)); }
+            }
             if (s.VramUsedGb is double vr) vram.Add(vr, Coverage(s.GpuCoverage));
         }
         string scopeHardwareId = !string.IsNullOrWhiteSpace(hardwareId) ? hardwareId : hardwareIds.Count == 1 ? hardwareIds.Single() : "";
@@ -86,13 +93,19 @@ public static class AnalysisEngine
             $"当前 {F(latest?.MemoryTotalGb, " GiB")}；有效时段使用量 P95 {F(m95, " GiB")}，峰值 {F(peak, " GiB")}；提交量峰值 {F(peakCommit, " GiB")}。",
             ms == "surplus" ? $"{candidate} GiB 是下次购机的验证候选；先在该容量机器上重跑最重的多任务组合。" : "覆盖虚拟机、大工程和多任务。余量偏低时，检查分页与卡顿是否同时发生，再决定是否升级。",
             "降档候选保留至少 30% 物理容量余量，并用提交量作保守约束。提交量不等于物理需求；本版未测硬缺页，不能证明内存瓶颈。"));
-        var g95 = gpu.Quantile(.95);
-        bool rareGpuWork = gpuPeak >= 90 && g95 < 30;
-        string gs = temporal.HasRecentPressure("gpu") ? "pressure" : ready && gpuSeconds >= seconds * .9 && temporal.HasFreshEvidence("gpu") && g95 < 30 && !rareGpuWork ? "review" : State(ready && gpuSeconds >= seconds * .9 && temporal.HasFreshEvidence("gpu") && gpu.Maximum.HasValue);
+        bool gpuScopeComparable = gpuMetricScopes.Count == 1;
+        var g95 = gpuScopeComparable ? gpu.Quantile(.95) : null;
+        bool observedHeavyGpuWork = gpuPeak >= 90;
+        bool rareGpuWork = observedHeavyGpuWork && g95 < 30;
+        var sceneProfiles = sceneStats.Values.Select(s => s.Profile()).OrderByDescending(p => p.ActiveHours).ThenBy(p => p.Name).ToList();
+        var mixedScenes = sceneProfiles.Where(p => p.GpuHasMixedSources).Select(p => p.Name).ToArray();
+        string gpuScopeNotice = gpuMetricScopes.Count > 1 ? "本范围核心/3D来源或规则混合，未合并 P95；峰值仅为不同来源中已观察到的负载线索。" : "";
+        if (mixedScenes.Length > 0) gpuScopeNotice += " 场景“" + string.Join("、", mixedScenes) + "”的核心/3D来源或规则混合，场景 P95 未合并。";
+        string gs = temporal.HasRecentPressure("gpu") ? "pressure" : ready && gpuScopeComparable && gpuSeconds >= seconds * .9 && temporal.HasFreshEvidence("gpu") && g95 < 30 && !rareGpuWork ? "review" : State(ready && gpuScopeComparable && gpuSeconds >= seconds * .9 && temporal.HasFreshEvidence("gpu") && gpu.Maximum.HasValue);
         cards.Add(new("gpu", "显卡", gs,
-            !gpu.Maximum.HasValue ? "GPU 核心/3D负载数据尚不可用" : gs == "review" ? "核心/3D负载偏低，降档仍需验证" : gs == "pressure" ? "GPU 核心/3D存在持续高负载" : rareGpuWork ? "存在偶发重负载，保留该任务需求" : "观察图形与计算任务需求",
-            $"核心/3D读数覆盖 {gpuSeconds / Math.Max(seconds, 1) * 100:0}% 有效时段；P95 {F(g95)}，峰值 {F(gpuPeak)}；显存分配峰值 {F(vram.Maximum, " GiB")}。",
-            rareGpuWork ? "在场景明细中找出重负载任务，再用候选显卡验证该任务的帧率、耗时与功能。" : "核对目标分辨率、帧率、编码、CUDA/AI 和多屏需求。只有低档候选卡也满足这些条件，才有降档依据。",
+            !gpu.Maximum.HasValue ? "GPU 核心/3D负载数据尚不可用" : gs == "review" ? "核心/3D负载偏低，降档仍需验证" : gs == "pressure" ? "GPU 核心/3D存在持续高负载" : rareGpuWork ? "存在偶发重负载，保留该任务需求" : observedHeavyGpuWork ? "已观察到核心/3D重负载，先核对任务需求" : "观察图形与计算任务需求",
+            $"核心/3D读数覆盖 {gpuSeconds / Math.Max(seconds, 1) * 100:0}% 有效时段；P95 {F(g95)}，峰值 {F(gpuPeak)}；显存分配峰值 {F(vram.Maximum, " GiB")}。" + gpuScopeNotice,
+            observedHeavyGpuWork ? "在场景明细中找出重负载任务，再用候选显卡验证该任务的帧率、耗时与功能。" : "核对目标分辨率、帧率、编码、CUDA/AI 和多屏需求。只有低档候选卡也满足这些条件，才有降档依据。",
             "核心/3D为既有记录口径，分引擎观测另列。本版没有帧时间与候选卡基准测试。低利用率可能来自锁帧或 CPU 瓶颈，不直接判定独显过剩。多显卡仅分析界面标明的卡。"));
         cards.Add(new("disk", "存储", diskPeak >= 90 ? "pressure" : State(ready),
             diskPeak >= 90 ? "至少一个分区空间曾接近用满" : "容量和速度需要分别评估",
@@ -112,10 +125,13 @@ public static class AnalysisEngine
         }
         var result = new AnalysisReport(now, windowDays, count, seconds / 3600, dates.Count, ready, scenes.Order().ToArray(), cards,
             bins.Select(kv => new HistoryPoint(DateTimeOffset.FromUnixTimeSeconds(kv.Key * 3600), kv.Value.Cn > 0 ? kv.Value.C / kv.Value.Cn : null,
-                kv.Value.Mn > 0 ? kv.Value.M / kv.Value.Mn : null, kv.Value.Gn > 0 ? kv.Value.G / kv.Value.Gn : null)).ToList(), settings.FutureNeeds)
+                kv.Value.Mn > 0 ? kv.Value.M / kv.Value.Mn : null, gpuHistoryScopes.Count == 1 && kv.Value.Gn > 0 ? kv.Value.G / kv.Value.Gn : null)
+                { GpuScope = gpuHistoryScopes.Count == 1 ? gpuHistoryScopes.Single() : "" }).ToList(), settings.FutureNeeds)
             { HardwareId = scopeHardwareId, RepresentativeConfirmed = coverage.Confirmed, CoverageMessage = coverage.Message, SamplingGapCount = samplingGaps, HistoryQuality = quality,
+                GpuMetricScopes = string.IsNullOrWhiteSpace(scopeHardwareId) ? [] : gpuMetricScopes.Order(StringComparer.Ordinal).ToArray(),
+                GpuHistoryHasMixedSources = gpuHistoryScopes.Count > 1,
                 SelectedScene = selectedScene, DemandTrends = trends, FreshActiveHours = temporal.FreshHours, FreshActiveDays = temporal.FreshDays,
-                SceneProfiles = sceneStats.Values.Select(s => s.Profile()).OrderByDescending(p => p.ActiveHours).ThenBy(p => p.Name).ToList() };
+                SceneProfiles = sceneProfiles };
         return HistoryAnalysis.Apply(gpuEngines.Apply(result), quality);
     }
 
@@ -148,6 +164,7 @@ public static class AnalysisEngine
     private sealed class SceneAccumulator(string name)
     {
         private readonly WeightedSeries cpu = new(), core = new(), gpu = new();
+        private readonly HashSet<string> gpuScopes = new(StringComparer.Ordinal);
         private int count; private double seconds; private double? memoryPeak, gpuPeak;
         public void Add(Sample s)
         {
@@ -157,10 +174,13 @@ public static class AnalysisEngine
             seconds += duration;
             double Coverage(double? value) => Math.Clamp(value ?? duration, 0, duration);
             cpu.Add(s.Cpu, Coverage(s.CpuCoverage)); core.Add(s.CoreMax, Coverage(s.CoreCoverage)); gpu.Add(s.Gpu, Coverage(s.GpuCoverage));
-            if (s.Gpu.HasValue && Coverage(s.GpuCoverage) > 0) gpuPeak = Math.Max(gpuPeak ?? 0, s.GpuPeak ?? s.Gpu.Value);
+            if (s.Gpu.HasValue && Coverage(s.GpuCoverage) > 0)
+            { gpuPeak = Math.Max(gpuPeak ?? 0, s.GpuPeak ?? s.Gpu.Value); gpuScopes.Add(GpuEngineEvidence.MetricScope(s)); }
             if (s.MemoryUsedGb.HasValue && Coverage(s.MemoryCoverage) > 0) memoryPeak = Math.Max(memoryPeak ?? 0, s.MemoryPeakGb ?? s.MemoryUsedGb.Value);
         }
-        public SceneProfile Profile() => new(name, count, seconds / 3600, cpu.Quantile(.95), core.Quantile(.95), memoryPeak, gpu.Quantile(.95), gpuPeak,
-            seconds > 0 ? cpu.Seconds / seconds : 0, seconds > 0 ? gpu.Seconds / seconds : 0);
+        public SceneProfile Profile() => new(name, count, seconds / 3600, cpu.Quantile(.95), core.Quantile(.95), memoryPeak,
+            gpuScopes.Count == 1 ? gpu.Quantile(.95) : null, gpuPeak,
+            seconds > 0 ? cpu.Seconds / seconds : 0, seconds > 0 ? gpu.Seconds / seconds : 0)
+            { GpuMetricScopes = gpuScopes.Order(StringComparer.Ordinal).ToArray() };
     }
 }

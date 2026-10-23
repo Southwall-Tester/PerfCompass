@@ -1,0 +1,1208 @@
+{
+    "Format":  "perfcompass-hardware-source-1.0",
+    "Repository":  "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+    "UpstreamCommit":  "3d331e3370efb858411f19511373eff65a218701",
+    "UpstreamVersion":  "0.9.6",
+    "PatchedVersion":  "0.9.6-perfcompass.1",
+    "PerfCompassRepository":  "https://github.com/Southwall-Tester/PerfCompass",
+    "PerfCompassCheckoutCommit":  "74204eabf92ac3e240e6bce7fd11938d50713695",
+    "SourceTreeDirty":  true,
+    "SourceSnapshotSha256":  "1a9cfd391c4c67bebbf1d2d9bc8e5bbeb8b5c2500a85d4888508e35c7cc06385",
+    "Files":  [
+                  {
+                      "Path":  ".gitattributes",
+                      "Bytes":  8,
+                      "Sha256":  "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+                      "Origin":  "added"
+                  },
+                  {
+                      "Path":  "Directory.Build.props",
+                      "Bytes":  155,
+                      "Sha256":  "a24344b9e8ec26fae3b86d4579862fe611cb4803d0772253f9da46d5e4285bcb",
+                      "Origin":  "modified"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Battery/Battery.cs",
+                      "Bytes":  10189,
+                      "Sha256":  "6ec3fb84d0ea8afa9fab6e1e6867f04339c2fe77c214bde64c1e26eb845e6810",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Battery/BatteryChemistry.cs",
+                      "Bytes":  509,
+                      "Sha256":  "766997006ddcf52d3a68eb52592868f5fb026a390e3a776deebccedb279fb28e",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Battery/BatteryGroup.cs",
+                      "Bytes":  12014,
+                      "Sha256":  "bb5e667fa6d934e5935d8b837c079fe98f821fca21e20d814c145e79da090cf7",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/CompositeSensor.cs",
+                      "Bytes":  1180,
+                      "Sha256":  "2aaf2ffc213635e671c3807a18cc64bcbbe545cc8bd41293bb3cbe1eae9dec6c",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Computer.cs",
+                      "Bytes":  20862,
+                      "Sha256":  "cacbb6fa0ad34885d0e560a32d81b9e0c1dcc8dd28ffa878437cd36e262c9d1c",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Control.cs",
+                      "Bytes":  3071,
+                      "Sha256":  "73d2c06d0110f83cdbda028401de66461a3c116550594f94d145b5979d18b2a7",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AeroCool/AeroCoolGroup.cs",
+                      "Bytes":  1751,
+                      "Sha256":  "f5f85d31b5587232fa88e766e2314b2e56717822d98c778052a85f5b020c522f",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AeroCool/P7-H1.cs",
+                      "Bytes":  2740,
+                      "Sha256":  "08479b53bbbe12dc495ef049517263ddc0a7fd6bf599d238e855645f1a49bc4c",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AquaComputer/AquaComputerGroup.cs",
+                      "Bytes":  5590,
+                      "Sha256":  "eb0182f3c0c24d0ab46074d95d63263aad269b38031b221978fabc5bde868ed3",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AquaComputer/AquastreamUltimate.cs",
+                      "Bytes":  5085,
+                      "Sha256":  "c80fbfca6f4b8d492bd02876d42a8a36e6e10922bb8550caea27c19dbdb26cbd",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AquaComputer/AquastreamXT.cs",
+                      "Bytes":  7115,
+                      "Sha256":  "094a3d13237e48a94ec57154661ce21a03f9ac9bf53b6883e3014d030cfca564",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AquaComputer/D5Next.cs",
+                      "Bytes":  5042,
+                      "Sha256":  "d51ca4522f21a41078d228ff2234a571ffd95ecea1e99973248109546c23fb13",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AquaComputer/Farbwerk.cs",
+                      "Bytes":  3719,
+                      "Sha256":  "543ebd0e428e0fc27dd4f8f418cade07a32c28db0db2b0f2e5da58f261c6783f",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AquaComputer/Farbwerk360.cs",
+                      "Bytes":  3723,
+                      "Sha256":  "f2ba1678138d10e2ee1689ebd8f5afea25dc894f3e641c5b45fbf55e6de0b8e0",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AquaComputer/HighFlowNext.cs",
+                      "Bytes":  5420,
+                      "Sha256":  "3d6ca58d23984c93c5fd7a92d6c95f7b71f103aa6061f2ddca8e70b9d7ad8076",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AquaComputer/MPS.cs",
+                      "Bytes":  3483,
+                      "Sha256":  "3a4ce0966d30951803c27c275c395ddc1f4aee1727855c695e903ec3562acc33",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AquaComputer/Octo.cs",
+                      "Bytes":  9210,
+                      "Sha256":  "645fb1aecca9f7d1aaa4ae6ed5465e133c97dceb20918225fc47f524f51b4a27",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/AquaComputer/Quadro.cs",
+                      "Bytes":  7315,
+                      "Sha256":  "12fe799b1c9d40b7f205befe85943cdf8976cb7d07c5e592bd48a1ba5c9d8ef6",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/Arctic/ArcticFanController.cs",
+                      "Bytes":  11096,
+                      "Sha256":  "90128447e2565b5862c1cb3d1a5918bbccbc30ee2b295962e28b05bf1b5a946f",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/Arctic/ArcticGroup.cs",
+                      "Bytes":  1861,
+                      "Sha256":  "7dc58ae7091dad13ee1c22d2ef0fcb9ef498d7c7ee8293a5b78f3968611b1f8d",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/Arctic/README.MD",
+                      "Bytes":  5359,
+                      "Sha256":  "b1e1471e0bdfcddc683937b72dfee1fec27785e983c86f9d618f6c0dc17ffd5b",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/Heatmaster/Heatmaster.cs",
+                      "Bytes":  10027,
+                      "Sha256":  "de41e1a9b21945976f93b2d1e927eef73300e4050972bf17d02a6b7dadb2c92a",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/Heatmaster/HeatmasterGroup.cs",
+                      "Bytes":  6949,
+                      "Sha256":  "e2f989500a4e40f59dc75d335d9f8622700b3c4dfd1794eabce75187152300db",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/MSI/MsiConstants.cs",
+                      "Bytes":  998,
+                      "Sha256":  "cac840e15d3c818ff8b96edf35533f6b5d66486c0842b723df24e4fc4a1123d3",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/MSI/MsiCoreLiquidController.cs",
+                      "Bytes":  13817,
+                      "Sha256":  "23b8b2072d48aba67bf28e115985c44f020db0a9e168fc30ad02b5ba45f0cc73",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/MSI/MsiDevice.cs",
+                      "Bytes":  2469,
+                      "Sha256":  "c78010ba9f6e3c9ccb01cde423fd995e9eb665f74c34fcfe0c652b347ee079d6",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/MSI/MsiFan.cs",
+                      "Bytes":  1527,
+                      "Sha256":  "f4810465ab7510adcef078933e082a32030954598a77b8cf0445abdbc807bc58",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/MSI/MsiFanControl.cs",
+                      "Bytes":  799,
+                      "Sha256":  "bb5e8d4bda413a755527c60244feb89c5d8d93283bb6ad8612b96379196fd0f6",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/MSI/MsiFanMode.cs",
+                      "Bytes":  468,
+                      "Sha256":  "c46c90f24e07b2019958123e89b8e210e35576937d99e372617bf0d29a41a0bd",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/MSI/MsiGroup.cs",
+                      "Bytes":  2187,
+                      "Sha256":  "8a7832a8a3cfc4347a08b2952d5ec381a9c4ef92281a94990173841cec836485",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/MSI/MsiSensor.cs",
+                      "Bytes":  860,
+                      "Sha256":  "7a25ce81a1746b0f5f2c4ed064825c5e38bcd19c03d31d5a26bf4b916a2f3f09",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/Nzxt/GridV3.cs",
+                      "Bytes":  7453,
+                      "Sha256":  "8660cb7129fd8bf8438d4797362e3c486a2de536f4879529501924eaa2871df0",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/Nzxt/KrakenV2.cs",
+                      "Bytes":  6293,
+                      "Sha256":  "14b033aae9a7e02533cf8f132adcc2eb0de07fd642d2f5c11826aa30f2b2a18c",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/Nzxt/KrakenV3.cs",
+                      "Bytes":  9475,
+                      "Sha256":  "b0b819f46638b9f23e737985af76c794d3b689a41a8793c200aaa8b88e8df214",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/Nzxt/NzxtGroup.cs",
+                      "Bytes":  3380,
+                      "Sha256":  "712aaebcf759621c87338c0cbe6071fd25af4e24875139d68546c54f634d7795",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/Razer/RazerFanController.cs",
+                      "Bytes":  13313,
+                      "Sha256":  "bdcc127f4a2a78c19bd26c384bf62072fc564eed179ca13b28872bc907ccfeac",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/Razer/RazerGroup.cs",
+                      "Bytes":  2538,
+                      "Sha256":  "30749e545fdc3937c8816fcab07b8f14805deba6b0d5d3d83b6712f00e83f4e4",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/TBalancer/TBalancer.cs",
+                      "Bytes":  13421,
+                      "Sha256":  "b910ef2aba3ff020410a4a0ba239f05d77f0aab8d01bdc1a921e28dba502ce98",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Controller/TBalancer/TBalancerGroup.cs",
+                      "Bytes":  6154,
+                      "Sha256":  "30fa88584f5f6c93922471e3bc3aef9a2c4b4fa63ee6a106c067750addc3e6ad",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/CoreType.cs",
+                      "Bytes":  140,
+                      "Sha256":  "0a74251886dda7486fddfc36eff037d413fcca19d4dc022ad6ba8517cb3714d4",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Cpu/Amd0FCpu.cs",
+                      "Bytes":  4638,
+                      "Sha256":  "a36b846e15a04207cb1661062d1f79b83cca52df2c58f8d5f6689e8d0de72fe8",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Cpu/Amd10Cpu.cs",
+                      "Bytes":  12750,
+                      "Sha256":  "44bd4b3d0daf735431fa2d20d4391d7f570ea4507af797230f7d1327411383a1",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Cpu/Amd17Cpu.cs",
+                      "Bytes":  32480,
+                      "Sha256":  "6d9e8187a0bb4b3e305dea851846b78616c6bce2cf7af0a19946ed97430cfad7",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Cpu/AmdCpu.cs",
+                      "Bytes":  572,
+                      "Sha256":  "f92c42c52a40347528a1ec4c7a9482695c86aef2332b0519d43442066ebed68e",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Cpu/CpuGroup.cs",
+                      "Bytes":  7499,
+                      "Sha256":  "a7ad571ef9bf1aaa362708a1d76f69f8ad913a89f10b073f7fcbf51df9c2807c",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Cpu/CpuId.cs",
+                      "Bytes":  9759,
+                      "Sha256":  "1138f196a2b5a3717def608a4b0f32e471989406708e58ed13d3bb66ad7bd04e",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Cpu/CpuLoad.cs",
+                      "Bytes":  6852,
+                      "Sha256":  "64219f54b71b439646dffc807a085e4d0113c29f97b9bcf9984251d7ab82b69c",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Cpu/GenericCpu.cs",
+                      "Bytes":  10785,
+                      "Sha256":  "32f4b78f96901e7653976e1c4e4cf6339430754039f1879ad15c092571eacf9d",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Cpu/IntelCpu.cs",
+                      "Bytes":  32746,
+                      "Sha256":  "a74145743d536e0ad9a6025402ed077d1d48309e710fcf11e550bf339eb4bc93",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/D3DDisplayDevice.cs",
+                      "Bytes":  17068,
+                      "Sha256":  "ace7b5cbcfbf00f5fa537b4ee0aa2f422be109a14d10d6977fbfc4c1f2d9863b",
+                      "Origin":  "modified"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/D3DNodeSampler.cs",
+                      "Bytes":  3835,
+                      "Sha256":  "9f9232d9e38fba90ece69feabde2e306dc8a456ef746e6b005aade1b85ec5692",
+                      "Origin":  "added"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/D3DNodeSensors.cs",
+                      "Bytes":  3051,
+                      "Sha256":  "97e33926461dbebeceaebfa198425f92452fd9b74ff6e428938828774a64cc7e",
+                      "Origin":  "added"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/FirmwareTable.cs",
+                      "Bytes":  2182,
+                      "Sha256":  "7f340c3fb2d136835b0a19421bb884ceb103784dec3816e364b22a1160718bc3",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Gpu/AmdGpu.cs",
+                      "Bytes":  44131,
+                      "Sha256":  "7899f664c94043aa91bfc1cba0ebc36ea62a205b92c2cc45b54d4b3044a8e0aa",
+                      "Origin":  "modified"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Gpu/AmdGpuGroup.cs",
+                      "Bytes":  8765,
+                      "Sha256":  "14902459579c59edd16436d9f1c52023b8e4c01ecf5d341535e22da235ef58fb",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Gpu/GenericGpu.cs",
+                      "Bytes":  1107,
+                      "Sha256":  "926be109e6961bd9bd52a748144ca814ffdad2c0eff275821dbbdcfa1cea97e0",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Gpu/GpuVendorPoll.cs",
+                      "Bytes":  8615,
+                      "Sha256":  "18a768bad505b1f6fd157f14c4cc22e49f210d40b9ff1af0e888bdc579e32c18",
+                      "Origin":  "added"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Gpu/IntelDiscreteGpu.cs",
+                      "Bytes":  22324,
+                      "Sha256":  "13c4df122ce1a578711a361dc7a4a19e4682707ef2860d0543ab26f5ac2c2cf3",
+                      "Origin":  "modified"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Gpu/IntelGpuGroup.cs",
+                      "Bytes":  8291,
+                      "Sha256":  "836b8ce200e12544ea6c35640319f425ff49b036084c6e59d243f40a593f6ae0",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Gpu/IntelIntegratedGpu.cs",
+                      "Bytes":  12485,
+                      "Sha256":  "f3ab364b1b2245e6fa694345877233dc1c3213c1ee9d9f20380101e1984671e2",
+                      "Origin":  "modified"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Gpu/IntelTelemetryCounters.cs",
+                      "Bytes":  5308,
+                      "Sha256":  "cdbde2fc104203e51ec20065b55e3fc61252a551fcfc0203b523227a4bc5971e",
+                      "Origin":  "added"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Gpu/NvidiaGpu.cs",
+                      "Bytes":  56851,
+                      "Sha256":  "2a958d80303eae487f90e43c13421907fe67990020b8045af30c7f46dd85c96a",
+                      "Origin":  "modified"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Gpu/NvidiaGroup.cs",
+                      "Bytes":  3692,
+                      "Sha256":  "64a2e2871a861f1d3f42d9badafad69dc2aee0bda367f485f31ab01be8620267",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/GroupAffinity.cs",
+                      "Bytes":  3206,
+                      "Sha256":  "d1666ad0e0a58fd1653281795b627623abb016404df3a7f9233c27dc99b15aee",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Hardware.cs",
+                      "Bytes":  3856,
+                      "Sha256":  "795b251d2742508d763dce4daa6876807c20a1673058e81cb35d3296841fa758",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/HardwareType.cs",
+                      "Bytes":  771,
+                      "Sha256":  "3bf13790fc01524f67d1357ff06935ad256be61bac3dd9196fd4a80c5a7cda6f",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/IComputer.cs",
+                      "Bytes":  5670,
+                      "Sha256":  "cc4b17f0cd4a267a4cdbd5d5f934273bfba9c3708813cb63d9d78ab5bb0e69df",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/IControl.cs",
+                      "Bytes":  820,
+                      "Sha256":  "e8ac2f19bc38ba54db6dbf88f0a32972a463ba628da60251e0266ce32da096bf",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Identifier.cs",
+                      "Bytes":  4642,
+                      "Sha256":  "170d784dd3720fdd7116c02321841eaae0cf80be313ddef0bb7d4628dc50387c",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/IElement.cs",
+                      "Bytes":  1021,
+                      "Sha256":  "855b8ac8d986fef5d3f0c492f90f606951f32e3cb6fe69204ec4e152abf6f603",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/IGroup.cs",
+                      "Bytes":  1136,
+                      "Sha256":  "9bc4355716f432a73b6fdb390b97606f18004e4fcc0c250b909932d41c560fe2",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/IHardware.cs",
+                      "Bytes":  3006,
+                      "Sha256":  "47f1163d79b6458437cd192223e6df6fd748ae918240ff0e16015759cd3992ca",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/IHardwareChanged.cs",
+                      "Bytes":  469,
+                      "Sha256":  "8ea81640c7eff98aac600df63370a74a076e82c42b03a28c596a6dece90aa793",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/IParameter.cs",
+                      "Bytes":  1575,
+                      "Sha256":  "8222fcdc599085a53db66f996eac12d35340cdc2f3fde5f5c5d25ae87c3fd4b2",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/ISensor.cs",
+                      "Bytes":  3586,
+                      "Sha256":  "58f453b909d03be6252e60dc3eab9f13902f34e95e0003a125d1f7561b922e12",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/ISensorLimits.cs",
+                      "Bytes":  1191,
+                      "Sha256":  "c3d167d10faaeceb44fe9d86fc0585e8ad461cf6187e31b5af613a646cf24f7b",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/ISettings.cs",
+                      "Bytes":  1671,
+                      "Sha256":  "1d2edb8f0515ea7a3380658b735b111ee2542d6d225fd8195bec2d2229c73736",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/IVisitor.cs",
+                      "Bytes":  1574,
+                      "Sha256":  "3a842111801aed9cb21f383270904f844a09b3a97161e9760ffff4816f1b255a",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Memory/DimmMemory.cs",
+                      "Bytes":  9385,
+                      "Sha256":  "f783a82c2a0ba75f63fd73d1b24ddb2893eece8639859184c9f581f87d68de6c",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Memory/MemoryGroup.cs",
+                      "Bytes":  5954,
+                      "Sha256":  "1cd9f84b4119414210cd56aab2d7e0a099c68ee409d05f4ce1bd4cfa1e86cdc2",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Memory/MemoryLinux.cs",
+                      "Bytes":  2943,
+                      "Sha256":  "10bb850ec29ba9d0f8dc6dae2e0b92bd02868ead410fb270d4b4f7a1d715cf3f",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Memory/MemoryWindows.cs",
+                      "Bytes":  1686,
+                      "Sha256":  "1555a1982b1eba84295bbbbde69a338528fcb160ee1e5ac839fa3c0bbd73b031",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Memory/Sensors/SpdThermalSensor.cs",
+                      "Bytes":  887,
+                      "Sha256":  "29d308eec385332776bf076b1a3df89b0e2ffba04959a4d0af2f80bffbc96cfe",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Memory/TotalMemory.cs",
+                      "Bytes":  1503,
+                      "Sha256":  "2abd525be7da4a1ce2088832480387ee47ebb491df8e11a54cab78bb51030ffa",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Memory/VirtualMemory.cs",
+                      "Bytes":  1501,
+                      "Sha256":  "897eeea8a8d0f509c2fe5fab4ec47271376afc7617547e7e619b0be00b4082c5",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Control.cs",
+                      "Bytes":  258,
+                      "Sha256":  "3b0f322e7976c6a04aa4e5213077fda132f67305d70c2030b543d9d3bf862736",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Fan.cs",
+                      "Bytes":  248,
+                      "Sha256":  "b530769122b5113138a94c4a639c27f62d8a761566cc20ccded3f5e1e5ff0ed7",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Identification.cs",
+                      "Bytes":  62147,
+                      "Sha256":  "7b3ebb7d58eff568db8313ff30fab7c9ec2ba34e99ffe39389629aa1091fd0d7",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/Chip.cs",
+                      "Bytes":  6357,
+                      "Sha256":  "ff363086e2cedac0120801c3310d1c187a2aa126039c2059c5d024f36bb5534b",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/EC/ChromeOSEmbeddedController.cs",
+                      "Bytes":  4080,
+                      "Sha256":  "c1a75d10327e3e08f531dfc4a04297d7dcc9cd3e741d20abb331d7cbb588af64",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/EC/ChromeOSEmbeddedControllerIO.cs",
+                      "Bytes":  2127,
+                      "Sha256":  "0b40968722c18fb221b5913a3a6e13260aa3a473976752cde3b15b09aa6e67e2",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/EC/EmbeddedController.cs",
+                      "Bytes":  29934,
+                      "Sha256":  "42a59b2c57ac572aebd2032b63e98d66426fb6c912e709201b967a75e3424796",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/EC/EmbeddedControllerReader.cs",
+                      "Bytes":  443,
+                      "Sha256":  "32eeace0ce497e0d5d06b430cef67853c2bdf8e8b98085941b2e2b4ef9b71552",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/EC/EmbeddedControllerSource.cs",
+                      "Bytes":  930,
+                      "Sha256":  "c07697fc3184fde034f5a494231fa04f153ab378002f7b1f319fa149af6f3cc0",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/EC/IEmbeddedControllerIO.cs",
+                      "Bytes":  475,
+                      "Sha256":  "ea03f2553f0a87a48df908e538d78c52d86ad492d2db1af4c43574fe08a8e719",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/EC/WindowsEmbeddedController.cs",
+                      "Bytes":  727,
+                      "Sha256":  "8a2f7922ae6e10c944c9eac65772bd62f27e07a2a15a30294c657dcc4d5cd1cd",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/EC/WindowsEmbeddedControllerIO.cs",
+                      "Bytes":  7274,
+                      "Sha256":  "8533b0f0ccad6ad2c0eb4ee8ea7512ca0000ca6bdb566574ca047a07faa38e04",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/EcioPortGigabyteController.cs",
+                      "Bytes":  3509,
+                      "Sha256":  "c7c58cf18e2ea8c7d614b30491e747b9cd10428681b1ea671cd15194c2bb8f07",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/F718XX.cs",
+                      "Bytes":  8421,
+                      "Sha256":  "7736f1391af109df56a0f555e796e5ed06035ece921ceb441f95f9e9c71620f3",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/IGigabyteController.cs",
+                      "Bytes":  574,
+                      "Sha256":  "fa769602aa5af189856a0ef5c8777bb440bd2e9b378b1ca299af829f9ef9b30a",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/Ipmi.cs",
+                      "Bytes":  11781,
+                      "Sha256":  "a0c44defae609fba01daf413a2fe22703b7e3e0858c61559760af559273d8e66",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/IsaBridgeGigabyteController.cs",
+                      "Bytes":  6203,
+                      "Sha256":  "5ccddd190be515d32c9c2c27d604f953f88fcff80af8a70c7d3e0c5c605a0893",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/ISuperIO.cs",
+                      "Bytes":  968,
+                      "Sha256":  "fe3530771c45530d3e7145608d5aa8cfc7d15dc4901b4500383f93763f3aa8e3",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/IT879xEcioPort.cs",
+                      "Bytes":  2920,
+                      "Sha256":  "6d4cedab9f2f94616d4128c81228793891d1d54be8b14d7f8b3b099516ea5917",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/IT87XX.cs",
+                      "Bytes":  22613,
+                      "Sha256":  "a4b70f584ceeb1d177d08e814fe30fd097f8dc8fa3d288aa73d409663347c8cd",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/LMSensors.cs",
+                      "Bytes":  10716,
+                      "Sha256":  "0867576c41b4336af300ebd5878bbe93c42a92d70816cc7bdc012219966d6283",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/LpcIO.cs",
+                      "Bytes":  27809,
+                      "Sha256":  "6d3df50d0d2fe52ae27149c4fcc96b83051122de2f4dbe55866729046ea71f4c",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/LpcPort.cs",
+                      "Bytes":  3511,
+                      "Sha256":  "94e600945bc189d744de37364f9fc15820a234debfd7484180da110ec3bdd014",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/Nct677X.cs",
+                      "Bytes":  58964,
+                      "Sha256":  "8388e2089a488a4e02862af7d2336bde594b6ef3409d5797be657b2b4edd1ebf",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Lpc/W836XX.cs",
+                      "Bytes":  22436,
+                      "Sha256":  "9768456c7b9d591e16fe818efde84337a08eebe221af39bf804cee4d845c4742",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Manufacturer.cs",
+                      "Bytes":  1180,
+                      "Sha256":  "25a2cd9e8abc2e8d1698266c0b3ac6be38e2827a2d43540b245cd695fe2afa85",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Model.cs",
+                      "Bytes":  9259,
+                      "Sha256":  "992e472f858788cc62c09cce6f8700a65dd6aadb29565aed1978f1fb561b2f8d",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Motherboard.cs",
+                      "Bytes":  6745,
+                      "Sha256":  "83fd6d1ea4660758d595209871c2dee8711d0bb33ae7ffef11eaf75cc78c1049",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/MotherboardGroup.cs",
+                      "Bytes":  1027,
+                      "Sha256":  "3c402e153169458fded23faf65d939832d4dff2021220434ba0ac14c5654af7c",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/SuperIOHardware.cs",
+                      "Bytes":  328621,
+                      "Sha256":  "9ec7e46477d0d72ecf21470d3cc305dd93dda70e2b8dbe341b5c3bca1e9152ab",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Temperature.cs",
+                      "Bytes":  264,
+                      "Sha256":  "bb5666cb60e6310da52712c98fccc6b02dd8a3a8677c938fe5ea451a144fdbf5",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Motherboard/Voltage.cs",
+                      "Bytes":  631,
+                      "Sha256":  "e69e204415a8d8b7256ec1a605ee9aa36691c5b4e25dcd29ffa37a70ce07f31c",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Mutexes.cs",
+                      "Bytes":  3648,
+                      "Sha256":  "b47299e424f6138ce0931580bd813359655238254747615dd6dfc72f73f089e6",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Network/Network.cs",
+                      "Bytes":  5280,
+                      "Sha256":  "0db11d6943464799f9bd043c9002cd9563e6b7d5ebd241dcfe8d9b78a5559950",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Network/NetworkGroup.cs",
+                      "Bytes":  4970,
+                      "Sha256":  "388a98317b2c5d953837cfd222be9804eb72b21239a1e5992de3774ed83c493a",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/OpCode.cs",
+                      "Bytes":  8732,
+                      "Sha256":  "5e5c98cec15454c26ea958073ef7bce595325a6171cdeca660b328a139cb642b",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Parameter.cs",
+                      "Bytes":  2528,
+                      "Sha256":  "a443e8cd7d8b9c504b38f14f8ca1dffb3adfa47c6ca6900ed671ab80542c87bb",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/ParameterDescription.cs",
+                      "Bytes":  1532,
+                      "Sha256":  "4b85f3da1e333bb939b5c50cf0befc6f417e003090c72b42f35fc00bdaaff257",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/PowerMonitor/IPowerMonitor.cs",
+                      "Bytes":  500,
+                      "Sha256":  "cbb97de4d1d359e724a7d249daf2c54ae904d86f6b90a2f970ee9c8d5e2095ee",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/PowerMonitor/PowerMonitorGroup.cs",
+                      "Bytes":  1481,
+                      "Sha256":  "501e0a30482f7cd6aefb208a7d4381e797dfb805b3e5ac0569549aebd5642bc8",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/PowerMonitor/SharedSerialPort.cs",
+                      "Bytes":  2023,
+                      "Sha256":  "ce8460ae12a60808e2e5909b01e20626e2e096644040ecacc55ae1e41c642ef4",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/PowerMonitor/WireViewPro2.cs",
+                      "Bytes":  23623,
+                      "Sha256":  "800c8288b458e58c815f40bc2b77def21455119836d33b0265650ef280d4d709",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/PowerMonitor/WireViewPro2Sensor.cs",
+                      "Bytes":  1050,
+                      "Sha256":  "8bf4d6017c65e96d4369db4fbee8172c0ab1ce95cd51e0b28705ac0419bc6600",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Psu/Corsair/CorsairPsu.cs",
+                      "Bytes":  9702,
+                      "Sha256":  "e606a472f973dc5941f4df1f56b588aec5f81c9f3d2dddb4f0962356329d9150",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Psu/Corsair/CorsairPsuGroup.cs",
+                      "Bytes":  2142,
+                      "Sha256":  "26d7d7537260a167b8d464ae063b61f7ba696e6e6ab52ddbf31f5e0550e420b5",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Psu/Corsair/UsbApi.cs",
+                      "Bytes":  8175,
+                      "Sha256":  "529960dd9ac255f58303bf225bfed458c35f65584b1c39e07393d8e1e45ff531",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Psu/Msi/MsiPsu.cs",
+                      "Bytes":  3331,
+                      "Sha256":  "6b4e6f7099d2bd808e0b536b861442c3d3bea99b45d1353860c5547cc4765658",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Psu/Msi/MsiPsuGroup.cs",
+                      "Bytes":  1799,
+                      "Sha256":  "73104f370b800dd5cad40cc28b3f802d40727bdebe1574ec5b43f45bcd90e082",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Psu/Msi/UsbApi.cs",
+                      "Bytes":  3150,
+                      "Sha256":  "8fb4ef6fe46e7762cbb2bb4beab6d79d4e78f63b4b9bd50360d734058036adb4",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Psu/ProtocolError.cs",
+                      "Bytes":  589,
+                      "Sha256":  "d67521290283fa2c7be483415a0d0a05e06c18be38737095446b14b3b43ac09f",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/RyzenSMU.cs",
+                      "Bytes":  19496,
+                      "Sha256":  "e87e33356643f59c086cb452a4bc8d141daff3957e48185fe20f1d09b632d890",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Sensor.cs",
+                      "Bytes":  8522,
+                      "Sha256":  "50a1d19e57121e57464e2e17a1c4aaed3d67aacd1746c0922be225cb31c644f5",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/SensorVisitor.cs",
+                      "Bytes":  2777,
+                      "Sha256":  "19586987b48e8c35d4b8b408a435fa75be9c802e10b6270905f5cc912daf72f4",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/SMBios.cs",
+                      "Bytes":  46543,
+                      "Sha256":  "c2e01f8ed1df767b9b6f93c8be83310c4ca5f28c8573cdb5b22a57922e7e3d69",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Storage/ISmart.cs",
+                      "Bytes":  643,
+                      "Sha256":  "8a2e02295a631b39844563351e5334b6daee3b3808ff3c4aa63e36c03a6dba8a",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Storage/SmartAttribute.cs",
+                      "Bytes":  2084,
+                      "Sha256":  "d0e490de5cd0ab2d8102fc7b14321299a0a4f7139753ac6a23266b08a5fc8cec",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Storage/SmartAttributeTranslator.cs",
+                      "Bytes":  95065,
+                      "Sha256":  "3d13ae69ef25e2b29b8272a275b8fc76a3ba5748487592b43d2ba8efb8f68f43",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Storage/StorageDevice.cs",
+                      "Bytes":  14364,
+                      "Sha256":  "10eabf9eec7e4c26546cccfb2182cd7a3bb202b1248b800c4aadf4c963b4ac76",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Storage/StorageDeviceSensor.cs",
+                      "Bytes":  1081,
+                      "Sha256":  "62e1e3d55b087103e061b047673bccf80efb3a741ce0666a0f9165b2756f9aef",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/Storage/StorageGroup.cs",
+                      "Bytes":  2634,
+                      "Sha256":  "2f1193e4c67688dd83f87e787f30cbdaed16b0de6a83145d7fbd89e767f3ca2e",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Hardware/ThreadAffinity.cs",
+                      "Bytes":  2825,
+                      "Sha256":  "9f0551a724fcf8524f62244259bfb54bf9a365a3b3daad8d26705ab13a635729",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/AtiAdlxx.cs",
+                      "Bytes":  29148,
+                      "Sha256":  "0686e62637617f81b23e22629ceca5f14b6636f119ac3f1573ab405c37912b77",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/ByteExtensions.cs",
+                      "Bytes":  268,
+                      "Sha256":  "a0ff0ff556338a52f5a0c262b8b02e69944d6f7fbba6051afaba4e09af6b74ca",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/Ftd2xx.cs",
+                      "Bytes":  6263,
+                      "Sha256":  "2805b37848bab052d71501a4bf407582059840605bbc188018e6550e48f842dc",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/IntelGcl.cs",
+                      "Bytes":  18829,
+                      "Sha256":  "68e7963b734e206aea0d19b3c1ef7405578c14a9a39e934d946f996c4b9d0ead",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/Ipmi.cs",
+                      "Bytes":  1837,
+                      "Sha256":  "195a1aaa635eda0b8c0851c39bad95d2b26e779fa891a391072ad162249a5308",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/LibC.cs",
+                      "Bytes":  741,
+                      "Sha256":  "d298453c3c4a7bd28c36d950740240da5819c049c829ba70a41d45a39b9166c9",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/NvApi.cs",
+                      "Bytes":  25709,
+                      "Sha256":  "c7516b12887b5b243fd2bc0a12ac0f6b4554879c246839774f659a8de6779468",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/NvidiaML.cs",
+                      "Bytes":  16947,
+                      "Sha256":  "0a15122dddfee8ff16f8415bbeb0f9ed6ed945cc55b81725efd7940191e36433",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/PowerMonitor/DeviceData.cs",
+                      "Bytes":  1394,
+                      "Sha256":  "cc6077d75980965f9ca7e505f404b586d4109abd5f5463bec2ca102b86e2c189",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/PowerMonitor/Stm32PortFinder.cs",
+                      "Bytes":  4676,
+                      "Sha256":  "3cc56880a9aa9f8d0a84e575662e1a9f7e745c13170b86c419df3123b257af2b",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/PowerMonitor/StructureConversion.cs",
+                      "Bytes":  2698,
+                      "Sha256":  "a504b4d9c0860a28efdc267ffd0612e735e41bd909395baba492e0f6bd1498cf",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/PowerMonitor/WireViewPro2Enums.cs",
+                      "Bytes":  2677,
+                      "Sha256":  "1caded3c43b5fc4ceedeccf2d906ec6dc68d869d0942cf0d04da505ccc96771f",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Interop/PowerMonitor/WireViewPro2Structures.cs",
+                      "Bytes":  3819,
+                      "Sha256":  "a85b5d1fde5a91a220a3062cde7effdeca55ca5109d43c949b324e6880ccfabd",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/LibreHardwareMonitorLib.csproj",
+                      "Bytes":  4178,
+                      "Sha256":  "a5f205c30fe54a3add0fa39d8f1ac1e885a795c9fdab2e1627ca6a73f3bf8903",
+                      "Origin":  "modified"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/main.nuget.target",
+                      "Bytes":  1555,
+                      "Sha256":  "ccf5ea5df77c9ae252dca3d01d92eb8a1d0cbdfb31ce54e012618f527e9b1c95",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/NativeMethods.txt",
+                      "Bytes":  1279,
+                      "Sha256":  "18b6cab762eb2a7d65bcae633b183da9ecffc205da16c2c44a163dd1cf04a0db",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/packages.lock.json",
+                      "Bytes":  14702,
+                      "Sha256":  "d042b165c029b6eeafec410f309c3c2eb4ca082c8d85fc8ed8e3894c55d3d2f6",
+                      "Origin":  "added"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/PawnIo/AmdFamily0F.cs",
+                      "Bytes":  1401,
+                      "Sha256":  "eeed1b73301c09bcd85bd5c055097a63cf0c53b5086db315242cea0658d909c1",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/PawnIo/AmdFamily10.cs",
+                      "Bytes":  2115,
+                      "Sha256":  "158207160137a526a2ab68116bb695cf87a900710a6edca6c6eac213c84d540e",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/PawnIo/AmdFamily17.cs",
+                      "Bytes":  1325,
+                      "Sha256":  "79d95e31ca8d67a864964687a81c1672d7a0d7836e8400009f200dfb446d18b5",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/PawnIo/IntelMsr.cs",
+                      "Bytes":  1477,
+                      "Sha256":  "a81f04e1f9a5d603ca20cd22c6add1a5969c5fac3593dc5b7dd23bd52e78c384",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/PawnIo/IsaBridgeEc.cs",
+                      "Bytes":  6575,
+                      "Sha256":  "10798e113cf2e6cea9ad9e6a5b1a540d32ba0890c1bc05932a69c3320dc332f9",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/PawnIo/LpcACPIEC.cs",
+                      "Bytes":  737,
+                      "Sha256":  "dd3c9b0ca5596933f0b838214cf5a5ff79961949f751f184afcfb1288d193c6e",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/PawnIo/LpcCrOS.cs",
+                      "Bytes":  1487,
+                      "Sha256":  "8dec11e99474cea4cff90a578a1784c5fdb4920ec7acc215516fc1a3753d728a",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/PawnIo/LpcIO.cs",
+                      "Bytes":  1603,
+                      "Sha256":  "db7b4d90217a938176d262a8098bc34597c9ffbccedf7f17eddf70aca4f2535e",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/PawnIo/PawnIo.cs",
+                      "Bytes":  6085,
+                      "Sha256":  "edfb625f88b09009d8cab4ac370870d436ea5bbd8683179887dc901371492950",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/PawnIo/RyzenSmu.cs",
+                      "Bytes":  2171,
+                      "Sha256":  "ef5ea63b554d5584038ec418b64521a011422628a677491f7d44ca2f3b8060fa",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/PerfCompassAssemblyInfo.cs",
+                      "Bytes":  178,
+                      "Sha256":  "6e20fe036213ab0fdcf7f8a800230d6f25c5245d1e97cd4eaad719544451a4aa",
+                      "Origin":  "added"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/RAMSPDToolkitDriver.cs",
+                      "Bytes":  2488,
+                      "Sha256":  "b96ea298e0fff3f7b86dae53d2020f6b9bd1f12d738fae795a4a8ed231db7dc8",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/packageicon.png",
+                      "Bytes":  3948,
+                      "Sha256":  "e7658f72961ebed60ff2eea39451286dc3e01876009a60028b732ae95adcefeb",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/AMDFamily0F.bin",
+                      "Bytes":  8404,
+                      "Sha256":  "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/AMDFamily10.bin",
+                      "Bytes":  16836,
+                      "Sha256":  "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/AMDFamily17.bin",
+                      "Bytes":  9300,
+                      "Sha256":  "099dc01d6db97ea997fec4a461e191cc64b9d7ce47c9d2153c451c56c2adcf50",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/COPYING",
+                      "Bytes":  27032,
+                      "Sha256":  "1e7e6bae5a5bde32f1ae5a7c37a082d1ab03cf89354f7f936ac40be9e39a6531",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/IntelMSR.bin",
+                      "Bytes":  4068,
+                      "Sha256":  "ed41a0d0de082f4668a9caccb9681ebbad97a8ed3452c41918dda1eb454b77a9",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/IsaBridgeEC.bin",
+                      "Bytes":  51628,
+                      "Sha256":  "7218c633384bd019cce09e8df91f74996f980765ac44dde0f22b0b5318c20f03",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/LpcACPIEC.bin",
+                      "Bytes":  2612,
+                      "Sha256":  "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/LpcCrOSEC.bin",
+                      "Bytes":  19692,
+                      "Sha256":  "277ed6ce6b5f647d5dae9b06c83ed39e904974b06f95598d49f4737237974776",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/LpcIO.bin",
+                      "Bytes":  17172,
+                      "Sha256":  "3dcf8b2bc80ff642d97c4608511a818642b5bf315ff53df3df393d043e71d101",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/README",
+                      "Bytes":  149,
+                      "Sha256":  "5139b89b022cef0e3908756823c93f3a0ea14edc4c3ce2551bf3e399e9dc253e",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/RyzenSMU.bin",
+                      "Bytes":  38036,
+                      "Sha256":  "0cf0fe1296c5c38f4bee0f96352b35f14d32ab97cb58fd17600646d98507d8aa",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/SmbusI801.bin",
+                      "Bytes":  40788,
+                      "Sha256":  "76b082a144027244fe7bbf3ca0e987e7dfa279aa87e0ccc2a6a918e10e2038e1",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/SmbusNCT6793.bin",
+                      "Bytes":  17548,
+                      "Sha256":  "385bd1b229faa44aefe2eb1f938ac629f6d897f1a4931dab5341b18b3bd432c1",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Resources/PawnIo/SmbusPIIX4.bin",
+                      "Bytes":  37260,
+                      "Sha256":  "3f8b44c93eb030d59fb68c6fdc6857c61313eab2b6aa0ed64595396d71bf3ea3",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LibreHardwareMonitorLib/Software/OperatingSystem.cs",
+                      "Bytes":  1727,
+                      "Sha256":  "1db055e6a3d859ee393a66ab01add9117d20b51c908be283607227ac5b889324",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "LICENSE",
+                      "Bytes":  17098,
+                      "Sha256":  "2684de17300e0a434686f1ec7f8af6045207a4b457a3fe04b2b9ce655e7c5d50",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "PATCHES.md",
+                      "Bytes":  5042,
+                      "Sha256":  "2f155e12baf58f2b40069455d292b2d1ac3ef0e2af73ae37ae8190d7b6631808",
+                      "Origin":  "metadata"
+                  },
+                  {
+                      "Path":  "PATCH-MANIFEST.json",
+                      "Bytes":  2782,
+                      "Sha256":  "040376339bcc8fbecca52790d5f8d92964364d1763931fff33243386aa8970a7",
+                      "Origin":  "metadata"
+                  },
+                  {
+                      "Path":  "THIRD-PARTY-NOTICES.txt",
+                      "Bytes":  26393,
+                      "Sha256":  "6af0730cbceccadd2f700ec6516869d8d02a32c01e0d7d68b363ebfcd2592dd1",
+                      "Origin":  "upstream"
+                  },
+                  {
+                      "Path":  "UPSTREAM.json",
+                      "Bytes":  51896,
+                      "Sha256":  "ef4224dde07888e38a780f10a95cc2cf2d24863080213d3e0184f1d249824c1b",
+                      "Origin":  "metadata"
+                  }
+              ],
+    "GeneratedFiles":  [
+                           {
+                               "Path":  "NuGet.Config",
+                               "Bytes":  332,
+                               "Sha256":  "997af26d799d9e1f7d91b7c700aabaa94ff292c13cae1c3f278a92b18d6defa8"
+                           }
+                       ]
+}

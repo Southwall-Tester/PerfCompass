@@ -74,12 +74,17 @@ public partial class MainWindow
         AdviceNav.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
         await RefreshAnalysis();
         await waitForAnalysis(() => report!.SceneProfiles.Any(p => p.Name == scene));
+        // Include both the old and new protocol periods in the selected history
+        // window; the default seven-day window contains only the new protocol.
+        WindowCombo.SelectedItem = WindowCombo.Items.OfType<ComboBoxItem>().Single(item => item.Tag.ToString() == "14");
+        await waitForAnalysis(() => report!.WindowDays == 14);
         AnalysisSceneCombo.SelectedItem = AnalysisSceneCombo.Items.OfType<ComboBoxItem>().Single(item => item.Tag as string == scene);
         await waitForAnalysis(() => report!.SelectedScene == scene && report.GpuEngineProfiles.Any(p => p.Kind == "compute" && p.P95 == 96));
         require(report!.Cards.Single(c => c.Key == "gpu").Status == "pressure"
-            && report.SceneProfiles.Single(p => p.Name == scene).GpuP95 == 3
+            && report.SceneProfiles.Single(p => p.Name == scene).GpuP95 == null
+            && SceneProfileSummary.Text.Contains("不合并 GPU P95")
             && report.GpuEngineProfiles.Single(p => p.Kind == "encode").CompleteHours == 0,
-            "Isolated synthetic history reaches production analysis with busy compute, partial encoding and the original low core/3D scope intact");
+            "Isolated synthetic history preserves busy compute and partial encoding without pooling different core/3D protocols into one P95");
         GpuEngineHistoryExpander.IsExpanded = true; UpdateLayout();
         var rendered = new List<string>();
         void ReadRenderedText(DependencyObject parent)

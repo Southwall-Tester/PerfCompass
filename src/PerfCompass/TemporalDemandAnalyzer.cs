@@ -7,6 +7,7 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
     {
         public readonly WeightedSeries Cpu = new(), Core = new(), Gpu = new(), Memory = new(), MemoryLoad = new(), Commit = new();
         public readonly HashSet<DateTime> CpuDays = [], CoreDays = [], GpuDays = [], MemoryDays = [], CommitDays = [], ActiveDays = [];
+        public readonly HashSet<string> GpuSources = new(StringComparer.Ordinal);
         public double ActiveSeconds;
         public double CpuHighSeconds, GpuHeavySeconds, GpuHighSeconds, MemoryHighSeconds;
         public readonly Dictionary<string, double> GpuHeavyScenes = [], CpuHeavyScenes = [];
@@ -26,7 +27,11 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
             GpuHighSeconds += Exposure(s.GpuHighSeconds, s.Gpu >= 95, gpuSeconds);
             MemoryHighSeconds += Exposure(s.MemoryHighSeconds, s.MemoryTotalGb is > 0 && s.MemoryUsedGb / s.MemoryTotalGb >= .9, memorySeconds);
             if (s.Cpu.HasValue && cpuSeconds > 0) CpuDays.Add(s.Time.LocalDateTime.Date);
-            if (s.Gpu.HasValue && gpuSeconds > 0) GpuDays.Add(s.Time.LocalDateTime.Date);
+            if (s.Gpu.HasValue && gpuSeconds > 0)
+            {
+                GpuDays.Add(s.Time.LocalDateTime.Date);
+                GpuSources.Add(GpuEngineEvidence.MetricScope(s));
+            }
             if (s.MemoryUsedGb.HasValue && memorySeconds > 0) MemoryDays.Add(s.Time.LocalDateTime.Date);
             if (s.CoreMax.HasValue && coreSeconds > 0) CoreDays.Add(s.Time.LocalDateTime.Date);
             if (s.CommitGb.HasValue && commitSeconds > 0) CommitDays.Add(s.Time.LocalDateTime.Date);
@@ -43,13 +48,14 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
     {
         "cpu" => week.Cpu.Seconds >= 1800 && week.CpuDays.Count >= 2 && week.Core.Seconds >= 1800 && week.CoreDays.Count >= 2,
         "memory" => week.Memory.Seconds >= 1800 && week.MemoryDays.Count >= 2 && week.Commit.Seconds >= 1800 && week.CommitDays.Count >= 2,
-        "gpu" => week.Gpu.Seconds >= 1800 && week.GpuDays.Count >= 2,
+        "gpu" => week.Gpu.Seconds >= 1800 && week.GpuDays.Count >= 2 && week.GpuSources.Count == 1,
         _ => FreshObservationReady
     };
     public bool HasRecentPressure(string key)
     {
         var metric = key switch { "cpu" => week.Cpu, "gpu" => week.Gpu, "memory" => week.MemoryLoad, _ => null };
         if (metric == null || metric.Seconds < 1800 || metric.Seconds < week.ActiveSeconds * .9) return false;
+        if (key == "gpu" && week.GpuSources.Count != 1) return false;
         double high = key switch { "cpu" => week.CpuHighSeconds, "gpu" => week.GpuHighSeconds, _ => week.MemoryHighSeconds };
         return high / metric.Seconds >= (key == "memory" ? .05 : .1);
     }
@@ -69,7 +75,19 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
     }
     private static void Compare(Period recent, Period previous, int days, List<DemandTrend> result)
     {
-        result.Add(Trend("gpu", "显卡", "%", days, recent.Gpu, previous.Gpu, recent.GpuDays.Count, previous.GpuDays.Count, recent.GpuHeavyScenes, recent.ActiveSeconds, previous.ActiveSeconds, recent.GpuHeavySeconds, previous.GpuHeavySeconds));
+        var gpu = Trend("gpu", "显卡", "%", days, recent.Gpu, previous.Gpu, recent.GpuDays.Count, previous.GpuDays.Count, recent.GpuHeavyScenes, recent.ActiveSeconds, previous.ActiveSeconds, recent.GpuHeavySeconds, previous.GpuHeavySeconds);
+        bool differentSources = recent.GpuSources.Count > 1 || previous.GpuSources.Count > 1
+            || recent.GpuSources.Count == 1 && previous.GpuSources.Count == 1 && !recent.GpuSources.SetEquals(previous.GpuSources);
+        bool mixedRecent = recent.GpuSources.Count > 1, mixedPrevious = previous.GpuSources.Count > 1;
+        if (mixedRecent || mixedPrevious) gpu = gpu with
+        {
+            RecentP95 = mixedRecent ? null : gpu.RecentP95, PreviousP95 = mixedPrevious ? null : gpu.PreviousP95,
+            RecentBusyMinutes = mixedRecent ? 0 : gpu.RecentBusyMinutes, PreviousBusyMinutes = mixedPrevious ? 0 : gpu.PreviousBusyMinutes,
+            RecentHeavyScenes = mixedRecent ? [] : gpu.RecentHeavyScenes,
+            StatisticsUnavailableReason = "时期内部来源或规则混合，未合并该期 P95，负载比例暂不解释。"
+        };
+        result.Add(differentSources ? gpu with { Status = "insufficient", Summary = "显卡采集来源或规则发生变化，暂不判断需求增减。",
+            Suggestion = "保留原始观测，积累同一采集来源的前后时期记录。来源或采集方式改变不证明任务需求改变。" } : gpu);
         result.Add(Trend("cpu", "处理器", "%", days, recent.Cpu, previous.Cpu, recent.CpuDays.Count, previous.CpuDays.Count, recent.CpuHeavyScenes, recent.ActiveSeconds, previous.ActiveSeconds, recent.Cpu.TimeAbove(80), previous.Cpu.TimeAbove(80)));
         result.Add(Trend("memory", "内存", " GiB", days, recent.Memory, previous.Memory, recent.MemoryDays.Count, previous.MemoryDays.Count, [], recent.ActiveSeconds, previous.ActiveSeconds, 0, 0));
     }

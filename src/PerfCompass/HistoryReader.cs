@@ -107,6 +107,8 @@ public sealed partial class LocalStore
                             throw new InvalidDataException("采样活动规则版本未知，暂不解释此记录");
                         if (sample != null && (!string.IsNullOrEmpty(sample.GpuEngineVersion) ? !GpuEngineEvidence.Valid(sample) : sample.GpuEngines?.Count > 0))
                             throw new InvalidDataException("显卡引擎记录的版本、来源或观测范围无效");
+                        if (sample != null && sample.GpuMetricSource is not ("" or "GPU Core" or "GPU D3D 3D" or "D3D 3D"))
+                            throw new InvalidDataException("核心/3D读数的来源无效");
                         if (sample != null && !string.IsNullOrEmpty(sample.SamplingIssue)
                             && (!SamplingClock.KnownIssue(sample.SamplingIssue) || sample.Seconds != 0))
                             throw new InvalidDataException("采样中断状态无效，或中断记录包含有效时长");

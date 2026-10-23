@@ -160,7 +160,7 @@ public partial class MainWindow : Window
         GpuValue.Text = Percent(s.Gpu); GpuBar.Value = s.Gpu ?? 0;
         GpuDetail.Text = s.Gpu.HasValue ? (s.VramUsedGb.HasValue ? $"显存 {s.VramUsedGb:0.0} GiB" : "显存数据待采集") + (s.GpuTemp.HasValue ? $" · {s.GpuTemp:0}°C" : "") : "核心/3D传感器不可用";
         GpuEngineLiveDetails.Text = GpuEngineEvidence.Describe(s);
-        GpuEngineLiveVersion.Text = $"分引擎记录规则：{(string.IsNullOrWhiteSpace(s.GpuEngineVersion) ? "未记录" : s.GpuEngineVersion)} · 上方核心/3D读数与各引擎分别保留。";
+        GpuEngineLiveVersion.Text = $"核心/3D来源：{(string.IsNullOrWhiteSpace(s.GpuMetricSource) ? "未取得或旧版未标注" : s.GpuMetricSource)} · 分引擎规则：{(string.IsNullOrWhiteSpace(s.GpuEngineVersion) ? "未记录" : s.GpuEngineVersion)}。";
         DiskValue.Text = Percent(s.DiskBusy); DiskBar.Value = s.DiskBusy ?? 0;
         DiskDetail.Text = s.DiskReadMbps.HasValue ? $"读 {s.DiskReadMbps:0.0} / 写 {s.DiskWriteMbps:0.0} MiB/s" : "计数器不可用";
         CpuNameLabel.Text = snapshot.CpuName; GpuNameLabel.Text = snapshot.GpuName;
@@ -176,7 +176,7 @@ public partial class MainWindow : Window
         RecordState.Text = "● " + (s.SamplingIssue.Length > 0 ? "采样时间中断" : s.Active ? "正在记录 · 有效使用" : "正在记录 · 空闲");
         LastTime.Text = $"更新于 {s.Time.LocalDateTime:HH:mm:ss}";
         StatusLine.Text = historyWriteFailed ? "实时采集继续，历史保存失败。请检查数据目录权限与磁盘空间；程序会自动重试。" : $"采集继续 · 历史记录约 10 秒保存 · {snapshot.SensorStatus}";
-        livePoints.Add(new(s.Time, s.Cpu, memPct, s.Gpu));
+        livePoints.Add(new(s.Time, s.Cpu, memPct, s.Gpu) { GpuScope = GpuEngineEvidence.MetricScope(s) });
         livePoints.RemoveAll(p => p.Time < s.Time.AddMinutes(-4));
         LiveChart.SetPoints(livePoints);
         if (s.SamplingIssue.Length > 0 || !analyzing && analysisSchedule.Due(Stopwatch.GetTimestamp())) _ = RefreshAnalysis();
@@ -215,10 +215,13 @@ public partial class MainWindow : Window
             finally { updatingSceneChoices = false; }
             SceneProfileList.ItemsSource = result.SceneProfiles;
             SceneProfileSummary.Text = result.HistoryQuality.HasIntervalConflicts ? "场景时段互有重叠，不能相加；负载值暂待核对" : "有效使用时段统计 · P95 按采样时长加权";
+            if (!result.HistoryQuality.HasIntervalConflicts && result.SceneProfiles.Any(p => p.GpuHasMixedSources))
+                SceneProfileSummary.Text += "。来源或规则混合的场景不合并 GPU P95；峰值仅保留为已观察线索：" + string.Join("、", result.SceneProfiles.Where(p => p.GpuHasMixedSources).Select(p => p.Name));
             SceneEmptyLabel.Visibility = result.SceneProfiles.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             GpuEngineHistoryNotice.Text = result.HistoryQuality.HasIntervalConflicts ? "时段重叠，分引擎负载与时长暂不解释；请先核对历史来源。"
                 : string.IsNullOrWhiteSpace(result.HardwareId) ? "请先隔离同一硬件配置的记录，再查看分引擎历史。"
-                : "仅统计当前范围已暴露的引擎节点。P95 按已取得读数的时长加权，部分读数可能低估同类最大负载；类别完整时长不等于全GPU覆盖。时期对照仅用同来源、读数完整的观测，可能与这里的 P95 不同。缺失保留未知，不同引擎占用不能相加。";
+                : "仅统计当前范围已暴露的引擎节点。P95 按同来源读数的时长加权；来源或规则混合时不合并 P95。部分读数可能低估同类最大负载；类别完整时长不等于全GPU覆盖。时期对照仅用同来源、读数完整的观测，可能与这里的 P95 不同。缺失保留未知，不同引擎占用不能相加。"
+                    + (result.GpuMetricScopes.Length > 0 ? " 核心/3D观测来源：" + string.Join("；", result.GpuMetricScopes) : "");
             GpuEngineProfileList.ItemsSource = result.GpuEngineProfiles
                 .OrderByDescending(p => p.ObservedHours > 0 || p.Sources.Length > 0)
                 .ThenByDescending(p => p.HeavyMinutes > 0 || p.Peak >= 80)
@@ -226,7 +229,7 @@ public partial class MainWindow : Window
                 .Select(p => new
             {
                 p.Name,
-                Readings = $"已观察 P95 {(p.P95.HasValue ? $"{p.P95:0.0}%" : "缺失")} · 峰值 {(p.Peak.HasValue ? $"{p.Peak:0.0}%" : "缺失")} · ≥80% 累计 {p.HeavyMinutes:0.0} 分钟",
+                Readings = $"已观察 P95 {(p.P95.HasValue ? $"{p.P95:0.0}%" : p.HasMixedSources ? "来源混合，未合并" : "缺失")} · 峰值 {(p.Peak.HasValue ? $"{p.Peak:0.0}%" : "缺失")} · ≥80% 累计 {p.HeavyMinutes:0.0} 分钟" + (p.HasMixedSources ? "；" + p.ScopeNotice : ""),
                 Durations = $"已观察 {DurationText.FromHours(p.ObservedHours)} · 类别完整 {DurationText.FromHours(p.CompleteHours)}",
                 Sources = p.Sources.Length == 0 ? "来源：未取得该类别记录；不能解释为零负载或不支持该功能。" : "来源：" + string.Join("、", p.Sources)
             }).ToList();
@@ -243,6 +246,8 @@ public partial class MainWindow : Window
             foreach (var advice in result.Cards) AdviceList.Items.Add(AdviceCard(advice, expanded.Contains(advice.Key)));
             HistoryChart.SetPoints(result.History);
             HistorySummary.Text = $"最近 {days} 天 · {result.SampleCount:N0} 条记录 · {scene ?? "全部场景"} · " + (result.HistoryQuality.HasIntervalConflicts ? "时段重叠，历史负载图暂不显示；场景时长可能互相重叠，不能相加。" : result.Scenes.Length > 0 ? string.Join("、", result.Scenes) : "等待有效使用");
+            if (!result.HistoryQuality.HasIntervalConflicts && result.GpuHistoryHasMixedSources)
+                HistorySummary.Text += "。核心/3D来源或规则混合，GPU 历史曲线暂不显示；CPU、内存曲线独立保留。";
             SamplingGapLabel.Text = result.SamplingGapSummary;
             SamplingGapLabel.Visibility = result.SamplingGapCount > 0 ? Visibility.Visible : Visibility.Collapsed;
         }

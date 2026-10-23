@@ -1,6 +1,7 @@
-﻿[
+[
     {
         "Package":  "BlackSharp.Core/1.0.7",
+        "Type":  "package",
         "Authors":  "BlackSharp.Core",
         "License":  "MPL-2.0",
         "LicenseType":  "expression",
@@ -10,6 +11,7 @@
     },
     {
         "Package":  "DiskInfoToolkit/1.1.2",
+        "Type":  "package",
         "Authors":  "DiskInfoToolkit",
         "License":  "MPL-2.0",
         "LicenseType":  "expression",
@@ -19,6 +21,7 @@
     },
     {
         "Package":  "HidSharp/2.6.4",
+        "Type":  "package",
         "Authors":  "James F. Bellinger",
         "License":  "LICENSE.txt",
         "LicenseType":  "file",
@@ -27,25 +30,8 @@
         "Commit":  ""
     },
     {
-        "Package":  "LibreHardwareMonitorLib/0.9.6",
-        "Authors":  "LibreHardwareMonitorLib",
-        "License":  "MPL-2.0",
-        "LicenseType":  "expression",
-        "Project":  "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
-        "Repository":  "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
-        "Commit":  "3d331e3370efb858411f19511373eff65a218701"
-    },
-    {
-        "Package":  "Microsoft.NET.ILLink.Tasks/10.0.13",
-        "Authors":  "Microsoft",
-        "License":  "MIT",
-        "LicenseType":  "expression",
-        "Project":  "https://dot.net/",
-        "Repository":  "https://github.com/dotnet/dotnet",
-        "Commit":  "4099f83977f4d29604a9aeb971fb0a7bc1d5f699"
-    },
-    {
         "Package":  "Mono.Posix.NETStandard/1.0.0",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "",
         "LicenseType":  "",
@@ -55,6 +41,7 @@
     },
     {
         "Package":  "RAMSPDToolkit-NDD/1.4.2",
+        "Type":  "package",
         "Authors":  "RAMSPDToolkit-NDD",
         "License":  "MPL-2.0",
         "LicenseType":  "expression",
@@ -64,6 +51,7 @@
     },
     {
         "Package":  "runtime.android-arm.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -73,6 +61,7 @@
     },
     {
         "Package":  "runtime.android-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -82,6 +71,7 @@
     },
     {
         "Package":  "runtime.android-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -91,6 +81,7 @@
     },
     {
         "Package":  "runtime.android-x86.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -100,6 +91,7 @@
     },
     {
         "Package":  "runtime.linux-arm.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -109,6 +101,7 @@
     },
     {
         "Package":  "runtime.linux-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -118,6 +111,7 @@
     },
     {
         "Package":  "runtime.linux-bionic-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -127,6 +121,7 @@
     },
     {
         "Package":  "runtime.linux-bionic-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -136,6 +131,7 @@
     },
     {
         "Package":  "runtime.linux-musl-arm.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -145,6 +141,7 @@
     },
     {
         "Package":  "runtime.linux-musl-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -154,6 +151,7 @@
     },
     {
         "Package":  "runtime.linux-musl-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -163,6 +161,7 @@
     },
     {
         "Package":  "runtime.linux-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -172,6 +171,7 @@
     },
     {
         "Package":  "runtime.maccatalyst-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -181,6 +181,7 @@
     },
     {
         "Package":  "runtime.maccatalyst-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -190,6 +191,7 @@
     },
     {
         "Package":  "runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -199,6 +201,7 @@
     },
     {
         "Package":  "runtime.osx-arm64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -208,6 +211,7 @@
     },
     {
         "Package":  "runtime.osx-x64.runtime.native.System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -217,6 +221,7 @@
     },
     {
         "Package":  "System.IO.FileSystem.AccessControl/5.0.0",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -226,6 +231,7 @@
     },
     {
         "Package":  "System.IO.Ports/10.0.3",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
@@ -235,11 +241,31 @@
     },
     {
         "Package":  "System.Management/10.0.2",
+        "Type":  "package",
         "Authors":  "Microsoft",
         "License":  "MIT",
         "LicenseType":  "expression",
         "Project":  "https://dot.net/",
         "Repository":  "https://github.com/dotnet/dotnet",
         "Commit":  "44525024595742ebe09023abe709df51de65009b"
+    },
+    {
+        "Package":  "LibreHardwareMonitorLib/0.9.6-perfcompass.1",
+        "Type":  "project",
+        "Authors":  "LibreHardwareMonitor contributors; PerfCompass contributors",
+        "License":  "MPL-2.0",
+        "LicenseType":  "expression",
+        "Project":  "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+        "Repository":  "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+        "Commit":  "3d331e3370efb858411f19511373eff65a218701",
+        "UpstreamVersion":  "0.9.6",
+        "PatchedVersion":  "0.9.6-perfcompass.1",
+        "PerfCompassRepository":  "https://github.com/Southwall-Tester/PerfCompass",
+        "PerfCompassCheckoutCommit":  "74204eabf92ac3e240e6bce7fd11938d50713695",
+        "SourceTreeDirty":  true,
+        "SourceSnapshotSha256":  "1a9cfd391c4c67bebbf1d2d9bc8e5bbeb8b5c2500a85d4888508e35c7cc06385",
+        "SourceZip":  "LibreHardwareMonitor-perfcompass/LibreHardwareMonitor-0.9.6-perfcompass.1-source.zip",
+        "SourceZipSha256":  "15f8205bcb35a88244cddc7dc79082fdb12bc916d65d579acfa40f5b370b0e54",
+        "SourceFiles":  198
     }
 ]

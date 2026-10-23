@@ -49,7 +49,7 @@ internal sealed class GpuEngineAnalysis(DateTimeOffset now, int windowDays)
                 {
                     foreach (var group in reading.Sources.GroupBy(s => s, StringComparer.Ordinal))
                         state.Sources[group.Key] = Math.Max(state.Sources.GetValueOrDefault(group.Key), group.Count());
-                    state.SourceScopes.Add(System.Text.Json.JsonSerializer.Serialize(reading.Sources.Order(StringComparer.Ordinal)));
+                    state.SourceScopes.Add(System.Text.Json.JsonSerializer.Serialize(new { sample.GpuEngineVersion, Sources = reading.Sources.Order(StringComparer.Ordinal) }));
                     state.Observations.Add(reading.Load, observed, max: 100);
                     state.CompleteSeconds += covered;
                     state.HeavySeconds += heavy;
@@ -65,6 +65,7 @@ internal sealed class GpuEngineAnalysis(DateTimeOffset now, int windowDays)
             {
                 Time = sample.Time, Seconds = sample.Seconds, Active = true, Scene = sample.Scene,
                 HardwareId = sample.HardwareId ?? "", Gpu = comparableReading ? reading!.Load : null,
+                GpuEngineVersion = sample.GpuEngineVersion, GpuMetricSource = "gpu-engine/" + kind,
                 GpuCoverage = comparableReading ? covered : 0,
                 GpuHeavySeconds = comparableReading ? Math.Min(heavy, covered) : 0,
                 GpuHighSeconds = comparableReading ? Math.Min(high, covered) : 0
@@ -73,7 +74,7 @@ internal sealed class GpuEngineAnalysis(DateTimeOffset now, int windowDays)
             // changes, the difference cannot be attributed to changed demand.
             if (comparableReading && age < 60)
             {
-                string signature = string.Join("\n", reading!.Sources.Order(StringComparer.Ordinal));
+                string signature = sample.GpuEngineVersion + "\n" + string.Join("\n", reading!.Sources.Order(StringComparer.Ordinal));
                 if (age < 7) state.WeekSources.Add(signature);
                 else if (age < 14) state.PreviousWeekSources.Add(signature);
                 if (age < 30) state.MonthSources.Add(signature);
@@ -91,7 +92,7 @@ internal sealed class GpuEngineAnalysis(DateTimeOffset now, int windowDays)
 
         var profiles = engines.Select(pair => new GpuEngineProfile(pair.Key, Name(pair.Key),
             pair.Value.Observations.Seconds / 3600, pair.Value.CompleteSeconds / 3600,
-            pair.Value.Observations.Quantile(.95), pair.Value.Peak, pair.Value.HeavySeconds / 60,
+            pair.Value.SourceScopes.Count == 1 ? pair.Value.Observations.Quantile(.95) : null, pair.Value.Peak, pair.Value.HeavySeconds / 60,
             pair.Value.Sources.OrderBy(p => p.Key, StringComparer.Ordinal).SelectMany(p => Enumerable.Repeat(p.Key, p.Value)).ToArray())
             { SourceScopes = pair.Value.SourceScopes.Order(StringComparer.Ordinal).ToArray() }).ToList();
         var trends = engines.Where(pair => pair.Value.Seen).SelectMany(pair => pair.Value.Temporal.Build()
@@ -102,7 +103,7 @@ internal sealed class GpuEngineAnalysis(DateTimeOffset now, int windowDays)
         var heavyProfiles = profiles.Where(p => p.HeavyMinutes > 0 || p.Peak >= 80).ToArray();
         var known = profiles.Where(p => p.Sources.Length > 0).ToArray();
         string evidence = known.Length == 0 ? "尚无分引擎记录，历史核心/3D读数不能补成计算、编码等引擎的零负载。"
-            : "分引擎观测：" + string.Join("；", known.Select(p => $"{p.Name} P95 {Percent(p.P95)}，峰值 {Percent(p.Peak)}，已观察 {DurationText.FromHours(p.ObservedHours)} / 类别完整 {DurationText.FromHours(p.CompleteHours)}，≥80% 累计 {p.HeavyMinutes:0.0} 分钟")) + "。";
+            : "分引擎观测：" + string.Join("；", known.Select(p => $"{p.Name} P95 {Percent(p.P95)}，峰值 {Percent(p.Peak)}，已观察 {DurationText.FromHours(p.ObservedHours)} / 类别完整 {DurationText.FromHours(p.CompleteHours)}，≥80% 累计 {p.HeavyMinutes:0.0} 分钟" + (p.HasMixedSources ? "；" + p.ScopeNotice : ""))) + "。";
         const string limits = "分引擎 P95 按已取得读数的时长加权，部分读数只代表已知节点；类别完整仅指已暴露的同类传感器读数完整，不证明该卡所有引擎均被观测或驱动读数一定新鲜。缺少类别保留未知，不同引擎占用不能相加；低占用不能证明独显过剩。";
         var cards = report.Cards.Select(card =>
         {
@@ -127,7 +128,7 @@ internal sealed class GpuEngineAnalysis(DateTimeOffset now, int windowDays)
                 bool intermittent = heavyProfiles.All(p => p.P95 < 30);
                 return result with
                 {
-                    Status = report.Ready ? "fit" : "unknown",
+                    Status = report.Ready && card.Status is ("review" or "surplus" or "fit") ? "fit" : "unknown",
                     Title = intermittent ? "存在偶发引擎重负载，保留该任务需求" : "已观察到引擎重负载，先核对任务需求",
                     Suggestion = $"已观察到{string.Join("、", heavyProfiles.Select(p => p.Name))}重负载；部分读数或时长不足时不能断言持续压力。确认这些任务是否仍需运行，并在候选显卡上验证表现后再讨论降档。"
                 };
@@ -152,12 +153,18 @@ internal sealed class GpuEngineAnalysis(DateTimeOffset now, int windowDays)
     {
         string name = Name(kind);
         bool comparableSources = state.ComparableSources(trend.Days);
+        bool mixedRecent = (trend.Days == 7 ? state.WeekSources : state.MonthSources).Count > 1;
+        bool mixedPrevious = (trend.Days == 7 ? state.PreviousWeekSources : state.PreviousMonthSources).Count > 1;
         return trend with
         {
             Key = "gpu-engine/" + kind, Name = name,
+            RecentP95 = mixedRecent ? null : trend.RecentP95, PreviousP95 = mixedPrevious ? null : trend.PreviousP95,
+            RecentBusyMinutes = mixedRecent ? 0 : trend.RecentBusyMinutes, PreviousBusyMinutes = mixedPrevious ? 0 : trend.PreviousBusyMinutes,
+            RecentHeavyScenes = mixedRecent ? [] : trend.RecentHeavyScenes,
+            StatisticsUnavailableReason = mixedRecent || mixedPrevious ? "时期内部来源或规则混合，未合并该期 P95，负载比例暂不解释。" : trend.StatisticsUnavailableReason,
             Status = comparableSources ? trend.Status : "insufficient",
             Summary = !comparableSources && trend.RecentHours > 0 && trend.PreviousHours > 0
-                ? $"{name}传感器来源范围发生变化，暂不判断需求增减"
+                ? $"{name}采集规则或传感器来源范围发生变化，暂不判断需求增减"
                 : trend.Summary.Replace("显卡", name, StringComparison.Ordinal),
             Suggestion = trend.Suggestion + " 该对照只使用同类别、同来源且读数完整的观测；旧记录没有该引擎数据时保留未知。"
         };

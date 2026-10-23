@@ -370,6 +370,10 @@ public static partial class SelfTests
         RunHardwareSnapshotTests(Check, Assert);
         RunCpuCounterTests(Check, Assert, Fixture);
         RunGpuLoadObservationsTests(Check, Assert);
+        RunD3DNodeTests(Check, Assert);
+        RunGpuVendorPollTests(Check, Assert);
+        RunIntelTelemetryTests(Check, Assert);
+        RunGpuObservationScopeTests(Check, Assert);
         RunGpuEngineEvidenceTests(Check, Assert);
         RunGpuEngineAnalysisTests(Check, Assert);
         RunGpuEngineExportTests(Check, Assert);

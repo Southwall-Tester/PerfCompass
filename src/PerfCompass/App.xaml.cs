@@ -18,17 +18,15 @@ public partial class App : System.Windows.Application
         string root = Path.Combine(AppContext.BaseDirectory, "data");
         int idx = Array.IndexOf(e.Args, "--data-dir");
         if (idx >= 0 && idx + 1 < e.Args.Length) root = Path.GetFullPath(e.Args[idx + 1]);
-        if (validation != null)
+        bool gpuFreshnessUi = e.Args.Contains("--ui-test-gpu-freshness-only");
+        if (gpuFreshnessUi && !e.Args.Contains("--ui-test")) { Shutdown(3); return; }
+        if (validation != null || e.Args.Contains("--ui-test"))
         {
             try { ValidationRunOptions.RequireEmptyRoot(root, idx >= 0 && idx + 1 < e.Args.Length); }
             catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException or InvalidDataException) { Shutdown(3); return; }
         }
         if (e.Args.Contains("--recovery-ui-test") && (idx < 0 || !File.Exists(Path.Combine(root, ".recovery-test-data"))))
         { System.Windows.MessageBox.Show("恢复启动检查需要显式指定带测试标记的独立数据目录。", "PerfCompass"); Shutdown(3); return; }
-        if (e.Args.Contains("--ui-test") && (idx < 0 || (Directory.Exists(root) && (Directory.GetFiles(root, "samples-*.jsonl").Length > 0 || Directory.GetFiles(root, "experience-*.jsonl").Length > 0))))
-        {
-            System.Windows.MessageBox.Show("UI 测试需要通过 --data-dir 指定一个没有历史记录的独立测试目录。", "PerfCompass"); Shutdown(3); return;
-        }
         try { dataLease = DataRootLease.Acquire(root); }
         catch (Exception ex)
         {
