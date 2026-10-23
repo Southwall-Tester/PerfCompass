@@ -13,9 +13,10 @@ public static partial class SelfTests
         {
             var store = new LocalStore(Path.Combine(Path.GetTempPath(), "PerfCompass-history-quality-" + Guid.NewGuid().ToString("N")));
             var settings = WorkloadCoverage.Select(new(), true, "test-machine");
-            foreach (var group in fixture().GroupBy(s => s.Time.LocalDateTime.Date))
+            var samples = fixture();
+            foreach (var group in samples.GroupBy(s => s.Time.LocalDateTime.Date))
                 File.WriteAllLines(Path.Combine(store.Root, $"samples-{group.Key:yyyy-MM-dd}.jsonl"), group.Select(s => JsonSerializer.Serialize(s)), new UTF8Encoding(false));
-            return (store, settings, Path.Combine(store.Root, $"samples-{DateTime.Today:yyyy-MM-dd}.jsonl"));
+            return (store, settings, Path.Combine(store.Root, $"samples-{samples.Max(s => s.Time).LocalDateTime:yyyy-MM-dd}.jsonl"));
         }
         check("History quality keeps clean evidence and excludes known unrelated dates and hardware", () =>
         {
@@ -27,6 +28,7 @@ public static partial class SelfTests
         check("Malformed history reports exact locations and cannot silently establish surplus", () =>
         {
             var t = Setup(); byte[] original = File.ReadAllBytes(t.Today);
+            long expectedLine = original.LongCount(b => b == (byte)'\n') + 1;
             string time = DateTimeOffset.Now.AddSeconds(-1).ToString("O");
             string prefix = "{\"Time\":\"" + time + "\",\"HardwareId\":\"test-machine\",\"Seconds\":10,\"Active\":true";
             foreach (string bad in new[] { "{truncated", "null", "{}", prefix + ",\"Gpu\":0,\"Gpu\":100}", prefix.Replace("\"Seconds\":10", "\"Seconds\":20") + "}", prefix.Replace("\"Active\":true", "\"Active\":\"yes\"") + "}", prefix.Replace("\"HardwareId\":\"test-machine\"", "\"HardwareId\":\"\"") + "}" })
@@ -34,7 +36,7 @@ public static partial class SelfTests
                 File.WriteAllBytes(t.Today, original.Concat(Encoding.UTF8.GetBytes(bad)).ToArray()); var before = File.ReadAllBytes(t.Today);
                 var report = HistoryAnalysis.Analyze(t.Store, t.Settings, 7, hardwareId: "test-machine");
                 var issue = report.HistoryQuality.Issues.Single();
-                assert(!report.Ready && report.SampleCount == 3600 && report.ActiveHours == 10 && report.HistoryQuality.IssueCount == 1 && issue.Line == 1201
+                assert(!report.Ready && report.SampleCount == 3600 && report.ActiveHours == 10 && report.HistoryQuality.IssueCount == 1 && issue.Line == expectedLine
                     && issue.File == Path.GetFileName(t.Today) && report.Cards.All(c => c.Status is not ("surplus" or "review" or "changed"))
                     && report.DemandTrends.All(tr => tr.Status == "insufficient") && File.ReadAllBytes(t.Today).SequenceEqual(before), "corrupt row disappeared, wrong line location, or source mutated");
             }
@@ -67,11 +69,12 @@ public static partial class SelfTests
         });
         check("Unreadable history is explicit and cannot reuse a previous ready result", () =>
         {
-            var t = Setup(); assert(HistoryAnalysis.Analyze(t.Store, t.Settings, 7, hardwareId: "test-machine").Ready, "fixture not ready");
+            var t = Setup(); var clean = HistoryAnalysis.Analyze(t.Store, t.Settings, 7, hardwareId: "test-machine");
+            assert(clean.Ready, "fixture not ready"); int excluded = File.ReadLines(t.Today).Count();
             using (var held = new FileStream(t.Today, FileMode.Open, FileAccess.Read, FileShare.None))
             {
                 var report = HistoryAnalysis.Analyze(t.Store, t.Settings, 7, hardwareId: "test-machine");
-                assert(!report.Ready && report.SampleCount == 2400 && report.HistoryQuality.Issues.Single().Reason.Contains("无法读取")
+                assert(!report.Ready && report.SampleCount == clean.SampleCount - excluded && report.HistoryQuality.Issues.Single().Reason.Contains("无法读取")
                     && !report.HistoryQuality.Issues.Single().Label.Contains("第 0 行"), "locked file silently omitted, stale result reused, or a nonexistent line reported");
             }
             assert(HistoryAnalysis.Analyze(t.Store, t.Settings, 7, hardwareId: "test-machine").Ready, "unlocked history did not recover");
@@ -119,6 +122,28 @@ public static partial class SelfTests
                 && AnalysisEngine.Analyze(saved, new(), 7).ActiveHours == 45d / 3600, "slow poll history exceeded the analyzer limit or lost time");
             bool refused = false; try { _ = SampleBatch.Merge(source.Take(4).ToArray()); } catch (ArgumentException) { refused = true; }
             assert(refused, "oversized interval was silently emitted");
+        });
+        check("History diagnostics follow actual daily file boundaries at midnight morning and night", () =>
+        {
+            foreach (int hour in new[] { 0, 2, 12, 23 })
+            {
+                var now = new DateTimeOffset(DateTime.Today.AddHours(hour).AddMinutes(15), DateTimeOffset.Now.Offset);
+                var s = new LocalStore(Path.Combine(Path.GetTempPath(), "PerfCompass-history-clock-" + Guid.NewGuid().ToString("N")));
+                var prototype = fixture()[0]; var samples = Enumerable.Range(0, 3600).Select(i => prototype with
+                    { Time = now.AddDays(-(i / 1200)).AddSeconds(-(i % 1200) * 10) }).ToArray();
+                foreach (var group in samples.GroupBy(p => p.Time.LocalDateTime.Date))
+                    File.WriteAllLines(Path.Combine(s.Root, $"samples-{group.Key:yyyy-MM-dd}.jsonl"), group.Select(p => JsonSerializer.Serialize(p)));
+                var settings = WorkloadCoverage.Select(new(), true, "test-machine");
+                assert(HistoryAnalysis.Analyze(s, settings, 7, asOf: now, hardwareId: "test-machine").Ready, "clock fixture not ready");
+                string path = Path.Combine(s.Root, $"samples-{now.LocalDateTime:yyyy-MM-dd}.jsonl"); byte[] original = File.ReadAllBytes(path);
+                long line = original.LongCount(b => b == (byte)'\n') + 1;
+                File.AppendAllText(path, "{bad"); var damaged = HistoryAnalysis.Analyze(s, settings, 7, asOf: now, hardwareId: "test-machine");
+                assert(damaged.HistoryQuality.Issues.Single().Line == line && damaged.SampleCount == 3600 && !damaged.Ready, "daily corruption location depends on wall-clock hour");
+                File.WriteAllBytes(path, original); int excluded = File.ReadLines(path).Count();
+                using var held = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None);
+                var locked = HistoryAnalysis.Analyze(s, settings, 7, asOf: now, hardwareId: "test-machine");
+                assert(locked.SampleCount == 3600 - excluded && locked.HistoryQuality.IssueCount == 1 && !locked.Ready, "locked file exclusion assumes a fixed daily row count");
+            }
         });
         check("Thirty-day history file scan keeps complete evidence without retaining raw samples", () =>
         {
