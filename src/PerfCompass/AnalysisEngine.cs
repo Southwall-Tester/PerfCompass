@@ -11,7 +11,7 @@ public static class AnalysisEngine
         int low = (int)index, high = (int)Math.Ceiling(index);
         return values[low] + (values[high] - values[low]) * (index - low);
     }
-    public static AnalysisReport Analyze(IEnumerable<Sample> samples, Settings settings, int windowDays, string? selectedScene = null, DateTimeOffset? asOf = null)
+    public static AnalysisReport Analyze(IEnumerable<Sample> samples, Settings settings, int windowDays, string? selectedScene = null, DateTimeOffset? asOf = null, string? hardwareId = null)
     {
         var now = asOf ?? DateTimeOffset.Now;
         var temporal = new TemporalDemandAnalyzer(now);
@@ -19,6 +19,7 @@ public static class AnalysisEngine
         var commit = new WeightedSeries(); var gpu = new WeightedSeries(); var vram = new WeightedSeries();
         var sceneStats = new Dictionary<string, SceneAccumulator>(StringComparer.Ordinal);
         var dates = new HashSet<DateTime>(); var scenes = new HashSet<string>();
+        var hardwareIds = new HashSet<string>(StringComparer.Ordinal);
         // Only keep one hourly aggregate, not raw snapshots, in the report.
         var bins = new SortedDictionary<long, (double C, int Cn, double M, int Mn, double G, int Gn)>();
         double seconds = 0, cpuSeconds = 0, cpuHigh = 0, memorySeconds = 0, gpuSeconds = 0, coreSeconds = 0, commitSeconds = 0;
@@ -27,6 +28,8 @@ public static class AnalysisEngine
         {
             var s = Sanitize(raw);
             if (s.Time > now) continue;
+            if (!string.IsNullOrWhiteSpace(hardwareId) && s.HardwareId != hardwareId) continue;
+            if (s.Time >= now.AddDays(-Math.Max(windowDays, 60))) hardwareIds.Add(s.HardwareId ?? "");
             if (selectedScene == null || s.Scene == selectedScene) temporal.Add(s);
             if (s.Time < now.AddDays(-windowDays)) continue;
             if (!sceneStats.TryGetValue(s.Scene, out var scene)) sceneStats[s.Scene] = scene = new SceneAccumulator(s.Scene);
@@ -51,7 +54,9 @@ public static class AnalysisEngine
             if (s.Gpu is double gv) { gpu.Add(gv, Coverage(s.GpuCoverage)); gpuSeconds += Coverage(s.GpuCoverage); if (Coverage(s.GpuCoverage) > 0) gpuPeak = Math.Max(gpuPeak ?? 0, s.GpuPeak ?? gv); }
             if (s.VramUsedGb is double vr) vram.Add(vr, Coverage(s.GpuCoverage));
         }
-        bool ready = seconds >= 36000 && dates.Count >= 3 && settings.Representative && temporal.FreshObservationReady;
+        string scopeHardwareId = !string.IsNullOrWhiteSpace(hardwareId) ? hardwareId : hardwareIds.Count == 1 ? hardwareIds.Single() : "";
+        var coverage = WorkloadCoverage.For(settings, scopeHardwareId);
+        bool ready = seconds >= 36000 && dates.Count >= 3 && coverage.Confirmed && temporal.FreshObservationReady;
         var cards = new List<Advice>();
         string State(bool enough) => enough ? "fit" : "unknown";
         string F(double? x, string unit = "%") => x.HasValue ? $"{x:0.0}{unit}" : "缺失";
@@ -91,10 +96,16 @@ public static class AnalysisEngine
             cards = cards.Select(c => c with { Status = "unknown", Title = "等待真实使用记录", Evidence = "当前时间范围内尚无记录。" }).ToList();
         var trends = temporal.Build();
         cards = TemporalDemandAnalyzer.PrioritizeRecent(cards, trends);
+        if (hardwareIds.Count > 0 && string.IsNullOrWhiteSpace(scopeHardwareId))
+        {
+            cards = cards.Select(c => c with { Status = "unknown", Title = "请先隔离同一硬件配置的记录", Suggestion = coverage.Message }).ToList();
+            trends.Clear();
+        }
         return new(now, windowDays, count, seconds / 3600, dates.Count, ready, scenes.Order().ToArray(), cards,
             bins.Select(kv => new HistoryPoint(DateTimeOffset.FromUnixTimeSeconds(kv.Key * 3600), kv.Value.Cn > 0 ? kv.Value.C / kv.Value.Cn : null,
                 kv.Value.Mn > 0 ? kv.Value.M / kv.Value.Mn : null, kv.Value.Gn > 0 ? kv.Value.G / kv.Value.Gn : null)).ToList(), settings.FutureNeeds)
-            { SelectedScene = selectedScene, DemandTrends = trends, FreshActiveHours = temporal.FreshHours, FreshActiveDays = temporal.FreshDays,
+            { HardwareId = scopeHardwareId, RepresentativeConfirmed = coverage.Confirmed, CoverageMessage = coverage.Message,
+                SelectedScene = selectedScene, DemandTrends = trends, FreshActiveHours = temporal.FreshHours, FreshActiveDays = temporal.FreshDays,
                 SceneProfiles = sceneStats.Values.Select(s => s.Profile()).OrderByDescending(p => p.ActiveHours).ThenBy(p => p.Name).ToList() };
     }
 

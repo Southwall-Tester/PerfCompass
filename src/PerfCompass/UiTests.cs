@@ -56,7 +56,7 @@ public partial class MainWindow
                         Seconds = 10, Active = true, Cpu = 8, CoreMax = 25, MemoryTotalGb = 64, MemoryUsedGb = 9, MemoryPeakGb = 10, CommitGb = 11,
                         Gpu = 5, VramUsedGb = 1, DiskTotalGb = 1024, DiskUsedGb = 200, MaxDiskPercent = 20, Scene = "开发编译" });
             });
-            store.SaveSettings(store.Settings with { Representative = true });
+            store.SaveSettings(WorkloadCoverage.Select(store.Settings, true, collector!.HardwareId));
             await RefreshAnalysis(); await Task.Delay(300);
             Require(report!.Ready, "Representative long-term trace becomes eligible");
             Require(report.Cards.Any(c => c.Status == "surplus"), "Surplus guidance rendered through production analyzer");
@@ -168,6 +168,7 @@ public partial class MainWindow
             await RunQuantityGoalUiTests(output, Require, Screenshot, WaitForAnalysis);
             await RunProviderReplayUiTests(Require, Screenshot, WaitForAnalysis);
             await RunConflictUiTests(output, Require, Screenshot, WaitForAnalysis);
+            await RunCoverageUiTests(output, Require, Screenshot, WaitForAnalysis);
             await RunDataProtectionUiTests(output, Require);
             File.WriteAllText(Path.Combine(output, "NOTICE.txt"), "01-live.png and hardware.json use real telemetry. Populated analysis and historical captures use isolated synthetic test data; they are not a recommendation for this computer.");
         }

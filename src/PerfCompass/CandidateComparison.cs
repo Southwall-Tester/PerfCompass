@@ -87,6 +87,7 @@ public static partial class CandidateComparison
     public static string Stamp(AnalysisReport report) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
     {
         report.FutureNeeds, report.SemanticRequirements, report.ConfirmedRequirements, report.SelectedScene, report.WindowDays, report.MethodVersion,
+        report.HardwareId, report.RepresentativeConfirmed,
         Scenes = report.Scenes.Order().ToArray(),
         Trends = report.DemandTrends.Where(t => t.Status == "increased").Select(t => t.Key + ":" + t.Days + ":" + string.Join("/", t.RecentHeavyScenes.Order())).Order().ToArray(),
         Experiences = report.ExperienceEvents.Where(e => !e.Resolved).Select(e => e.Id).Order().ToArray(),

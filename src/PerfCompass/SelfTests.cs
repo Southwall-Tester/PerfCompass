@@ -24,7 +24,8 @@ public static partial class SelfTests
             Cpu = 8, CoreMax = 25, MemoryTotalGb = 64, MemoryUsedGb = 9, CommitGb = 11,
             Gpu = 5, VramUsedGb = 1, DiskTotalGb = 1024, DiskUsedGb = 200, MaxDiskPercent = 20
         }).OrderBy(s => s.Time).ToList();
-        AnalysisReport Analyze(IEnumerable<Sample> samples, bool confirmed = true) => AnalysisEngine.Analyze(samples, new Settings(Representative: confirmed), 7);
+        AnalysisReport Analyze(IEnumerable<Sample> samples, bool confirmed = true) => AnalysisEngine.Analyze(samples, new Settings(Representative: confirmed) { RepresentativeHardwareId = "test-machine" }, 7);
+        RunWorkloadCoverageTests(Check, Assert, () => Fixture());
         Check("Empty history never recommends downgrade", () => Assert(Analyze([]).Cards.All(c => c.Status == "unknown"), "empty classified"));
         Check("Short observation never recommends downgrade", () => Assert(Analyze(Fixture().Take(10)).Cards.All(c => c.Status != "surplus"), "short classified"));
         Check("Representative workload confirmation required", () => Assert(!Analyze(Fixture(), false).Ready, "confirmation ignored"));
@@ -70,13 +71,13 @@ public static partial class SelfTests
         Check("Scene analysis uses its own coverage and observation hours", () =>
         {
             var f = Fixture(); f.Add(f[^1] with { Scene = "游戏娱乐", Gpu = 100, Time = f[^1].Time.AddSeconds(-1) });
-            var report = AnalysisEngine.Analyze(f, new Settings(Representative: true), 7, "游戏娱乐");
+            var report = AnalysisEngine.Analyze(f, new Settings(Representative: true) { RepresentativeHardwareId = "test-machine" }, 7, "游戏娱乐");
             Assert(!report.Ready && report.SampleCount == 1 && report.ActiveHours < .01, "office hours leaked into scene");
             Assert(report.SceneProfiles.Count == 2 && report.SelectedScene == "游戏娱乐", "scene detail lost");
         });
         Check("Unknown scene returns empty analysis without borrowing evidence", () =>
         {
-            var report = AnalysisEngine.Analyze(Fixture(), new Settings(Representative: true), 7, "未运行的任务");
+            var report = AnalysisEngine.Analyze(Fixture(), new Settings(Representative: true) { RepresentativeHardwareId = "test-machine" }, 7, "未运行的任务");
             Assert(report.SampleCount == 0 && report.Cards.All(c => c.Status == "unknown") && !report.Ready, "unknown scene borrowed evidence");
         });
         Check("Input order does not change current hardware capacity", () =>
@@ -99,7 +100,7 @@ public static partial class SelfTests
                         Seconds = 10, Active = true, Cpu = 8, CoreMax = 25, Gpu = gpu, MemoryTotalGb = 64, MemoryUsedGb = memoryGb, CommitGb = memoryGb + 2,
                         DiskUsedGb = 200, DiskTotalGb = 1024, MaxDiskPercent = 20 };
         }
-        AnalysisReport Temporal(IEnumerable<Sample> data, string? scene = null) => AnalysisEngine.Analyze(data, new Settings(Representative: true), 90, scene, temporalNow);
+        AnalysisReport Temporal(IEnumerable<Sample> data, string? scene = null) => AnalysisEngine.Analyze(data, new Settings(Representative: true) { RepresentativeHardwareId = "temporal-test" }, 90, scene, temporalNow);
         Check("New weekly GPU demand overrides a large idle historical baseline", () =>
         {
             var old = Days(Enumerable.Range(8, 52).ToArray(), 2, 240);

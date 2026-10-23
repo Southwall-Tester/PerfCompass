@@ -49,7 +49,7 @@ public partial class MainWindow : Window
             });
         for (int i = 0; i < SceneCombo.Items.Count; i++) if (((ComboBoxItem)SceneCombo.Items[i]).Content.ToString() == store.Settings.Scene) SceneCombo.SelectedIndex = i;
         if (SceneCombo.SelectedIndex < 0) SceneCombo.SelectedIndex = 0;
-        RepresentativeCheck.IsChecked = store.Settings.Representative;
+        RepresentativeCheck.IsChecked = false;
         FutureBox.Text = store.Settings.FutureNeeds;
         InitializeSemanticSettings();
         if (store.Settings.Requirements is { } savedPlan && savedPlan.Source == store.Settings.FutureNeeds.Trim())
@@ -79,6 +79,7 @@ public partial class MainWindow : Window
             {
                 if (Environment.GetCommandLineArgs().Contains("--recovery-ui-test")) { await RunRecoveryStartupUiTest(); return; }
                 collector = await Task.Run(() => new Collector(store));
+                InitializeWorkloadCoverage();
                 collectionTask = Task.Run(CollectionLoop);
                 await RefreshAnalysis();
                 if (Environment.GetCommandLineArgs().Contains("--ui-test")) _ = RunUiTests();
@@ -172,7 +173,7 @@ public partial class MainWindow : Window
         {
             var settings = store.Settings; var id = collector?.HardwareId; int days = windowDays; string? scene = analysisScene;
             var result = await Task.Run(() => SemanticRequirements.Apply(RequirementParser.Apply(ExperienceAnalyzer.Attach(
-                AnalysisEngine.Analyze(store.Read(Math.Max(days, 60), id), settings, days, scene), store.ReadExperiences(days, id ?? "")), settings), settings));
+                AnalysisEngine.Analyze(store.Read(Math.Max(days, 60), id), settings, days, scene, hardwareId: id), store.ReadExperiences(days, id ?? "")), settings), settings));
             if (days != windowDays || scene != analysisScene || settings != store.Settings || id != collector?.HardwareId) { refreshRequested = true; return; }
             report = result;
             if (activePage == "comparison") ComparisonPage.SetContext(store, result);
@@ -199,7 +200,8 @@ public partial class MainWindow : Window
             DemandTrendHeader.Text = changed == null ? "近期需求变化 · " + (result.DemandTrends.Any(t => t.Status == "similar" || t.Status == "decreased") ? "查看时期对照" : "对照记录积累中") : $"近期需求变化 · {changed.Name}增加（{changed.Days} 天对照）";
             AnalysisSummary.Text = result.Summary;
             CoverageLabel.Text = $"{scene ?? "全部场景"} · {result.Level}  ·  有效使用 {result.DurationLabel}  ·  覆盖 {result.ActiveDays} 天  ·  {result.SampleCount:N0} 条记录";
-            CoverageNext.Text = result.Ready ? "已满足基础观察门槛；近期任务变化会优先约束配置建议。" : result.ActiveHours >= 10 && result.ActiveDays >= 3 && (result.FreshActiveHours < .5 || result.FreshActiveDays < 2) ? "还需补充最近 7 天至少 30 分钟、2 天的有效记录，再判断当前配置余量。" : $"观察目标：10 小时 / 3 天。{(settings.Representative ? "典型任务已确认。" : "完成常用任务后，在记录设置中确认覆盖情况。")}";
+            RepresentativeStatus.Text = result.CoverageMessage;
+            CoverageNext.Text = !result.RepresentativeConfirmed ? result.CoverageMessage : result.Ready ? "已满足基础观察门槛；近期任务变化会优先约束配置建议。" : result.ActiveHours >= 10 && result.ActiveDays >= 3 && (result.FreshActiveHours < .5 || result.FreshActiveDays < 2) ? "还需补充最近 7 天至少 30 分钟、2 天的有效记录，再判断当前配置余量。" : "观察目标：10 小时 / 3 天。" + result.CoverageMessage;
             var expanded = AdviceList.Items.OfType<Border>().Select(b => b.Child).OfType<StackPanel>()
                 .SelectMany(s => s.Children.OfType<Expander>()).Where(x => x.IsExpanded).Select(x => x.Tag?.ToString()).ToHashSet();
             AdviceList.Items.Clear();
@@ -322,7 +324,10 @@ public partial class MainWindow : Window
             try { confirmed = RequirementParser.Confirm(requirementDraft, ((ComboBoxItem)AiModeCombo.SelectedItem).Tag.ToString()!); }
             catch (ArgumentException ex) { RequirementsStatus.Text = ex.Message; return; }
         }
-        store.SaveSettings(store.Settings with { Representative = RepresentativeCheck.IsChecked == true, FutureNeeds = FutureBox.Text.Trim(), Requirements = confirmed,
+        Settings selected;
+        try { selected = WorkloadCoverage.Select(store.Settings, RepresentativeCheck.IsChecked == true, collector?.HardwareId); }
+        catch (ArgumentException ex) { RequirementsStatus.Text = ex.Message; return; }
+        store.SaveSettings(selected with { FutureNeeds = FutureBox.Text.Trim(), Requirements = confirmed,
             SemanticRequirements = confirmed != null || store.Settings.SemanticRequirements?.Source != FutureBox.Text.Trim() ? null : store.Settings.SemanticRequirements });
         RequirementsStatus.Text = confirmed == null ? "描述已保存，尚未确认的解析结果不参与配置建议。" : "已保存确认的需求，将用于配置建议；修改描述后需要重新解析。";
         StatusLine.Text = "设置已保存。"; await RefreshAnalysis();

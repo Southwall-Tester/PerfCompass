@@ -100,7 +100,7 @@ public partial class MainWindow
         {
             var plan = SemanticRequirements.Confirm(semanticDraft, SemanticEditors.Items.Cast<SemanticFactEditor>());
             if (ModelEndpointBox.Text.Trim().Length > 0) ModelRequirementExtractor.ValidateEndpoint(ModelEndpointBox.Text.Trim());
-            store.SaveSettings(store.Settings with { FutureNeeds = plan.Source, SemanticRequirements = plan, Requirements = null, Representative = RepresentativeCheck.IsChecked == true,
+            store.SaveSettings(WorkloadCoverage.Select(store.Settings, RepresentativeCheck.IsChecked == true, collector?.HardwareId) with { FutureNeeds = plan.Source, SemanticRequirements = plan, Requirements = null,
                 ModelEndpoint = ModelEndpointBox.Text.Trim(), ModelName = ModelNameBox.Text.Trim() });
             RequirementsConfirm.IsChecked = false;
             SemanticStatus.Text = "已保存选用的事项并参与建议。条件、不确定及过去需求仍分别保留；密钥未写入磁盘。";

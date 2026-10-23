@@ -2,6 +2,7 @@ namespace PerfCompass;
 
 public record Settings(string Scene = "日常办公", bool Representative = false, string FutureNeeds = "", int RetentionDays = 90, bool CloseToTray = true, RequirementsPlan? Requirements = null, SemanticPlan? SemanticRequirements = null, string ModelEndpoint = "", string ModelName = "")
 {
+    public string RepresentativeHardwareId { get; init; } = "";
     [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, System.Text.Json.JsonElement>? AdditionalFields { get; init; }
 }
@@ -81,7 +82,10 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public SemanticPlan? SemanticRequirements { get; init; }
     public double FreshActiveHours { get; init; }
     public int FreshActiveDays { get; init; }
-    public string MethodVersion { get; init; } = "1.4";
+    public string HardwareId { get; init; } = "";
+    public bool RepresentativeConfirmed { get; init; }
+    public string CoverageMessage { get; init; } = "";
+    public string MethodVersion { get; init; } = "1.5";
     [System.Text.Json.Serialization.JsonIgnore]
     public string DurationLabel => DurationText.FromHours(ActiveHours);
     public string Level => Ready ? "较充分" : ActiveHours >= .5 ? "初步观察" : "积累中";
