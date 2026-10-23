@@ -9,7 +9,8 @@
 - 分析方法升级至 1.10，使旧候选比较范围需要重新核对；活动规则仍为 activity-1.1。原始历史不改写，没有原始处理器计时的旧记录无法追溯验证或重算。处理器数和分组数相同也不能证明所有运行中硬件拓扑变化均被识别；物理热插拔、多分组机器与未来 Windows 原生接口兼容性尚无实测结论。
 - 完整原生 WPF 流程 145 项通过、实际进程退出码为 0。新增从生产 Collector 注入缺少处理器的计时帧，验证 CPU/最忙单核为空、内存和可用 GPU 继续，以及原生提示、重新建立基线和恢复。已查看 `artifacts/ui/43-cpu-counters-incomplete.png`、`44-cpu-counters-recovered.png` 的真实渲染，说明完整可见，恢复后提示清除。首轮在原有暂停恢复的固定 14 秒等待检查失败，现场保存在 `artifacts/cpu-ui-first-failure/`；改为最多 30 秒等待实际落盘，同时加强断言，要求正有效时长且记录起点不早于恢复。重跑保存了恢复时刻、等待时长和实际记录边界，未通过放宽有效时长规则掩盖故障。
 - 增加 `--ui-test --ui-test-cpu-only --data-dir <空目录>` 的 6 项定向原生检查，CI 从正式便携包执行并保存结果与截图；本机完整流程与 CI 定向流程有重叠，不相加计算。故障仅注入本实例的计时输入，没有改 Windows 计时、CPU 亲和性、驱动或电源状态；不是物理处理器或驱动故障验证。
-- 0.8.10 的冻结 EXE 八小时验证继续保留，不能将其终态移作 0.8.11 的持续运行结果。长测中的清理保护状态单独保存；正常跨日期也可能触发既定日期保护，该状态不直接证明采集失败，汇总检查仍按原标准计算。正式发布包和远端 CI 的结果分别补记；商业级目标仍未完成。
+- 正式便携包 `0.8.11+a7c5c8e` 的 220 项自检与 6 项定向原生检查均实际退出 0。10 秒短流程完成，保存 1 条历史、5 次心跳，Collector 正常结束，无历史异常、计时间断或错误日志；该短流程不等于长期稳定性。正式 Windows 对照有 4 组有效 CPU/内存读数，退出 0、无对照诊断，总 CPU 平均绝对差约 0.059 个百分点、最忙单核约 0.065 个百分点；样本很少且两路共享内核，不能据此宣称比旧版更准确。发布包摘要及分项记录见 `experiments/runtime-0.8.11-local.json`。产品提交 `a7c5c8e` 的远端 CI 已通过，其中正式包的原生 CPU 恢复步骤和参考读数步骤实际成功，不与本机完整流程重复累计。
+- 0.8.10 的冻结 EXE 八小时验证继续保留，不能将其终态移作 0.8.11 的持续运行结果。长测中的清理保护状态单独保存；正常跨日期也可能触发既定日期保护，该状态不直接证明采集失败，汇总检查仍按原标准计算。仍无完成通过的八小时结果；商业级目标仍未完成。
 
 参考：[Windows 处理器计时结构与原生接口兼容性](https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntquerysysteminformation)、[全系统活动逻辑处理器数](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getactiveprocessorcount)、[活动处理器分组数](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getactiveprocessorgroupcount)。
 

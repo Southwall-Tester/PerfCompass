@@ -1,0 +1,82 @@
+{
+    "Source":  "Local published executable; aggregate development validation; no user history included",
+    "Version":  "0.8.11+a7c5c8e4bc12e58ffde806792645adeddbf21b29",
+    "ExecutableSha256":  "B09AF1B348421FBA196D2E1B4D40D00826E98E610ACBC07B45BB34C337E67642",
+    "ProductCommit":  "a7c5c8e4bc12e58ffde806792645adeddbf21b29",
+    "PublishedSelfTests":  {
+                               "Passed":  220,
+                               "Failed":  0,
+                               "Exit":  0
+                           },
+    "FullWpfFlow":  {
+                        "Passed":  145,
+                        "Failed":  0,
+                        "Exit":  0
+                    },
+    "PublishedFocusedWpfFlow":  {
+                                    "Passed":  6,
+                                    "OverlapsFullFlow":  true,
+                                    "Failed":  0,
+                                    "Exit":  0
+                                },
+    "Reference":  {
+                      "Exit":  0,
+                      "Rows":  4,
+                      "Issues":  [
+
+                                 ],
+                      "CpuPercentagePoints":  {
+                                                  "Pairs":  4,
+                                                  "MeanAbsolute":  0.05870325546518851,
+                                                  "MaximumAbsolute":  0.09247571417717637
+                                              },
+                      "CorePercentagePoints":  {
+                                                   "Pairs":  4,
+                                                   "MeanAbsolute":  0.06452761086473835,
+                                                   "MaximumAbsolute":  0.16563513286074993
+                                               },
+                      "PhysicalTotalGiB":  {
+                                               "Pairs":  4,
+                                               "MeanAbsolute":  0,
+                                               "MaximumAbsolute":  0
+                                           },
+                      "PhysicalUsedGiB":  {
+                                              "Pairs":  4,
+                                              "MeanAbsolute":  0.010919570922851562,
+                                              "MaximumAbsolute":  0.029674530029296875
+                                          },
+                      "CommitGiB":  {
+                                        "Pairs":  4,
+                                        "MeanAbsolute":  0.010129928588867188,
+                                        "MaximumAbsolute":  0.028430938720703125
+                                    }
+                  },
+    "PublishedShortSoak":  {
+                               "Exit":  0,
+                               "Status":  "completed",
+                               "ChecksPassed":  true,
+                               "SavedSamples":  1,
+                               "Heartbeats":  5,
+                               "HistoryIssues":  0,
+                               "TimingGaps":  0,
+                               "CollectorStopped":  true,
+                               "ErrorLogExists":  false
+                           },
+    "RemoteCi":  {
+                     "Run":  39936832672,
+                     "Conclusion":  "success",
+                     "TelemetryRecordingStep":  "success",
+                     "NativeCpuRecoveryStep":  "success"
+                 },
+    "EarlierVersionLongRunSnapshot":  {
+                                          "Version":  "0.8.10+b8dd66068b784df3c7df8d428cf2b21e33fa2fce",
+                                          "State":  "running",
+                                          "ElapsedSeconds":  1831.4044075,
+                                          "ProcessLive":  true,
+                                          "BinaryMatches":  true,
+                                          "AppliesToCurrentVersion":  false,
+                                          "AsOfUtc":  "2026-10-23T10:16:42.4546024+00:00",
+                                          "ChecksPassed":  false
+                                      },
+    "Scope":  "Single-machine local checks plus CI. Counter agreement is not independent physical truth. Synthetic processor failures and 65-processor arrays do not establish physical hotplug, multi-group hardware, driver compatibility or commercial maturity. No completed eight-hour pass exists."
+}
