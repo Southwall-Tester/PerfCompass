@@ -40,8 +40,14 @@ public partial class ComparisonView : UserControl
             try { workspace = CandidateComparison.Load(store.Root); Bind(); }
             catch (Exception e) { loadFailed = true; store.Log(e); ComparisonStatus.Text = "比较文件无法读取，已保留原文件。请检查 data/comparison.json；当前禁止覆盖保存。"; CompareButton.IsEnabled = false; }
         }
+        RefreshContextStatus(report);
+        if ((workspace.CoverageConfirmed || CoverageConfirm.IsChecked == true) && workspace.ContextStamp != CandidateComparison.Stamp(report)
+            || comparison != null && comparison.ContextStamp != CandidateComparison.Stamp(report)) Invalidate();
+    }
+    private void RefreshContextStatus(AnalysisReport report)
+    {
         ContextStatus.Text = $"最近 {report.WindowDays} 天 / {report.SelectedScene ?? "全部场景"} · " + (workspace.ContextStamp == CandidateComparison.Stamp(report) ? "条件范围与当前已确认需求一致。" : "当前需求或近期任务尚未纳入这份比较，请导入并核对。");
-        if (comparison != null && comparison.ContextStamp != CandidateComparison.Stamp(report)) Invalidate();
+        if (report.HistoryQuality.HasIssues) ContextStatus.Text += " 历史读取有异常；请补核无法读取的任务，比较仅限已核对条件。";
     }
     private void Bind()
     {
@@ -105,7 +111,7 @@ public partial class ComparisonView : UserControl
         if (workspace.Criteria.Count + additions.Count > 40) { ComparisonStatus.Text = "导入后超过 40 项，请先整理现有条件。"; return; }
         workspace.Criteria.AddRange(additions); workspace.ContextStamp = CandidateComparison.Stamp(context);
         foreach (var c in workspace.Criteria) c.Reviewed = false;
-        Invalidate(); Bind(); ComparisonStatus.Text = $"新增 {additions.Count} 项。原有条件与结果已保留；需求变化后请逐项重新核对，包括已经不适用的旧条件。";
+        Invalidate(); Bind(); RefreshContextStatus(context); ComparisonStatus.Text = $"新增 {additions.Count} 项。原有条件与结果已保留；需求变化后请逐项重新核对，包括已经不适用的旧条件。";
     }
     private void AddCriterion_Click(object sender, RoutedEventArgs e)
     {

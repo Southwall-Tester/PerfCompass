@@ -92,7 +92,7 @@ public static partial class CandidateComparison
         Trends = report.DemandTrends.Where(t => t.Status == "increased").Select(t => t.Key + ":" + t.Days + ":" + string.Join("/", t.RecentHeavyScenes.Order())).Order().ToArray(),
         Experiences = report.ExperienceEvents.Where(e => !e.Resolved).Select(e => e.Id).Order().ToArray(),
         Signals = report.Cards.Where(c => c.Key is "cpu" or "gpu" or "memory").Select(c => c.Key + ":" + c.Status + ":" + c.Title).Order().ToArray()
-    }))));
+    })))) + (report.HistoryQuality.HasIssues ? ":history:" + report.HistoryQuality.Signature : "");
     public static List<PurchaseCriterion> Drafts(AnalysisReport report)
     {
         var result = new List<PurchaseCriterion>();
@@ -193,6 +193,7 @@ public static partial class CandidateComparison
         }
         if (workspace.Criteria.Any(c => !string.IsNullOrWhiteSpace(c.Condition))) summary += " 条件需求单列；触发时还需通过对应项目。";
         var context = new[] { $"分析范围：最近 {report.WindowDays} 天 / {report.SelectedScene ?? "全部场景"}；已观测 {report.DurationLabel}。比较结论覆盖已核对的条件，条件需求按触发情况另行判断。" }
+            .Concat(report.HistoryQuality.HasIssues ? new[] { report.HistoryQuality.Message + " 候选结果仅限已逐项核对的条件，不覆盖无法读取的历史任务。", report.HistoryQuality.Details } : [])
             .Concat(report.Cards.Where(c => c.Key is "cpu" or "gpu" or "memory").Select(c => c.Name + "：" + c.Title + "；" + c.Suggestion)).ToArray();
         var tradeoffs = new List<string>();
         if (passing.Length > 0)

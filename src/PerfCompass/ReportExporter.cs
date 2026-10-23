@@ -10,6 +10,7 @@ public static class ReportExporter
     public static string Html(AnalysisReport report, LiveSnapshot? live)
     {
         string E(string? text) => WebUtility.HtmlEncode(text ?? "");
+        string qualitySection = report.HistoryQuality.HasIssues ? $"<section><h2>历史记录异常</h2><p>{E(report.HistoryQuality.Message)}</p><p class='evidence'>{E(report.HistoryQuality.Details).Replace("\n", "<br>")}</p><p>原文件保留。可在记录设置备份，并从已核对的备份恢复到新目录。</p></section>" : "";
         var cards = string.Join("", report.Cards.Select(c => $"<section><small>{E(c.Name)}</small><h2>{E(c.Title)}</h2><p>{E(c.Suggestion)}</p><p class='evidence'>{E(c.Evidence)}</p><p class='muted'>{E(c.Limits)}</p></section>"));
         string P(double? value, string unit = "%") => value.HasValue ? $"{value:0.0}{unit}" : "—";
         var sceneRows = string.Join("", report.SceneProfiles.Select(p => $"<tr><td>{E(p.Name)}</td><td>{E(p.DurationLabel)}</td><td>{P(p.CpuP95)}</td><td>{P(p.MemoryPeakGb, " GiB")}</td><td>{P(p.GpuP95)}</td><td>{P(p.GpuPeak)}</td></tr>"));
@@ -27,7 +28,7 @@ public static class ReportExporter
         <style>body{font:15px/1.8 system-ui,'Microsoft YaHei',sans-serif;background:#f4f7f8;color:#192a36;margin:0}main{max-width:900px;margin:50px auto;padding:24px}h1{font-size:32px}small{color:#007f73}section{background:white;border:1px solid #e3eaec;border-radius:12px;padding:26px;margin:18px 0}h2{font-size:20px}.muted{color:#677a87;font-size:13px}.evidence{padding:14px;background:#eef5f4}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid #e3eaec;white-space:nowrap}.demand{border-bottom:1px solid #e3eaec;padding:12px 0;break-inside:avoid}.demand h3{font-size:15px}@media print{.trend-section{break-inside:auto}body{background:white}main{margin:0}section{break-inside:avoid} }</style>
         <main><small>PERFCOMPASS / 配置指南</small><h1>{{E(report.Summary)}}</h1><p>{{report.Generated.LocalDateTime:yyyy-MM-dd HH:mm}} · 最近 {{report.WindowDays}} 天 · {{report.SampleCount:N0}} 条记录</p>
         <p>有效使用 {{E(report.DurationLabel)}} / {{report.ActiveDays}} 天 · 证据状态：{{E(report.Level)}}</p><p>{{E(report.CoverageMessage)}}</p><p>{{E(live?.CpuName)}}<br>{{E(live?.GpuName)}}</p>
-        <p>当前建议范围：{{E(report.SelectedScene ?? "全部场景")}} · 已记录场景：{{E(string.Join("、", report.Scenes))}}</p>{{requirementsSection}}{{trendSection}}{{experienceSection}}{{sceneTable}}{{cards}}<section><h2>下一台电脑的新需求</h2><p>{{E(string.IsNullOrWhiteSpace(report.FutureNeeds) ? "尚未填写" : report.FutureNeeds).Replace("\n", "<br>")}}</p></section>
+        <p>当前建议范围：{{E(report.SelectedScene ?? "全部场景")}} · 已记录场景：{{E(string.Join("、", report.Scenes))}}</p>{{qualitySection}}{{requirementsSection}}{{trendSection}}{{experienceSection}}{{sceneTable}}{{cards}}<section><h2>下一台电脑的新需求</h2><p>{{E(string.IsNullOrWhiteSpace(report.FutureNeeds) ? "尚未填写" : report.FutureNeeds).Replace("\n", "<br>")}}</p></section>
         <p class="muted">规则版本 {{E(report.MethodVersion)}}。P95 按有效采样时长加权，短时峰值另行保留。余量判断需要当前建议范围至少 10 小时、3 天及典型任务确认，并有最近 7 天至少 30 分钟、2 天的有效记录。时期变化的阈值为透明启发式设置。具体型号与价格需结合候选机器实测。本报告由本地记录生成。</p></main></html>
         """;
     }

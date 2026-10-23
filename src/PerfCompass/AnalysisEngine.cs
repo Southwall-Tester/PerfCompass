@@ -11,7 +11,7 @@ public static class AnalysisEngine
         int low = (int)index, high = (int)Math.Ceiling(index);
         return values[low] + (values[high] - values[low]) * (index - low);
     }
-    public static AnalysisReport Analyze(IEnumerable<Sample> samples, Settings settings, int windowDays, string? selectedScene = null, DateTimeOffset? asOf = null, string? hardwareId = null)
+    public static AnalysisReport Analyze(IEnumerable<Sample> samples, Settings settings, int windowDays, string? selectedScene = null, DateTimeOffset? asOf = null, string? hardwareId = null, Func<HistoryQuality>? readQuality = null)
     {
         var now = asOf ?? DateTimeOffset.Now;
         var temporal = new TemporalDemandAnalyzer(now);
@@ -56,7 +56,8 @@ public static class AnalysisEngine
         }
         string scopeHardwareId = !string.IsNullOrWhiteSpace(hardwareId) ? hardwareId : hardwareIds.Count == 1 ? hardwareIds.Single() : "";
         var coverage = WorkloadCoverage.For(settings, scopeHardwareId);
-        bool ready = seconds >= 36000 && dates.Count >= 3 && coverage.Confirmed && temporal.FreshObservationReady;
+        var quality = readQuality?.Invoke() ?? HistoryQuality.Unchecked;
+        bool ready = !quality.HasIssues && seconds >= 36000 && dates.Count >= 3 && coverage.Confirmed && temporal.FreshObservationReady;
         var cards = new List<Advice>();
         string State(bool enough) => enough ? "fit" : "unknown";
         string F(double? x, string unit = "%") => x.HasValue ? $"{x:0.0}{unit}" : "缺失";
@@ -95,18 +96,19 @@ public static class AnalysisEngine
         if (count == 0)
             cards = cards.Select(c => c with { Status = "unknown", Title = "等待真实使用记录", Evidence = "当前时间范围内尚无记录。" }).ToList();
         var trends = temporal.Build();
-        cards = TemporalDemandAnalyzer.PrioritizeRecent(cards, trends);
+        if (!quality.HasIssues) cards = TemporalDemandAnalyzer.PrioritizeRecent(cards, trends);
         if (hardwareIds.Count > 0 && string.IsNullOrWhiteSpace(scopeHardwareId))
         {
             cards = cards.Select(c => c with { Status = "unknown", Title = "请先隔离同一硬件配置的记录", Suggestion = coverage.Message }).ToList();
             trends.Clear();
         }
-        return new(now, windowDays, count, seconds / 3600, dates.Count, ready, scenes.Order().ToArray(), cards,
+        var result = new AnalysisReport(now, windowDays, count, seconds / 3600, dates.Count, ready, scenes.Order().ToArray(), cards,
             bins.Select(kv => new HistoryPoint(DateTimeOffset.FromUnixTimeSeconds(kv.Key * 3600), kv.Value.Cn > 0 ? kv.Value.C / kv.Value.Cn : null,
                 kv.Value.Mn > 0 ? kv.Value.M / kv.Value.Mn : null, kv.Value.Gn > 0 ? kv.Value.G / kv.Value.Gn : null)).ToList(), settings.FutureNeeds)
             { HardwareId = scopeHardwareId, RepresentativeConfirmed = coverage.Confirmed, CoverageMessage = coverage.Message,
                 SelectedScene = selectedScene, DemandTrends = trends, FreshActiveHours = temporal.FreshHours, FreshActiveDays = temporal.FreshDays,
                 SceneProfiles = sceneStats.Values.Select(s => s.Profile()).OrderByDescending(p => p.ActiveHours).ThenBy(p => p.Name).ToList() };
+        return HistoryAnalysis.Apply(result, quality);
     }
 
     private static Sample Sanitize(Sample sample)

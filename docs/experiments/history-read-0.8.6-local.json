@@ -1,0 +1,9 @@
+{
+  "Source": "synthetic local history files",
+  "Samples": 259200,
+  "Bytes": 160963200,
+  "WriteSeconds": 3.7635449,
+  "ReadAndAnalyzeSeconds": 2.7115248,
+  "ChartPoints": 721,
+  "Scope": "One local read and analysis, including validation; not continuous 30-day operation or a cold-cache comparison"
+}

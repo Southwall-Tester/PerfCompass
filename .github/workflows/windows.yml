@@ -28,6 +28,7 @@ jobs:
           path: |
             artifacts/self-tests.txt
             artifacts/quantity-cases.txt
+            artifacts/history-read-benchmark.json
       - name: Model batch transport regression
         shell: pwsh
         run: ./tests/model-probe-batch.ps1

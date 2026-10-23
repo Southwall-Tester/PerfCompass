@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace PerfCompass;
 
-public sealed class LocalStore
+public sealed partial class LocalStore
 {
     private readonly object gate = new();
     public string Root { get; }
@@ -96,22 +96,7 @@ public sealed class LocalStore
             writer.WriteLine(JsonSerializer.Serialize(sample));
         }
     }
-    public IEnumerable<Sample> Read(int days, string? hardwareId = null)
-    {
-        var cutoff = DateTimeOffset.Now.AddDays(-days);
-        foreach (var file in Directory.GetFiles(Root, "samples-*.jsonl").Order())
-        {
-            if (DateTime.TryParseExact(Path.GetFileNameWithoutExtension(file)[8..], "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var date) && date.Date < cutoff.LocalDateTime.Date) continue;
-            using var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using var reader = new StreamReader(stream);
-            while (reader.ReadLine() is { } line)
-            {
-                Sample? sample = null;
-                try { sample = JsonSerializer.Deserialize<Sample>(line); } catch (JsonException) { }
-                if (sample != null && sample.Time >= cutoff && (hardwareId == null || sample.HardwareId == hardwareId)) yield return sample;
-            }
-        }
-    }
+    public IEnumerable<Sample> Read(int days, string? hardwareId = null) => ReadChecked(days, hardwareId, DateTimeOffset.Now, null);
     public void Cleanup()
     {
         lock (gate)

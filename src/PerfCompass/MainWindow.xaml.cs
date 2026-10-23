@@ -108,7 +108,7 @@ public partial class MainWindow : Window
                     lock (recordingGate)
                     {
                         if (paused || generation != recordingGeneration) { batch.Clear(); continue; }
-                        if (batch.Count > 0 && (batch[^1].Scene != snapshot.Sample.Scene || snapshot.Sample.Seconds == 0))
+                        if (SampleBatch.MustFlushBefore(batch, snapshot.Sample))
                         { store.Append(SampleBatch.Merge(batch)); batch.Clear(); }
                         batch.Add(snapshot.Sample);
                         if (batch.Count >= 5) { store.Append(SampleBatch.Merge(batch)); batch.Clear(); historyWriteFailed = false; }
@@ -175,9 +175,12 @@ public partial class MainWindow : Window
         {
             var settings = store.Settings; var id = collector?.HardwareId; int days = windowDays; string? scene = analysisScene;
             var result = await Task.Run(() => SemanticRequirements.Apply(RequirementParser.Apply(ExperienceAnalyzer.Attach(
-                AnalysisEngine.Analyze(store.Read(Math.Max(days, 60), id), settings, days, scene, hardwareId: id), store.ReadExperiences(days, id ?? "")), settings), settings));
+                HistoryAnalysis.Analyze(store, settings, days, scene, hardwareId: id), store.ReadExperiences(days, id ?? "")), settings), settings));
             if (days != windowDays || scene != analysisScene || settings != store.Settings || id != collector?.HardwareId) { refreshRequested = true; return; }
             report = result;
+            HistoryQualityNotice.Visibility = result.HistoryQuality.HasIssues ? Visibility.Visible : Visibility.Collapsed;
+            HistoryQualityNotice.Header = $"历史记录异常 · {result.HistoryQuality.IssueCount} 处（点击查看位置）";
+            HistoryQualityDetails.Text = result.HistoryQuality.Message + "\n" + result.HistoryQuality.Details + "\n原文件保留。可在记录设置备份，并从已核对的备份恢复到新目录。";
             if (activePage == "comparison") ComparisonPage.SetContext(store, result);
             ExperienceList.ItemsSource = result.ExperienceEvents.Take(20);
             ExperienceSummary.Text = $"最近 {days} 天 · {scene ?? "全部场景"} · {result.ExperienceEvents.Count} 条记录，显示最近 20 条";
@@ -203,7 +206,7 @@ public partial class MainWindow : Window
             AnalysisSummary.Text = result.Summary;
             CoverageLabel.Text = $"{scene ?? "全部场景"} · {result.Level}  ·  有效使用 {result.DurationLabel}  ·  覆盖 {result.ActiveDays} 天  ·  {result.SampleCount:N0} 条记录";
             RepresentativeStatus.Text = result.CoverageMessage;
-            CoverageNext.Text = !result.RepresentativeConfirmed ? result.CoverageMessage : result.Ready ? "已满足基础观察门槛；近期任务变化会优先约束配置建议。" : result.ActiveHours >= 10 && result.ActiveDays >= 3 && (result.FreshActiveHours < .5 || result.FreshActiveDays < 2) ? "还需补充最近 7 天至少 30 分钟、2 天的有效记录，再判断当前配置余量。" : "观察目标：10 小时 / 3 天。" + result.CoverageMessage;
+            CoverageNext.Text = result.HistoryQuality.HasIssues ? result.HistoryQuality.Message : !result.RepresentativeConfirmed ? result.CoverageMessage : result.Ready ? "已满足基础观察门槛；近期任务变化会优先约束配置建议。" : result.ActiveHours >= 10 && result.ActiveDays >= 3 && (result.FreshActiveHours < .5 || result.FreshActiveDays < 2) ? "还需补充最近 7 天至少 30 分钟、2 天的有效记录，再判断当前配置余量。" : "观察目标：10 小时 / 3 天。" + result.CoverageMessage;
             var expanded = AdviceList.Items.OfType<Border>().Select(b => b.Child).OfType<StackPanel>()
                 .SelectMany(s => s.Children.OfType<Expander>()).Where(x => x.IsExpanded).Select(x => x.Tag?.ToString()).ToHashSet();
             AdviceList.Items.Clear();

@@ -88,9 +88,10 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public string HardwareId { get; init; } = "";
     public bool RepresentativeConfirmed { get; init; }
     public string CoverageMessage { get; init; } = "";
-    public string MethodVersion { get; init; } = "1.5";
+    public string MethodVersion { get; init; } = "1.6";
+    public HistoryQuality HistoryQuality { get; init; } = HistoryQuality.Unchecked;
     [System.Text.Json.Serialization.JsonIgnore]
     public string DurationLabel => DurationText.FromHours(ActiveHours);
     public string Level => Ready ? "较充分" : ActiveHours >= .5 ? "初步观察" : "积累中";
-    public string Summary => Cards.Any(c => c.Status == "experience") ? "近期有体验问题，先核对原因再评估余量" : Cards.Any(c => c.Status == "requirements") ? "已确认配置目标，先核对候选机器的表现" : DemandTrends.Any(t => t.Status == "increased") ? "近期任务负载增加，优先核对新的配置需求" : Ready ? $"{Cards.Count(c => c.Status == "surplus")} 项疑似过剩 · {Cards.Count(c => c.Status == "pressure")} 项压力线索" : "先记录真实使用，再决定配置预算";
+    public string Summary => HistoryQuality.HasIssues ? "历史记录存在异常，先核对数据再判断配置余量" : Cards.Any(c => c.Status == "experience") ? "近期有体验问题，先核对原因再评估余量" : Cards.Any(c => c.Status == "requirements") ? "已确认配置目标，先核对候选机器的表现" : DemandTrends.Any(t => t.Status == "increased") ? "近期任务负载增加，优先核对新的配置需求" : Ready ? $"{Cards.Count(c => c.Status == "surplus")} 项疑似过剩 · {Cards.Count(c => c.Status == "pressure")} 项压力线索" : "先记录真实使用，再决定配置预算";
 }

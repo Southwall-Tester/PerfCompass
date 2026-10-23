@@ -11,7 +11,8 @@ public partial class MainWindow
 {
     private async Task RunUiTests()
     {
-        var output = Path.GetFullPath("artifacts/ui"); Directory.CreateDirectory(output);
+        bool historyOnly = Environment.GetCommandLineArgs().Contains("--ui-test-history-only");
+        var output = Path.GetFullPath(historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
         var results = new List<string>();
         File.WriteAllText(Path.Combine(output, "results.txt"), "RUNNING " + DateTimeOffset.Now.ToString("O"));
         void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); File.AppendAllText(Path.Combine(output, "results.txt"), "\n" + results[^1]); if (!value) throw new Exception(name); }
@@ -36,6 +37,21 @@ public partial class MainWindow
             Require(live?.Sample.Cpu is >= 0 and <= 100, "Real CPU sample available");
             Require(live?.Sample.MemoryTotalGb > 0, "Real memory sample available");
             Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
+            if (historyOnly)
+            {
+                if (!paused) TogglePause();
+                var now = DateTimeOffset.Now;
+                var samples = Enumerable.Range(0, 3600).Select(i => new Sample
+                { Time = now.AddDays(-(i / 1200)).AddSeconds(-(i % 1200) * 10), HardwareId = collector!.HardwareId, Seconds = 10,
+                    Active = true, Scene = "开发编译", Cpu = 5, CoreMax = 10, MemoryTotalGb = 64, MemoryUsedGb = 9, CommitGb = 11, Gpu = 5 });
+                store.WithDataLock(() =>
+                {
+                    foreach (var group in samples.GroupBy(s => s.Time.LocalDateTime.Date))
+                        File.WriteAllLines(Path.Combine(store.Root, $"samples-{group.Key:yyyy-MM-dd}.jsonl"), group.Select(s => JsonSerializer.Serialize(s)));
+                    return true;
+                });
+                await RunHistoryQualityUiTests(output, Require, Screenshot, WaitForAnalysis); return;
+            }
             await Task.Delay(6000); await Screenshot("01-live");
             File.WriteAllText(Path.Combine(output, "hardware.json"), JsonSerializer.Serialize(live, new JsonSerializerOptions { WriteIndented = true }));
             await RunHardwareSnapshotUiTests(output, Require, Screenshot);
@@ -172,6 +188,7 @@ public partial class MainWindow
             await RunCoverageUiTests(output, Require, Screenshot, WaitForAnalysis);
             await RunDataProtectionUiTests(output, Require);
             await RunSettingsFailureUiTests(output, Require, Screenshot, WaitForAnalysis);
+            await RunHistoryQualityUiTests(output, Require, Screenshot, WaitForAnalysis);
             File.WriteAllText(Path.Combine(output, "NOTICE.txt"), "01-live.png and hardware.json use real telemetry. Populated analysis and historical captures use isolated synthetic test data; they are not a recommendation for this computer.");
         }
         catch (Exception e) { store.Log(e); results.Add("FAIL " + e); }
