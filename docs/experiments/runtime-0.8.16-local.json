@@ -1,0 +1,101 @@
+{
+    "Source":  "Final local published executable and isolated validation; no user history or raw device identity included",
+    "Version":  "0.8.16+76af61a18eed5d814eea6fb52ec86d08d22db645",
+    "ProductCommit":  "76af61a18eed5d814eea6fb52ec86d08d22db645",
+    "ExecutableSha256":  "54DB4AAE2E22F3A21120804620E5525E2F1AF5CF8E24F6A4F6697C5CB756DEB7",
+    "Build":  {
+                  "Warnings":  0,
+                  "Errors":  0
+              },
+    "PublishedSelfTests":  {
+                               "Passed":  380,
+                               "Failed":  0,
+                               "Exit":  0
+                           },
+    "PublishedFullWpfFlow":  {
+                                 "Passed":  145,
+                                 "Failed":  0,
+                                 "Exit":  0
+                             },
+    "PublishedTaskPlanAndRecoveryWpfFlow":  {
+                                                "Passed":  26,
+                                                "Failed":  0,
+                                                "Exit":  0
+                                            },
+    "PublishedShortSoak":  {
+                               "Exit":  0,
+                               "Status":  "completed",
+                               "RequestedSeconds":  10,
+                               "ObservedSeconds":  10.2727947,
+                               "ChecksPassed":  true,
+                               "CollectorStopped":  true,
+                               "SavedSamples":  1,
+                               "Heartbeats":  5,
+                               "HistoryIssues":  0,
+                               "TimingGaps":  0,
+                               "ErrorLogExists":  false,
+                               "Scope":  "Short concurrent isolated validation only; not an overhead benchmark or long-run validation"
+                           },
+    "HardwareSource":  {
+                           "UpstreamCommit":  "3d331e3370efb858411f19511373eff65a218701",
+                           "CheckoutCommit":  "76af61a18eed5d814eea6fb52ec86d08d22db645",
+                           "SourceTreeDirty":  false,
+                           "Files":  198,
+                           "SnapshotSha256":  "e6a7b5e3279f4d11adacc38a109ae984f6457844b66ef486daa2acfad5285849",
+                           "ArchiveSha256":  "241e7ce8fde5b882d9705aa900ad8bb3351cb09573b90ca8bde88cee73ba7d20",
+                           "Verification":  "Identical vendor snapshot to independently built 0.8.13 source; this package updates checkout metadata"
+                       },
+    "RemoteCi":  {
+                     "Run":  39973927601,
+                     "ProductCommit":  "76af61a18eed5d814eea6fb52ec86d08d22db645",
+                     "Conclusion":  "success",
+                     "BuildTestPublish":  "success",
+                     "NativeCpuRecovery":  "success",
+                     "NativeGpuEngineScope":  "success",
+                     "NativeObservationAndSingleCandidate":  "success",
+                     "NativeHourlyHistoryWeighting":  "success",
+                     "NativeTaskPlanAndResultRecovery":  "success",
+                     "TelemetryRecording":  "success"
+                 },
+    "FirstDevelopmentChecks":  {
+                                   "SelfTests":  379,
+                                   "FullWpf":  145,
+                                   "TaskPlanAndRecoveryWpf":  26,
+                                   "Failed":  0,
+                                   "Exit":  0,
+                                   "Scope":  "Before the final unique-temporary measurement export change; not substituted for final executable validation"
+                               },
+    "FixedFindings":  [
+                          "Portable plans require local environment confirmation; importing or relocating local paths clears confirmation",
+                          "Unsaved results survive edits and plan saving, and cannot be silently replaced by importing or starting another task",
+                          "Exit cancels and waits for an active operation before checking for a newly produced unsaved result; decline returns to the live result",
+                          "A controlled failed export exposed the old fixed .tmp behavior; final measurement saves use unique temporary files, preserve an existing locked target and clean only their own temporary"
+                      ],
+    "VisualChecks":  [
+                         "Imported plan summary and cleared local paths",
+                         "Relocated explicit task with fresh repeated attempts",
+                         "Unsaved completed result after declined exit",
+                         "Unsaved cancellation result produced while exit was waiting"
+                     ],
+    "EarlierVersionLongRunSnapshot":  {
+                                          "Version":  "0.8.10",
+                                          "State":  "running",
+                                          "Updated":  "2026-10-23T15:02:26.4551197+00:00",
+                                          "ElapsedSeconds":  19018.1892897,
+                                          "RequestedSeconds":  28800,
+                                          "ObservationGaps":  2,
+                                          "StaleSamples":  1,
+                                          "ProtectionChecks":  296,
+                                          "ExpectedChecksPassed":  false,
+                                          "Scope":  "Frozen earlier binary; confirmed live with matching identity and hash this turn. Existing cumulative issues cannot become a passing result for this version"
+                                      },
+    "Limits":  [
+                   "Relocation is exercised in independent directories on one physical computer; changed hardware identities in unit tests are synthetic",
+                   "File picker selections and discard answers are supplied to production handlers; actual WPF controls and visual trees are exercised, not all OS dialog mouse or accessibility paths",
+                   "Local environment confirmation is a user declaration, not automatic OEM performance-mode control or output validation",
+                   "Program and input hashes identify selected files, not every dependency or all resources referenced by arguments",
+                   "Unsaved-result preservation covers the running application and deliberate exit; it is not crash, power-loss or disk recovery",
+                   "UI check counts overlap; short lifecycle tests are not hardware performance benchmarks",
+                   "Commercial maturity, cross-hardware calibration, long-run stability and independent semantic evaluation remain incomplete"
+               ]
+}
