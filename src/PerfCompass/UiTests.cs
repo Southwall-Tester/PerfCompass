@@ -94,10 +94,17 @@ public partial class MainWindow
             });
             store.SaveSettings(WorkloadCoverage.Select(store.Settings, true, collector!.HardwareId));
             await RefreshAnalysis(); await Task.Delay(300);
+            // Keep this low-load fixture separate from real startup telemetry.
+            // A busy core or real memory peak must continue to constrain the
+            // all-scenes result even while this explicitly synthetic task is light.
+            AnalysisSceneCombo.SelectedItem = AnalysisSceneCombo.Items.OfType<ComboBoxItem>().Single(x => x.Tag as string == "开发编译");
+            await WaitForAnalysis(() => report!.SelectedScene == "开发编译");
             Require(report!.Ready, "Representative long-term trace becomes eligible");
             Require(report.Cards.Any(c => c.Status == "surplus"), "Surplus guidance rendered through production analyzer");
             if (AdviceList.Items[0] is Border b && b.Child is StackPanel p) p.Children.OfType<Expander>().First().IsExpanded = true;
             await Screenshot("03-advice-populated");
+            AnalysisSceneCombo.SelectedIndex = 0;
+            await WaitForAnalysis(() => report!.SelectedScene == null);
             await Task.Run(() => {
                 for (int i = 0; i < 10; i++) store.Append(new Sample { Time = syntheticNow.AddSeconds(10 + i * 10), HardwareId = collector!.HardwareId,
                     GpuEngineVersion = GpuEngineEvidence.Version, GpuEngines = [], GpuMetricSource = syntheticGpuSource,
