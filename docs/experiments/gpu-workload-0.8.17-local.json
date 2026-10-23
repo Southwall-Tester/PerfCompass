@@ -1,0 +1,1913 @@
+{
+    "Format":  "perfcompass-gpu-workload-local-review-1.0",
+    "Date":  "2026-10-24",
+    "ProductVersion":  "0.8.17+0c32692a2ca99b2b17a7ff5782980e583a82fdd4",
+    "Hardware":  {
+                     "Gpu":  "NVIDIA GeForce RTX 5060 Laptop GPU",
+                     "Driver":  "595.95",
+                     "NvidiaDeviceCount":  1,
+                     "ProductionGpuBinding":  "External read-only same-source matcher probe, single NVIDIA device; tool alone checks model name only.",
+                     "ProductionMatcherAgreesWithNvmlPci":  true,
+                     "IdentityProbeSha256":  "EC9144F3A686EBE32B5F403F4EC6B21EA2C76C0E6301DEABE5D1415FCBCAC859",
+                     "ProbeLimitation":  "Same frozen vendor source, separate helper binary; not a general multi-GPU identity validation."
+                 },
+    "Tool":  {
+                 "AssemblySha256":  "b6690b4824c4d68034492f129ad0853d8e6e7fa6a5c202a65cd3738083364563",
+                 "SourceSha256":  "22CE14A32B0C995CE27D6DFD947CC83B5748ECC3A5187E3C408E16947BCBE207",
+                 "LocalBuild":  "0 warnings, 0 errors",
+                 "NoArgumentsExit":  2,
+                 "NonemptyDirectoryExit":  1,
+                 "NonemptySentinelUnchanged":  true
+             },
+    "Dependency":  {
+                       "Version":  "8.0.1-essentials_build",
+                       "Source":  "https://github.com/GyanD/codexffmpeg/releases/tag/8.0.1",
+                       "ArchiveSha256":  "a0c715acca3839bfd203e600a7775b83cfe3ff928a4eceb9ca54f2982365901c",
+                       "ExecutableSha256":  "5AF82A0D4FE2B9EAE211B967332EA97EDFC51C6B328CA35B827E73EAC560DC0D",
+                       "InstalledGlobally":  false,
+                       "DriverChanged":  false
+                   },
+    "FirstAttempt":  {
+                         "Status":  "failed",
+                         "ExitCode":  1,
+                         "Cause":  "FFmpeg requires NVENC 13.1 but current driver exposes 13.0",
+                         "ResultSha256":  "E0358CBBA5DA75755DE2F5C490EABE15442D6F141949E7104760B1302C336279",
+                         "EncodeLogSha256":  "C599159CDE8324E30B700F1A6C37136B40A9B8E06A3043796B31C963F1F30B9F",
+                         "OwnedProcessIdsStillPresentAfterCleanup":  0,
+                         "SuccessfulEncodeFrames":  0,
+                         "UsedForResponseConclusion":  false
+                     },
+    "CompletedRun":  {
+                         "OuterExitCode":  0,
+                         "RunFacts":  {
+                                          "Status":  "recording-completed",
+                                          "RecordingCompleted":  true,
+                                          "StartedUtc":  "2026-10-23T16:18:31.2352416+00:00",
+                                          "FinishedUtc":  "2026-10-23T16:20:38.2162383+00:00",
+                                          "ElapsedSeconds":  126.981425,
+                                          "HadError":  false,
+                                          "CleanupErrorCount":  0,
+                                          "Version":  "0.8.17+0c32692a2ca99b2b17a7ff5782980e583a82fdd4",
+                                          "ExecutableSha256":  "D37DBA81A801E099D2DDE4181EFA9D8F4BD355E78D0DD3E3A1902E8C504BE293",
+                                          "ManagedAssemblySha256":  null,
+                                          "ProcessFacts":  [
+                                                               {
+                                                                   "Role":  "identity",
+                                                                   "ExitCode":  0,
+                                                                   "Forced":  false,
+                                                                   "ExpectedMonitorStop":  false,
+                                                                   "StopReason":  null,
+                                                                   "LaunchedUtc":  "2026-10-23T16:18:31.2946753+00:00",
+                                                                   "ExitedUtc":  "2026-10-23T16:18:32.1511383+00:00"
+                                                               },
+                                                               {
+                                                                   "Role":  "seed-cpu",
+                                                                   "ExitCode":  0,
+                                                                   "Forced":  false,
+                                                                   "ExpectedMonitorStop":  false,
+                                                                   "StopReason":  null,
+                                                                   "LaunchedUtc":  "2026-10-23T16:18:32.4936164+00:00",
+                                                                   "ExitedUtc":  "2026-10-23T16:18:33.0976514+00:00"
+                                                               },
+                                                               {
+                                                                   "Role":  "telemetry",
+                                                                   "ExitCode":  0,
+                                                                   "Forced":  false,
+                                                                   "ExpectedMonitorStop":  false,
+                                                                   "StopReason":  null,
+                                                                   "LaunchedUtc":  "2026-10-23T16:18:33.5878769+00:00",
+                                                                   "ExitedUtc":  "2026-10-23T16:20:10.1392713+00:00"
+                                                               },
+                                                               {
+                                                                   "Role":  "nvidia-smi-loop",
+                                                                   "ExitCode":  -1,
+                                                                   "Forced":  true,
+                                                                   "ExpectedMonitorStop":  true,
+                                                                   "StopReason":  "planned-monitor-stop",
+                                                                   "LaunchedUtc":  "2026-10-23T16:18:33.6120119+00:00",
+                                                                   "ExitedUtc":  "2026-10-23T16:20:10.2148084+00:00"
+                                                               },
+                                                               {
+                                                                   "Role":  "encode-nvenc",
+                                                                   "ExitCode":  0,
+                                                                   "Forced":  false,
+                                                                   "ExpectedMonitorStop":  false,
+                                                                   "StopReason":  "planned-q-after-wall-clock-stage",
+                                                                   "LaunchedUtc":  "2026-10-23T16:18:49.432099+00:00",
+                                                                   "ExitedUtc":  "2026-10-23T16:19:10.0247692+00:00"
+                                                               },
+                                                               {
+                                                                   "Role":  "decode-cuvid",
+                                                                   "ExitCode":  0,
+                                                                   "Forced":  false,
+                                                                   "ExpectedMonitorStop":  false,
+                                                                   "StopReason":  "planned-q-after-wall-clock-stage",
+                                                                   "LaunchedUtc":  "2026-10-23T16:19:20.7861195+00:00",
+                                                                   "ExitedUtc":  "2026-10-23T16:19:40.9677001+00:00"
+                                                               },
+                                                               {
+                                                                   "Role":  "encoded-ffprobe",
+                                                                   "ExitCode":  0,
+                                                                   "Forced":  false,
+                                                                   "ExpectedMonitorStop":  false,
+                                                                   "StopReason":  null,
+                                                                   "LaunchedUtc":  "2026-10-23T16:20:11.0016424+00:00",
+                                                                   "ExitedUtc":  "2026-10-23T16:20:36.7022569+00:00"
+                                                               },
+                                                               {
+                                                                   "Role":  "encoded-software-readback",
+                                                                   "ExitCode":  0,
+                                                                   "Forced":  false,
+                                                                   "ExpectedMonitorStop":  false,
+                                                                   "StopReason":  null,
+                                                                   "LaunchedUtc":  "2026-10-23T16:20:37.8730233+00:00",
+                                                                   "ExitedUtc":  "2026-10-23T16:20:38.2078105+00:00"
+                                                               }
+                                                           ]
+                                      },
+                         "TelemetryGpuNameMatches":  true,
+                         "TelemetryExecutableHashMatches":  true,
+                         "EncodedFrames":  7808,
+                         "EncodedBytes":  36281883,
+                         "EncodedSha256":  "e80e6246669911172b121bb0e75e9488259bbe935e0b45ad46c64740e5f4347c",
+                         "SoftwareReadbackScope":  "Successful software decode of at most the first 5 seconds of media; not an exhaustive artifact validation."
+                     },
+    "Sampling":  {
+                     "RawRows":  38,
+                     "EligibleIntervalRows":  38,
+                     "ExcludedIntervalRows":  0,
+                     "NonpositiveDurationRows":  0,
+                     "TimingIssueRows":  0,
+                     "IssueKinds":  [
+
+                                    ],
+                     "MaximumUtcGapBetweenEligibleSampleTimesSeconds":  2.863225,
+                     "SmiReceiptRows":  163,
+                     "SmiHeaders":  1,
+                     "SmiMalformedRows":  0
+                 },
+    "SmiRowsContainingUnknownError":  57,
+    "Inputs":  [
+                   {
+                       "Path":  "result.json",
+                       "Sha256":  "379a3b0bf5b5c5568c6944a50a2da1bb7bcf2527bca0534e7f3e65249d24303e",
+                       "Bytes":  21170
+                   },
+                   {
+                       "Path":  "data/validation/telemetry-cross-check.json",
+                       "Sha256":  "fa5d005d82fd333038e37d5f0e6b60adfbf0a7ad7eb4e02fa47a6a09fcb4af0a",
+                       "Bytes":  90988
+                   },
+                   {
+                       "Path":  "nvidia-smi-loop.stdout.log.received.jsonl",
+                       "Sha256":  "841950c65c5e6aebf345e274026122645ade76c3fa709b314477cfe84914309d",
+                       "Bytes":  39604
+                   }
+               ],
+    "AnalysisScript":  {
+                           "Name":  "summarize-gpu-workload.ps1",
+                           "Sha256":  "097e050b43e4b86db0c39af9e193eda1ea707334c669f3bffcabd500b735828c"
+                       },
+    "AnalysisSha256":  "941DE2150A37FB840636C6F17CB573255B10A12A41981DA5B260E3FD1D095A0D",
+    "Phases":  [
+                   {
+                       "Name":  "baseline",
+                       "RecordedPhaseStatus":  "completed",
+                       "SummaryStatus":  "review-required",
+                       "Reason":  "",
+                       "IncludedTelemetryRows":  3,
+                       "StartedUtc":  "2026-10-23T16:18:33.6222013+00:00",
+                       "EndedUtc":  "2026-10-23T16:18:48.6494683+00:00",
+                       "WindowStartUtc":  "2026-10-23T16:18:35.6222013+00:00",
+                       "WindowEndUtc":  "2026-10-23T16:18:46.6494683+00:00",
+                       "Core":  {
+                                    "Kind":  "legacy-core-or-3d",
+                                    "EligibleRows":  3,
+                                    "ExposedRows":  3,
+                                    "MissingOrInvalidRows":  0,
+                                    "InvalidRows":  0,
+                                    "Sources":  [
+                                                    "GPU Core"
+                                                ],
+                                    "MixedSources":  false,
+                                    "Statistics":  {
+                                                       "Status":  "review-required",
+                                                       "Count":  3,
+                                                       "EffectiveSeconds":  7.656784,
+                                                       "CoveredSeconds":  7.656784,
+                                                       "Mean":  0,
+                                                       "P95":  0,
+                                                       "Min":  0,
+                                                       "Max":  0,
+                                                       "CompleteCount":  3,
+                                                       "PartialCount":  0
+                                                   },
+                                    "ExposedSourceScopes":  [
+                                                                {
+                                                                    "Version":  "gpu-engines-1.1",
+                                                                    "Sources":  [
+                                                                                    "GPU Core"
+                                                                                ],
+                                                                    "ExposedRows":  3
+                                                                }
+                                                            ],
+                                    "BySource":  [
+                                                     {
+                                                         "Version":  "gpu-engines-1.1",
+                                                         "Sources":  [
+                                                                         "GPU Core"
+                                                                     ],
+                                                         "Statistics":  {
+                                                                            "Status":  "review-required",
+                                                                            "Count":  3,
+                                                                            "EffectiveSeconds":  7.656784,
+                                                                            "CoveredSeconds":  7.656784,
+                                                                            "Mean":  0,
+                                                                            "P95":  0,
+                                                                            "Min":  0,
+                                                                            "Max":  0,
+                                                                            "CompleteCount":  3,
+                                                                            "PartialCount":  0
+                                                                        }
+                                                     }
+                                                 ]
+                                },
+                       "Engines":  [
+                                       {
+                                           "Kind":  "3d",
+                                           "EligibleRows":  3,
+                                           "ExposedRows":  3,
+                                           "MissingOrInvalidRows":  3,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D 3D"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  0,
+                                                              "EffectiveSeconds":  0,
+                                                              "CoveredSeconds":  0,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  null,
+                                                              "Max":  null,
+                                                              "CompleteCount":  0,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D 3D"
+                                                                                       ],
+                                                                           "ExposedRows":  3
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "core",
+                                           "EligibleRows":  3,
+                                           "ExposedRows":  3,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "GPU Core"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  3,
+                                                              "EffectiveSeconds":  7.656784,
+                                                              "CoveredSeconds":  7.656784,
+                                                              "Mean":  0,
+                                                              "P95":  0,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  3,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "GPU Core"
+                                                                                       ],
+                                                                           "ExposedRows":  3
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "GPU Core"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  3,
+                                                                                   "EffectiveSeconds":  7.656784,
+                                                                                   "CoveredSeconds":  7.656784,
+                                                                                   "Mean":  0,
+                                                                                   "P95":  0,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  3,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "decode",
+                                           "EligibleRows":  3,
+                                           "ExposedRows":  3,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D JPEG Decode 0",
+                                                           "D3D Video Decode"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  3,
+                                                              "EffectiveSeconds":  7.656784,
+                                                              "CoveredSeconds":  7.656784,
+                                                              "Mean":  0,
+                                                              "P95":  0,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  3,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D JPEG Decode 0",
+                                                                                           "D3D Video Decode"
+                                                                                       ],
+                                                                           "ExposedRows":  3
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "D3D JPEG Decode 0",
+                                                                                "D3D Video Decode"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  3,
+                                                                                   "EffectiveSeconds":  7.656784,
+                                                                                   "CoveredSeconds":  7.656784,
+                                                                                   "Mean":  0,
+                                                                                   "P95":  0,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  3,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "encode",
+                                           "EligibleRows":  3,
+                                           "ExposedRows":  3,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D Video Encode"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  3,
+                                                              "EffectiveSeconds":  7.656784,
+                                                              "CoveredSeconds":  7.656784,
+                                                              "Mean":  0,
+                                                              "P95":  0,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  3,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D Video Encode"
+                                                                                       ],
+                                                                           "ExposedRows":  3
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "D3D Video Encode"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  3,
+                                                                                   "EffectiveSeconds":  7.656784,
+                                                                                   "CoveredSeconds":  7.656784,
+                                                                                   "Mean":  0,
+                                                                                   "P95":  0,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  3,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "video",
+                                           "EligibleRows":  3,
+                                           "ExposedRows":  3,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "GPU Video Engine"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  3,
+                                                              "EffectiveSeconds":  7.656784,
+                                                              "CoveredSeconds":  7.656784,
+                                                              "Mean":  0,
+                                                              "P95":  0,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  3,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "GPU Video Engine"
+                                                                                       ],
+                                                                           "ExposedRows":  3
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "GPU Video Engine"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  3,
+                                                                                   "EffectiveSeconds":  7.656784,
+                                                                                   "CoveredSeconds":  7.656784,
+                                                                                   "Mean":  0,
+                                                                                   "P95":  0,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  3,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       }
+                                   ],
+                       "NvidiaSmi":  {
+                                         "ReceiptRows":  16,
+                                         "FirstReceivedUtc":  "2026-10-23T16:18:36.3817658+00:00",
+                                         "LastReceivedUtc":  "2026-10-23T16:18:45.7917467+00:00",
+                                         "ApiTimestampMinimum":  "2026/10/24 00:18:36.123",
+                                         "ApiTimestampMaximum":  "2026/10/24 00:18:45.790",
+                                         "DistinctApiTimestampStrings":  16,
+                                         "ApiTimestampInterpretation":  "Raw API timestamp strings, lexical range only; no timezone, interval independence or freshness inferred.",
+                                         "Gpu":  {
+                                                     "Status":  "review-required",
+                                                     "Count":  6,
+                                                     "MissingOrInvalidCount":  10,
+                                                     "Min":  0,
+                                                     "Median":  0,
+                                                     "Max":  0
+                                                 },
+                                         "Encoder":  {
+                                                         "Status":  "review-required",
+                                                         "Count":  6,
+                                                         "MissingOrInvalidCount":  10,
+                                                         "Min":  0,
+                                                         "Median":  0,
+                                                         "Max":  0
+                                                     },
+                                         "Decoder":  {
+                                                         "Status":  "review-required",
+                                                         "Count":  6,
+                                                         "MissingOrInvalidCount":  10,
+                                                         "Min":  0,
+                                                         "Median":  0,
+                                                         "Max":  0
+                                                     }
+                                     }
+                   },
+                   {
+                       "Name":  "encode",
+                       "RecordedPhaseStatus":  "completed",
+                       "SummaryStatus":  "review-required",
+                       "Reason":  "",
+                       "IncludedTelemetryRows":  6,
+                       "StartedUtc":  "2026-10-23T16:18:48.6617564+00:00",
+                       "EndedUtc":  "2026-10-23T16:19:10.0247692+00:00",
+                       "WindowStartUtc":  "2026-10-23T16:18:52.5397392+00:00",
+                       "WindowEndUtc":  "2026-10-23T16:19:07.4433382+00:00",
+                       "Core":  {
+                                    "Kind":  "legacy-core-or-3d",
+                                    "EligibleRows":  6,
+                                    "ExposedRows":  6,
+                                    "MissingOrInvalidRows":  0,
+                                    "InvalidRows":  0,
+                                    "Sources":  [
+                                                    "GPU Core"
+                                                ],
+                                    "MixedSources":  false,
+                                    "Statistics":  {
+                                                       "Status":  "review-required",
+                                                       "Count":  6,
+                                                       "EffectiveSeconds":  12.566940099999998,
+                                                       "CoveredSeconds":  12.566940099999998,
+                                                       "Mean":  9.9991089875569639,
+                                                       "P95":  11,
+                                                       "Min":  9,
+                                                       "Max":  11,
+                                                       "CompleteCount":  6,
+                                                       "PartialCount":  0
+                                                   },
+                                    "ExposedSourceScopes":  [
+                                                                {
+                                                                    "Version":  "gpu-engines-1.1",
+                                                                    "Sources":  [
+                                                                                    "GPU Core"
+                                                                                ],
+                                                                    "ExposedRows":  6
+                                                                }
+                                                            ],
+                                    "BySource":  [
+                                                     {
+                                                         "Version":  "gpu-engines-1.1",
+                                                         "Sources":  [
+                                                                         "GPU Core"
+                                                                     ],
+                                                         "Statistics":  {
+                                                                            "Status":  "review-required",
+                                                                            "Count":  6,
+                                                                            "EffectiveSeconds":  12.566940099999998,
+                                                                            "CoveredSeconds":  12.566940099999998,
+                                                                            "Mean":  9.9991089875569639,
+                                                                            "P95":  11,
+                                                                            "Min":  9,
+                                                                            "Max":  11,
+                                                                            "CompleteCount":  6,
+                                                                            "PartialCount":  0
+                                                                        }
+                                                     }
+                                                 ]
+                                },
+                       "Engines":  [
+                                       {
+                                           "Kind":  "3d",
+                                           "EligibleRows":  6,
+                                           "ExposedRows":  6,
+                                           "MissingOrInvalidRows":  6,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D 3D"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  0,
+                                                              "EffectiveSeconds":  0,
+                                                              "CoveredSeconds":  0,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  null,
+                                                              "Max":  null,
+                                                              "CompleteCount":  0,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D 3D"
+                                                                                       ],
+                                                                           "ExposedRows":  6
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "core",
+                                           "EligibleRows":  6,
+                                           "ExposedRows":  6,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "GPU Core"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  6,
+                                                              "EffectiveSeconds":  12.566940099999998,
+                                                              "CoveredSeconds":  12.566940099999998,
+                                                              "Mean":  9.9991089875569639,
+                                                              "P95":  11,
+                                                              "Min":  9,
+                                                              "Max":  11,
+                                                              "CompleteCount":  6,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "GPU Core"
+                                                                                       ],
+                                                                           "ExposedRows":  6
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "GPU Core"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  6,
+                                                                                   "EffectiveSeconds":  12.566940099999998,
+                                                                                   "CoveredSeconds":  12.566940099999998,
+                                                                                   "Mean":  9.9991089875569639,
+                                                                                   "P95":  11,
+                                                                                   "Min":  9,
+                                                                                   "Max":  11,
+                                                                                   "CompleteCount":  6,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "decode",
+                                           "EligibleRows":  6,
+                                           "ExposedRows":  6,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D JPEG Decode 0",
+                                                           "D3D Video Decode"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  6,
+                                                              "EffectiveSeconds":  12.566940099999998,
+                                                              "CoveredSeconds":  12.566940099999998,
+                                                              "Mean":  0,
+                                                              "P95":  0,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  6,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D JPEG Decode 0",
+                                                                                           "D3D Video Decode"
+                                                                                       ],
+                                                                           "ExposedRows":  6
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "D3D JPEG Decode 0",
+                                                                                "D3D Video Decode"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  6,
+                                                                                   "EffectiveSeconds":  12.566940099999998,
+                                                                                   "CoveredSeconds":  12.566940099999998,
+                                                                                   "Mean":  0,
+                                                                                   "P95":  0,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  6,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "encode",
+                                           "EligibleRows":  6,
+                                           "ExposedRows":  6,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D Video Encode"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  6,
+                                                              "EffectiveSeconds":  12.566940099999998,
+                                                              "CoveredSeconds":  12.566940099999998,
+                                                              "Mean":  98.785988651317211,
+                                                              "P95":  98.9365234375,
+                                                              "Min":  98.377037048339844,
+                                                              "Max":  98.9365234375,
+                                                              "CompleteCount":  6,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D Video Encode"
+                                                                                       ],
+                                                                           "ExposedRows":  6
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "D3D Video Encode"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  6,
+                                                                                   "EffectiveSeconds":  12.566940099999998,
+                                                                                   "CoveredSeconds":  12.566940099999998,
+                                                                                   "Mean":  98.785988651317211,
+                                                                                   "P95":  98.9365234375,
+                                                                                   "Min":  98.377037048339844,
+                                                                                   "Max":  98.9365234375,
+                                                                                   "CompleteCount":  6,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "video",
+                                           "EligibleRows":  6,
+                                           "ExposedRows":  6,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "GPU Video Engine"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  6,
+                                                              "EffectiveSeconds":  12.566940099999998,
+                                                              "CoveredSeconds":  12.566940099999998,
+                                                              "Mean":  96.667909644926226,
+                                                              "P95":  98,
+                                                              "Min":  94,
+                                                              "Max":  98,
+                                                              "CompleteCount":  6,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "GPU Video Engine"
+                                                                                       ],
+                                                                           "ExposedRows":  6
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "GPU Video Engine"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  6,
+                                                                                   "EffectiveSeconds":  12.566940099999998,
+                                                                                   "CoveredSeconds":  12.566940099999998,
+                                                                                   "Mean":  96.667909644926226,
+                                                                                   "P95":  98,
+                                                                                   "Min":  94,
+                                                                                   "Max":  98,
+                                                                                   "CompleteCount":  6,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       }
+                                   ],
+                       "NvidiaSmi":  {
+                                         "ReceiptRows":  29,
+                                         "FirstReceivedUtc":  "2026-10-23T16:18:52.6866616+00:00",
+                                         "LastReceivedUtc":  "2026-10-23T16:19:07.0275084+00:00",
+                                         "ApiTimestampMinimum":  "2026/10/24 00:18:52.686",
+                                         "ApiTimestampMaximum":  "2026/10/24 00:19:07.027",
+                                         "DistinctApiTimestampStrings":  29,
+                                         "ApiTimestampInterpretation":  "Raw API timestamp strings, lexical range only; no timezone, interval independence or freshness inferred.",
+                                         "Gpu":  {
+                                                     "Status":  "review-required",
+                                                     "Count":  29,
+                                                     "MissingOrInvalidCount":  0,
+                                                     "Min":  9,
+                                                     "Median":  10,
+                                                     "Max":  11
+                                                 },
+                                         "Encoder":  {
+                                                         "Status":  "review-required",
+                                                         "Count":  29,
+                                                         "MissingOrInvalidCount":  0,
+                                                         "Min":  96,
+                                                         "Median":  97,
+                                                         "Max":  98
+                                                     },
+                                         "Decoder":  {
+                                                         "Status":  "review-required",
+                                                         "Count":  29,
+                                                         "MissingOrInvalidCount":  0,
+                                                         "Min":  0,
+                                                         "Median":  0,
+                                                         "Max":  0
+                                                     }
+                                     }
+                   },
+                   {
+                       "Name":  "recovery-after-encode",
+                       "RecordedPhaseStatus":  "completed",
+                       "SummaryStatus":  "insufficient",
+                       "Reason":  "Fewer than two usable readings on one or both acquisition paths; inspect each metric independently.",
+                       "IncludedTelemetryRows":  1,
+                       "StartedUtc":  "2026-10-23T16:19:10.0247692+00:00",
+                       "EndedUtc":  "2026-10-23T16:19:20.0389658+00:00",
+                       "WindowStartUtc":  "2026-10-23T16:19:12.0247692+00:00",
+                       "WindowEndUtc":  "2026-10-23T16:19:18.0389658+00:00",
+                       "Core":  {
+                                    "Kind":  "legacy-core-or-3d",
+                                    "EligibleRows":  1,
+                                    "ExposedRows":  1,
+                                    "MissingOrInvalidRows":  0,
+                                    "InvalidRows":  0,
+                                    "Sources":  [
+                                                    "GPU Core"
+                                                ],
+                                    "MixedSources":  false,
+                                    "Statistics":  {
+                                                       "Status":  "insufficient",
+                                                       "Count":  1,
+                                                       "EffectiveSeconds":  2.7525972,
+                                                       "CoveredSeconds":  2.7525972,
+                                                       "Mean":  null,
+                                                       "P95":  null,
+                                                       "Min":  0,
+                                                       "Max":  0,
+                                                       "CompleteCount":  1,
+                                                       "PartialCount":  0
+                                                   },
+                                    "ExposedSourceScopes":  [
+                                                                {
+                                                                    "Version":  "gpu-engines-1.1",
+                                                                    "Sources":  [
+                                                                                    "GPU Core"
+                                                                                ],
+                                                                    "ExposedRows":  1
+                                                                }
+                                                            ],
+                                    "BySource":  [
+                                                     {
+                                                         "Version":  "gpu-engines-1.1",
+                                                         "Sources":  [
+                                                                         "GPU Core"
+                                                                     ],
+                                                         "Statistics":  {
+                                                                            "Status":  "insufficient",
+                                                                            "Count":  1,
+                                                                            "EffectiveSeconds":  2.7525972,
+                                                                            "CoveredSeconds":  2.7525972,
+                                                                            "Mean":  null,
+                                                                            "P95":  null,
+                                                                            "Min":  0,
+                                                                            "Max":  0,
+                                                                            "CompleteCount":  1,
+                                                                            "PartialCount":  0
+                                                                        }
+                                                     }
+                                                 ]
+                                },
+                       "Engines":  [
+                                       {
+                                           "Kind":  "3d",
+                                           "EligibleRows":  1,
+                                           "ExposedRows":  1,
+                                           "MissingOrInvalidRows":  1,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D 3D"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  0,
+                                                              "EffectiveSeconds":  0,
+                                                              "CoveredSeconds":  0,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  null,
+                                                              "Max":  null,
+                                                              "CompleteCount":  0,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D 3D"
+                                                                                       ],
+                                                                           "ExposedRows":  1
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "core",
+                                           "EligibleRows":  1,
+                                           "ExposedRows":  1,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "GPU Core"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  1,
+                                                              "EffectiveSeconds":  2.7525972,
+                                                              "CoveredSeconds":  2.7525972,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  1,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "GPU Core"
+                                                                                       ],
+                                                                           "ExposedRows":  1
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "GPU Core"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "insufficient",
+                                                                                   "Count":  1,
+                                                                                   "EffectiveSeconds":  2.7525972,
+                                                                                   "CoveredSeconds":  2.7525972,
+                                                                                   "Mean":  null,
+                                                                                   "P95":  null,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  1,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "decode",
+                                           "EligibleRows":  1,
+                                           "ExposedRows":  1,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D JPEG Decode 0",
+                                                           "D3D Video Decode"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  1,
+                                                              "EffectiveSeconds":  2.7525972,
+                                                              "CoveredSeconds":  2.7525972,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  1,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D JPEG Decode 0",
+                                                                                           "D3D Video Decode"
+                                                                                       ],
+                                                                           "ExposedRows":  1
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "D3D JPEG Decode 0",
+                                                                                "D3D Video Decode"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "insufficient",
+                                                                                   "Count":  1,
+                                                                                   "EffectiveSeconds":  2.7525972,
+                                                                                   "CoveredSeconds":  2.7525972,
+                                                                                   "Mean":  null,
+                                                                                   "P95":  null,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  1,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "encode",
+                                           "EligibleRows":  1,
+                                           "ExposedRows":  1,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D Video Encode"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  1,
+                                                              "EffectiveSeconds":  2.7525972,
+                                                              "CoveredSeconds":  2.7525972,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  1,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D Video Encode"
+                                                                                       ],
+                                                                           "ExposedRows":  1
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "D3D Video Encode"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "insufficient",
+                                                                                   "Count":  1,
+                                                                                   "EffectiveSeconds":  2.7525972,
+                                                                                   "CoveredSeconds":  2.7525972,
+                                                                                   "Mean":  null,
+                                                                                   "P95":  null,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  1,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "video",
+                                           "EligibleRows":  1,
+                                           "ExposedRows":  1,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "GPU Video Engine"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  1,
+                                                              "EffectiveSeconds":  2.7525972,
+                                                              "CoveredSeconds":  2.7525972,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  1,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "GPU Video Engine"
+                                                                                       ],
+                                                                           "ExposedRows":  1
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "GPU Video Engine"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "insufficient",
+                                                                                   "Count":  1,
+                                                                                   "EffectiveSeconds":  2.7525972,
+                                                                                   "CoveredSeconds":  2.7525972,
+                                                                                   "Mean":  null,
+                                                                                   "P95":  null,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  1,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       }
+                                   ],
+                       "NvidiaSmi":  {
+                                         "ReceiptRows":  9,
+                                         "FirstReceivedUtc":  "2026-10-23T16:19:12.4305519+00:00",
+                                         "LastReceivedUtc":  "2026-10-23T16:19:17.7870787+00:00",
+                                         "ApiTimestampMinimum":  "2026/10/24 00:19:12.307",
+                                         "ApiTimestampMaximum":  "2026/10/24 00:19:17.786",
+                                         "DistinctApiTimestampStrings":  9,
+                                         "ApiTimestampInterpretation":  "Raw API timestamp strings, lexical range only; no timezone, interval independence or freshness inferred.",
+                                         "Gpu":  {
+                                                     "Status":  "review-required",
+                                                     "Count":  3,
+                                                     "MissingOrInvalidCount":  6,
+                                                     "Min":  0,
+                                                     "Median":  0,
+                                                     "Max":  0
+                                                 },
+                                         "Encoder":  {
+                                                         "Status":  "review-required",
+                                                         "Count":  3,
+                                                         "MissingOrInvalidCount":  6,
+                                                         "Min":  0,
+                                                         "Median":  0,
+                                                         "Max":  0
+                                                     },
+                                         "Decoder":  {
+                                                         "Status":  "review-required",
+                                                         "Count":  3,
+                                                         "MissingOrInvalidCount":  6,
+                                                         "Min":  0,
+                                                         "Median":  0,
+                                                         "Max":  0
+                                                     }
+                                     }
+                   },
+                   {
+                       "Name":  "decode",
+                       "RecordedPhaseStatus":  "completed",
+                       "SummaryStatus":  "review-required",
+                       "Reason":  "",
+                       "IncludedTelemetryRows":  6,
+                       "StartedUtc":  "2026-10-23T16:19:20.0466131+00:00",
+                       "EndedUtc":  "2026-10-23T16:19:40.9677001+00:00",
+                       "WindowStartUtc":  "2026-10-23T16:19:24.2951342+00:00",
+                       "WindowEndUtc":  "2026-10-23T16:19:38.7945313+00:00",
+                       "Core":  {
+                                    "Kind":  "legacy-core-or-3d",
+                                    "EligibleRows":  6,
+                                    "ExposedRows":  6,
+                                    "MissingOrInvalidRows":  0,
+                                    "InvalidRows":  0,
+                                    "Sources":  [
+                                                    "GPU Core"
+                                                ],
+                                    "MixedSources":  false,
+                                    "Statistics":  {
+                                                       "Status":  "review-required",
+                                                       "Count":  6,
+                                                       "EffectiveSeconds":  12.555311500000002,
+                                                       "CoveredSeconds":  12.555311500000002,
+                                                       "Mean":  40.521349223394409,
+                                                       "P95":  57,
+                                                       "Min":  23,
+                                                       "Max":  57,
+                                                       "CompleteCount":  6,
+                                                       "PartialCount":  0
+                                                   },
+                                    "ExposedSourceScopes":  [
+                                                                {
+                                                                    "Version":  "gpu-engines-1.1",
+                                                                    "Sources":  [
+                                                                                    "GPU Core"
+                                                                                ],
+                                                                    "ExposedRows":  6
+                                                                }
+                                                            ],
+                                    "BySource":  [
+                                                     {
+                                                         "Version":  "gpu-engines-1.1",
+                                                         "Sources":  [
+                                                                         "GPU Core"
+                                                                     ],
+                                                         "Statistics":  {
+                                                                            "Status":  "review-required",
+                                                                            "Count":  6,
+                                                                            "EffectiveSeconds":  12.555311500000002,
+                                                                            "CoveredSeconds":  12.555311500000002,
+                                                                            "Mean":  40.521349223394409,
+                                                                            "P95":  57,
+                                                                            "Min":  23,
+                                                                            "Max":  57,
+                                                                            "CompleteCount":  6,
+                                                                            "PartialCount":  0
+                                                                        }
+                                                     }
+                                                 ]
+                                },
+                       "Engines":  [
+                                       {
+                                           "Kind":  "3d",
+                                           "EligibleRows":  6,
+                                           "ExposedRows":  6,
+                                           "MissingOrInvalidRows":  6,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D 3D"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  0,
+                                                              "EffectiveSeconds":  0,
+                                                              "CoveredSeconds":  0,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  null,
+                                                              "Max":  null,
+                                                              "CompleteCount":  0,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D 3D"
+                                                                                       ],
+                                                                           "ExposedRows":  6
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "core",
+                                           "EligibleRows":  6,
+                                           "ExposedRows":  6,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "GPU Core"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  6,
+                                                              "EffectiveSeconds":  12.555311500000002,
+                                                              "CoveredSeconds":  12.555311500000002,
+                                                              "Mean":  40.521349223394409,
+                                                              "P95":  57,
+                                                              "Min":  23,
+                                                              "Max":  57,
+                                                              "CompleteCount":  6,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "GPU Core"
+                                                                                       ],
+                                                                           "ExposedRows":  6
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "GPU Core"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  6,
+                                                                                   "EffectiveSeconds":  12.555311500000002,
+                                                                                   "CoveredSeconds":  12.555311500000002,
+                                                                                   "Mean":  40.521349223394409,
+                                                                                   "P95":  57,
+                                                                                   "Min":  23,
+                                                                                   "Max":  57,
+                                                                                   "CompleteCount":  6,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "decode",
+                                           "EligibleRows":  6,
+                                           "ExposedRows":  6,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D JPEG Decode 0",
+                                                           "D3D Video Decode"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  6,
+                                                              "EffectiveSeconds":  12.555311500000002,
+                                                              "CoveredSeconds":  12.555311500000002,
+                                                              "Mean":  59.173505928195894,
+                                                              "P95":  65.730751037597656,
+                                                              "Min":  52.219310760498047,
+                                                              "Max":  65.730751037597656,
+                                                              "CompleteCount":  6,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D JPEG Decode 0",
+                                                                                           "D3D Video Decode"
+                                                                                       ],
+                                                                           "ExposedRows":  6
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "D3D JPEG Decode 0",
+                                                                                "D3D Video Decode"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  6,
+                                                                                   "EffectiveSeconds":  12.555311500000002,
+                                                                                   "CoveredSeconds":  12.555311500000002,
+                                                                                   "Mean":  59.173505928195894,
+                                                                                   "P95":  65.730751037597656,
+                                                                                   "Min":  52.219310760498047,
+                                                                                   "Max":  65.730751037597656,
+                                                                                   "CompleteCount":  6,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "encode",
+                                           "EligibleRows":  6,
+                                           "ExposedRows":  6,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D Video Encode"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  6,
+                                                              "EffectiveSeconds":  12.555311500000002,
+                                                              "CoveredSeconds":  12.555311500000002,
+                                                              "Mean":  0,
+                                                              "P95":  0,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  6,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D Video Encode"
+                                                                                       ],
+                                                                           "ExposedRows":  6
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "D3D Video Encode"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  6,
+                                                                                   "EffectiveSeconds":  12.555311500000002,
+                                                                                   "CoveredSeconds":  12.555311500000002,
+                                                                                   "Mean":  0,
+                                                                                   "P95":  0,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  6,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "video",
+                                           "EligibleRows":  6,
+                                           "ExposedRows":  6,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "GPU Video Engine"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "review-required",
+                                                              "Count":  6,
+                                                              "EffectiveSeconds":  12.555311500000002,
+                                                              "CoveredSeconds":  12.555311500000002,
+                                                              "Mean":  51.490274152098884,
+                                                              "P95":  63,
+                                                              "Min":  47,
+                                                              "Max":  63,
+                                                              "CompleteCount":  6,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "GPU Video Engine"
+                                                                                       ],
+                                                                           "ExposedRows":  6
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "GPU Video Engine"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "review-required",
+                                                                                   "Count":  6,
+                                                                                   "EffectiveSeconds":  12.555311500000002,
+                                                                                   "CoveredSeconds":  12.555311500000002,
+                                                                                   "Mean":  51.490274152098884,
+                                                                                   "P95":  63,
+                                                                                   "Min":  47,
+                                                                                   "Max":  63,
+                                                                                   "CompleteCount":  6,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       }
+                                   ],
+                       "NvidiaSmi":  {
+                                         "ReceiptRows":  28,
+                                         "FirstReceivedUtc":  "2026-10-23T16:19:24.5966720+00:00",
+                                         "LastReceivedUtc":  "2026-10-23T16:19:38.4110062+00:00",
+                                         "ApiTimestampMinimum":  "2026/10/24 00:19:24.596",
+                                         "ApiTimestampMaximum":  "2026/10/24 00:19:38.410",
+                                         "DistinctApiTimestampStrings":  28,
+                                         "ApiTimestampInterpretation":  "Raw API timestamp strings, lexical range only; no timezone, interval independence or freshness inferred.",
+                                         "Gpu":  {
+                                                     "Status":  "review-required",
+                                                     "Count":  28,
+                                                     "MissingOrInvalidCount":  0,
+                                                     "Min":  19,
+                                                     "Median":  25,
+                                                     "Max":  66
+                                                 },
+                                         "Encoder":  {
+                                                         "Status":  "review-required",
+                                                         "Count":  28,
+                                                         "MissingOrInvalidCount":  0,
+                                                         "Min":  0,
+                                                         "Median":  0,
+                                                         "Max":  0
+                                                     },
+                                         "Decoder":  {
+                                                         "Status":  "review-required",
+                                                         "Count":  28,
+                                                         "MissingOrInvalidCount":  0,
+                                                         "Min":  43,
+                                                         "Median":  51,
+                                                         "Max":  84
+                                                     }
+                                     }
+                   },
+                   {
+                       "Name":  "recovery-after-decode",
+                       "RecordedPhaseStatus":  "completed",
+                       "SummaryStatus":  "insufficient",
+                       "Reason":  "Fewer than two usable readings on one or both acquisition paths; inspect each metric independently.",
+                       "IncludedTelemetryRows":  1,
+                       "StartedUtc":  "2026-10-23T16:19:40.9677001+00:00",
+                       "EndedUtc":  "2026-10-23T16:19:50.9844833+00:00",
+                       "WindowStartUtc":  "2026-10-23T16:19:42.9677001+00:00",
+                       "WindowEndUtc":  "2026-10-23T16:19:48.9844833+00:00",
+                       "Core":  {
+                                    "Kind":  "legacy-core-or-3d",
+                                    "EligibleRows":  1,
+                                    "ExposedRows":  1,
+                                    "MissingOrInvalidRows":  0,
+                                    "InvalidRows":  0,
+                                    "Sources":  [
+                                                    "GPU Core"
+                                                ],
+                                    "MixedSources":  false,
+                                    "Statistics":  {
+                                                       "Status":  "insufficient",
+                                                       "Count":  1,
+                                                       "EffectiveSeconds":  2.7675338,
+                                                       "CoveredSeconds":  2.7675338,
+                                                       "Mean":  null,
+                                                       "P95":  null,
+                                                       "Min":  0,
+                                                       "Max":  0,
+                                                       "CompleteCount":  1,
+                                                       "PartialCount":  0
+                                                   },
+                                    "ExposedSourceScopes":  [
+                                                                {
+                                                                    "Version":  "gpu-engines-1.1",
+                                                                    "Sources":  [
+                                                                                    "GPU Core"
+                                                                                ],
+                                                                    "ExposedRows":  1
+                                                                }
+                                                            ],
+                                    "BySource":  [
+                                                     {
+                                                         "Version":  "gpu-engines-1.1",
+                                                         "Sources":  [
+                                                                         "GPU Core"
+                                                                     ],
+                                                         "Statistics":  {
+                                                                            "Status":  "insufficient",
+                                                                            "Count":  1,
+                                                                            "EffectiveSeconds":  2.7675338,
+                                                                            "CoveredSeconds":  2.7675338,
+                                                                            "Mean":  null,
+                                                                            "P95":  null,
+                                                                            "Min":  0,
+                                                                            "Max":  0,
+                                                                            "CompleteCount":  1,
+                                                                            "PartialCount":  0
+                                                                        }
+                                                     }
+                                                 ]
+                                },
+                       "Engines":  [
+                                       {
+                                           "Kind":  "3d",
+                                           "EligibleRows":  1,
+                                           "ExposedRows":  1,
+                                           "MissingOrInvalidRows":  1,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D 3D"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  0,
+                                                              "EffectiveSeconds":  0,
+                                                              "CoveredSeconds":  0,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  null,
+                                                              "Max":  null,
+                                                              "CompleteCount":  0,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D 3D"
+                                                                                       ],
+                                                                           "ExposedRows":  1
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "core",
+                                           "EligibleRows":  1,
+                                           "ExposedRows":  1,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "GPU Core"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  1,
+                                                              "EffectiveSeconds":  2.7675338,
+                                                              "CoveredSeconds":  2.7675338,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  1,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "GPU Core"
+                                                                                       ],
+                                                                           "ExposedRows":  1
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "GPU Core"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "insufficient",
+                                                                                   "Count":  1,
+                                                                                   "EffectiveSeconds":  2.7675338,
+                                                                                   "CoveredSeconds":  2.7675338,
+                                                                                   "Mean":  null,
+                                                                                   "P95":  null,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  1,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "decode",
+                                           "EligibleRows":  1,
+                                           "ExposedRows":  1,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D JPEG Decode 0",
+                                                           "D3D Video Decode"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  1,
+                                                              "EffectiveSeconds":  2.7675338,
+                                                              "CoveredSeconds":  2.7675338,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  1,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D JPEG Decode 0",
+                                                                                           "D3D Video Decode"
+                                                                                       ],
+                                                                           "ExposedRows":  1
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "D3D JPEG Decode 0",
+                                                                                "D3D Video Decode"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "insufficient",
+                                                                                   "Count":  1,
+                                                                                   "EffectiveSeconds":  2.7675338,
+                                                                                   "CoveredSeconds":  2.7675338,
+                                                                                   "Mean":  null,
+                                                                                   "P95":  null,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  1,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "encode",
+                                           "EligibleRows":  1,
+                                           "ExposedRows":  1,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "D3D Video Encode"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  1,
+                                                              "EffectiveSeconds":  2.7675338,
+                                                              "CoveredSeconds":  2.7675338,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  1,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "D3D Video Encode"
+                                                                                       ],
+                                                                           "ExposedRows":  1
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "D3D Video Encode"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "insufficient",
+                                                                                   "Count":  1,
+                                                                                   "EffectiveSeconds":  2.7675338,
+                                                                                   "CoveredSeconds":  2.7675338,
+                                                                                   "Mean":  null,
+                                                                                   "P95":  null,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  1,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       },
+                                       {
+                                           "Kind":  "video",
+                                           "EligibleRows":  1,
+                                           "ExposedRows":  1,
+                                           "MissingOrInvalidRows":  0,
+                                           "InvalidRows":  0,
+                                           "Sources":  [
+                                                           "GPU Video Engine"
+                                                       ],
+                                           "MixedSources":  false,
+                                           "Statistics":  {
+                                                              "Status":  "insufficient",
+                                                              "Count":  1,
+                                                              "EffectiveSeconds":  2.7675338,
+                                                              "CoveredSeconds":  2.7675338,
+                                                              "Mean":  null,
+                                                              "P95":  null,
+                                                              "Min":  0,
+                                                              "Max":  0,
+                                                              "CompleteCount":  1,
+                                                              "PartialCount":  0
+                                                          },
+                                           "ExposedSourceScopes":  [
+                                                                       {
+                                                                           "Version":  "gpu-engines-1.1",
+                                                                           "Sources":  [
+                                                                                           "GPU Video Engine"
+                                                                                       ],
+                                                                           "ExposedRows":  1
+                                                                       }
+                                                                   ],
+                                           "BySource":  [
+                                                            {
+                                                                "Version":  "gpu-engines-1.1",
+                                                                "Sources":  [
+                                                                                "GPU Video Engine"
+                                                                            ],
+                                                                "Statistics":  {
+                                                                                   "Status":  "insufficient",
+                                                                                   "Count":  1,
+                                                                                   "EffectiveSeconds":  2.7675338,
+                                                                                   "CoveredSeconds":  2.7675338,
+                                                                                   "Mean":  null,
+                                                                                   "P95":  null,
+                                                                                   "Min":  0,
+                                                                                   "Max":  0,
+                                                                                   "CompleteCount":  1,
+                                                                                   "PartialCount":  0
+                                                                               }
+                                                            }
+                                                        ]
+                                       }
+                                   ],
+                       "NvidiaSmi":  {
+                                         "ReceiptRows":  10,
+                                         "FirstReceivedUtc":  "2026-10-23T16:19:43.1021653+00:00",
+                                         "LastReceivedUtc":  "2026-10-23T16:19:48.6682348+00:00",
+                                         "ApiTimestampMinimum":  "2026/10/24 00:19:43.037",
+                                         "ApiTimestampMaximum":  "2026/10/24 00:19:48.103",
+                                         "DistinctApiTimestampStrings":  10,
+                                         "ApiTimestampInterpretation":  "Raw API timestamp strings, lexical range only; no timezone, interval independence or freshness inferred.",
+                                         "Gpu":  {
+                                                     "Status":  "review-required",
+                                                     "Count":  4,
+                                                     "MissingOrInvalidCount":  6,
+                                                     "Min":  0,
+                                                     "Median":  0,
+                                                     "Max":  0
+                                                 },
+                                         "Encoder":  {
+                                                         "Status":  "review-required",
+                                                         "Count":  4,
+                                                         "MissingOrInvalidCount":  6,
+                                                         "Min":  0,
+                                                         "Median":  0,
+                                                         "Max":  0
+                                                     },
+                                         "Decoder":  {
+                                                         "Status":  "review-required",
+                                                         "Count":  4,
+                                                         "MissingOrInvalidCount":  6,
+                                                         "Min":  0,
+                                                         "Median":  0,
+                                                         "Max":  0
+                                                     }
+                                     }
+                   }
+               ],
+    "Interpretation":  [
+                           "Encoding and decoding produced the corresponding production-engine response on this machine. Encoding core mean about 10% coexisted with encode mean about 98.8%; low core load is not absence of video-engine work.",
+                           "Each trimmed recovery window has one complete production sample at 0% for encode/decode/video, plus known SMI zeros. Observed return readings are retained, but no production recovery mean or P95 is computed.",
+                           "D3D 3D remained unknown; SMI query errors occurred in idle/recovery and are retained as missing. Parseable CSV is not error-free GPU querying.",
+                           "The supplied input is synthetic and ran only in an isolated artifacts directory. It is not evidence that the user needs hardware encoding, decoding or a particular purchased GPU.",
+                           "SMI and production driver paths are not independent physical ground truth. Percentages need not agree, and this recording is not a calibration, cross-hardware or long-term stability result.",
+                           "The separate old 0.8.10 soak process remained running and may have observed this artificial load. No release/data records were modified."
+                       ],
+    "Method":  {
+                   "PhaseTrimSeconds":  2,
+                   "MaximumUtcElapsedDisagreementSeconds":  0.25,
+                   "MinimumMetricReadingsForSummary":  2,
+                   "Inclusion":  "Whole sample envelope [Sample.Time - Sample.Seconds, Sample.Time + CollectorMilliseconds/1000] inside the trimmed window. Nonpositive/invalid/\u003e15-second durations and SamplingIssue/TimingIssue rows excluded. Active does not filter controlled-load observations.",
+                   "Weights":  "Core uses GpuCoverage or Seconds. Engines use ObservedSeconds or Seconds only with valid Load; CoveredSeconds respects Complete and explicit coverage. Empirical P95 is the first sorted value reaching 95% of valid duration. Mixed source sets have separate distributions; no pooled mean/P95.",
+                   "Missing":  "Null, N/A, invalid percentages and absent categories stay missing. Complete only describes exposed category sensors. It is not whole-GPU coverage or driver freshness. Single readings retain only observed min/max; mean/P95/median require two readings.",
+                   "Reference":  "SMI rows use receipt UTC, not an assumed 500 ms sampling interval. API timestamps remain raw strings. Values are not independent physical ground truth, and receipt count does not prove independent fresh driver measurements.",
+                   "Scope":  "Descriptive phase recording only. review-required is data availability, never pass. Phase status, process exit and RecordingCompleted are original facts, not GPU accuracy, purchase suitability, performance equivalence or long-term stability conclusions. Compare the named encode/decode metrics individually and preserve insufficient categories.",
+                   "Privacy":  "Summary omits UUID, PCI identity, process arguments and local absolute paths. Original fixed inputs remain local and unchanged; source sensor names and input hashes are preserved."
+               }
+}

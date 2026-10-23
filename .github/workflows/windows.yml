@@ -20,6 +20,14 @@ jobs:
       - name: Build, test and publish
         shell: pwsh
         run: ./build.ps1 -Test -Publish -OutputDirectory release-next
+      - name: Build explicit GPU validation tool without starting workloads
+        shell: pwsh
+        run: |
+          dotnet build tools/GpuWorkloadCheck/GpuWorkloadCheck.csproj -c Release
+          if ($LASTEXITCODE -ne 0) { throw 'GPU validation tool did not build.' }
+          dotnet tools/GpuWorkloadCheck/bin/Release/net10.0/GpuWorkloadCheck.dll
+          if ($LASTEXITCODE -ne 2) { throw 'The tool must require explicit executable paths and an isolated output directory.' }
+          $global:LASTEXITCODE = 0
       - name: Regression results
         if: always()
         uses: actions/upload-artifact@v4
