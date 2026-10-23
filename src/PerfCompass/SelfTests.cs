@@ -362,6 +362,7 @@ public static partial class SelfTests
         RunComparisonTests(Check, Assert);
         RunQuantityGoalTests(Check, Assert);
         RunDataProtectionTests(Check, Assert);
+        RunBackgroundSettingsTests(Check, Assert);
         Task.Run(() => RunTaskMeasurementTests(Check, Assert)).GetAwaiter().GetResult();
         Directory.CreateDirectory("artifacts");
         File.WriteAllLines("artifacts/self-tests.txt", log);

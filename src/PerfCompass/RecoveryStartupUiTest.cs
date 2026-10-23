@@ -25,8 +25,14 @@ public partial class MainWindow
             var bitmap = new RenderTargetBitmap((int)Math.Ceiling(visual.ActualWidth), (int)Math.Ceiling(visual.ActualHeight), 96, 96, PixelFormats.Pbgra32); bitmap.Render(visual);
             var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
             using (var file = File.Create(Path.Combine(output, "21-recovery-startup.png"))) encoder.Save(file);
+            using (var held = new FileStream(Path.Combine(store.Root, "settings-recovery-pending.json"), FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                ConfirmRecoveredSettingsButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                Check(store.SettingsRecoveryPending && store.RetentionProtected && ConfirmRecoveredSettingsButton.Visibility == Visibility.Visible && SettingsErrorPanel.Visibility == Visibility.Visible,
+                    "Blocked recovery acknowledgment retains protection and exposes a retryable error");
+            }
             ConfirmRecoveredSettingsButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-            Check(!store.SettingsRecoveryPending && store.RetentionProtected && Directory.GetFiles(Path.Combine(store.Root, "recovery")).Length >= 1, "Review action saves recovered settings while retaining originals and restored-history protection");
+            Check(!store.SettingsRecoveryPending && store.RetentionProtected && Directory.GetFiles(Path.Combine(store.Root, "recovery")).Length >= 1 && SettingsErrorPanel.Visibility == Visibility.Collapsed, "Review retry saves recovered settings while retaining originals and restored-history protection");
         }
         catch (Exception e) { lines.Add("FAIL " + e); }
         finally

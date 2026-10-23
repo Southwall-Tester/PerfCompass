@@ -47,15 +47,15 @@ public partial class MainWindow : Window
                 if (active && !paused) TogglePause();
                 if (!active && wasActive) StatusLine.Text = "任务测量已结束。核对任务进程后，可继续监测。";
             });
-        for (int i = 0; i < SceneCombo.Items.Count; i++) if (((ComboBoxItem)SceneCombo.Items[i]).Content.ToString() == store.Settings.Scene) SceneCombo.SelectedIndex = i;
-        if (SceneCombo.SelectedIndex < 0) SceneCombo.SelectedIndex = 0;
+        SelectSavedScene();
         RepresentativeCheck.IsChecked = false;
         FutureBox.Text = store.Settings.FutureNeeds;
         InitializeSemanticSettings();
         if (store.Settings.Requirements is { } savedPlan && savedPlan.Source == store.Settings.FutureNeeds.Trim())
         { ShowRequirementDraft(savedPlan); RequirementsConfirm.IsChecked = true; }
         CloseToTrayCheck.IsChecked = store.Settings.CloseToTray;
-        StartupCheck.IsChecked = StartupRegistration.Enabled();
+        try { StartupCheck.IsChecked = StartupRegistration.Enabled(); }
+        catch (Exception error) { StartupCheck.IsChecked = false; SettingsFailure("startup-read", "无法读取自启动状态，请检查启动设置权限。", error); }
         RetentionCombo.SelectedItem = RetentionCombo.Items.OfType<ComboBoxItem>().FirstOrDefault(i => i.Tag.ToString() == store.Settings.RetentionDays.ToString());
         RetentionLabel.Text = $"当前保存最近 {store.Settings.RetentionDays} 天 · 实时约 2 秒 · 历史记录约 10 秒";
         var menu = new Forms.ContextMenuStrip();
@@ -278,7 +278,8 @@ public partial class MainWindow : Window
     }
     private void Scene_Changed(object sender, SelectionChangedEventArgs e)
     {
-        if (initialized && SceneCombo.SelectedItem is ComboBoxItem item) store.SaveSettings(store.Settings with { Scene = item.Content.ToString()! });
+        if (!initialized || restoringSceneSelection || SceneCombo.SelectedItem is not ComboBoxItem item) return;
+        if (!TrySaveSettings("scene", store.Settings with { Scene = item.Content.ToString()! }, "场景未切换，仍按原场景记录。检查文件占用或目录权限后重新选择。")) SelectSavedScene();
     }
     private void Window_Changed(object sender, SelectionChangedEventArgs e)
     {
@@ -327,8 +328,10 @@ public partial class MainWindow : Window
         Settings selected;
         try { selected = WorkloadCoverage.Select(store.Settings, RepresentativeCheck.IsChecked == true, collector?.HardwareId); }
         catch (ArgumentException ex) { RequirementsStatus.Text = ex.Message; return; }
-        store.SaveSettings(selected with { FutureNeeds = FutureBox.Text.Trim(), Requirements = confirmed,
-            SemanticRequirements = confirmed != null || store.Settings.SemanticRequirements?.Source != FutureBox.Text.Trim() ? null : store.Settings.SemanticRequirements });
+        if (!TrySaveSettings("requirements", selected with { FutureNeeds = FutureBox.Text.Trim(), Requirements = confirmed,
+            SemanticRequirements = confirmed != null || store.Settings.SemanticRequirements?.Source != FutureBox.Text.Trim() ? null : store.Settings.SemanticRequirements },
+            "需求设置未保存，输入已保留。请检查文件占用、目录权限或磁盘空间后重试。"))
+        { RequirementsStatus.Text = settingsFailures["requirements"]; return; }
         RequirementsStatus.Text = confirmed == null ? "描述已保存，尚未确认的解析结果不参与配置建议。" : "已保存确认的需求，将用于配置建议；修改描述后需要重新解析。";
         StatusLine.Text = "设置已保存。"; await RefreshAnalysis();
     }
@@ -376,12 +379,18 @@ public partial class MainWindow : Window
     }
     private void SaveBackground_Click(object sender, RoutedEventArgs e)
     {
-        StartupRegistration.Set(StartupCheck.IsChecked == true);
         int retention = RetentionCombo.SelectedItem is ComboBoxItem choice ? int.Parse(choice.Tag.ToString()!) : store.Settings.RetentionDays;
-        store.SaveSettings(store.Settings with { CloseToTray = CloseToTrayCheck.IsChecked == true, RetentionDays = retention });
+        try { BackgroundSettings.Save(store, store.Settings with { CloseToTray = CloseToTrayCheck.IsChecked == true, RetentionDays = retention }, StartupCheck.IsChecked == true, ReadStartup, WriteStartup); }
+        catch (BackgroundSettingsException error)
+        {
+            string message = error.RollbackFailed ? "后台设置未保存，自启动状态未能确认，请核对 Windows 启动应用后重试。" : "后台设置未保存，自启动已恢复原状态。输入已保留，请检查数据目录后重试。";
+            SettingsFailure("background", message, error); BackgroundSaveStatus.Text = message; return;
+        }
+        catch (Exception error) { const string message = "后台设置未保存。请检查启动设置权限和数据目录后重试。"; SettingsFailure("background", message, error); BackgroundSaveStatus.Text = message; return; }
+        ClearSettingsFailure("background"); ClearSettingsFailure("startup-read");
         RefreshDataProtection();
         RetentionLabel.Text = $"当前保存最近 {retention} 天 · 实时约 2 秒 · 历史记录约 10 秒";
-        StatusLine.Text = "后台设置已保存。";
+        BackgroundSaveStatus.Text = "后台设置已保存。"; StatusLine.Text = "后台设置已保存。";
     }
     private void OnClosing(object? sender, CancelEventArgs e)
     {

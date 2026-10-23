@@ -26,6 +26,7 @@ public partial class MainWindow
     }
     private void ResetSemanticDraft()
     {
+        ClearSettingsFailure("semantic");
         semanticCancellation?.Cancel(); semanticDraft = null;
         SemanticEditors.ItemsSource = null; SemanticReviewConfirm.IsChecked = false;
         SemanticQuestions.Text = ""; SemanticStatus.Text = "描述已修改，旧候选结果已作废。";
@@ -100,8 +101,10 @@ public partial class MainWindow
         {
             var plan = SemanticRequirements.Confirm(semanticDraft, SemanticEditors.Items.Cast<SemanticFactEditor>());
             if (ModelEndpointBox.Text.Trim().Length > 0) ModelRequirementExtractor.ValidateEndpoint(ModelEndpointBox.Text.Trim());
-            store.SaveSettings(WorkloadCoverage.Select(store.Settings, RepresentativeCheck.IsChecked == true, collector?.HardwareId) with { FutureNeeds = plan.Source, SemanticRequirements = plan, Requirements = null,
-                ModelEndpoint = ModelEndpointBox.Text.Trim(), ModelName = ModelNameBox.Text.Trim() });
+            if (!TrySaveSettings("semantic", WorkloadCoverage.Select(store.Settings, RepresentativeCheck.IsChecked == true, collector?.HardwareId) with { FutureNeeds = plan.Source, SemanticRequirements = plan, Requirements = null,
+                ModelEndpoint = ModelEndpointBox.Text.Trim(), ModelName = ModelNameBox.Text.Trim() }, "核对的事项未保存，候选与输入已保留。请检查文件占用、目录权限或磁盘空间后重试。"))
+            { SemanticStatus.Text = settingsFailures["semantic"]; return; }
+            ClearSettingsFailure("requirements");
             RequirementsConfirm.IsChecked = false;
             SemanticStatus.Text = "已保存选用的事项并参与建议。条件、不确定及过去需求仍分别保留；密钥未写入磁盘。";
             await RefreshAnalysis();

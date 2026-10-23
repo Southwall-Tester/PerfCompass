@@ -9,7 +9,7 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\App.ico</ApplicationIcon>
-    <Version>0.8.3</Version>
+    <Version>0.8.4</Version>
     <AssemblyName>PerfCompass</AssemblyName>
   </PropertyGroup>
   <ItemGroup>

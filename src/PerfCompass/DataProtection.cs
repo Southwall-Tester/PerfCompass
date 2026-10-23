@@ -16,7 +16,8 @@ public partial class MainWindow
     }
     private void ConfirmRecoveredSettings_Click(object sender, RoutedEventArgs e)
     {
-        store.SaveSettings(store.Settings, acknowledgeRecovery: true); RefreshDataProtection(); StatusLine.Text = "恢复设置已保存；损坏原件继续保留在 recovery 目录。";
+        if (!TrySaveSettings("recovery", store.Settings, "恢复核对未完成，保护状态继续保留。请检查文件占用或目录权限后重试。", acknowledgeRecovery: true)) return;
+        RefreshDataProtection(); StatusLine.Text = "恢复设置已保存；损坏原件继续保留在 recovery 目录。";
     }
     private void DataProtection_Click(object sender, RoutedEventArgs e)
     {
