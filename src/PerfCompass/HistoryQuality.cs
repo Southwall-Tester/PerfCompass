@@ -58,7 +58,7 @@ public static class HistoryAnalysis
         return report with
         {
             Ready = false, HistoryQuality = quality,
-            Cards = report.Cards.Select(c => quality.HasIntervalConflicts ? c with
+            Cards = report.Cards.Select(c => c with { RetainedWorkload = null }).Select(c => quality.HasIntervalConflicts ? c with
                 { Status = "unknown", Title = "时段重叠，先核对记录来源", Evidence = "同一配置的记录时间片重叠，无法确定负载份额。", Suggestion = quality.Message, Observation = null }
                 : c.Status is "surplus" or "review" or "changed" ? c with
                 { Status = "unknown", Title = "历史异常，先核对记录", Suggestion = quality.Message,

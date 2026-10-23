@@ -96,6 +96,37 @@ public partial class MainWindow
                 $"Rendered {key} observation title and status are visible inside the current viewport before capture");
             await screenshot(capture);
         }
+        async Task ShowGuidance(string capture, bool lowerGpu)
+        {
+            UpdateLayout();
+            var decisions = PurchaseGuidanceList.Items.OfType<ConfigurationDecision>().ToArray();
+            var gpuDecision = decisions.Single(d => d.Key == "gpu");
+            require(decisions.Length == 4 && (gpuDecision.Direction == "优先比较较低档显卡") == lowerGpu,
+                "The actual purchase guidance changes the GPU decision when a heavy task replaces low readings");
+            var row = Descendants(PurchaseGuidanceList).OfType<Border>().Single(b => b.Tag as string == "gpu");
+            var details = Descendants(row).OfType<Expander>().Single();
+            details.IsExpanded = true; UpdateLayout();
+            var texts = Descendants(row).OfType<TextBlock>().ToArray();
+            var direction = texts.SingleOrDefault(t => t.Text == gpuDecision.Direction);
+            if (direction == null)
+            {
+                await PreserveVisibilityFailure(capture, "gpu-guidance", gpuDecision.Direction, gpuDecision.Level, texts);
+                throw new InvalidOperationException("The purchase direction is missing from its rendered text control.");
+            }
+            var nextStep = texts.Single(t => t.Text == gpuDecision.NextStep);
+            var reason = texts.Single(t => t.Text == gpuDecision.Reason);
+            var scope = texts.Single(t => t.Text == gpuDecision.Scope);
+            await RevealLeadingArea(row, new[] { direction, nextStep, reason, scope });
+            require(new[] { direction, nextStep, reason, scope }.All(InViewport),
+                "Purchase direction, next step, evidence and scope are readable in the rendered viewport");
+            var html = ReportExporter.Html(report!, live);
+            require(new[] { gpuDecision.Direction, gpuDecision.NextStep, gpuDecision.Reason, gpuDecision.Scope }
+                .All(value => html.Contains(WebUtility.HtmlEncode(value)))
+                && html.IndexOf("当前配置取舍", StringComparison.Ordinal) < html.IndexOf("核心/3D观测来源", StringComparison.Ordinal),
+                "The exported report leads with the same purchase decision and preserves its evidence and scope");
+            await screenshot(capture);
+            details.IsExpanded = false;
+        }
         void SaveReport(string name, AnalysisReport current, params Advice[] expected)
         {
             string html = ReportExporter.Html(current, live);
@@ -151,10 +182,38 @@ public partial class MainWindow
             && lightCards.All(card => Descendants(Card(card.Key)).OfType<TextBlock>().Any(text => text.Text == card.DisplayTitle)),
             "Native analysis summary and all three resource card titles reflect the selected task observations instead of the old generic waiting titles");
         SaveReport("resource-observation-light", light, lightCards);
+        AdvicePage.BringIntoView(new Rect(0, 0, AdvicePage.ActualWidth, 10));
+        await screenshot("70-purchase-guidance-overview");
+        await ShowGuidance("67-purchase-guidance-light", true);
+        Click(GuidanceCompareButton);
+        await waitForAnalysis(() => ComparisonPage.Visibility == Visibility.Visible);
+        require(ComparisonPage.Workspace.Candidates.Count == 0 && ComparisonPage.Workspace.Criteria.Count == 0
+            && ComparisonPage.CoverageConfirm.IsChecked != true,
+            "The purchase guidance comparison action opens the workspace without inventing candidates or confirmation");
+        Click(AdviceNav); await RefreshAnalysis();
+        await waitForAnalysis(() => AdvicePage.Visibility == Visibility.Visible && report!.SelectedScene == scene);
         await ShowCard("cpu", "55-resource-observation-cpu-light");
         await ShowCard("memory", "55-resource-observation-memory-light");
         await ShowCard("gpu", "55-resource-observation-gpu-light");
         string oldGpuTitle = lightCards.Single(card => card.Key == "gpu").DisplayTitle;
+
+        await Task.Run(() => store.Append(Frame(0) with
+        {
+            Time = beginning.AddDays(-8), Gpu = 95, GpuPeak = 95,
+            GpuHeavySeconds = 10, GpuHighSeconds = 10, GpuEngines = []
+        }));
+        WindowCombo.SelectedIndex = 2;
+        await waitForAnalysis(() => report!.WindowDays == 30 && report.SampleCount == 61);
+        require(report!.Cards.Single(card => card.Key == "gpu") is { UsesRetainedWorkload: true, Observation.State: "light" }
+            && report.Cards.Single(card => card.Key == "gpu").RetainedWorkload!.Scope.Contains("所选 30 天"),
+            "Changing the actual window to thirty days retains the older GPU task while preserving recent quiet observations");
+        await ShowGuidance("69-purchase-guidance-retained-task", false);
+        SaveReport("purchase-guidance-retained-task", report!);
+        WindowCombo.SelectedIndex = 0;
+        await waitForAnalysis(() => report!.WindowDays == 7 && report.SampleCount == 60);
+        require(report!.Cards.Single(card => card.Key == "gpu").RetainedWorkload == null
+            && PurchaseGuidanceList.Items.OfType<ConfigurationDecision>().Single(d => d.Key == "gpu").Direction == "优先比较较低档显卡",
+            "Returning to seven days removes only the out-of-window task and restores the scoped GPU comparison direction");
 
         var partial = Frame(60) with
         {
@@ -190,6 +249,7 @@ public partial class MainWindow
         try
         {
             WindowState = WindowState.Normal; Width = MinWidth; Height = MinHeight;
+            await ShowGuidance("68-purchase-guidance-busy-minimum-window", false);
             await ShowCard("gpu", "57-resource-observation-minimum-window");
         }
         finally { Width = originalWidth; Height = originalHeight; WindowState = originalState; }
@@ -262,6 +322,6 @@ public partial class MainWindow
         }
         await RunCandidateDecisionUiTests(output, require, screenshot);
         File.WriteAllText(Path.Combine(output, "resource-observation-NOTICE.txt"),
-            "The initial three common checks use actual local CPU/memory collection. This flow then pauses the collector and appends 60 ten-second synthetic rows, followed by one partial 96% compute-engine row, only to the guarded empty UI-test data directory. The separately selected scene is explicitly synthetic and excludes startup telemetry. Dates occupy one local day; 10 minutes do not satisfy purchase-readiness or representative-coverage requirements. Native store/history analysis, card text and visible rendering, the actual comparison action and grids, single-candidate evaluation, saved review state and HTML export are exercised. Candidate names and prices are synthetic; no condition or task result is claimed to be verified. Screenshots, reports and this notice are written only to the provided test output folder. No workload, model, hardware setting or production history is changed.");
+            "The initial three common checks use actual local CPU/memory collection. This flow then pauses recording and appends 60 ten-second synthetic rows, one earlier 95% core row and one partial 96% compute-engine row, only to the guarded empty UI-test data directory. The explicitly synthetic selected scene excludes startup telemetry. Seven/thirty-day selection and the rendered purchasing direction are exercised; these are synthesized records, not days of actual use. Native store/history analysis, visible text and scope, actual comparison actions and grids, saved review state and HTML export are checked. Candidate names and prices are synthetic; no candidate condition or task is claimed verified. No workload, model, hardware setting or production history is changed.");
     }
 }

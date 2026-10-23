@@ -58,7 +58,27 @@
       </Grid>
      </StackPanel>
      <StackPanel x:Name="AdvicePage" Visibility="Collapsed">
+      <DockPanel Margin="0,0,0,14"><TextBlock Text="配置取舍与任务范围" FontSize="17" FontWeight="SemiBold"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Right"><ComboBox x:Name="AnalysisSceneCombo" SelectionChanged="AnalysisScene_Changed" Width="138" Margin="0,0,10,0" AutomationProperties.Name="分析场景"/><ComboBox x:Name="WindowCombo" SelectionChanged="Window_Changed" SelectedIndex="0" AutomationProperties.Name="分析时间范围"><ComboBoxItem Content="最近 7 天" Tag="7"/><ComboBoxItem Content="最近 14 天" Tag="14"/><ComboBoxItem Content="最近 30 天" Tag="30"/><ComboBoxItem Content="最近 90 天" Tag="90"/></ComboBox><Button Content="刷新分析" Click="Refresh_Click" Margin="10,0,0,0"/></StackPanel></DockPanel>
       <Border Background="#E5F3EE" CornerRadius="14" Padding="22" Margin="0,0,0,20"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock x:Name="AnalysisSummary" TextWrapping="Wrap" Text="正在读取使用记录" FontSize="20" FontWeight="SemiBold"/><TextBlock x:Name="CoverageLabel" Margin="0,10,0,0" Foreground="#456F65"/><TextBlock x:Name="CoverageNext" TextWrapping="Wrap" Text="累计有效使用 10 小时、覆盖 3 天，并确认已记录典型任务。" Margin="0,7,0,0" Foreground="#456F65" FontSize="12"/></StackPanel><Button Grid.Column="1" Content="导出报告" Click="ExportReport_Click" Background="#007F73" Foreground="White" VerticalAlignment="Top" Margin="20,0,0,0"/></Grid></Border>
+      <Border x:Name="PurchaseGuidancePanel" Style="{StaticResource Card}" Margin="0,0,0,20"><StackPanel>
+       <TextBlock Text="当前配置取舍" FontSize="18" FontWeight="SemiBold"/>
+       <TextBlock Text="先确定值得比较的方向，再用实际任务筛选候选。" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,7,0,8"/>
+       <ItemsControl x:Name="PurchaseGuidanceList"><ItemsControl.ItemTemplate><DataTemplate>
+        <Border Tag="{Binding Key}" BorderBrush="#E3EAEC" BorderThickness="0,0,0,1" Padding="0,12"><StackPanel>
+         <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="70"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <TextBlock Text="{Binding Name}" Foreground="#677A87" TextWrapping="Wrap" Margin="0,0,10,0"/>
+          <TextBlock Grid.Column="1" Text="{Binding Direction}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+          <TextBlock Grid.Column="2" Text="{Binding Level}" Foreground="#007F73" FontSize="11" Margin="16,2,0,0"/>
+         </Grid>
+         <TextBlock Text="{Binding NextStep}" TextWrapping="Wrap" LineHeight="21" Margin="0,7,0,0" Foreground="#45606C"/>
+         <Expander Header="依据与适用范围" Foreground="#007F73" FontSize="12" Margin="0,7,0,0"><StackPanel Margin="0,7,0,0">
+          <TextBlock Text="{Binding Reason}" Foreground="#45606C" TextWrapping="Wrap" LineHeight="21"/>
+          <TextBlock Text="{Binding Scope}" Foreground="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,5,0,0"/>
+         </StackPanel></Expander>
+        </StackPanel></Border>
+       </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+       <Button x:Name="GuidanceCompareButton" Content="比较候选配置" Click="ComparisonNav_Click" HorizontalAlignment="Left" Margin="0,14,0,0"/>
+      </StackPanel></Border>
       <Border Style="{StaticResource Card}" Margin="0,0,0,20"><Expander x:Name="DemandTrendExpander">
        <Expander.Header><TextBlock x:Name="DemandTrendHeader" Text="近期需求变化 · 对照记录积累中" FontWeight="SemiBold" FontSize="16"/></Expander.Header>
        <StackPanel Margin="0,14,0,0"><TextBlock Text="独立比较最近 7 天与此前 7 天、最近 30 天与此前 30 天。近期反复出现的需求优先影响建议，更早记录用于核对偶发任务。" Foreground="{StaticResource Muted}" Margin="0,0,0,14"/>
@@ -85,7 +105,7 @@
        <ItemsControl x:Name="SceneProfileList"><ItemsControl.ItemTemplate><DataTemplate><Grid Margin="0,6"><Grid.ColumnDefinitions><ColumnDefinition Width="1.5*"/><ColumnDefinition Width="0.8*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" ToolTip="{Binding Name}"/><TextBlock Grid.Column="1" Text="{Binding DurationLabel}"/><TextBlock Grid.Column="2" Text="{Binding CpuP95, StringFormat={}{0:0.0}%, TargetNullValue=—}"/><TextBlock Grid.Column="3" Text="{Binding MemoryPeakGb, StringFormat={}{0:0.0} GiB, TargetNullValue=—}"/><TextBlock Grid.Column="4" Text="{Binding GpuP95, StringFormat={}{0:0.0}%, TargetNullValue=—}"/><TextBlock Grid.Column="5" Text="{Binding GpuPeak, StringFormat={}{0:0.0}%, TargetNullValue=—}"/></Grid></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
        <TextBlock x:Name="SceneEmptyLabel" Text="运行常用任务后，这里会显示各场景的实际需求。" Foreground="{StaticResource Muted}" Margin="0,10,0,0"/>
       </StackPanel></Border>
-      <DockPanel Margin="0,0,0,14"><TextBlock Text="逐项配置建议" FontSize="17" FontWeight="SemiBold"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Right"><ComboBox x:Name="AnalysisSceneCombo" SelectionChanged="AnalysisScene_Changed" Width="138" Margin="0,0,10,0" AutomationProperties.Name="分析场景"/><ComboBox x:Name="WindowCombo" SelectionChanged="Window_Changed" SelectedIndex="0" AutomationProperties.Name="分析时间范围"><ComboBoxItem Content="最近 7 天" Tag="7"/><ComboBoxItem Content="最近 14 天" Tag="14"/><ComboBoxItem Content="最近 30 天" Tag="30"/><ComboBoxItem Content="最近 90 天" Tag="90"/></ComboBox><Button Content="刷新分析" Click="Refresh_Click" Margin="10,0,0,0"/></StackPanel></DockPanel>
+      <TextBlock Text="逐项配置依据" FontSize="17" FontWeight="SemiBold" Margin="0,0,0,14"/>
       <ItemsControl x:Name="AdviceList"/>
      </StackPanel>
      <StackPanel x:Name="HistoryPage" Visibility="Collapsed">

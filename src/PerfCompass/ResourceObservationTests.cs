@@ -17,6 +17,7 @@ public static partial class SelfTests
             Gpu = 3, GpuPeak = 3, GpuMetricSource = "GPU Core"
         };
         List<Sample> Rows(int count = 30, int day = 1) => Enumerable.Range(0, count).Select(i => Row(i, day)).ToList();
+        Sample Legacy(Sample sample) => sample with { GpuEngineVersion = "", GpuEngines = null, GpuMetricSource = "" };
         Sample Engine(Sample s, string kind, double? load, bool complete = true, string? source = null) => s with
         {
             GpuEngineVersion = GpuEngineEvidence.Version,
@@ -123,6 +124,138 @@ public static partial class SelfTests
             assert(preserved?.State == "busy" && preserved.Scope.Contains("所选 30 天") && !preserved.Scope.Contains("最近 7 天"),
                 "historical engine evidence was discarded or silently relabeled as recent");
             assert(Analyze(old).Cards.All(c => c.Observation == null), "stale quiet readings created fresh low-load observations");
+        });
+        check("Earlier legacy core peaks remain retained work beside recent quiet readings at both purchase readiness levels", () =>
+        {
+            foreach (bool ready in new[] { false, true })
+            {
+                IEnumerable<Sample> recent = ready ? Enumerable.Range(1, 3).SelectMany(day => Rows(1440, day)) : Rows();
+                var rows = recent.Select(Legacy).Append(Legacy(Row(0, 8)) with { GpuPeak = 95 }).ToList();
+                var report = Analyze(rows, ready ? WorkloadCoverage.Select(new(), true, hardware) : new());
+                var gpu = Card(report, "gpu");
+                assert(report.Ready == ready && gpu.Status == (ready ? "fit" : "unknown")
+                    && gpu.Observation?.State == "light" && gpu.Observation.Scope.Contains("最近 7 天")
+                    && gpu.RetainedWorkload?.State == "busy" && gpu.RetainedWorkload.Scope.Contains("所选 30 天")
+                    && gpu.UsesRetainedWorkload && !gpu.UsesObservation,
+                    "a legacy task eight days ago disappeared behind recent light readings or changed formal readiness");
+                assert(gpu.DisplayTitle == gpu.RetainedWorkload!.Title && gpu.DisplaySuggestion == gpu.RetainedWorkload.Action
+                    && !gpu.DisplayTitle.Contains("近期") && !gpu.DisplayTitle.Contains("持续"),
+                    "retained core work was shown as recent sustained pressure or as ordinary low-load advice");
+                if (!ready) assert(report.Summary.Contains("2 项有余量线索") && report.Summary.Contains("0 项曾出现繁忙")
+                    && report.Summary.Contains("1 项保留重任务"), "summary counted the retained GPU as light or recent busy evidence");
+                assert(ReportExporter.Html(report, null).Contains(System.Net.WebUtility.HtmlEncode(gpu.DisplayTitle)),
+                    "HTML lost the retained-work heading used by the native advice");
+            }
+        });
+        check("Retained core work follows the selected time window scene hardware and valid active coverage", () =>
+        {
+            var recent = Rows().Select(Legacy).ToList();
+            var heavy = Legacy(Row(0, 8)) with { GpuPeak = 95, Scene = "合成渲染" };
+            var rows = recent.Append(heavy).ToList();
+            var all = Card(Analyze(rows), "gpu");
+            var office = Card(Analyze(rows, scene: "合成办公"), "gpu");
+            var render = Card(Analyze(rows, scene: "合成渲染"), "gpu");
+            assert(all.UsesRetainedWorkload && office.RetainedWorkload == null && office.UsesObservation
+                && render.Observation == null && render.UsesRetainedWorkload
+                && render.RetainedWorkload!.Scope.Contains("合成渲染"), "another scene supplied or erased retained core work");
+            var week = Card(Analyze(rows, days: 7), "gpu"); var fortnight = Card(Analyze(rows, days: 14), "gpu");
+            assert(week.RetainedWorkload == null && week.Observation?.State == "light"
+                && fortnight.RetainedWorkload?.Scope.Contains("所选 14 天") == true,
+                "switching the selected window retained an excluded task or reused the previous scope");
+            foreach (var excluded in new[] { heavy with { Time = now.AddDays(-31) }, heavy with { HardwareId = "another-machine" },
+                heavy with { Active = false }, heavy with { Seconds = 0 }, heavy with { GpuCoverage = 0 }, heavy with { Gpu = null } })
+                assert(Card(Analyze(recent.Append(excluded)), "gpu").RetainedWorkload == null,
+                    "an out-of-scope missing idle or uncovered reading manufactured retained work");
+            assert(Analyze(rows.Append(heavy with { HardwareId = "another-machine" }), id: null).Cards.All(c => c.RetainedWorkload == null),
+                "mixed hardware retained a pooled core task");
+            var nowBusy = Card(Analyze(recent.Append(heavy with { Time = now.AddDays(-6), Scene = "合成办公" })), "gpu");
+            assert(nowBusy.Observation?.State == "busy" && nowBusy.RetainedWorkload != null && nowBusy.UsesObservation
+                && !nowBusy.UsesRetainedWorkload, "a current busy observation was displaced by its retained copy");
+        });
+        check("History diagnostics withdraw retained core work without changing original historical files", () =>
+        {
+            var heavy = Legacy(Row(0, 8)) with { GpuPeak = 95 };
+            InStore(store =>
+            {
+                foreach (var sample in Rows().Select(Legacy).Append(heavy)) store.Append(sample);
+                var initial = History(store);
+                assert(Card(initial, "gpu").UsesRetainedWorkload, "valid stored legacy core work was not retained");
+                string file = Path.Combine(store.Root, $"samples-{heavy.Time.LocalDateTime:yyyy-MM-dd}.jsonl");
+                File.AppendAllText(file, "{broken-retained-work\n", new UTF8Encoding(false));
+                byte[] original = File.ReadAllBytes(file); var damaged = History(store);
+                assert(damaged.HistoryQuality.HasIssues && damaged.Cards.All(c => c.RetainedWorkload == null)
+                    && Card(damaged, "gpu").Observation == null && File.ReadAllBytes(file).SequenceEqual(original),
+                    "corrupt history kept retained workload or low-load advice, or changed the original");
+                assert(HistoryAnalysis.Apply(initial, damaged.HistoryQuality).Cards.All(c => c.RetainedWorkload == null),
+                    "applying new quality diagnostics to an existing report left a retained workload behind");
+            });
+            InStore(store =>
+            {
+                foreach (var sample in Rows().Select(Legacy).Append(heavy)) store.Append(sample);
+                store.Append(heavy with { Time = heavy.Time.AddSeconds(5), GpuPeak = 96 });
+                var report = History(store);
+                assert(report.HistoryQuality.HasIntervalConflicts && report.Cards.All(c => c.RetainedWorkload == null && c.Observation == null),
+                    "overlapping historical core readings continued to supply retained or recent observations");
+            });
+        });
+        check("Final requirements experience and busy engine observations retain priority and conditional actions beside retained core work", () =>
+        {
+            var rows = Rows().Select(Legacy).Append(Legacy(Row(0, 8)) with { GpuPeak = 95 }).ToList();
+            var report = Analyze(rows); var gpu = Card(report, "gpu");
+            foreach (string status in new[] { "pressure", "changed", "experience", "requirements", "constraints" })
+            {
+                var protectedCard = gpu with { Status = status, Title = "最终主判定", Suggestion = "最终下一步" };
+                assert(!protectedCard.UsesRetainedWorkload && !protectedCard.UsesObservation
+                    && protectedCard.DisplayTitle == protectedCard.Title && protectedCard.DisplaySuggestion == protectedCard.Suggestion,
+                    "retained historical work superseded a final protected status");
+            }
+            var experience = new ExperienceEvent("retained-pending", now.AddHours(-1), hardware, "合成办公", "任务等待过久", "合成体验", []);
+            assert(Card(ExperienceAnalyzer.Attach(report, [experience]), "gpu").Status == "experience",
+                "retained work bypassed the actual recent-experience priority pass");
+            const string source = "准备做本地AI推理";
+            var required = RequirementParser.Apply(report, new(FutureNeeds: source,
+                Requirements: RequirementParser.Confirm(RequirementParser.Parse(source), "local")));
+            assert(Card(required, "gpu").Status == "requirements" && Card(required, "gpu").RetainedWorkload != null,
+                "new requirements were hidden or historical task evidence was erased");
+            foreach (var fact in new[]
+            {
+                new SemanticFact("本地训练", "workload", "conditional", "future", "本地训练", "", "以后转到本地训练", "如果以后转到本地训练，再增加显卡配置。"),
+                new SemanticFact("本地训练", "workload", "uncertain", "future", "本地训练", "", "", "以后是否本地训练还没确定。")
+            })
+            {
+                var conditional = SemanticRequirements.Apply(report, new(FutureNeeds: fact.Evidence, SemanticRequirements:
+                    new(fact.Evidence, "synthetic-model", "synthetic-test", SemanticRequirements.Version, [fact], now)));
+                var card = Card(conditional, "gpu");
+                assert(card.UsesRetainedWorkload && card.Status == "unknown"
+                    && card.DisplaySuggestion.StartsWith(gpu.DisplaySuggestion, StringComparison.Ordinal)
+                    && card.DisplaySuggestion.Contains("分别比较条件需求成立与不成立"),
+                    "retained-work display dropped conditional actions or made an optional task mandatory");
+            }
+            rows.Add(Engine(Row(31), "compute", 99, false));
+            var engine = Card(Analyze(rows), "gpu");
+            assert(engine.Observation?.State == "busy" && engine.RetainedWorkload != null && engine.UsesObservation
+                && !engine.UsesRetainedWorkload && engine.DisplayTitle == engine.Observation.Title
+                && engine.Evidence.Contains(engine.RetainedWorkload.Scope), "core retention erased the more specific heavy engine or its retained scope");
+        });
+        check("Retained task candidates stay unreviewed and invalidate scope only when their classification or range changes", () =>
+        {
+            var report = Analyze(Rows().Select(Legacy).Append(Legacy(Row(0, 8)) with { GpuPeak = 95 }));
+            var gpu = Card(report, "gpu"); var retained = gpu.RetainedWorkload!;
+            var draft = CandidateComparison.Drafts(report).Single(c => c.OriginId == "retained:gpu-core");
+            assert(!draft.Reviewed && draft.Target == null && draft.Metric == "check"
+                && draft.Evidence.Contains(retained.Scope) && draft.Evidence.Contains(retained.Evidence),
+                "retained core work was hidden in a generic scene or automatically turned into a performance target");
+            AnalysisReport With(ResourceObservation? value) => report with { Cards = report.Cards.Select(c => c.Key == "gpu" ? c with { RetainedWorkload = value } : c).ToList() };
+            var numeric = With(retained with { Evidence = "更新后的峰值与时长", ObservedHours = retained.ObservedHours + .1, Coverage = .95 });
+            assert(CandidateComparison.Stamp(report) == CandidateComparison.Stamp(numeric)
+                && CandidateComparison.Drafts(numeric).Any(c => c.OriginId == draft.OriginId),
+                "normal retained-work numeric updates invalidated confirmation or duplicated the task origin");
+            assert(CandidateComparison.Stamp(report) != CandidateComparison.Stamp(With(null))
+                && CandidateComparison.Stamp(report) != CandidateComparison.Stamp(With(retained with { Scope = "所选 14 天 · 合成办公 · 已测核心/3D" }))
+                && CandidateComparison.Stamp(report) != CandidateComparison.Stamp(With(retained with { State = "observed" })),
+                "new retained work or its changed state and scope failed to invalidate candidate coverage");
+            assert(!CandidateComparison.Drafts(With(null)).Any(c => c.OriginId == draft.OriginId),
+                "a removed retained task was regenerated from unrelated scene statistics");
         });
         check("Current observations need no fabricated previous period and remain scoped to the selected scene", () =>
         {

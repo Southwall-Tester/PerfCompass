@@ -109,7 +109,8 @@ public static partial class CandidateComparison
         Trends = report.DemandTrends.Where(t => t.Status == "increased").Select(t => t.Key + ":" + t.Days + ":" + string.Join("/", t.RecentHeavyScenes.Order())).Order().ToArray(),
         Experiences = report.ExperienceEvents.Where(e => !e.Resolved).Select(e => e.Id).Order().ToArray(),
         Signals = report.Cards.Where(c => c.Key is "cpu" or "gpu" or "memory").Select(c => c.Key + ":" + c.Status + ":" + c.Title
-            + (c.Observation is { } observation ? ":observation:" + Hash(new { observation.State, observation.Scope }) : "")).Order().ToArray()
+            + (c.Observation is { } observation ? ":observation:" + Hash(new { observation.State, observation.Scope }) : "")
+            + (c.RetainedWorkload is { } retained ? ":retained:" + Hash(new { retained.State, retained.Scope }) : "")).Order().ToArray()
     })))) + (report.HistoryQuality.HasIssues ? ":history:" + report.HistoryQuality.Signature : "");
     public static List<PurchaseCriterion> Drafts(AnalysisReport report)
     {
@@ -135,6 +136,9 @@ public static partial class CandidateComparison
             result.Add(new() { OriginId = "raw:" + Hash(report.FutureNeeds), Name = "核对尚未结构化的需求全文", Evidence = report.FutureNeeds });
         foreach (var scene in report.SceneProfiles.Where(s => s.ActiveHours > 0 && (report.SelectedScene == null || report.SelectedScene == s.Name)))
             result.Add(new() { OriginId = "scene:" + scene.Name, Name = "验证已有场景：" + scene.Name, Evidence = "已有观测 " + scene.DurationLabel + "；请包含重要和偶发任务，按候选电脑实际表现核对。" });
+        if (report.Cards.SingleOrDefault(c => c.Key == "gpu")?.RetainedWorkload is { } retained)
+            result.Add(new() { OriginId = "retained:gpu-core", Name = "核对所选范围已观测的核心/3D重负载任务",
+                Evidence = retained.Scope + "；" + retained.Evidence + " " + retained.Action });
         foreach (var engine in report.GpuEngineProfiles.Where(p => p.ObservedHours > 0 && (p.HeavyMinutes > 0 || p.Peak >= 80)))
         {
             // A generic scene may contain several engine tasks. Keep a stable checklist

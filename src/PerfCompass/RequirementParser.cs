@@ -83,11 +83,13 @@ public static partial class RequirementParser
             var relevant = positive.Where(f => keys.Contains(f.Key) || (localAi && (c.Key is "gpu" or "memory") && f.Key == "ai")).ToList();
             if (relevant.Count == 0) return c;
             bool protect = relevant.Any(f => f.Future || f.Key is "ai" or "display" or "fps");
+            bool replace = protect && (c.Status is "surplus" or "review" || c.Status is ("unknown" or "fit")
+                && (c.Observation?.State == "light" || c.UsesRetainedWorkload));
             string evidence = " 已确认需求：" + string.Join("；", relevant.Select(f => $"{f.Label}（原文：{f.Evidence}）")) + "。";
             return c with
             {
-                Status = protect && (c.Status is "surplus" or "review" || c.Status is ("unknown" or "fit") && c.Observation?.State == "light") ? "requirements" : c.Status,
-                Title = protect && (c.Status is "surplus" or "review" || c.Status is ("unknown" or "fit") && c.Observation?.State == "light") ? "先验证已确认的新需求，再评估降档" : c.Title,
+                Status = replace ? "requirements" : c.Status,
+                Title = replace ? "先验证已确认的新需求，再评估降档" : c.Title,
                 Evidence = c.Evidence + evidence,
                 Suggestion = c.Suggestion + (protect ? " 已确认的新任务不能由历史闲置证明可降档。请补充任务规模与目标，在候选配置上重跑验证。" : " 用已确认任务核对上述判断。")
             };

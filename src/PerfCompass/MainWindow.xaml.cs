@@ -240,6 +240,7 @@ public partial class MainWindow : Window
             var changed = result.DemandTrends.Where(t => t.Status == "increased").OrderBy(t => t.Days).FirstOrDefault();
             DemandTrendHeader.Text = changed == null ? "近期需求变化 · " + (result.DemandTrends.Any(t => t.Status == "similar" || t.Status == "decreased") ? "查看时期对照" : "对照记录积累中") : $"近期需求变化 · {changed.Name}增加（{changed.Days} 天对照）";
             AnalysisSummary.Text = result.Summary;
+            PurchaseGuidanceList.ItemsSource = PurchaseGuidance.Build(result);
             CoverageLabel.Text = $"{scene ?? "全部场景"} · {result.Level}  ·  有效使用 {result.DurationLabel}  ·  覆盖 {result.ActiveDays} 天  ·  {result.SampleCount:N0} 条记录";
             RepresentativeStatus.Text = result.CoverageMessage;
             CoverageNext.Text = result.HistoryQuality.HasIssues ? result.HistoryQuality.Message : result.Ready ? "已覆盖典型任务，可比较降档方向；近期新增任务会更新判断。" : result.Cards.Any(c => c.Observation != null)
@@ -284,7 +285,7 @@ public partial class MainWindow : Window
         header.Children.Add(new TextBlock { Text = label, Foreground = Brush(color), HorizontalAlignment = System.Windows.HorizontalAlignment.Right, FontSize = 12 });
         stack.Children.Add(header);
         stack.Children.Add(new TextBlock { Text = advice.DisplayTitle, FontSize = 18, FontWeight = FontWeights.SemiBold, Margin = new(0, 10, 0, 10), TextWrapping = TextWrapping.Wrap });
-        if (advice.Observation is { } observation)
+        if ((advice.UsesRetainedWorkload ? advice.RetainedWorkload : advice.Observation) is { } observation)
         {
             stack.Children.Add(new TextBlock { Text = observation.Evidence, Foreground = Brush("#45606C"), LineHeight = 23, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 6) });
             stack.Children.Add(new TextBlock { Text = $"{observation.Scope} · 有效观测 {DurationText.FromHours(observation.ObservedHours)} · 读数覆盖 {observation.Coverage:P0}", Foreground = Brush("#677A87"), FontSize = 12, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 10) });
@@ -297,6 +298,10 @@ public partial class MainWindow : Window
             stack.Children.Add(compare);
         }
         var detail = new StackPanel();
+        if (advice.RetainedWorkload is { } retained)
+            detail.Children.Add(new TextBlock { Text = retained.Evidence + "\n" + retained.Scope, Margin = new(0, 12, 0, 8), LineHeight = 22, TextWrapping = TextWrapping.Wrap });
+        if (advice.UsesRetainedWorkload && advice.Observation is { } recent)
+            detail.Children.Add(new TextBlock { Text = recent.Evidence + "\n" + recent.Scope, Margin = new(0, 0, 0, 8), LineHeight = 22, TextWrapping = TextWrapping.Wrap });
         detail.Children.Add(new TextBlock { Text = advice.Evidence, Margin = new(0, 12, 0, 8), LineHeight = 22 });
         detail.Children.Add(new TextBlock { Text = advice.Limits, Foreground = Brush("#677A87"), FontSize = 12, LineHeight = 21 });
         stack.Children.Add(new Expander { Tag = advice.Key, IsExpanded = expanded, Header = "查看依据与选型条件", Content = detail, Margin = new(0, 16, 0, 0), Foreground = Brush("#007F73") });

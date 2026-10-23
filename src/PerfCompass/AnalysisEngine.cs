@@ -152,7 +152,17 @@ public static class AnalysisEngine
                 // to history integrity or the existing purchase-eligibility gates.
                 if (quality.HasIntervalConflicts || observation?.State == "light"
                     && (quality.HasIssues || card.Key == "gpu" && gpuMetricScopes.Count > 1)) observation = null;
-                return card with { Observation = observation };
+                // A selected window may include an important task before the
+                // recent observation period. Keep its positive evidence separate
+                // so recent quiet readings cannot erase an observed task.
+                ResourceObservation? retained = card.Key == "gpu" && observedHeavyGpuWork && gpuSeconds > 0 && !quality.HasIssues && !quality.HasIntervalConflicts
+                    ? new("busy", "所选范围曾有核心/3D重负载，保留该任务",
+                        $"所选窗口已测核心/3D峰值 {F(gpuPeak)}；核心/3D有效读数 {DurationText.FromHours(gpuSeconds / 3600)}。" + gpuScopeNotice,
+                        "用曾出现重负载的任务核对候选显卡的帧率、耗时和功能；若该任务已不再需要，分别比较保留与取消它的方案。",
+                        $"所选 {windowDays} 天 · {selectedScene ?? "全部场景"} · 已测核心/3D",
+                        gpuSeconds / 3600, Math.Clamp(gpuSeconds / Math.Max(seconds, double.Epsilon), 0, 1)) : null;
+                return card with { Observation = observation, RetainedWorkload = retained,
+                    Evidence = card.Evidence + (retained == null ? "" : " 保留任务范围：" + retained.Scope + "。") };
             }).ToList();
         var result = new AnalysisReport(now, windowDays, count, seconds / 3600, dates.Count, ready, scenes.Order().ToArray(), cards,
             bins.Select(kv => new HistoryPoint(new DateTimeOffset(kv.Key, TimeSpan.Zero), kv.Value.Cpu.Mean,

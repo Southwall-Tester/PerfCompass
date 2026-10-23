@@ -375,6 +375,7 @@ public static partial class SelfTests
         RunIntelTelemetryTests(Check, Assert);
         RunGpuObservationScopeTests(Check, Assert);
         RunResourceObservationTests(Check, Assert);
+        RunPurchaseGuidanceTests(Check, Assert);
         RunCandidateEvidenceLevelTests(Check, Assert);
         RunHistoryAggregationTests(Check, Assert);
         RunComparisonDecisionIntegrityTests(Check, Assert);
