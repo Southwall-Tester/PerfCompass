@@ -18,7 +18,7 @@ public partial class App : System.Windows.Application
         string root = Path.Combine(AppContext.BaseDirectory, "data");
         int idx = Array.IndexOf(e.Args, "--data-dir");
         if (idx >= 0 && idx + 1 < e.Args.Length) root = Path.GetFullPath(e.Args[idx + 1]);
-        bool focusedUi = e.Args.Contains("--ui-test-gpu-freshness-only") || e.Args.Contains("--ui-test-observation-only");
+        bool focusedUi = e.Args.Contains("--ui-test-gpu-freshness-only") || e.Args.Contains("--ui-test-observation-only") || e.Args.Contains("--ui-test-history-aggregation-only");
         if (focusedUi && !e.Args.Contains("--ui-test")) { Shutdown(3); return; }
         if (validation != null || e.Args.Contains("--ui-test"))
         {

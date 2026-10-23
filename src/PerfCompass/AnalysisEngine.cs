@@ -24,7 +24,7 @@ public static class AnalysisEngine
         var gpuMetricScopes = new HashSet<string>(StringComparer.Ordinal);
         var gpuHistoryScopes = new HashSet<string>(StringComparer.Ordinal);
         // Only keep one hourly aggregate, not raw snapshots, in the report.
-        var bins = new SortedDictionary<long, (double C, int Cn, double M, int Mn, double G, int Gn)>();
+        var bins = new SortedDictionary<long, HourAccumulator>();
         double seconds = 0, cpuSeconds = 0, cpuHigh = 0, memorySeconds = 0, gpuSeconds = 0, coreSeconds = 0, commitSeconds = 0;
         double diskPeak = 0; double? memoryPeak = null, gpuPeak = null; int count = 0, samplingGaps = 0; Sample? latest = null;
         foreach (var raw in samples)
@@ -43,13 +43,34 @@ public static class AnalysisEngine
             count++; if (latest == null || s.Time >= latest.Time) latest = s;
             if (s.Seconds > 0)
             {
-                long bin = s.Time.ToUnixTimeSeconds() / 3600;
-                bins.TryGetValue(bin, out var b);
-                if (s.Cpu is double c) { b.C += c; b.Cn++; }
-                if (s.MemoryUsedGb is double m && s.MemoryTotalGb is > 0) { b.M += m / s.MemoryTotalGb.Value * 100; b.Mn++; }
-                if (s.Gpu is double g && (s.GpuCoverage ?? s.Seconds) > 0)
-                { b.G += g; b.Gn++; gpuHistoryScopes.Add(GpuEngineEvidence.MetricScope(s)); }
-                bins[bin] = b;
+                // History includes recorded idle intervals. Purchase statistics
+                // below retain their separate active-only gate. Split the recorded
+                // interval, not its end timestamp, across hours and the time window.
+                long end = s.Time.UtcTicks;
+                long duration = (long)Math.Round(s.Seconds * TimeSpan.TicksPerSecond);
+                long start = Math.Max(end - duration, now.AddDays(-windowDays).UtcTicks);
+                if (duration > 0 && start < end)
+                {
+                    double C(double? value) => Math.Clamp(value ?? s.Seconds, 0, s.Seconds);
+                    double cpuCovered = C(s.CpuCoverage), memoryCovered = C(s.MemoryCoverage), gpuCovered = C(s.GpuCoverage);
+                    if (s.Gpu.HasValue && gpuCovered > 0) gpuHistoryScopes.Add(GpuEngineEvidence.MetricScope(s));
+                    for (long cursor = start; cursor < end;)
+                    {
+                        long bin = cursor - cursor % TimeSpan.TicksPerHour;
+                        long stop = Math.Min(end, bin + TimeSpan.TicksPerHour);
+                        double share = (stop - cursor) / (double)duration;
+                        if (!bins.TryGetValue(bin, out var b)) bins[bin] = b = new();
+                        bool portion = stop - cursor < duration;
+                        // Coverage records a total, not the positions of successful
+                        // reads. Proportional allocation is explicitly an estimate
+                        // when only part of a partially covered interval is assigned.
+                        b.Cpu.Add(s.Cpu, cpuCovered * share, portion && cpuCovered + 1e-7 < s.Seconds);
+                        b.Memory.Add(s.MemoryTotalGb is > 0 ? s.MemoryUsedGb / s.MemoryTotalGb * 100 : null,
+                            memoryCovered * share, portion && memoryCovered + 1e-7 < s.Seconds);
+                        b.Gpu.Add(s.Gpu, gpuCovered * share, portion && gpuCovered + 1e-7 < s.Seconds);
+                        cursor = stop;
+                    }
+                }
             }
             diskPeak = Math.Max(diskPeak, s.MaxDiskPercent);
             if (!s.Active || s.Seconds <= 0) continue;
@@ -134,15 +155,40 @@ public static class AnalysisEngine
                 return card with { Observation = observation };
             }).ToList();
         var result = new AnalysisReport(now, windowDays, count, seconds / 3600, dates.Count, ready, scenes.Order().ToArray(), cards,
-            bins.Select(kv => new HistoryPoint(DateTimeOffset.FromUnixTimeSeconds(kv.Key * 3600), kv.Value.Cn > 0 ? kv.Value.C / kv.Value.Cn : null,
-                kv.Value.Mn > 0 ? kv.Value.M / kv.Value.Mn : null, gpuHistoryScopes.Count == 1 && kv.Value.Gn > 0 ? kv.Value.G / kv.Value.Gn : null)
-                { GpuScope = gpuHistoryScopes.Count == 1 ? gpuHistoryScopes.Single() : "" }).ToList(), settings.FutureNeeds)
+            bins.Select(kv => new HistoryPoint(new DateTimeOffset(kv.Key, TimeSpan.Zero), kv.Value.Cpu.Mean,
+                kv.Value.Memory.Mean, gpuHistoryScopes.Count == 1 ? kv.Value.Gpu.Mean : null)
+                {
+                    GpuScope = gpuHistoryScopes.Count == 1 ? gpuHistoryScopes.Single() : "",
+                    CpuObservedSeconds = kv.Value.Cpu.Seconds, MemoryObservedSeconds = kv.Value.Memory.Seconds,
+                    GpuObservedSeconds = gpuHistoryScopes.Count > 1 ? null : kv.Value.Gpu.Seconds,
+                    CpuCoverageEstimated = kv.Value.Cpu.Estimated, MemoryCoverageEstimated = kv.Value.Memory.Estimated,
+                    GpuCoverageEstimated = gpuHistoryScopes.Count == 1 && kv.Value.Gpu.Estimated
+                }).ToList(), settings.FutureNeeds)
             { HardwareId = scopeHardwareId, RepresentativeConfirmed = coverage.Confirmed, CoverageMessage = coverage.Message, SamplingGapCount = samplingGaps, HistoryQuality = quality,
                 GpuMetricScopes = string.IsNullOrWhiteSpace(scopeHardwareId) ? [] : gpuMetricScopes.Order(StringComparer.Ordinal).ToArray(),
                 GpuHistoryHasMixedSources = gpuHistoryScopes.Count > 1,
                 SelectedScene = selectedScene, DemandTrends = trends, FreshActiveHours = temporal.FreshHours, FreshActiveDays = temporal.FreshDays,
                 SceneProfiles = sceneProfiles };
         return HistoryAnalysis.Apply(gpuEngines.Apply(result), quality);
+    }
+
+    private sealed class HourAccumulator
+    {
+        internal readonly HourMetric Cpu = new(), Memory = new(), Gpu = new();
+    }
+    private sealed class HourMetric
+    {
+        private double weighted, minimum, maximum;
+        internal double Seconds { get; private set; }
+        internal bool Estimated { get; private set; }
+        internal double? Mean => Seconds > 0 ? Math.Clamp(weighted / Seconds, minimum, maximum) : null;
+        internal void Add(double? value, double seconds, bool estimated)
+        {
+            if (value is not double reading || !double.IsFinite(reading) || seconds <= 0 || !double.IsFinite(seconds)) return;
+            minimum = Seconds > 0 ? Math.Min(minimum, reading) : reading;
+            maximum = Seconds > 0 ? Math.Max(maximum, reading) : reading;
+            weighted += reading * seconds; Seconds += seconds; Estimated |= estimated;
+        }
     }
 
     private static Sample Sanitize(Sample sample)

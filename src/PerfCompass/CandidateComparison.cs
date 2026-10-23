@@ -77,6 +77,7 @@ public record PurchaseComparison(string Summary, List<PurchaseAssessment> Candid
 public static partial class CandidateComparison
 {
     private static string Hash(object value) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value))));
+    private static bool HasQuoteEvidence(PurchaseCandidate candidate) => candidate.PriceCny.HasValue && !string.IsNullOrWhiteSpace(candidate.Source);
     public static string CriterionStamp(PurchaseCriterion c)
     {
         string legacy = Hash(new { c.Name, c.Metric, c.Direction, c.Target, c.Unit, c.Condition, c.Evidence, c.Procedure });
@@ -235,17 +236,28 @@ public static partial class CandidateComparison
             string overall = requiredConflict ? "unknown" : required.Any(c => c.State == "fail") ? "fail" : !current || !workspace.CoverageConfirmed || required.Length == 0 || required.Any(c => c.State != "pass") ? "unknown" : "pass";
             assessments.Add(new(candidate.Id, candidate.Name, overall, candidate.PriceCny, checks));
         }
-        var passing = assessments.Where(a => a.State == "pass" && a.PriceCny.HasValue).OrderBy(a => a.PriceCny).ToArray();
+        // Task evidence establishes its own target result; it cannot establish
+        // where a separately entered quotation came from.
+        var evidencedQuotes = workspace.Candidates.Where(HasQuoteEvidence).Select(c => c.Id).ToHashSet(StringComparer.Ordinal);
+        var passing = assessments.Where(a => a.State == "pass" && evidencedQuotes.Contains(a.Id)).OrderBy(a => a.PriceCny).ToArray();
+        string MissingQuoteSourceNotice(IEnumerable<PurchaseAssessment> candidates)
+        {
+            var missing = candidates.Where(a => a.PriceCny.HasValue && !evidencedQuotes.Contains(a.Id)).Select(a => a.Name).ToArray();
+            return missing.Length == 0 ? "" : " 待补报价来源：" + string.Join("、", missing) + "；这些金额暂不参与最低报价、价差或节省计算。";
+        }
         string summary = requiredConflict ? "必需条件存在数值冲突。请先核对冲突项目的方向、数值和触发条件，再比较候选电脑。" : !current ? "需求或近期任务已改变，请重新核对条件覆盖范围。" : !workspace.CoverageConfirmed ? "请先核对是否覆盖重要任务、新需求和近期体验问题。"
             : assessments.Count == 1 ? $"候选「{assessments[0].Name}」：" + (assessments[0].State == "pass" ? "必需条件已通过。" : assessments[0].State == "fail" ? "存在不满足的必需条件。" : "仍有待验证的必需条件。")
                 + (assessments[0].PriceCny.HasValue ? $" 已记录整机报价 {assessments[0].PriceCny:0.##} 元；单台验证不计算候选价差。" : " 报价未填写，任务与规格目标可单独判断。")
-            : passing.Length == 0 ? "当前没有同时通过必需条件且有报价的候选。调整不满足条件的候选，或补齐待验证项。"
-            : "必需条件已通过且有报价的候选中，最低报价为 " + string.Join("、", passing.Where(p => p.PriceCny == passing[0].PriceCny).Select(p => p.Name)) + $"（{passing[0].PriceCny:0.##} 元）。";
+            : passing.Length == 0 ? assessments.Any(a => a.State == "pass")
+                ? $"已有 {assessments.Count(a => a.State == "pass")} 套候选通过必需条件；补齐报价和来源后比较价格。"
+                : "当前没有通过必需条件的候选。调整不满足条件的配置，或补齐待验证项。"
+            : "必需条件已通过且已填写报价来源的候选中，最低报价为 " + string.Join("、", passing.Where(p => p.PriceCny == passing[0].PriceCny).Select(p => p.Name)) + $"（{passing[0].PriceCny:0.##} 元）。";
         if (passing.Length > 1)
         {
             var max = passing.Max(p => p.PriceCny)!.Value;
             if (max > passing[0].PriceCny) summary += $" 与通过条件的最高报价相比可少花 {max - passing[0].PriceCny:0.##} 元；更高价格的收益需看具体任务结果。";
         }
+        summary += MissingQuoteSourceNotice(assessments);
         if (workspace.Criteria.Any(c => !string.IsNullOrWhiteSpace(c.Condition))) summary += " 条件需求单列；触发时还需通过对应项目。";
         var context = new[] { $"分析范围：最近 {report.WindowDays} 天 / {report.SelectedScene ?? "全部场景"}；已观测 {report.DurationLabel}。比较结论覆盖已核对的条件，条件需求按触发情况另行判断。",
                 "证据类型逐项列出。重复耗时测量达标仅表示所附原始正式轮次全部达到该目标；机器对应关系与实际产物仍由用户核对。" }
@@ -260,7 +272,7 @@ public static partial class CandidateComparison
                 var changes = new List<string>();
                 void Capacity(string name, double? before, double? after) { if (before.HasValue && after.HasValue && before != after) changes.Add($"{name} {before:0.###} → {after:0.###} GB"); }
                 Capacity("内存", baseline.MemoryGb, candidate.MemoryGb); Capacity("独立显存", baseline.VramGb, candidate.VramGb); Capacity("存储", baseline.StorageGb, candidate.StorageGb);
-                foreach (var goal in workspace.Criteria.Where(c => c.Metric == "task"))
+                foreach (var goal in workspace.Criteria.Where(c => c.Metric == "task" && c.Reviewed && c.ReviewStamp == CriterionStamp(c)))
                 {
                     var before = workspace.Observations.SingleOrDefault(o => o.CandidateId == baseline.Id && o.CriterionId == goal.Id);
                     var after = workspace.Observations.SingleOrDefault(o => o.CandidateId == candidate.Id && o.CriterionId == goal.Id);
@@ -274,9 +286,11 @@ public static partial class CandidateComparison
         var scenarios = new List<string>();
         foreach (string condition in workspace.Criteria.Select(c => c.Condition.Trim()).Where(c => c.Length > 0).Distinct())
         {
-            var qualified = assessments.Where(a => a.State == "pass" && a.Checks.Where(c => c.Condition.Trim() == condition).All(c => c.State == "pass") && a.PriceCny.HasValue).OrderBy(a => a.PriceCny).ToArray();
+            var targetsPassed = assessments.Where(a => a.State == "pass" && a.Checks.Where(c => c.Condition.Trim() == condition).All(c => c.State == "pass")).ToArray();
+            var qualified = targetsPassed.Where(a => evidencedQuotes.Contains(a.Id)).OrderBy(a => a.PriceCny).ToArray();
             string conflict = requiredConflict ? "必需条件存在数值冲突，请先修正。" : conflicts.Any(c => c.Condition == condition) ? "本情景存在数值冲突，请核对冲突项目。" : "";
-            scenarios.Add("情景「" + condition + "」成立时：" + (conflict.Length > 0 ? conflict : qualified.Length == 0 ? "当前没有通过必需条件及此情景全部条件、且有报价的候选。请检查不满足或待验证项。" : "最低已核对报价为 " + string.Join("、", qualified.Where(a => a.PriceCny == qualified[0].PriceCny).Select(a => a.Name)) + $"（{qualified[0].PriceCny:0.##} 元）。") + "多个条件同时成立时，还需一起核对所有相关项目。");
+            scenarios.Add("情景「" + condition + "」成立时：" + (conflict.Length > 0 ? conflict : qualified.Length == 0 ? "当前没有通过必需条件及此情景全部条件、且报价依据齐全的候选。请检查不满足或待验证项。" : "最低已核对报价为 " + string.Join("、", qualified.Where(a => a.PriceCny == qualified[0].PriceCny).Select(a => a.Name)) + $"（{qualified[0].PriceCny:0.##} 元）。")
+                + (conflict.Length > 0 ? "" : MissingQuoteSourceNotice(targetsPassed)) + "多个条件同时成立时，还需一起核对所有相关项目。");
         }
         return new(summary, assessments, context, stamp) { Tradeoffs = tradeoffs.ToArray(), ScenarioSummaries = scenarios.ToArray(), Conflicts = conflicts };
     }
@@ -301,7 +315,7 @@ public static partial class CandidateComparison
             + string.Join("", comparison.Conflicts.Select(c => "<section><h2>条件数值冲突</h2><p>" + E(c.Message) + "</p></section>"))
             + string.Join("", comparison.ScenarioSummaries.Select(t => "<section><h2>条件情景</h2><p>" + E(t) + "</p></section>"))
             + string.Join("", comparison.Tradeoffs.Select(t => "<section><p>" + E(t) + "</p></section>"))
-            + string.Join("", comparison.Candidates.Select(a => { var candidate = workspace.Candidates.Single(c => c.Id == a.Id); return "<section><h2>" + E(a.Name) + " · 必需条件：" + State(a.State) + "</h2><p>" + E(candidate.Cpu) + " / " + E(candidate.Gpu) + "；报价 " + (a.PriceCny.HasValue ? E(a.PriceCny.Value.ToString("0.##")) + " 元" : "未填写") + "</p><p>配置/报价来源：" + E(candidate.Source) + "</p><table><tr><th>条件</th><th>结果</th><th>依据类型与记录</th></tr>" + string.Join("", a.Checks.Select(c => "<tr><td>" + E(c.Name) + (c.Condition.Length > 0 ? "<br>条件：" + E(c.Condition) : "") + "</td><td>" + State(c.State) + "<br>" + E(c.Reading) + "</td><td><b>" + E(c.EvidenceLabel) + "</b><br>" + E(c.Evidence) + "</td></tr>")) + "</table></section>"; }))
+            + string.Join("", comparison.Candidates.Select(a => { var candidate = workspace.Candidates.Single(c => c.Id == a.Id); return "<section><h2>" + E(a.Name) + " · 必需条件：" + State(a.State) + "</h2><p>" + E(candidate.Cpu) + " / " + E(candidate.Gpu) + "；报价 " + (a.PriceCny.HasValue ? E(a.PriceCny.Value.ToString("0.##")) + " 元" : "未填写") + "</p><p>配置/报价来源：" + E(string.IsNullOrWhiteSpace(candidate.Source) ? a.PriceCny.HasValue ? "待补报价来源，此金额不参与价格比较。" : "未填写" : candidate.Source) + "</p><table><tr><th>条件</th><th>结果</th><th>依据类型与记录</th></tr>" + string.Join("", a.Checks.Select(c => "<tr><td>" + E(c.Name) + (c.Condition.Length > 0 ? "<br>条件：" + E(c.Condition) : "") + "</td><td>" + State(c.State) + "<br>" + E(c.Reading) + "</td><td><b>" + E(c.EvidenceLabel) + "</b><br>" + E(c.Evidence) + "</td></tr>")) + "</table></section>"; }))
             + "<section><h2>历史与近期任务依据</h2>" + string.Join("", comparison.Context.Select(c => "<p>" + E(c) + "</p>")) + "</section><section><h2>目标、条件与测试步骤</h2>" + string.Join("", workspace.Criteria.Select(c => "<p><b>" + E(c.Name) + "</b><br>需求依据：" + E(c.Evidence) + "<br>测试步骤：" + E(c.Procedure) + "</p>")) + "</section></html>";
     }
 }

@@ -94,6 +94,23 @@ public record Advice(string Key, string Name, string Status, string Title, strin
 public record HistoryPoint(DateTimeOffset Time, double? Cpu, double? Memory, double? Gpu)
 {
     public string GpuScope { get; init; } = "";
+    public double? CpuObservedSeconds { get; init; }
+    public double? MemoryObservedSeconds { get; init; }
+    public double? GpuObservedSeconds { get; init; }
+    public bool CpuCoverageEstimated { get; init; }
+    public bool MemoryCoverageEstimated { get; init; }
+    public bool GpuCoverageEstimated { get; init; }
+    public string PeriodLabel => $"{Time.LocalDateTime:yyyy-MM-dd HH:mm}–{Time.AddHours(1).LocalDateTime:HH:mm}";
+    public string CpuReadingLabel => Reading("CPU", Cpu, CpuObservedSeconds, CpuCoverageEstimated);
+    public string MemoryReadingLabel => Reading("内存", Memory, MemoryObservedSeconds, MemoryCoverageEstimated);
+    public string GpuReadingLabel => Reading("GPU 核心/3D", Gpu, GpuObservedSeconds, GpuCoverageEstimated);
+    public string DetailsLabel => string.Join("\n", CpuReadingLabel, MemoryReadingLabel, GpuReadingLabel);
+    private static string Reading(string name, double? value, double? seconds, bool estimated)
+    {
+        string duration = !seconds.HasValue ? "时长未记录" : seconds < 60 ? $"{seconds:0.###} 秒" : $"{seconds / 60:0.0} 分钟";
+        return value.HasValue ? $"{name} {value:0.0}% · 读数 {duration}" + (estimated ? "（部分读数按区间比例分摊）" : "")
+            : $"{name} — · 无可用均值";
+    }
 }
 public record SceneProfile(string Name, int SampleCount, double ActiveHours, double? CpuP95, double? CoreP95,
     double? MemoryPeakGb, double? GpuP95, double? GpuPeak, double CpuCoverage, double GpuCoverage)
@@ -119,7 +136,7 @@ public record DemandTrend(string Key, string Name, string Unit, int Days, string
     public string StatusLabel => Status switch { "increased" => "近期增加", "decreased" => "近期减少", "similar" => "相近", _ => "对照积累中" };
     public string ComparisonLabel => $"最近 {Days} 天 / 此前 {Days} 天";
     public string ReadingsLabel => $"P95：{Format(RecentP95)} / {Format(PreviousP95)} · 有效观测 {DurationText.FromHours(RecentHours)} / {DurationText.FromHours(PreviousHours)}";
-    public string BusyLabel => !LoadStatisticsAvailable ? (StatisticsUnavailableReason.Length > 0 ? StatisticsUnavailableReason : "重叠时段的负载比例无法确认") : Key == "memory" ? "" : $"负载 ≥80% 累计 {RecentBusyMinutes:0.0} / {PreviousBusyMinutes:0.0} 分钟（有效观测占比 {Share(RecentBusyMinutes, RecentHours)} / {Share(PreviousBusyMinutes, PreviousHours)}）";
+    public string BusyLabel => !LoadStatisticsAvailable ? (StatisticsUnavailableReason.Length > 0 ? StatisticsUnavailableReason : "重叠时段的负载比例无法确认") : Key == "memory" ? "" : $"{(Key == "cpu" ? "批次平均负载" : "负载")} ≥80% 累计 {RecentBusyMinutes:0.0} / {PreviousBusyMinutes:0.0} 分钟（有效观测占比 {Share(RecentBusyMinutes, RecentHours)} / {Share(PreviousBusyMinutes, PreviousHours)}）";
     public string SceneLabel => LoadStatisticsAvailable && RecentHeavyScenes.Length > 0 ? "近期重负载场景：" + string.Join("、", RecentHeavyScenes) : "";
     private string Format(double? value) => value.HasValue ? $"{value:0.0}{Unit}" : "缺失";
     private static string Share(double minutes, double hours) => hours > 0 ? $"{minutes / (hours * 60) * 100:0.0}%" : "缺失";
@@ -141,7 +158,7 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public string HardwareId { get; init; } = "";
     public bool RepresentativeConfirmed { get; init; }
     public string CoverageMessage { get; init; } = "";
-    public string MethodVersion { get; init; } = "1.13";
+    public string MethodVersion { get; init; } = "1.14";
     public HistoryQuality HistoryQuality { get; init; } = HistoryQuality.Unchecked;
     public int SamplingGapCount { get; init; }
     public string SamplingGapSummary => SamplingGapCount > 0 ? $"本范围记录到 {SamplingGapCount} 次采样中断；中断段未计入有效使用，也未作为空闲负载。" : "";

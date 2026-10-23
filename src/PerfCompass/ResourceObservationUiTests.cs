@@ -260,6 +260,7 @@ public partial class MainWindow
                 && view.CoverageConfirm.IsChecked != true && !view.Workspace.CoverageConfirmed,
                 $"Editing a real {edit.Kind} cell still invalidates the previous result and coverage confirmation");
         }
+        await RunCandidateDecisionUiTests(output, require, screenshot);
         File.WriteAllText(Path.Combine(output, "resource-observation-NOTICE.txt"),
             "The initial three common checks use actual local CPU/memory collection. This flow then pauses the collector and appends 60 ten-second synthetic rows, followed by one partial 96% compute-engine row, only to the guarded empty UI-test data directory. The separately selected scene is explicitly synthetic and excludes startup telemetry. Dates occupy one local day; 10 minutes do not satisfy purchase-readiness or representative-coverage requirements. Native store/history analysis, card text and visible rendering, the actual comparison action and grids, single-candidate evaluation, saved review state and HTML export are exercised. Candidate names and prices are synthetic; no condition or task result is claimed to be verified. Screenshots, reports and this notice are written only to the provided test output folder. No workload, model, hardware setting or production history is changed.");
     }

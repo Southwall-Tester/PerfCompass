@@ -248,6 +248,11 @@ public partial class MainWindow : Window
             AdviceList.Items.Clear();
             foreach (var advice in result.Cards) AdviceList.Items.Add(AdviceCard(advice, expanded.Contains(advice.Key)));
             HistoryChart.SetPoints(result.History);
+            var selectedPeriod = (HistoryPeriodCombo.SelectedItem as HistoryPoint)?.Time;
+            HistoryPeriodCombo.ItemsSource = result.History.AsEnumerable().Reverse().ToArray();
+            HistoryPeriodCombo.IsEnabled = result.History.Count > 0;
+            HistoryPeriodCombo.SelectedItem = result.History.FirstOrDefault(p => p.Time == selectedPeriod) ?? result.History.LastOrDefault();
+            HistoryPeriodDetails.Text = (HistoryPeriodCombo.SelectedItem as HistoryPoint)?.DetailsLabel ?? "当前范围没有可显示的小时均值";
             HistorySummary.Text = $"最近 {days} 天 · {result.SampleCount:N0} 条记录 · {scene ?? "全部场景"} · " + (result.HistoryQuality.HasIntervalConflicts ? "时段重叠，历史负载图暂不显示；场景时长可能互相重叠，不能相加。" : result.Scenes.Length > 0 ? string.Join("、", result.Scenes) : "等待有效使用");
             if (!result.HistoryQuality.HasIntervalConflicts && result.GpuHistoryHasMixedSources)
                 HistorySummary.Text += "。核心/3D来源或规则混合，GPU 历史曲线暂不显示；CPU、内存曲线独立保留。";
@@ -262,6 +267,11 @@ public partial class MainWindow : Window
         }
     }
     private static Brush Brush(string color) => (SolidColorBrush)new BrushConverter().ConvertFromString(color)!;
+    private void HistoryPeriod_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (HistoryPeriodDetails != null)
+            HistoryPeriodDetails.Text = (HistoryPeriodCombo.SelectedItem as HistoryPoint)?.DetailsLabel ?? "当前范围没有可显示的小时均值";
+    }
     private Border AdviceCard(Advice advice, bool expanded)
     {
         var stack = new StackPanel();

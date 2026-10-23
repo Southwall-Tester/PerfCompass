@@ -34,17 +34,23 @@ internal sealed class HistoryIntervals
 internal sealed class HistoryAudit
 {
     private readonly HashSet<HistoryFingerprint> seen = [];
+    // Plotting includes idle recordings, so audit ownership of every recorded
+    // interval separately from the active-only duration used for purchase advice.
+    private readonly Dictionary<string, HistoryIntervals> recorded = new(StringComparer.Ordinal);
     private readonly Dictionary<string, HistoryIntervals> totals = new(StringComparer.Ordinal);
     private readonly Dictionary<(string Hardware, string Scene), HistoryIntervals> scenes = [];
     internal bool IsDuplicate(HistoryFingerprint fingerprint) => !seen.Add(fingerprint);
     internal (double Total, double Scene, bool Overlap) Cover(Sample sample)
     {
-        if (!sample.Active || sample.Seconds <= 0) return (0, 0, false);
+        if (sample.Seconds <= 0) return (0, 0, false);
         long duration = (long)Math.Round(sample.Seconds * TimeSpan.TicksPerSecond), end = sample.Time.UtcTicks, start = end - duration;
+        if (!recorded.TryGetValue(sample.HardwareId, out var intervals)) recorded[sample.HardwareId] = intervals = new();
+        bool overlap = duration - intervals.Add(start, end) > 1;
+        if (!sample.Active) return (0, 0, overlap);
         if (!totals.TryGetValue(sample.HardwareId, out var total)) totals[sample.HardwareId] = total = new();
         var key = (sample.HardwareId, AnalysisEngine.NormalizeScene(sample.Scene));
         if (!scenes.TryGetValue(key, out var scene)) scenes[key] = scene = new();
         long unique = total.Add(start, end), uniqueScene = scene.Add(start, end);
-        return (unique / (double)TimeSpan.TicksPerSecond, uniqueScene / (double)TimeSpan.TicksPerSecond, duration - unique > 1);
+        return (unique / (double)TimeSpan.TicksPerSecond, uniqueScene / (double)TimeSpan.TicksPerSecond, overlap);
     }
 }

@@ -358,7 +358,9 @@ public static partial class SelfTests
                     && Near(profile.ObservedHours, 5d / 3600) && Near(profile.CompleteHours, 5d / 3600)
                     && Near(profile.P95, 52) && profile.Peak == 100 && Near(profile.HeavyMinutes, 2d / 60)
                     && profile.Sources.SequenceEqual(new[] { "D3D Compute_0" }), "actual report reconstructed different engine evidence");
-                assert(report.History.Single().Gpu == 0 && report.Cards.Single(c => c.Key == "gpu").Status != "review",
+                assert(report.History.All(point => point.Gpu == 0)
+                    && Near(report.History.Sum(point => point.GpuObservedSeconds ?? 0), 10)
+                    && report.Cards.Single(c => c.Key == "gpu").Status != "review",
                     "new engine load contaminated the old core chart or left a downgrade review");
                 var encode = report.GpuEngineProfiles.Single(p => p.Kind == "encode");
                 assert(encode.P95 == null && encode.ObservedHours == 0 && encode.Sources.Length == 0,

@@ -272,7 +272,7 @@ public static partial class SelfTests
         {
             InStore(store =>
             {
-                var first = Row(1, 0, 10);
+                var first = Row(1, 0, 10) with { Time = now.AddDays(-1).AddMinutes(5) };
                 var second = first with { Time = first.Time.AddSeconds(20), Gpu = 90, GpuPeak = 90, GpuMetricSource = "GPU D3D 3D" };
                 store.Append(first); store.Append(second);
                 var report = History(store); var scene = report.SceneProfiles.Single();
@@ -299,7 +299,7 @@ public static partial class SelfTests
 
         check("GPU source isolation applies to each scene and selected graph without hiding coherent neighboring scenes", () =>
         {
-            var first = Row(1, 0, 10) with { Scene = "same source" };
+            var first = Row(1, 0, 10) with { Scene = "same source", Time = now.AddDays(-1).AddMinutes(5) };
             var rows = new[]
             {
                 first, first with { Time = first.Time.AddSeconds(20), Gpu = 20, GpuPeak = 20 },
@@ -320,7 +320,7 @@ public static partial class SelfTests
 
         check("Only actual GPU graph observations contribute graph provenance including separately observed idle samples", () =>
         {
-            var first = Row(1, 0, 10);
+            var first = Row(1, 0, 10) with { Time = now.AddDays(-1).AddMinutes(5) };
             var absent = first with { Time = first.Time.AddSeconds(20), GpuMetricSource = "D3D 3D", Gpu = null, GpuPeak = null };
             var uncovered = first with { Time = first.Time.AddSeconds(40), GpuMetricSource = "D3D 3D", GpuCoverage = 0 };
             var comparable = Analyze([first, absent, uncovered]);

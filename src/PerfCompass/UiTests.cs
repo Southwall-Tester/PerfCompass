@@ -18,7 +18,8 @@ public partial class MainWindow
         bool gpuOnly = Environment.GetCommandLineArgs().Contains("--ui-test-gpu-only");
         bool gpuFreshnessOnly = Environment.GetCommandLineArgs().Contains("--ui-test-gpu-freshness-only");
         bool observationOnly = Environment.GetCommandLineArgs().Contains("--ui-test-observation-only");
-        var output = Path.GetFullPath(observationOnly ? "artifacts/ui-observation-focused" : gpuFreshnessOnly ? "artifacts/ui-gpu-freshness-focused" : gpuOnly ? "artifacts/ui-gpu-focused" : cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
+        bool historyAggregationOnly = Environment.GetCommandLineArgs().Contains("--ui-test-history-aggregation-only");
+        var output = Path.GetFullPath(historyAggregationOnly ? "artifacts/ui-history-aggregation-focused" : observationOnly ? "artifacts/ui-observation-focused" : gpuFreshnessOnly ? "artifacts/ui-gpu-freshness-focused" : gpuOnly ? "artifacts/ui-gpu-focused" : cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
         var results = new List<string>();
         File.WriteAllText(Path.Combine(output, "results.txt"), "RUNNING " + DateTimeOffset.Now.ToString("O"));
         void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); File.AppendAllText(Path.Combine(output, "results.txt"), "\n" + results[^1]); if (!value) throw new Exception(name); }
@@ -43,6 +44,7 @@ public partial class MainWindow
             Require(live?.Sample.Cpu is >= 0 and <= 100, "Real CPU sample available");
             Require(live?.Sample.MemoryTotalGb > 0, "Real memory sample available");
             Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
+            if (historyAggregationOnly) { await RunHistoryAggregationUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (observationOnly) { await RunResourceObservationUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (gpuFreshnessOnly) { await RunGpuFreshnessUiTests(output, Require, Screenshot); return; }
             if (cpuOnly) { await RunCpuCounterUiTests(output, Require, Screenshot); return; }
