@@ -1,0 +1,101 @@
+﻿{
+    "Source":  "Final local published executable and isolated validation; no user history or raw device identity included",
+    "Version":  "0.8.14+0bf5f301cc01ee66eb9524541d46b55a7fda3e15",
+    "ProductCommit":  "0bf5f301cc01ee66eb9524541d46b55a7fda3e15",
+    "ExecutableSha256":  "F21E9704CEDFBB69338C18BA5AFB82B07ED039C8DDBE5880343E3200BD301069",
+    "Build":  {
+                  "Warnings":  0,
+                  "Errors":  0
+              },
+    "PublishedSelfTests":  {
+                               "Passed":  342,
+                               "Failed":  0,
+                               "Exit":  0
+                           },
+    "PublishedFullWpfFlow":  {
+                                 "Passed":  145,
+                                 "Failed":  0,
+                                 "Exit":  0
+                             },
+    "PublishedObservationWpfFlow":  {
+                                        "Passed":  25,
+                                        "Failed":  0,
+                                        "Exit":  0
+                                    },
+    "PublishedShortSoak":  {
+                               "Exit":  0,
+                               "ObservedSeconds":  10.4680222,
+                               "ErrorLogExists":  false,
+                               "Heartbeats":  5,
+                               "HistoryIssues":  0,
+                               "SavedSamples":  1,
+                               "ChecksPassed":  true,
+                               "Scope":  "Short concurrent isolated validation only; not an overhead benchmark or long-run validation",
+                               "RequestedSeconds":  10,
+                               "CollectorStopped":  true,
+                               "Status":  "completed",
+                               "TimingGaps":  0
+                           },
+    "HardwareSource":  {
+                           "Verification":  "Identical vendor source snapshot to independently built 0.8.13 source; this package updates checkout metadata",
+                           "SourceTreeDirty":  false,
+                           "Files":  198,
+                           "ArchiveSha256":  "53df310818daacf67d981d4c718eb2487f680771ab1da6b5700c1576f2c9bdaf",
+                           "CheckoutCommit":  "0bf5f301cc01ee66eb9524541d46b55a7fda3e15",
+                           "SnapshotSha256":  "e6a7b5e3279f4d11adacc38a109ae984f6457844b66ef486daa2acfad5285849",
+                           "UpstreamCommit":  "3d331e3370efb858411f19511373eff65a218701"
+                       },
+    "RemoteCi":  {
+                     "Run":  39964651438,
+                     "NativeObservationAndSingleCandidate":  "success",
+                     "BuildTestPublish":  "success",
+                     "Conclusion":  "success",
+                     "NativeGpuEngineScope":  "success",
+                     "TelemetryRecording":  "success",
+                     "ProductCommit":  "0bf5f301cc01ee66eb9524541d46b55a7fda3e15",
+                     "NativeCpuRecovery":  "success"
+                 },
+    "PreservedFailures":  [
+                              {
+                                  "PassedBeforeFailure":  7,
+                                  "Stage":  "First CPU card",
+                                  "Kind":  "test-viewport"
+                              },
+                              {
+                                  "PassedBeforeFailure":  20,
+                                  "Stage":  "Final single-candidate result",
+                                  "Kind":  "test-viewport"
+                              },
+                              {
+                                  "Fix":  "Filter cell events to editing state and invalidate at BeginningEdit; test layout preservation and text/selection/checkbox edits",
+                                  "PassedBeforeFailure":  20,
+                                  "Stage":  "Display-mode grid binding could clear a computed result",
+                                  "Kind":  "product-layout-invalidation"
+                              },
+                              {
+                                  "Fix":  "Assert headroom only in the synthetic task scene, then restore all-scenes rare-task checks; production rules unchanged",
+                                  "PassedBeforeFailure":  20,
+                                  "Stage":  "Real startup CPU/memory constrained the all-scenes synthetic headroom assertion",
+                                  "Kind":  "test-scene-isolation"
+                              }
+                          ],
+    "EarlierVersionLongRunSnapshot":  {
+                                          "Updated":  "2026-10-23T13:55:52.9641221+00:00",
+                                          "ObservationGaps":  2,
+                                          "ExpectedChecksPassed":  false,
+                                          "Version":  "0.8.10",
+                                          "ElapsedSeconds":  15024.6913835,
+                                          "State":  "running",
+                                          "ProtectionChecks":  163,
+                                          "RequestedSeconds":  28800,
+                                          "Scope":  "Frozen older binary encountered Windows sleep and RTC correction; unchanged cumulative criteria cannot pass; does not validate this version",
+                                          "StaleSamples":  1
+                                      },
+    "Limits":  [
+                   "Five-minute preliminary observations are scoped heuristics, not a calibrated confidence score",
+                   "Low measured core/3D load gives a lower-tier comparison direction, not proof that the whole discrete GPU is unnecessary",
+                   "Native UI flows use explicitly synthetic isolated task records after actual startup checks; counts overlap",
+                   "Specification/manual evidence and repeated elapsed-time evidence remain separate",
+                   "Commercial maturity and long-run/cross-hardware/independent semantic validation remain incomplete"
+               ]
+}
