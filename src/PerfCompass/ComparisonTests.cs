@@ -29,7 +29,10 @@ public static partial class SelfTests
             workspace = Workspace(context, Goal()); workspace.CoverageConfirmed = false;
             assert(CandidateComparison.Evaluate(workspace, context).Candidates.All(c => c.State == "unknown"), "coverage confirmation bypassed");
             workspace.CoverageConfirmed = true; workspace.Candidates.ForEach(c => c.PriceCny = null);
-            assert(CandidateComparison.Evaluate(workspace, context).Summary.Contains("没有同时通过"), "unknown quote fabricated");
+            var unpriced = CandidateComparison.Evaluate(workspace, context);
+            assert(unpriced.Candidates.All(c => c.State == "pass" && c.PriceCny == null) && unpriced.Tradeoffs.Length == 0
+                && !unpriced.Summary.Contains("最低报价为") && !unpriced.Summary.Contains("可少花")
+                && unpriced.Summary.Contains("补齐报价"), "missing quotes erased valid target results or fabricated price conclusions");
         });
         check("Conditional failures remain separate from the no-trigger scenario", () =>
         {
