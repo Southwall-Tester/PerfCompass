@@ -42,6 +42,7 @@ public sealed partial class LocalStore
         catch (Exception error) when (diagnostics != null && error is IOException or UnauthorizedAccessException)
         { diagnostics.Add("数据目录", 0, "无法枚举历史文件"); Log(error); yield break; }
         var encoding = new UTF8Encoding(false, true);
+        var audit = diagnostics == null ? null : new HistoryAudit();
         foreach (var file in files)
         {
             string name = Path.GetFileName(file);
@@ -92,6 +93,17 @@ public sealed partial class LocalStore
                         if (!root.TryGetProperty("Active", out var active) || active.ValueKind is not (JsonValueKind.True or JsonValueKind.False)) throw new InvalidDataException("缺少有效使用状态");
                         sample = root.Deserialize<Sample>();
                         if (sample != null && (sample.Scene == null || !root.TryGetProperty("Scene", out _))) sample = sample with { Scene = "未标记" };
+                        if (sample != null && audit != null)
+                        {
+                            if (audit.IsDuplicate(HistoryFingerprint.From(bytes.Span.Trim("\r \t"u8)))) { diagnostics!.Duplicate(name, line.Number); continue; }
+                            var covered = audit.Cover(sample);
+                            sample = sample with { UniqueObservationSeconds = covered.Total, UniqueSceneSeconds = covered.Scene };
+                            if (covered.Overlap)
+                            {
+                                diagnostics!.HasIntervalConflicts = true;
+                                Issue("同一配置的时间片重叠，无法确认记录来源和负载份额");
+                            }
+                        }
                     }
                     catch (DecoderFallbackException) { Issue("不是有效 UTF-8 文本"); }
                     catch (JsonException) { Issue("JSON 损坏或记录未写完整"); }

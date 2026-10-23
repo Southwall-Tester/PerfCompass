@@ -59,7 +59,7 @@ public static partial class SelfTests
         check("Committed prefix reads ignore concurrent appends until the next independent scan", () =>
         {
             var s = new LocalStore(Path.Combine(Path.GetTempPath(), "PerfCompass-history-prefix-" + Guid.NewGuid().ToString("N")));
-            var row = fixture()[^1]; s.Append(row); s.Append(row with { Time = row.Time.AddSeconds(-1) });
+            var row = fixture()[^1]; s.Append(row); s.Append(row with { Time = row.Time.AddSeconds(-10) });
             using var diagnostics = new HistoryDiagnostics(7);
             using var e = s.ReadChecked(7, "test-machine", DateTimeOffset.Now, diagnostics).GetEnumerator(); assert(e.MoveNext(), "no first record");
             string file = Directory.GetFiles(s.Root, "samples-*.jsonl").Single(); File.AppendAllText(file, "{unfinished concurrent append");

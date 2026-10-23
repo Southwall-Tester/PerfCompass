@@ -16,6 +16,8 @@ public record Sample
     public string HardwareId { get; init; } = "";
     public string Scene { get; init; } = "日常办公";
     public double Seconds { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore] public double? UniqueObservationSeconds { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore] public double? UniqueSceneSeconds { get; init; }
     public double? CpuCoverage { get; init; }
     public double? CoreCoverage { get; init; }
     public double? MemoryCoverage { get; init; }
@@ -66,11 +68,12 @@ public record DemandTrend(string Key, string Name, string Unit, int Days, string
     double RecentBusyMinutes, double PreviousBusyMinutes, int RecentActiveDays, int PreviousActiveDays,
     string[] RecentHeavyScenes, string Summary, string Suggestion)
 {
+    public bool LoadStatisticsAvailable { get; init; } = true;
     public string StatusLabel => Status switch { "increased" => "近期增加", "decreased" => "近期减少", "similar" => "相近", _ => "对照积累中" };
     public string ComparisonLabel => $"最近 {Days} 天 / 此前 {Days} 天";
     public string ReadingsLabel => $"P95：{Format(RecentP95)} / {Format(PreviousP95)} · 有效观测 {DurationText.FromHours(RecentHours)} / {DurationText.FromHours(PreviousHours)}";
-    public string BusyLabel => Key == "memory" ? "" : $"负载 ≥80% 累计 {RecentBusyMinutes:0.0} / {PreviousBusyMinutes:0.0} 分钟（有效观测占比 {Share(RecentBusyMinutes, RecentHours)} / {Share(PreviousBusyMinutes, PreviousHours)}）";
-    public string SceneLabel => RecentHeavyScenes.Length > 0 ? "近期重负载场景：" + string.Join("、", RecentHeavyScenes) : "";
+    public string BusyLabel => !LoadStatisticsAvailable ? "重叠时段的负载比例无法确认" : Key == "memory" ? "" : $"负载 ≥80% 累计 {RecentBusyMinutes:0.0} / {PreviousBusyMinutes:0.0} 分钟（有效观测占比 {Share(RecentBusyMinutes, RecentHours)} / {Share(PreviousBusyMinutes, PreviousHours)}）";
+    public string SceneLabel => LoadStatisticsAvailable && RecentHeavyScenes.Length > 0 ? "近期重负载场景：" + string.Join("、", RecentHeavyScenes) : "";
     private string Format(double? value) => value.HasValue ? $"{value:0.0}{Unit}" : "缺失";
     private static string Share(double minutes, double hours) => hours > 0 ? $"{minutes / (hours * 60) * 100:0.0}%" : "缺失";
 }
@@ -88,7 +91,7 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public string HardwareId { get; init; } = "";
     public bool RepresentativeConfirmed { get; init; }
     public string CoverageMessage { get; init; } = "";
-    public string MethodVersion { get; init; } = "1.6";
+    public string MethodVersion { get; init; } = "1.7";
     public HistoryQuality HistoryQuality { get; init; } = HistoryQuality.Unchecked;
     [System.Text.Json.Serialization.JsonIgnore]
     public string DurationLabel => DurationText.FromHours(ActiveHours);

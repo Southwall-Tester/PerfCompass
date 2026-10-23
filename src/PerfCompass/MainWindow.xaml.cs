@@ -178,10 +178,10 @@ public partial class MainWindow : Window
                 HistoryAnalysis.Analyze(store, settings, days, scene, hardwareId: id), store.ReadExperiences(days, id ?? "")), settings), settings));
             if (days != windowDays || scene != analysisScene || settings != store.Settings || id != collector?.HardwareId) { refreshRequested = true; return; }
             report = result;
-            HistoryQualityNotice.Visibility = result.HistoryQuality.HasIssues ? Visibility.Visible : Visibility.Collapsed;
-            HistoryQualityNotice.Header = $"历史记录异常 · {result.HistoryQuality.IssueCount} 处（点击查看位置）";
+            HistoryQualityNotice.Visibility = result.HistoryQuality.HasNotices ? Visibility.Visible : Visibility.Collapsed;
+            HistoryQualityNotice.Header = result.HistoryQuality.HasIssues ? $"历史记录异常 · {result.HistoryQuality.IssueCount} 处（点击查看位置）" : $"已排除重复记录 · {result.HistoryQuality.DuplicateCount} 条（点击查看位置）";
             HistoryQualityDetails.Text = result.HistoryQuality.Message + "\n" + result.HistoryQuality.Details + "\n原文件保留。可在记录设置备份，并从已核对的备份恢复到新目录。";
-            if (activePage == "comparison") ComparisonPage.SetContext(store, result);
+            ComparisonPage.RefreshLoadedContext(store, result);
             ExperienceList.ItemsSource = result.ExperienceEvents.Take(20);
             ExperienceSummary.Text = $"最近 {days} 天 · {scene ?? "全部场景"} · {result.ExperienceEvents.Count} 条记录，显示最近 20 条";
             updatingSceneChoices = true;
@@ -199,6 +199,7 @@ public partial class MainWindow : Window
             }
             finally { updatingSceneChoices = false; }
             SceneProfileList.ItemsSource = result.SceneProfiles;
+            SceneProfileSummary.Text = result.HistoryQuality.HasIntervalConflicts ? "场景时段互有重叠，不能相加；负载值暂待核对" : "有效使用时段统计 · P95 按采样时长加权";
             SceneEmptyLabel.Visibility = result.SceneProfiles.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             DemandTrendList.ItemsSource = result.DemandTrends;
             var changed = result.DemandTrends.Where(t => t.Status == "increased").OrderBy(t => t.Days).FirstOrDefault();
@@ -212,7 +213,7 @@ public partial class MainWindow : Window
             AdviceList.Items.Clear();
             foreach (var advice in result.Cards) AdviceList.Items.Add(AdviceCard(advice, expanded.Contains(advice.Key)));
             HistoryChart.SetPoints(result.History);
-            HistorySummary.Text = $"最近 {days} 天 · {result.SampleCount:N0} 条记录 · {scene ?? "全部场景"} · {(result.Scenes.Length > 0 ? string.Join("、", result.Scenes) : "等待有效使用")}";
+            HistorySummary.Text = $"最近 {days} 天 · {result.SampleCount:N0} 条记录 · {scene ?? "全部场景"} · " + (result.HistoryQuality.HasIntervalConflicts ? "时段重叠，历史负载图暂不显示；场景时长可能互相重叠，不能相加。" : result.Scenes.Length > 0 ? string.Join("、", result.Scenes) : "等待有效使用");
         }
         catch (Exception ex) { store.Log(ex); StatusLine.Text = "分析读取失败，请稍后刷新。错误已记录。"; }
         finally

@@ -17,13 +17,17 @@ public static partial class SelfTests
             File.AppendAllText("artifacts/self-tests.txt", log[^1] + "\n");
         }
         void Assert(bool condition, string message) { if (!condition) throw new Exception(message); }
-        List<Sample> Fixture() => Enumerable.Range(0, 3600).Select(i => new Sample
+        List<Sample> Fixture()
         {
-            Time = DateTimeOffset.Now.AddDays(-(i / 1200)).AddSeconds(-(i % 1200) * 10),
+            var fixtureNow = DateTimeOffset.Now;
+            return Enumerable.Range(0, 3600).Select(i => new Sample
+        {
+            Time = fixtureNow.AddDays(-(i / 1200)).AddSeconds(-(i % 1200) * 10),
             HardwareId = "test-machine", Seconds = 10, Active = true,
             Cpu = 8, CoreMax = 25, MemoryTotalGb = 64, MemoryUsedGb = 9, CommitGb = 11,
             Gpu = 5, VramUsedGb = 1, DiskTotalGb = 1024, DiskUsedGb = 200, MaxDiskPercent = 20
         }).OrderBy(s => s.Time).ToList();
+        }
         AnalysisReport Analyze(IEnumerable<Sample> samples, bool confirmed = true) => AnalysisEngine.Analyze(samples, new Settings(Representative: confirmed) { RepresentativeHardwareId = "test-machine" }, 7);
         RunWorkloadCoverageTests(Check, Assert, () => Fixture());
         Check("Empty history never recommends downgrade", () => Assert(Analyze([]).Cards.All(c => c.Status == "unknown"), "empty classified"));
@@ -365,6 +369,8 @@ public static partial class SelfTests
         RunBackgroundSettingsTests(Check, Assert);
         RunHardwareSnapshotTests(Check, Assert);
         RunHistoryQualityTests(Check, Assert, Fixture);
+        RunHistoryIntervalTests(Check, Assert, Fixture);
+        RunDataRootLeaseTests(Check, Assert);
         Task.Run(() => RunTaskMeasurementTests(Check, Assert)).GetAwaiter().GetResult();
         Directory.CreateDirectory("artifacts");
         File.WriteAllLines("artifacts/self-tests.txt", log);

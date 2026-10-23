@@ -66,10 +66,11 @@ public partial class MainWindow
             Require(AdvicePage.Visibility == Visibility.Visible, "Advice navigation opens real page");
             await Screenshot("02-advice-empty");
             // Synthetic long-term trace is written only under the explicitly isolated test data directory.
+            var syntheticNow = DateTimeOffset.Now.AddMinutes(-10);
             await Task.Run(() => {
             for (int day = 2; day >= 0; day--)
                 for (int i = 0; i < 1250; i++)
-                    store.Append(new Sample { Time = DateTimeOffset.Now.AddDays(-day).AddSeconds(-(1250-i) * 10), HardwareId = collector!.HardwareId,
+                    store.Append(new Sample { Time = syntheticNow.AddDays(-day).AddSeconds(-(1250-i) * 10), HardwareId = collector!.HardwareId,
                         Seconds = 10, Active = true, Cpu = 8, CoreMax = 25, MemoryTotalGb = 64, MemoryUsedGb = 9, MemoryPeakGb = 10, CommitGb = 11,
                         Gpu = 5, VramUsedGb = 1, DiskTotalGb = 1024, DiskUsedGb = 200, MaxDiskPercent = 20, Scene = "开发编译" });
             });
@@ -80,7 +81,7 @@ public partial class MainWindow
             if (AdviceList.Items[0] is Border b && b.Child is StackPanel p) p.Children.OfType<Expander>().First().IsExpanded = true;
             await Screenshot("03-advice-populated");
             await Task.Run(() => {
-                for (int i = 0; i < 10; i++) store.Append(new Sample { Time = DateTimeOffset.Now.AddSeconds(-100 + i * 10), HardwareId = collector!.HardwareId,
+                for (int i = 0; i < 10; i++) store.Append(new Sample { Time = syntheticNow.AddSeconds(10 + i * 10), HardwareId = collector!.HardwareId,
                     Seconds = 10, Active = true, Scene = "游戏娱乐", Cpu = 60, CoreMax = 100, MemoryTotalGb = 64, MemoryUsedGb = 20, CommitGb = 24,
                     Gpu = 100, VramUsedGb = 5, DiskTotalGb = 1024, DiskUsedGb = 200, MaxDiskPercent = 20 });
             });
@@ -101,7 +102,7 @@ public partial class MainWindow
             Require(report!.SampleCount >= 3760, "Returning to all scenes restores full evidence");
             await Task.Run(() => {
                 foreach (int day in new[] { 8, 9, 1, 2 })
-                    for (int i = 0; i < 180; i++) store.Append(new Sample { Time = DateTimeOffset.Now.AddDays(-day).AddHours(-5).AddSeconds(-i * 10),
+                    for (int i = 0; i < 180; i++) store.Append(new Sample { Time = syntheticNow.AddDays(-day).AddHours(-5).AddSeconds(-i * 10),
                         HardwareId = collector!.HardwareId, Seconds = 10, Active = true, Scene = day < 7 ? "AI 与虚拟机" : "日常办公",
                         Cpu = 8, CoreMax = 25, MemoryTotalGb = 64, MemoryUsedGb = 9, CommitGb = 11, Gpu = day < 7 ? 85 : 2,
                         VramUsedGb = day < 7 ? 5 : 1, DiskTotalGb = 1024, DiskUsedGb = 200, MaxDiskPercent = 20 });

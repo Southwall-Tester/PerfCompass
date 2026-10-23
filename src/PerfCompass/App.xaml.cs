@@ -6,7 +6,7 @@ namespace PerfCompass;
 
 public partial class App : System.Windows.Application
 {
-    private Mutex? mutex;
+    private DataRootLease? dataLease;
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
@@ -21,9 +21,14 @@ public partial class App : System.Windows.Application
         {
             System.Windows.MessageBox.Show("UI 测试需要通过 --data-dir 指定一个没有历史记录的独立测试目录。", "PerfCompass"); Shutdown(3); return;
         }
-        mutex = new Mutex(true, "Local\\PerfCompass-" + Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(root)))[..16], out bool first);
-        if (e.Args.Contains("--check-instance")) { Shutdown(first ? 0 : 10); return; }
-        if (!first) { System.Windows.MessageBox.Show("PerfCompass 已在运行。双击系统托盘中的图标打开窗口。", "PerfCompass"); Shutdown(); return; }
+        try { dataLease = DataRootLease.Acquire(root); }
+        catch (Exception ex)
+        {
+            if (!e.Args.Contains("--check-instance")) System.Windows.MessageBox.Show("无法锁定数据目录：\n" + ex.Message, "PerfCompass");
+            Shutdown(2); return;
+        }
+        if (e.Args.Contains("--check-instance")) { Shutdown(dataLease == null ? 10 : 0); return; }
+        if (dataLease == null) { System.Windows.MessageBox.Show("数据目录已被占用。请打开已运行的 PerfCompass，或选择另一个数据目录。", "PerfCompass"); Shutdown(); return; }
         LocalStore store;
         try { store = new LocalStore(root); }
         catch (Exception ex) { System.Windows.MessageBox.Show("无法安全打开数据目录或设置：\n" + ex.Message, "PerfCompass"); Shutdown(1); return; }
@@ -45,5 +50,5 @@ public partial class App : System.Windows.Application
         MainWindow = window; window.Show();
         if (e.Args.Contains("--minimized")) window.Hide();
     }
-    protected override void OnExit(ExitEventArgs e) { mutex?.Dispose(); base.OnExit(e); }
+    protected override void OnExit(ExitEventArgs e) { dataLease?.Dispose(); base.OnExit(e); }
 }

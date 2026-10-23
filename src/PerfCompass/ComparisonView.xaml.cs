@@ -31,6 +31,10 @@ public partial class ComparisonView : UserControl
         CoverageConfirm.Checked += (_, _) => { if (!updating) DropResult(); };
         CoverageConfirm.Unchecked += (_, _) => { if (!updating) DropResult(); };
     }
+    internal void RefreshLoadedContext(LocalStore localStore, AnalysisReport report)
+    {
+        if (loaded) SetContext(localStore, report);
+    }
     internal void SetContext(LocalStore localStore, AnalysisReport report)
     {
         store = localStore; context = report;

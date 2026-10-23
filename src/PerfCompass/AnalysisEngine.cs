@@ -30,7 +30,8 @@ public static class AnalysisEngine
             if (s.Time > now) continue;
             if (!string.IsNullOrWhiteSpace(hardwareId) && s.HardwareId != hardwareId) continue;
             if (s.Time >= now.AddDays(-Math.Max(windowDays, 60))) hardwareIds.Add(s.HardwareId ?? "");
-            if (selectedScene == null || s.Scene == selectedScene) temporal.Add(s);
+            var measured = s with { Seconds = (selectedScene == null ? s.UniqueObservationSeconds : s.UniqueSceneSeconds) ?? s.Seconds };
+            if (selectedScene == null || s.Scene == selectedScene) temporal.Add(measured);
             if (s.Time < now.AddDays(-windowDays)) continue;
             if (!sceneStats.TryGetValue(s.Scene, out var scene)) sceneStats[s.Scene] = scene = new SceneAccumulator(s.Scene);
             scene.Add(s);
@@ -44,7 +45,7 @@ public static class AnalysisEngine
             bins[bin] = b;
             diskPeak = Math.Max(diskPeak, s.MaxDiskPercent);
             if (!s.Active || s.Seconds <= 0) continue;
-            double dt = Math.Min(s.Seconds, 15);
+            double dt = Math.Min((selectedScene == null ? s.UniqueObservationSeconds : s.UniqueSceneSeconds) ?? s.Seconds, 15);
             seconds += dt; dates.Add(s.Time.LocalDateTime.Date); scenes.Add(s.Scene);
             double Coverage(double? measured) => Math.Clamp(measured ?? dt, 0, dt);
             if (s.Cpu is double cv) { cpu.Add(cv, Coverage(s.CpuCoverage)); cpuSeconds += Coverage(s.CpuCoverage); cpuHigh += Math.Clamp(s.CpuHighSeconds ?? (cv >= 90 ? Coverage(s.CpuCoverage) : 0), 0, Coverage(s.CpuCoverage)); }
@@ -121,10 +122,12 @@ public static class AnalysisEngine
         double? gpu = Percent(sample.Gpu), gpuPeak = Percent(sample.GpuPeak);
         if (gpuPeak < gpu) gpuPeak = gpu;
         double? Coverage(double? value) => value.HasValue && (!double.IsFinite(value.Value) || value < 0) ? 0 : value;
+        double? Unique(double? value) => value.HasValue ? double.IsFinite(value.Value) && value >= 0 && value <= sample.Seconds + 1d / TimeSpan.TicksPerSecond ? Math.Min(value.Value, sample.Seconds) : 0 : null;
         return sample with
         {
             Scene = NormalizeScene(sample.Scene),
             Seconds = double.IsFinite(sample.Seconds) && sample.Seconds is > 0 and <= 15 ? sample.Seconds : 0,
+            UniqueObservationSeconds = Unique(sample.UniqueObservationSeconds), UniqueSceneSeconds = Unique(sample.UniqueSceneSeconds),
             Cpu = Percent(sample.Cpu), CoreMax = Percent(sample.CoreMax), Gpu = gpu, GpuPeak = gpuPeak,
             MemoryTotalGb = total, MemoryUsedGb = used, MemoryPeakGb = peak, CommitGb = Nonnegative(sample.CommitGb), VramUsedGb = Nonnegative(sample.VramUsedGb),
             CpuCoverage = Coverage(sample.CpuCoverage), CoreCoverage = Coverage(sample.CoreCoverage), MemoryCoverage = Coverage(sample.MemoryCoverage),
@@ -143,8 +146,9 @@ public static class AnalysisEngine
         {
             count++;
             if (!s.Active || s.Seconds <= 0) return;
-            seconds += s.Seconds;
-            double Coverage(double? value) => Math.Clamp(value ?? s.Seconds, 0, s.Seconds);
+            double duration = s.UniqueSceneSeconds ?? s.Seconds;
+            seconds += duration;
+            double Coverage(double? value) => Math.Clamp(value ?? duration, 0, duration);
             cpu.Add(s.Cpu, Coverage(s.CpuCoverage)); core.Add(s.CoreMax, Coverage(s.CoreCoverage)); gpu.Add(s.Gpu, Coverage(s.GpuCoverage));
             if (s.Gpu.HasValue && Coverage(s.GpuCoverage) > 0) gpuPeak = Math.Max(gpuPeak ?? 0, s.GpuPeak ?? s.Gpu.Value);
             if (s.MemoryUsedGb.HasValue && Coverage(s.MemoryCoverage) > 0) memoryPeak = Math.Max(memoryPeak ?? 0, s.MemoryPeakGb ?? s.MemoryUsedGb.Value);
