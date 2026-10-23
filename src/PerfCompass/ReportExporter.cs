@@ -10,6 +10,7 @@ public static class ReportExporter
     public static string Html(AnalysisReport report, LiveSnapshot? live)
     {
         string E(string? text) => WebUtility.HtmlEncode(text ?? "");
+        string samplingSection = report.SamplingGapCount > 0 ? $"<p>{E(report.SamplingGapSummary)}</p>" : "";
         string qualitySection = report.HistoryQuality.HasNotices ? $"<section><h2>{(report.HistoryQuality.HasIssues ? "历史记录异常" : "历史重复记录已排除")}</h2><p>{E(report.HistoryQuality.Message)}</p><p class='evidence'>{E(report.HistoryQuality.Details).Replace("\n", "<br>")}</p><p>原文件保留。可在记录设置备份，并从已核对的备份恢复到新目录。</p></section>" : "";
         var cards = string.Join("", report.Cards.Select(c => $"<section><small>{E(c.Name)}</small><h2>{E(c.Title)}</h2><p>{E(c.Suggestion)}</p><p class='evidence'>{E(c.Evidence)}</p><p class='muted'>{E(c.Limits)}</p></section>"));
         string P(double? value, string unit = "%") => value.HasValue ? $"{value:0.0}{unit}" : "—";
@@ -28,19 +29,19 @@ public static class ReportExporter
         <style>body{font:15px/1.8 system-ui,'Microsoft YaHei',sans-serif;background:#f4f7f8;color:#192a36;margin:0}main{max-width:900px;margin:50px auto;padding:24px}h1{font-size:32px}small{color:#007f73}section{background:white;border:1px solid #e3eaec;border-radius:12px;padding:26px;margin:18px 0}h2{font-size:20px}.muted{color:#677a87;font-size:13px}.evidence{padding:14px;background:#eef5f4}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid #e3eaec;white-space:nowrap}.demand{border-bottom:1px solid #e3eaec;padding:12px 0;break-inside:avoid}.demand h3{font-size:15px}@media print{.trend-section{break-inside:auto}body{background:white}main{margin:0}section{break-inside:avoid} }</style>
         <main><small>PERFCOMPASS / 配置指南</small><h1>{{E(report.Summary)}}</h1><p>{{report.Generated.LocalDateTime:yyyy-MM-dd HH:mm}} · 最近 {{report.WindowDays}} 天 · {{report.SampleCount:N0}} 条记录</p>
         <p>有效使用 {{E(report.DurationLabel)}} / {{report.ActiveDays}} 天 · 证据状态：{{E(report.Level)}}</p><p>{{E(report.CoverageMessage)}}</p><p>{{E(live?.CpuName)}}<br>{{E(live?.GpuName)}}</p>
-        <p>当前建议范围：{{E(report.SelectedScene ?? "全部场景")}} · 已记录场景：{{E(string.Join("、", report.Scenes))}}</p>{{qualitySection}}{{requirementsSection}}{{trendSection}}{{experienceSection}}{{sceneTable}}{{cards}}<section><h2>下一台电脑的新需求</h2><p>{{E(string.IsNullOrWhiteSpace(report.FutureNeeds) ? "尚未填写" : report.FutureNeeds).Replace("\n", "<br>")}}</p></section>
+        <p>当前建议范围：{{E(report.SelectedScene ?? "全部场景")}} · 已记录场景：{{E(string.Join("、", report.Scenes))}}</p>{{samplingSection}}{{qualitySection}}{{requirementsSection}}{{trendSection}}{{experienceSection}}{{sceneTable}}{{cards}}<section><h2>下一台电脑的新需求</h2><p>{{E(string.IsNullOrWhiteSpace(report.FutureNeeds) ? "尚未填写" : report.FutureNeeds).Replace("\n", "<br>")}}</p></section>
         <p class="muted">规则版本 {{E(report.MethodVersion)}}。P95 按有效采样时长加权，短时峰值另行保留。余量判断需要当前建议范围至少 10 小时、3 天及典型任务确认，并有最近 7 天至少 30 分钟、2 天的有效记录。时期变化的阈值为透明启发式设置。具体型号与价格需结合候选机器实测。本报告由本地记录生成。</p></main></html>
         """;
     }
     public static void Csv(string path, IEnumerable<Sample> samples)
     {
         using var writer = new StreamWriter(path, false, new UTF8Encoding(true));
-        writer.WriteLine("timestamp,hardware_id,scene,active,seconds,cpu_percent,core_max_percent,memory_used_gib,memory_peak_gib,memory_total_gib,commit_gib,gpu_percent,vram_used_gib,vram_total_gib,disk_read_mib_per_second,disk_write_mib_per_second,disk_busy_percent,disk_used_gib,disk_total_gib,max_partition_percent,cpu_temp_c,gpu_temp_c,cpu_coverage_seconds,core_coverage_seconds,memory_coverage_seconds,commit_coverage_seconds,gpu_coverage_seconds,gpu_peak_percent,cpu_high_seconds,gpu_heavy_seconds,gpu_high_seconds,memory_high_seconds");
+        writer.WriteLine("timestamp,hardware_id,scene,active,seconds,cpu_percent,core_max_percent,memory_used_gib,memory_peak_gib,memory_total_gib,commit_gib,gpu_percent,vram_used_gib,vram_total_gib,disk_read_mib_per_second,disk_write_mib_per_second,disk_busy_percent,disk_used_gib,disk_total_gib,max_partition_percent,cpu_temp_c,gpu_temp_c,cpu_coverage_seconds,core_coverage_seconds,memory_coverage_seconds,commit_coverage_seconds,gpu_coverage_seconds,gpu_peak_percent,cpu_high_seconds,gpu_heavy_seconds,gpu_high_seconds,memory_high_seconds,sampling_issue");
         foreach (var s in samples)
         {
             string D(double? v) => v?.ToString("0.####", CultureInfo.InvariantCulture) ?? "";
             string scene = s.Scene; if (scene.Length > 0 && "=+-@".Contains(scene[0])) scene = "'" + scene;
-            writer.WriteLine(string.Join(",", s.Time.ToString("O"), s.HardwareId, "\"" + scene.Replace("\"", "\"\"") + "\"", s.Active ? "1" : "0", D(s.Seconds), D(s.Cpu), D(s.CoreMax), D(s.MemoryUsedGb), D(s.MemoryPeakGb), D(s.MemoryTotalGb), D(s.CommitGb), D(s.Gpu), D(s.VramUsedGb), D(s.VramTotalGb), D(s.DiskReadMbps), D(s.DiskWriteMbps), D(s.DiskBusy), D(s.DiskUsedGb), D(s.DiskTotalGb), D(s.MaxDiskPercent), D(s.CpuTemp), D(s.GpuTemp), D(s.CpuCoverage), D(s.CoreCoverage), D(s.MemoryCoverage), D(s.CommitCoverage), D(s.GpuCoverage), D(s.GpuPeak), D(s.CpuHighSeconds), D(s.GpuHeavySeconds), D(s.GpuHighSeconds), D(s.MemoryHighSeconds)));
+            writer.WriteLine(string.Join(",", s.Time.ToString("O"), s.HardwareId, "\"" + scene.Replace("\"", "\"\"") + "\"", s.Active ? "1" : "0", D(s.Seconds), D(s.Cpu), D(s.CoreMax), D(s.MemoryUsedGb), D(s.MemoryPeakGb), D(s.MemoryTotalGb), D(s.CommitGb), D(s.Gpu), D(s.VramUsedGb), D(s.VramTotalGb), D(s.DiskReadMbps), D(s.DiskWriteMbps), D(s.DiskBusy), D(s.DiskUsedGb), D(s.DiskTotalGb), D(s.MaxDiskPercent), D(s.CpuTemp), D(s.GpuTemp), D(s.CpuCoverage), D(s.CoreCoverage), D(s.MemoryCoverage), D(s.CommitCoverage), D(s.GpuCoverage), D(s.GpuPeak), D(s.CpuHighSeconds), D(s.GpuHeavySeconds), D(s.GpuHighSeconds), D(s.MemoryHighSeconds), SamplingClock.KnownIssue(s.SamplingIssue) ? s.SamplingIssue : ""));
         }
     }
 }

@@ -13,8 +13,8 @@ public sealed class Collector : IDisposable
     private readonly LocalStore store;
     private ProcPerf[]? previous;
     private readonly Dictionary<int, (TimeSpan Cpu, long Start)> processes = new();
-    private DateTimeOffset previousTime = DateTimeOffset.Now;
-    private DateTimeOffset previousAppsTime = DateTimeOffset.MinValue;
+    private readonly SamplingClock clock;
+    private long? previousAppsTimestamp;
     private List<AppUsage> lastApps = [];
     private PerformanceCounter? read, write, idle;
     private string sensorStatus = "硬件传感器正在初始化";
@@ -22,6 +22,8 @@ public sealed class Collector : IDisposable
     public string GpuName { get; private set; } = "等待显卡识别";
     public string HardwareId { get; private set; } = "";
     internal Action<IHardware>? HardwareUpdateOverride;
+    internal volatile Func<SamplingInstant>? TimingReadOverride;
+    private SamplingInstant ReadTime() => TimingReadOverride?.Invoke() ?? SamplingInstant.Now();
     public Collector(LocalStore store)
     {
         this.store = store;
@@ -44,16 +46,15 @@ public sealed class Collector : IDisposable
         var mem = Memory();
         HardwareId = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes($"{CpuName}|{GpuName}|{mem.Total:0}|{Environment.ProcessorCount}")))[..16];
         previous = CpuTimes();
+        clock = new(ReadTime());
     }
     private IEnumerable<IHardware> Gpus() => computer.Hardware.Where(h => h.HardwareType is HardwareType.GpuNvidia or HardwareType.GpuAmd or HardwareType.GpuIntel)
         .OrderBy(h => h.HardwareType == HardwareType.GpuIntel ? 1 : 0);
     public LiveSnapshot Collect()
     {
-        var now = DateTimeOffset.Now;
-        double elapsed = (now - previousTime).TotalSeconds;
-        bool discontinuity = elapsed > 15 || elapsed <= 0;
-        double dt = discontinuity ? 0 : elapsed;
-        previousTime = now;
+        var instant = ReadTime(); var tick = clock.Next(instant); var now = tick.Time;
+        double dt = tick.Seconds; bool discontinuity = tick.Issue.Length > 0;
+        if (discontinuity) { processes.Clear(); lastApps = []; previousAppsTimestamp = null; }
         double? cpu = null, core = null;
         var current = CpuTimes();
         if (!discontinuity && current != null && previous != null && current.Length == previous.Length)
@@ -83,10 +84,10 @@ public sealed class Collector : IDisposable
         double? diskRead = null, diskWrite = null, diskBusy = null;
         try { diskRead = read?.NextValue() / 1048576d; diskWrite = write?.NextValue() / 1048576d; diskBusy = idle is null ? null : Math.Clamp(100 - idle.NextValue(), 0, 100); }
         catch { }
-        if ((now - previousAppsTime).TotalSeconds >= 6)
+        if (previousAppsTimestamp == null || Stopwatch.GetElapsedTime(previousAppsTimestamp.Value, instant.Timestamp).TotalSeconds >= 6)
         {
-        double appInterval = (now - previousAppsTime).TotalSeconds;
-        previousAppsTime = now;
+        double appInterval = previousAppsTimestamp is long stamp ? Stopwatch.GetElapsedTime(stamp, instant.Timestamp).TotalSeconds : 0;
+        previousAppsTimestamp = instant.Timestamp;
         var apps = new List<AppUsage>();
         var seen = new HashSet<int>();
         foreach (var process in Process.GetProcesses())
@@ -114,7 +115,7 @@ public sealed class Collector : IDisposable
         bool active = IdleSeconds() < 300 || cpu >= 20 || gpu >= 20 || diskRead + diskWrite >= 20;
         var sample = new Sample
         {
-            Time = now, HardwareId = HardwareId, Seconds = dt, Active = active, Scene = store.Settings.Scene,
+            Time = now, HardwareId = HardwareId, Seconds = dt, SamplingIssue = tick.Issue, Active = active, Scene = store.Settings.Scene,
             Cpu = cpu, CoreMax = core, MemoryTotalGb = mem.Total, MemoryUsedGb = mem.Used, CommitGb = mem.Commit,
             Gpu = gpu, VramUsedGb = vramUsed / 1024, VramTotalGb = vramTotal / 1024, CpuTemp = cpuTemp, GpuTemp = gpuTemp,
             DiskReadMbps = diskRead, DiskWriteMbps = diskWrite, DiskBusy = diskBusy,
@@ -123,7 +124,7 @@ public sealed class Collector : IDisposable
         };
         return new(sample, CpuName, GpuName, sensorStatus, disks, lastApps) { SensorFailures = sensors.Failures };
     }
-    public void ResetTiming() { previousTime = DateTimeOffset.Now; previous = CpuTimes(); processes.Clear(); previousAppsTime = DateTimeOffset.MinValue; }
+    public void ResetTiming() { clock.Reset(ReadTime()); previous = CpuTimes(); processes.Clear(); previousAppsTimestamp = null; lastApps = []; }
     public void Dispose() { computer.Close(); read?.Dispose(); write?.Dispose(); idle?.Dispose(); }
 
     [StructLayout(LayoutKind.Sequential)] private struct ProcPerf { public long Idle, Kernel, User, Dpc, Interrupt; public uint InterruptCount; }

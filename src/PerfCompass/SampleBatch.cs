@@ -4,10 +4,11 @@ namespace PerfCompass;
 public static class SampleBatch
 {
     public static bool MustFlushBefore(IReadOnlyList<Sample> source, Sample next) => source.Count > 0 &&
-        (source[^1].Scene != next.Scene || next.Seconds == 0 || source.Sum(s => s.Seconds) + next.Seconds > 15);
+        (source[^1].Scene != next.Scene || source[^1].Seconds == 0 || next.Seconds == 0 || source.Sum(s => s.Seconds) + next.Seconds > 15);
     public static Sample Merge(IReadOnlyList<Sample> source)
     {
         if (source.Count == 0) throw new ArgumentException("Empty sample batch");
+        if (source.Count > 1 && source.Any(s => s.Seconds <= 0)) throw new ArgumentException("A sampling interruption must be saved separately from measured intervals.");
         if (source.Where(s => s.Seconds is > 0 and <= 15).Sum(s => s.Seconds) > 15) throw new ArgumentException("Sample batch exceeds 15 seconds; flush before adding the next sample.");
         var active = source.Where(s => s.Active && s.Seconds is > 0 and <= 15).ToList();
         var selected = active.Count > 0 ? active : source.ToList();

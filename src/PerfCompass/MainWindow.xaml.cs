@@ -30,7 +30,7 @@ public partial class MainWindow : Window
     private bool updatingSceneChoices;
     private RequirementsPlan? requirementDraft;
     private Task? collectionTask;
-    private DateTimeOffset lastAnalysis = DateTimeOffset.MinValue;
+    private readonly ElapsedSchedule analysisSchedule = new(TimeSpan.FromSeconds(60));
     private string activePage = "live";
     private volatile bool historyWriteFailed;
     public MainWindow(LocalStore store)
@@ -92,7 +92,7 @@ public partial class MainWindow : Window
     {
         var batch = new List<Sample>();
         int generation = recordingGeneration;
-        var lastCleanup = DateTimeOffset.Now;
+        var cleanupSchedule = new ElapsedSchedule(TimeSpan.FromHours(1)); cleanupSchedule.Mark(Stopwatch.GetTimestamp());
         try
         {
             while (!stop.IsCancellationRequested)
@@ -111,9 +111,9 @@ public partial class MainWindow : Window
                         if (SampleBatch.MustFlushBefore(batch, snapshot.Sample))
                         { store.Append(SampleBatch.Merge(batch)); batch.Clear(); }
                         batch.Add(snapshot.Sample);
-                        if (batch.Count >= 5) { store.Append(SampleBatch.Merge(batch)); batch.Clear(); historyWriteFailed = false; }
+                        if (snapshot.Sample.Seconds == 0 || batch.Count >= 5) { store.Append(SampleBatch.Merge(batch)); batch.Clear(); historyWriteFailed = false; }
                     }
-                    if (DateTimeOffset.Now - lastCleanup > TimeSpan.FromHours(1)) { store.Cleanup(); lastCleanup = DateTimeOffset.Now; }
+                    if (cleanupSchedule.Due(Stopwatch.GetTimestamp())) { store.Cleanup(); cleanupSchedule.Mark(Stopwatch.GetTimestamp()); }
                     await Dispatcher.InvokeAsync(() => UpdateLive(snapshot));
                 }
                 catch (Exception ex)
@@ -142,6 +142,7 @@ public partial class MainWindow : Window
         if (paused || exiting) return;
         live = snapshot;
         var s = snapshot.Sample;
+        if (s.SamplingIssue.Length > 0) { experienceContext.Clear(); livePoints.Clear(); }
         experienceContext.Add(s);
         experienceContext.RemoveAll(p => p.Time < s.Time.AddMinutes(-2));
         CpuValue.Text = Percent(s.Cpu); CpuBar.Value = s.Cpu ?? 0;
@@ -159,18 +160,20 @@ public partial class MainWindow : Window
         SensorLabel.Text = snapshot.SensorStatus;
         SensorHealthBanner.Text = snapshot.SensorFailures.Length == 0 ? "" : "本次传感器更新失败：" + string.Join("、", snapshot.SensorFailures) + "。对应读数留空，基础采集继续；下次自动重试。";
         SensorHealthBanner.Visibility = snapshot.SensorFailures.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
-        RecordState.Text = "● " + (s.Active ? "正在记录 · 有效使用" : "正在记录 · 空闲");
+        SamplingTimingBanner.Text = SamplingClock.Describe(s.SamplingIssue);
+        SamplingTimingBanner.Visibility = s.SamplingIssue.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+        RecordState.Text = "● " + (s.SamplingIssue.Length > 0 ? "采样时间中断" : s.Active ? "正在记录 · 有效使用" : "正在记录 · 空闲");
         LastTime.Text = $"更新于 {s.Time.LocalDateTime:HH:mm:ss}";
         StatusLine.Text = historyWriteFailed ? "实时采集继续，历史保存失败。请检查数据目录权限与磁盘空间；程序会自动重试。" : $"采集继续 · 历史记录约 10 秒保存 · {snapshot.SensorStatus}";
         livePoints.Add(new(s.Time, s.Cpu, memPct, s.Gpu));
         livePoints.RemoveAll(p => p.Time < s.Time.AddMinutes(-4));
         LiveChart.SetPoints(livePoints);
-        if ((DateTimeOffset.Now - lastAnalysis).TotalSeconds >= 60 && !analyzing) _ = RefreshAnalysis();
+        if (s.SamplingIssue.Length > 0 || !analyzing && analysisSchedule.Due(Stopwatch.GetTimestamp())) _ = RefreshAnalysis();
     }
     private async Task RefreshAnalysis()
     {
         if (analyzing) { refreshRequested = true; return; }
-        analyzing = true; lastAnalysis = DateTimeOffset.Now;
+        analyzing = true; analysisSchedule.Mark(Stopwatch.GetTimestamp());
         try
         {
             var settings = store.Settings; var id = collector?.HardwareId; int days = windowDays; string? scene = analysisScene;
@@ -214,6 +217,8 @@ public partial class MainWindow : Window
             foreach (var advice in result.Cards) AdviceList.Items.Add(AdviceCard(advice, expanded.Contains(advice.Key)));
             HistoryChart.SetPoints(result.History);
             HistorySummary.Text = $"最近 {days} 天 · {result.SampleCount:N0} 条记录 · {scene ?? "全部场景"} · " + (result.HistoryQuality.HasIntervalConflicts ? "时段重叠，历史负载图暂不显示；场景时长可能互相重叠，不能相加。" : result.Scenes.Length > 0 ? string.Join("、", result.Scenes) : "等待有效使用");
+            SamplingGapLabel.Text = result.SamplingGapSummary;
+            SamplingGapLabel.Visibility = result.SamplingGapCount > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
         catch (Exception ex) { store.Log(ex); StatusLine.Text = "分析读取失败，请稍后刷新。错误已记录。"; }
         finally

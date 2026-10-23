@@ -23,7 +23,7 @@ public static class AnalysisEngine
         // Only keep one hourly aggregate, not raw snapshots, in the report.
         var bins = new SortedDictionary<long, (double C, int Cn, double M, int Mn, double G, int Gn)>();
         double seconds = 0, cpuSeconds = 0, cpuHigh = 0, memorySeconds = 0, gpuSeconds = 0, coreSeconds = 0, commitSeconds = 0;
-        double diskPeak = 0; double? memoryPeak = null, gpuPeak = null; int count = 0; Sample? latest = null;
+        double diskPeak = 0; double? memoryPeak = null, gpuPeak = null; int count = 0, samplingGaps = 0; Sample? latest = null;
         foreach (var raw in samples)
         {
             var s = Sanitize(raw);
@@ -36,13 +36,17 @@ public static class AnalysisEngine
             if (!sceneStats.TryGetValue(s.Scene, out var scene)) sceneStats[s.Scene] = scene = new SceneAccumulator(s.Scene);
             scene.Add(s);
             if (selectedScene != null && s.Scene != selectedScene) continue;
+            if (s.Seconds == 0 && SamplingClock.KnownIssue(s.SamplingIssue)) samplingGaps++;
             count++; if (latest == null || s.Time >= latest.Time) latest = s;
-            long bin = s.Time.ToUnixTimeSeconds() / 3600;
-            bins.TryGetValue(bin, out var b);
-            if (s.Cpu is double c) { b.C += c; b.Cn++; }
-            if (s.MemoryUsedGb is double m && s.MemoryTotalGb is > 0) { b.M += m / s.MemoryTotalGb.Value * 100; b.Mn++; }
-            if (s.Gpu is double g) { b.G += g; b.Gn++; }
-            bins[bin] = b;
+            if (s.Seconds > 0)
+            {
+                long bin = s.Time.ToUnixTimeSeconds() / 3600;
+                bins.TryGetValue(bin, out var b);
+                if (s.Cpu is double c) { b.C += c; b.Cn++; }
+                if (s.MemoryUsedGb is double m && s.MemoryTotalGb is > 0) { b.M += m / s.MemoryTotalGb.Value * 100; b.Mn++; }
+                if (s.Gpu is double g) { b.G += g; b.Gn++; }
+                bins[bin] = b;
+            }
             diskPeak = Math.Max(diskPeak, s.MaxDiskPercent);
             if (!s.Active || s.Seconds <= 0) continue;
             double dt = Math.Min((selectedScene == null ? s.UniqueObservationSeconds : s.UniqueSceneSeconds) ?? s.Seconds, 15);
@@ -106,7 +110,7 @@ public static class AnalysisEngine
         var result = new AnalysisReport(now, windowDays, count, seconds / 3600, dates.Count, ready, scenes.Order().ToArray(), cards,
             bins.Select(kv => new HistoryPoint(DateTimeOffset.FromUnixTimeSeconds(kv.Key * 3600), kv.Value.Cn > 0 ? kv.Value.C / kv.Value.Cn : null,
                 kv.Value.Mn > 0 ? kv.Value.M / kv.Value.Mn : null, kv.Value.Gn > 0 ? kv.Value.G / kv.Value.Gn : null)).ToList(), settings.FutureNeeds)
-            { HardwareId = scopeHardwareId, RepresentativeConfirmed = coverage.Confirmed, CoverageMessage = coverage.Message,
+            { HardwareId = scopeHardwareId, RepresentativeConfirmed = coverage.Confirmed, CoverageMessage = coverage.Message, SamplingGapCount = samplingGaps,
                 SelectedScene = selectedScene, DemandTrends = trends, FreshActiveHours = temporal.FreshHours, FreshActiveDays = temporal.FreshDays,
                 SceneProfiles = sceneStats.Values.Select(s => s.Profile()).OrderByDescending(p => p.ActiveHours).ThenBy(p => p.Name).ToList() };
         return HistoryAnalysis.Apply(result, quality);

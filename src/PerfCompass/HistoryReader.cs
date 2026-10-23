@@ -71,7 +71,7 @@ public sealed partial class LocalStore
                     var line = lines.Current;
                     if (line.Bytes == null) { diagnostics?.Add(name, line.Number, "单行超过 4 MiB 限制", fingerprint: line.Fingerprint); continue; }
                     void Issue(string reason) => diagnostics?.Add(name, line.Number, reason, line.Bytes);
-                    Sample? sample = null;
+                    Sample? sample = null; bool accepted = false;
                     try
                     {
                         var bytes = line.Bytes.AsMemory();
@@ -92,6 +92,10 @@ public sealed partial class LocalStore
                             throw new InvalidDataException("采样时长缺失或超出 0–15 秒");
                         if (!root.TryGetProperty("Active", out var active) || active.ValueKind is not (JsonValueKind.True or JsonValueKind.False)) throw new InvalidDataException("缺少有效使用状态");
                         sample = root.Deserialize<Sample>();
+                        if (sample != null && !string.IsNullOrEmpty(sample.SamplingIssue)
+                            && (!SamplingClock.KnownIssue(sample.SamplingIssue) || sample.Seconds != 0))
+                            throw new InvalidDataException("采样中断状态无效，或中断记录包含有效时长");
+                        if (sample?.SamplingIssue == null && sample != null) sample = sample with { SamplingIssue = "" };
                         if (sample != null && (sample.Scene == null || !root.TryGetProperty("Scene", out _))) sample = sample with { Scene = "未标记" };
                         if (sample != null && audit != null)
                         {
@@ -104,12 +108,13 @@ public sealed partial class LocalStore
                                 Issue("同一配置的时间片重叠，无法确认记录来源和负载份额");
                             }
                         }
+                        accepted = sample != null;
                     }
                     catch (DecoderFallbackException) { Issue("不是有效 UTF-8 文本"); }
                     catch (JsonException) { Issue("JSON 损坏或记录未写完整"); }
                     catch (InvalidOperationException) { Issue("字段类型无效"); }
                     catch (InvalidDataException error) { Issue(error.Message); }
-                    if (sample != null && (hardwareId == null || sample.HardwareId == hardwareId)) yield return sample;
+                    if (accepted && sample != null && (hardwareId == null || sample.HardwareId == hardwareId)) yield return sample;
                 }
             }
         }

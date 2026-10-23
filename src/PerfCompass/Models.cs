@@ -16,6 +16,7 @@ public record Sample
     public string HardwareId { get; init; } = "";
     public string Scene { get; init; } = "日常办公";
     public double Seconds { get; init; }
+    public string SamplingIssue { get; init; } = "";
     [System.Text.Json.Serialization.JsonIgnore] public double? UniqueObservationSeconds { get; init; }
     [System.Text.Json.Serialization.JsonIgnore] public double? UniqueSceneSeconds { get; init; }
     public double? CpuCoverage { get; init; }
@@ -91,8 +92,10 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public string HardwareId { get; init; } = "";
     public bool RepresentativeConfirmed { get; init; }
     public string CoverageMessage { get; init; } = "";
-    public string MethodVersion { get; init; } = "1.7";
+    public string MethodVersion { get; init; } = "1.8";
     public HistoryQuality HistoryQuality { get; init; } = HistoryQuality.Unchecked;
+    public int SamplingGapCount { get; init; }
+    public string SamplingGapSummary => SamplingGapCount > 0 ? $"本范围记录到 {SamplingGapCount} 次采样中断；中断段未计入有效使用，也未作为空闲负载。" : "";
     [System.Text.Json.Serialization.JsonIgnore]
     public string DurationLabel => DurationText.FromHours(ActiveHours);
     public string Level => Ready ? "较充分" : ActiveHours >= .5 ? "初步观察" : "积累中";

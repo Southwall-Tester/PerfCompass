@@ -12,7 +12,8 @@ public partial class MainWindow
     private async Task RunUiTests()
     {
         bool historyOnly = Environment.GetCommandLineArgs().Contains("--ui-test-history-only");
-        var output = Path.GetFullPath(historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
+        bool timingOnly = Environment.GetCommandLineArgs().Contains("--ui-test-timing-only");
+        var output = Path.GetFullPath(timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
         var results = new List<string>();
         File.WriteAllText(Path.Combine(output, "results.txt"), "RUNNING " + DateTimeOffset.Now.ToString("O"));
         void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); File.AppendAllText(Path.Combine(output, "results.txt"), "\n" + results[^1]); if (!value) throw new Exception(name); }
@@ -37,6 +38,7 @@ public partial class MainWindow
             Require(live?.Sample.Cpu is >= 0 and <= 100, "Real CPU sample available");
             Require(live?.Sample.MemoryTotalGb > 0, "Real memory sample available");
             Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
+            if (timingOnly) { await RunSamplingClockUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (historyOnly)
             {
                 if (!paused) TogglePause();
@@ -54,6 +56,7 @@ public partial class MainWindow
             }
             await Task.Delay(6000); await Screenshot("01-live");
             File.WriteAllText(Path.Combine(output, "hardware.json"), JsonSerializer.Serialize(live, new JsonSerializerOptions { WriteIndented = true }));
+            await RunSamplingClockUiTests(output, Require, Screenshot, WaitForAnalysis);
             await RunHardwareSnapshotUiTests(output, Require, Screenshot);
             PauseButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
             Require(paused && PauseButton.Content.ToString() == "继续记录", "Pause button changes collection state");
