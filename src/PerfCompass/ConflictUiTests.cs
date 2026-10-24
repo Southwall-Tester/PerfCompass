@@ -12,6 +12,15 @@ public partial class MainWindow
         void Click(Button b) => b.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
         Click(ComparisonNav); await wait(() => ComparisonPage.Visibility == Visibility.Visible);
         var view = ComparisonPage;
+        var obsolete = CandidateComparison.OutdatedSemanticCriteria(view.Workspace, report!).ToArray();
+        int existingGoals = view.Workspace.Criteria.Count;
+        string existingEvidence = System.Text.Json.JsonSerializer.Serialize(view.Workspace.Observations);
+        foreach (var criterion in obsolete)
+        { view.CriteriaGrid.SelectedItem = criterion; Click(view.DetachCriterionButton); }
+        require(CandidateComparison.OutdatedSemanticCriteria(view.Workspace, report!).Count == 0
+            && view.Workspace.Criteria.Count == existingGoals && obsolete.All(c => !c.Reviewed)
+            && System.Text.Json.JsonSerializer.Serialize(view.Workspace.Observations) == existingEvidence,
+            "Conflict flow explicitly reviews stale goals left by earlier source changes and retains all original evidence");
         foreach (var spec in new[] { (Name: "内存最低配置", Direction: "min", Target: 64), (Name: "内存最高配置", Direction: "max", Target: 32) })
         {
             Click(view.AddCriterionButton); int row = view.CriteriaGrid.Items.Count - 1;
