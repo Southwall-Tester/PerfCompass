@@ -22,6 +22,7 @@ public partial class ComparisonView : UserControl
     public ComparisonView()
     {
         InitializeComponent();
+        InitializeDraftSaving();
         foreach (var grid in new[] { CandidatesGrid, CriteriaGrid, ObservationsGrid })
         {
             foreach (var column in grid.Columns.OfType<DataGridTextColumn>()) column.ElementStyle = (Style)FindResource("TableText");
@@ -34,8 +35,8 @@ public partial class ComparisonView : UserControl
         AddHandler(ToggleButton.CheckedEvent, new RoutedEventHandler((_, e) => { if (IsEditingCell(e.OriginalSource)) Invalidate(); }));
         AddHandler(ToggleButton.UncheckedEvent, new RoutedEventHandler((_, e) => { if (IsEditingCell(e.OriginalSource)) Invalidate(); }));
         AddHandler(Selector.SelectionChangedEvent, new SelectionChangedEventHandler((_, e) => { if (e.OriginalSource is ComboBox && IsEditingCell(e.OriginalSource)) Invalidate(); }));
-        CoverageConfirm.Checked += (_, _) => { if (!updating) DropResult(); };
-        CoverageConfirm.Unchecked += (_, _) => { if (!updating) DropResult(); };
+        CoverageConfirm.Checked += (_, _) => { if (!updating) { MarkDraftDirty(); DropResult(); } };
+        CoverageConfirm.Unchecked += (_, _) => { if (!updating) { MarkDraftDirty(); DropResult(); } };
     }
     private static bool IsEditingCell(object source)
     {
@@ -54,7 +55,7 @@ public partial class ComparisonView : UserControl
         {
             loaded = true;
             try { workspace = CandidateComparison.Load(store.Root); Bind(); }
-            catch (Exception e) { loadFailed = true; store.Log(e); ComparisonStatus.Text = "比较文件无法读取，已保留原文件。请检查 data/comparison.json；当前禁止覆盖保存。"; CompareButton.IsEnabled = false; }
+            catch (Exception e) { loadFailed = true; store.Log(e); ComparisonStatus.Text = "比较文件无法读取，已保留原文件。请检查 data/comparison.json；当前禁止覆盖保存，可将新草稿导出到其他文件。"; CompareButton.IsEnabled = false; SaveDraftButton.IsEnabled = false; }
         }
         RefreshContextStatus(report);
         if ((workspace.CoverageConfirmed || CoverageConfirm.IsChecked == true) && workspace.ContextStamp != CandidateComparison.Stamp(report)
@@ -86,6 +87,7 @@ public partial class ComparisonView : UserControl
     private void Invalidate()
     {
         if (updating || !loaded) return;
+        MarkDraftDirty();
         updating = true;
         try { CoverageConfirm.IsChecked = false; workspace.CoverageConfirmed = false; DropResult(); }
         finally { updating = false; }
@@ -179,8 +181,7 @@ public partial class ComparisonView : UserControl
         if (!Commit() || context == null || store == null || loadFailed) return;
         try
         {
-            workspace.CoverageConfirmed = CoverageConfirm.IsChecked == true;
-            CandidateComparison.Save(store.Root, workspace);
+            if (!TrySaveDraft(force: true)) return;
             if (workspace.Candidates.Count == 0) { DropResult(); ComparisonStatus.Text = "草稿已保存；添加一套候选即可核对目标，添加更多候选后可比较报价。"; return; }
             comparison = CandidateComparison.Evaluate(workspace, context);
             ComparisonSummary.Text = comparison.Summary;

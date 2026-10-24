@@ -20,6 +20,7 @@ public partial class MainWindow : Window
     private bool exiting, initialized, analyzing, refreshRequested;
     private bool exitPending;
     internal Func<bool>? DiscardUnsavedMeasurementOnExit;
+    internal Func<bool>? DiscardUnsavedComparisonOnExit;
     private bool measurementActive;
     private int recordingGeneration;
     private readonly object recordingGate = new();
@@ -494,6 +495,17 @@ public partial class MainWindow : Window
             {
                 exitPending = false; TaskMeasurementPage.TaskResultPanel.BringIntoView();
                 StatusLine.Text = "测量结果已保留。请先导出，再退出程序。"; return;
+            }
+        }
+        if (!ComparisonPage.SaveDraftForExit())
+        {
+            Restore(); Navigate("comparison");
+            bool discard = DiscardUnsavedComparisonOnExit?.Invoke() ?? System.Windows.MessageBox.Show(this,
+                "候选比较草稿尚未保存。是否放弃本次修改并退出？\n选择“否”返回候选页，可修正内容或导出到其他目录。", "保留未保存的候选草稿", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes;
+            if (!discard)
+            {
+                exitPending = false; ComparisonPage.DraftStatus.BringIntoView();
+                StatusLine.Text = "候选草稿已保留。请保存或导出后再退出。"; return;
             }
         }
         exiting = true; ModelApiKey.Clear(); stop.Cancel(); tray.Visible = false; tray.Dispose();

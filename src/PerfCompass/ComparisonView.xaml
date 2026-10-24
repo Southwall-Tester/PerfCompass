@@ -13,6 +13,8 @@
  <StackPanel>
   <TextBlock Text="输入候选报价与配置，核对重要任务的最低要求。容量按配置表比较，性能按同一任务的实测结果比较。留空表示未知。" Foreground="{StaticResource Muted}" Margin="0,0,0,16"/>
   <TextBlock x:Name="ContextStatus" Margin="0,0,0,14" Foreground="{StaticResource Accent}"/>
+  <WrapPanel><Button x:Name="SaveDraftButton" Content="保存草稿" Click="SaveDraft_Click" Margin="0,0,10,8"/><Button x:Name="ExportDraftButton" Content="导出草稿" Click="ExportDraft_Click" Margin="0,0,10,8"/><Button x:Name="ImportDraftButton" Content="导入草稿" Click="ImportDraft_Click" Margin="0,0,0,8"/></WrapPanel>
+  <TextBlock x:Name="DraftStatus" Text="编辑后自动保存草稿；保存草稿不会生成比较结论。" TextWrapping="Wrap" Foreground="{StaticResource Muted}" Margin="0,0,0,14"/>
   <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
    <DockPanel Margin="0,0,0,12"><TextBlock Text="候选电脑 · 最多三套" FontSize="18" FontWeight="SemiBold"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Right"><Button x:Name="AddCandidateButton" Content="添加候选" Click="AddCandidate_Click" Margin="8,0"/><Button Content="删除选中候选" Click="RemoveCandidate_Click"/></StackPanel></DockPanel>
    <DataGrid x:Name="CandidatesGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" Height="185" RowHeight="38" EnableRowVirtualization="False" FrozenColumnCount="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">

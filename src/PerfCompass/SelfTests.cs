@@ -364,6 +364,7 @@ public static partial class SelfTests
         });
         Task.Run(() => RunSemanticTests(Check, Assert, () => Analyze(Fixture()))).GetAwaiter().GetResult();
         RunComparisonTests(Check, Assert);
+        RunComparisonDraftTests(Check, Assert);
         RunQuantityGoalTests(Check, Assert);
         RunDataProtectionTests(Check, Assert);
         RunBackgroundSettingsTests(Check, Assert);

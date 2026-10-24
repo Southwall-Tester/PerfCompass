@@ -301,15 +301,32 @@ public static partial class CandidateComparison
     public static PurchaseWorkspace Load(string root)
     {
         var path = Path.Combine(root, "comparison.json");
-        if (!File.Exists(path)) return new();
-        if (new FileInfo(path).Length > 8388608) throw new InvalidDataException("比较文件过大。");
-        var workspace = JsonSerializer.Deserialize<PurchaseWorkspace>(File.ReadAllText(path, Encoding.UTF8)) ?? throw new InvalidDataException("比较文件为空。");
+        if (!File.Exists(path) && !Directory.Exists(path)) return new();
+        return LoadFile(path);
+    }
+    public static PurchaseWorkspace LoadFile(string path)
+    {
+        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        if (stream.Length > 8388608) throw new InvalidDataException("比较文件过大。");
+        using var reader = new StreamReader(stream, new UTF8Encoding(false, true), true);
+        var workspace = JsonSerializer.Deserialize<PurchaseWorkspace>(reader.ReadToEnd()) ?? throw new InvalidDataException("比较文件为空。");
         Validate(workspace); workspace.Version = "comparison-1.2"; return workspace;
     }
-    public static void Save(string root, PurchaseWorkspace workspace)
+    public static void Save(string root, PurchaseWorkspace workspace) => SaveFile(Path.Combine(root, "comparison.json"), workspace);
+    public static void SaveFile(string path, PurchaseWorkspace workspace)
     {
-        Validate(workspace); workspace.Version = "comparison-1.2"; string path = Path.Combine(root, "comparison.json");
-        File.WriteAllText(path + ".tmp", JsonSerializer.Serialize(workspace), new UTF8Encoding(false)); File.Move(path + ".tmp", path, true);
+        Validate(workspace); workspace.Version = "comparison-1.2";
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(workspace);
+        if (bytes.Length > 8388608) throw new InvalidDataException("比较文件过大，请减少原始测量或拆分比较后再保存。");
+        string target = Path.GetFullPath(path);
+        string temporary = target + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        try
+        {
+            using (var stream = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+            { stream.Write(bytes); stream.Flush(flushToDisk: true); }
+            File.Move(temporary, target, true);
+        }
+        finally { if (File.Exists(temporary)) File.Delete(temporary); }
     }
     public static string Html(PurchaseWorkspace workspace, PurchaseComparison comparison)
     {

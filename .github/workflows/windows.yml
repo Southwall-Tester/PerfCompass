@@ -125,6 +125,26 @@ jobs:
         with:
           name: native-task-plan
           path: artifacts/ui-task-plan-focused/
+      - name: Native candidate draft preservation and exit flow
+        shell: pwsh
+        run: |
+          $root = Join-Path $PWD 'artifacts/ci-comparison-draft/data'
+          $p = Start-Process ./release-next/PerfCompass.exe -ArgumentList @('--ui-test','--ui-test-comparison-draft-only','--data-dir',('"' + $root + '"')) -PassThru -WindowStyle Hidden
+          if (-not $p.WaitForExit(90000)) { $p.Kill(); throw 'Native candidate draft flow exceeded its bounded check.' }
+          if ($p.ExitCode -ne 0) { throw 'Native candidate draft flow failed.' }
+          $report = Join-Path $PWD 'artifacts/ui-comparison-draft-focused/results.txt'
+          if (-not (Test-Path -LiteralPath $report)) { throw 'Candidate draft results are missing.' }
+          $checks = Get-Content -LiteralPath $report
+          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 28 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Candidate draft checks are incomplete.' }
+          $expected = Get-Content artifacts/ui-comparison-draft-focused/expected-exit-draft.json -Raw | ConvertFrom-Json
+          $saved = Get-Content (Join-Path $root 'comparison.json') -Raw | ConvertFrom-Json
+          if ($saved.Candidates[0].Name -ne $expected.Name -or $saved.Candidates[0].PriceCny -ne $expected.PriceCny) { throw 'Actual final exit did not save the last uncommitted editor.' }
+      - name: Native candidate draft evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-candidate-draft
+          path: artifacts/ui-comparison-draft-focused/
       - name: Record Windows telemetry reference pairs
         shell: pwsh
         run: |
