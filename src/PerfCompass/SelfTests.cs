@@ -380,6 +380,7 @@ public static partial class SelfTests
         RunMemoryCapacityTests(Check, Assert);
         RunStorageCapacityTests(Check, Assert);
         RunGpuPurchasePlanTests(Check, Assert);
+        RunPurchaseShortlistTests(Check, Assert);
         RunPurchaseGuidanceTests(Check, Assert);
         RunCandidateEvidenceLevelTests(Check, Assert);
         RunHistoryAggregationTests(Check, Assert);

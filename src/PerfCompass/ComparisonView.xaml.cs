@@ -118,7 +118,7 @@ public partial class ComparisonView : UserControl
         try { CoverageConfirm.IsChecked = false; workspace.CoverageConfirmed = false; DropResult(); }
         finally { updating = false; }
     }
-    private void DropResult() { comparison = null; ComparisonResults.ItemsSource = null; ComparisonTradeoffs.ItemsSource = null; ComparisonScenarios.ItemsSource = null; ComparisonConflicts.ItemsSource = null; ComparisonSummary.Text = ""; ExportComparisonButton.IsEnabled = false; }
+    private void DropResult() { comparison = null; ComparisonResults.ItemsSource = null; ComparisonTradeoffs.ItemsSource = null; ComparisonScenarios.ItemsSource = null; ComparisonConflicts.ItemsSource = null; ComparisonSummary.Text = ""; ComparisonShortlists.ItemsSource = null; ShortlistExpander.Visibility = Visibility.Collapsed; ExportComparisonButton.IsEnabled = false; }
     private bool Commit()
     {
         foreach (var grid in new[] { CandidatesGrid, CriteriaGrid, ObservationsGrid })
@@ -217,6 +217,8 @@ public partial class ComparisonView : UserControl
             ComparisonConflicts.ItemsSource = comparison.Conflicts;
             ComparisonTradeoffs.ItemsSource = comparison.Tradeoffs;
             ComparisonScenarios.ItemsSource = comparison.ScenarioSummaries;
+            ComparisonShortlists.ItemsSource = comparison.Shortlists;
+            ShortlistExpander.Visibility = comparison.Shortlists.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
             ComparisonResults.ItemsSource = comparison.Candidates.Select(a => new { a.Name, StatusLabel = a.State == "pass" ? "必需条件通过 · 条件需求另行核对" : a.State == "fail" ? "存在不满足的必需条件" : "待验证，暂不能确认满足需求", StatusBrush = a.State == "pass" ? "#007F73" : a.State == "fail" ? "#BC7132" : "#677A87", Checks = a.Checks.Select(c => new { c.Name, c.EvidenceKind, c.EvidenceLabel, Reading = c.EvidenceLabel + " · " + (c.State == "pass" ? "满足：" : c.State == "fail" ? "不满足：" : "待验证：") + c.Reading, c.Evidence, ConditionLabel = c.Condition.Length > 0 ? "触发条件：" + c.Condition : "必需条件" }) }).ToList();
             ExportComparisonButton.IsEnabled = true; ComparisonStatus.Text = "已保存目标核对结果；各项已标明规格资料、人工记录或重复测量依据。";
         }

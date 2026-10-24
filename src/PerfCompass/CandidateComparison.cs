@@ -76,6 +76,7 @@ public record PurchaseComparison(string Summary, List<PurchaseAssessment> Candid
     public string[] Tradeoffs { get; init; } = [];
     public string[] ScenarioSummaries { get; init; } = [];
     public PurchaseConflict[] Conflicts { get; init; } = [];
+    public PurchaseShortlist[] Shortlists { get; init; } = [];
 }
 
 public static partial class CandidateComparison
@@ -310,7 +311,8 @@ public static partial class CandidateComparison
             scenarios.Add("情景「" + condition + "」成立时：" + (conflict.Length > 0 ? conflict : qualified.Length == 0 ? "当前没有通过必需条件及此情景全部条件、且报价依据齐全的候选。请检查不满足或待验证项。" : "最低已核对报价为 " + string.Join("、", qualified.Where(a => a.PriceCny == qualified[0].PriceCny).Select(a => a.Name)) + $"（{qualified[0].PriceCny:0.##} 元）。")
                 + (conflict.Length > 0 ? "" : MissingQuoteSourceNotice(targetsPassed)) + "多个条件同时成立时，还需一起核对所有相关项目。");
         }
-        return new(summary, assessments, context, stamp) { Tradeoffs = tradeoffs.ToArray(), ScenarioSummaries = scenarios.ToArray(), Conflicts = conflicts };
+        return new(summary, assessments, context, stamp) { Tradeoffs = tradeoffs.ToArray(), ScenarioSummaries = scenarios.ToArray(), Conflicts = conflicts,
+            Shortlists = BuildShortlists(workspace, assessments, conflicts) };
     }
     public static PurchaseWorkspace Load(string root)
     {
@@ -353,6 +355,8 @@ public static partial class CandidateComparison
         string E(string? s) => WebUtility.HtmlEncode(s ?? "");
         string State(string s) => s switch { "pass" => "满足已核对条件", "fail" => "有不满足项", _ => "待验证" };
         return "<!doctype html><html lang='zh-CN'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>候选配置比较</title><style>body{font:15px/1.8 system-ui,'Microsoft YaHei';background:#f4f7f8;color:#192a36;margin:30px auto;max-width:1000px;padding:20px}section{background:white;padding:24px;margin:20px 0;border-radius:12px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd;vertical-align:top;overflow-wrap:anywhere;box-sizing:border-box}table{width:100%;border-collapse:collapse;table-layout:fixed}th:nth-child(1){width:30%}th:nth-child(2){width:28%}th:nth-child(3){width:42%}small{color:#677a87}</style><h1>候选配置比较</h1><p>" + E(comparison.Summary) + "</p><small>" + DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm") + " · comparison-1.3 · 报价与测量由用户提供；未独立验证其真实性。GB 容量按 1 TB = 1000 GB 归一化，GiB/TiB 请先换算，购买前核对厂商口径。</small>"
+            + string.Join("", comparison.Shortlists.Select(s => "<section><h2>购机建议与加价取舍</h2><p>" + E(s.Scope) + "</p><h3>" + E(s.Summary) + "</h3>"
+                + string.Join("", s.Options.Select(o => "<h4>" + E(o.Name) + " · " + E(o.Label) + "</h4><p>" + E(o.Detail) + "</p>")) + "<small>" + E(s.Notice) + "</small></section>"))
             + string.Join("", comparison.Conflicts.Select(c => "<section><h2>条件数值冲突</h2><p>" + E(c.Message) + "</p></section>"))
             + string.Join("", comparison.ScenarioSummaries.Select(t => "<section><h2>条件情景</h2><p>" + E(t) + "</p></section>"))
             + string.Join("", comparison.Tradeoffs.Select(t => "<section><p>" + E(t) + "</p></section>"))

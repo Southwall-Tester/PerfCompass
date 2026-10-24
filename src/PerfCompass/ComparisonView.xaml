@@ -71,6 +71,17 @@
   <TextBlock x:Name="ComparisonStatus" Margin="0,4,0,16" Foreground="{StaticResource Muted}"/>
   <StackPanel x:Name="ComparisonOutcomePanel">
   <TextBlock x:Name="ComparisonSummary" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
+  <Expander x:Name="ShortlistExpander" Header="购机建议与加价取舍" Visibility="Collapsed" Margin="0,0,0,16" Foreground="#007F73">
+   <ItemsControl x:Name="ComparisonShortlists" Margin="0,12,0,0"><ItemsControl.ItemTemplate><DataTemplate><Border Style="{StaticResource Card}" Margin="0,0,0,14"><StackPanel>
+    <TextBlock Text="{Binding Scope}" Foreground="{StaticResource Muted}" TextWrapping="Wrap"/>
+    <TextBlock Text="{Binding Summary}" Foreground="#192A36" FontSize="17" FontWeight="SemiBold" Margin="0,7,0,12" TextWrapping="Wrap"/>
+    <ItemsControl ItemsSource="{Binding Options}"><ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,0,0,12">
+     <TextBlock Text="{Binding Name}" Foreground="#192A36" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding Label}" Foreground="#007F73" Margin="0,5,0,4" TextWrapping="Wrap"/>
+     <TextBlock Text="{Binding Detail}" Foreground="#45606C" TextWrapping="Wrap" LineHeight="22"/>
+    </StackPanel></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+    <TextBlock Text="{Binding Notice}" FontSize="12" Foreground="{StaticResource Muted}" TextWrapping="Wrap" LineHeight="21"/>
+   </StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+  </Expander>
   <ItemsControl x:Name="ComparisonConflicts" Margin="0,0,0,12"><ItemsControl.ItemTemplate><DataTemplate><Border Style="{StaticResource Card}" BorderBrush="#B56A30" BorderThickness="1" Margin="0,0,0,12"><StackPanel><TextBlock Text="条件数值冲突" FontWeight="SemiBold" Foreground="#98551D" Margin="0,0,0,8"/><TextBlock Text="{Binding Message}" TextWrapping="Wrap"/></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
   <ItemsControl x:Name="ComparisonScenarios" Margin="0,0,0,12"><ItemsControl.ItemTemplate><DataTemplate><Border Style="{StaticResource Card}" Margin="0,0,0,12"><TextBlock Text="{Binding}"/></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
   <ItemsControl x:Name="ComparisonTradeoffs" Margin="0,0,0,16"><ItemsControl.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" Margin="0,0,0,12"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>

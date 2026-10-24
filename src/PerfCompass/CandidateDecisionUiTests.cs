@@ -158,6 +158,17 @@ public partial class MainWindow
             && view.Result.Tradeoffs[0].Contains("多花 3000 元") && SaveReport("candidate-decision-complete-sources"),
             "Supplying both quote sources restores the 3000-yuan difference consistently in the native result and HTML");
 
+        view.ShortlistExpander.IsExpanded = true; UpdateLayout();
+        var shortlistText = Descendants(view.ComparisonShortlists).OfType<TextBlock>().ToArray();
+        var budgetSummary = shortlistText.SingleOrDefault(t => t.Text == view.Result!.Shortlists[0].Summary);
+        bool shortlistVisible = await Capture("74-purchasing-shortlist-budget", view.ComparisonShortlists, budgetSummary,
+            shortlistText.SingleOrDefault(t => t.Text == "尚无任务收益对照"));
+        require(view.Result!.Shortlists[0].Options.Single(o => o.Name == candidateA).Label == "预算优先"
+            && view.Result.Shortlists[0].Options.Single(o => o.Name == candidateB).Label == "尚无任务收益对照"
+            && shortlistVisible && view.ExportHtml().Contains(WebUtility.HtmlEncode(view.Result.Shortlists[0].Summary)),
+            "Actual purchasing shortlist recommends the sourced budget option without calling extra specifications task benefits");
+        view.ShortlistExpander.IsExpanded = false;
+
         Click(view.AddCriterionButton);
         int taskRow = view.CriteriaGrid.Items.Count - 1;
         await Cell(view.CriteriaGrid, taskRow, 1, taskName);
@@ -187,6 +198,18 @@ public partial class MainWindow
             && SaveReport("candidate-decision-reviewed-condition"),
             "A reviewed conditional task displays its manual 9-to-5-second comparison with the explicit trigger condition");
 
+        view.ShortlistExpander.IsExpanded = true; UpdateLayout();
+        var branchPanel = (FrameworkElement)view.ComparisonShortlists.ItemContainerGenerator.ContainerFromIndex(1);
+        var branchText = Descendants(branchPanel).OfType<TextBlock>().ToArray();
+        var branchDetail = view.Result!.Shortlists[1].Options.Single(o => o.Name == candidateB);
+        bool branchVisible = await Capture("75-purchasing-shortlist-conditional", branchPanel,
+            branchText.SingleOrDefault(t => t.Text == view.Result.Shortlists[1].Summary),
+            branchText.SingleOrDefault(t => t.Text == branchDetail.Detail));
+        require(view.Result.Shortlists.Length == 2 && view.Result.Shortlists[0].Options.Single(o => o.Name == candidateB).Label == "尚无任务收益对照"
+            && branchDetail.Label == "记录到任务优势" && branchDetail.Detail.Contains("手填任务值 9 → 5 秒") && branchVisible,
+            "Actual shortlist keeps conditional task gains separate from the base budget and renders their manual provenance");
+        view.ShortlistExpander.IsExpanded = false;
+
         await Cell(view.CriteriaGrid, taskRow, 0, false);
         Compare();
         var finalText = Descendants(view.ComparisonResults).OfType<TextBlock>().ToArray();
@@ -204,5 +227,9 @@ public partial class MainWindow
             && SaveReport("candidate-decision-unreviewed-condition") && unreviewedVisible
             && paused && !TaskMeasurementPage.Running,
             "Unreviewing the conditional task preserves required passes but removes its benefit from visible decisions saved state and HTML while recording remains paused");
+        require(view.Result!.Shortlists[0].Options.Any(o => o.Name == candidateA && o.Label == "预算优先")
+            && view.Result.Shortlists[1].Options.All(o => o.CandidateId.Length == 0)
+            && !view.ExportHtml().Contains("手填任务值 9 → 5"),
+            "Unreviewed conditional goals retract their purchasing recommendation without erasing the independent base budget");
     }
 }
