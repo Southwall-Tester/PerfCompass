@@ -1,0 +1,111 @@
+{
+    "Version":  "0.8.25+a0001ee9867ac5f2bb0bf980f739bd8409d8401b",
+    "SourceCommit":  "a0001ee9867ac5f2bb0bf980f739bd8409d8401b",
+    "Method":  "1.15",
+    "ExecutableSha256":  "EB7FA871D2499C345E04752EBD7520BB89216C8EE9D18B859E788785F10A459D",
+    "Scope":  "One local machine. Independent empty data roots. Test flows overlap and their counts must not be added. Not semantic accuracy, cross-hardware support, physical sensor accuracy, or commercial maturity.",
+    "Flows":  [
+                  {
+                      "Flow":  "self",
+                      "Passed":  459,
+                      "Failed":  0,
+                      "ActualExitCode":  0,
+                      "ResultsSha256":  "BE13A6DF628CC9AC9C8EA33EDE71A2C0B8314EEC8C66C67B080C01C9FCD4761C"
+                  },
+                  {
+                      "Flow":  "full-wpf",
+                      "Passed":  146,
+                      "Failed":  0,
+                      "ActualExitCode":  0,
+                      "ResultsSha256":  "A93DA7A43C5D2BD955D45F96AE2D1A124C5644211970759B2806AA6CCA94448B"
+                  },
+                  {
+                      "Flow":  "sampling-isolation",
+                      "Passed":  21,
+                      "Failed":  0,
+                      "ActualExitCode":  0,
+                      "ResultsSha256":  "A2005CB8C6E767B560EC534CC928EC6BA06236AD0F6BA3A4B3D69CB845FABCE8"
+                  },
+                  {
+                      "Flow":  "sampling-clock",
+                      "Passed":  9,
+                      "Failed":  0,
+                      "ActualExitCode":  0,
+                      "ResultsSha256":  "C06CB46298F4298E3821F6C7BD1F76529E8A8A9A4A03427B362C397B6F7B24B7"
+                  }
+              ],
+    "EntryGuards":  {
+                        "MissingUiExit":  3,
+                        "MissingUiCreatedRoot":  false,
+                        "OccupiedExit":  3,
+                        "SentinelUnchanged":  true,
+                        "OccupiedFileCount":  1
+                    },
+    "ControlledUiStall":  {
+                              "Scope":  "Deliberate UI-thread stalls in owned test processes. Baseline uses frozen 0.8.24 assembly through an STA host; current uses actual 0.8.25 EXE entry. Not proof of the earlier soak timeout cause.",
+                              "Baseline":  {
+                                               "Version":  "0.8.24+e611bf92692f899feddbb6b1d6cc1610734d34c5",
+                                               "ActualHostExit":  0,
+                                               "BlockSeconds":  22.0097395,
+                                               "ObserverAtSeconds":  18.0149136,
+                                               "ObserverInsideBlock":  true,
+                                               "RecordsBefore":  1,
+                                               "RecordsDuring":  1,
+                                               "SavedRecordsAdvanced":  false
+                                           },
+                              "Current":  {
+                                              "Version":  "0.8.25.0",
+                                              "BlockSeconds":  22.0082712,
+                                              "ObserverAtSeconds":  18.0018825,
+                                              "ObserverInsideBlock":  true,
+                                              "SequenceBefore":  5,
+                                              "SequenceDuring":  11,
+                                              "ContextFrames":  11,
+                                              "RecordsBefore":  1,
+                                              "RecordsDuring":  2,
+                                              "SavedRecordsAdvanced":  true
+                                          },
+                              "VisualReview":  "Actual native render of the display-gap notice and broken curve inspected. Private images retain original hashes below.",
+                              "NoticeImageSha256":  "220CFC0DA6D495B75BE770AF22AC3BFDDF306821636170FCEEF883F541503B95",
+                              "CurveImageSha256":  "2FC8FCFEBE83E9D292B3A8474AF8368553CE7D2FFC014AE7493235E1622CA704",
+                              "SyntheticExperienceScope":  "After stopping real collection, UI-only heavy/light frames check the actual experience-save control. CPU peak100 and \u003e=2 busy / \u003e=4 covered seconds persist; synthetic frames never append to telemetry history."
+                          },
+    "ShortRun":  {
+                     "RequestedSeconds":  60,
+                     "ObservedSeconds":  60.8863762,
+                     "Status":  "completed",
+                     "ChecksPassed":  true,
+                     "ActualExitCode":  0,
+                     "SavedSamples":  5,
+                     "DispatcherTimeouts":  0,
+                     "HistoryIssues":  0,
+                     "TimingGaps":  0,
+                     "ErrorLogExists":  false,
+                     "Scope":  "60-second local validation with captured OS exit witness. Not long-term stability."
+                 },
+    "PreviousEightHours":  {
+                               "Version":  "0.8.18+da0274c68de111741c230b556b2be2b97f1cb879",
+                               "Status":  "completed",
+                               "ChecksPassed":  false,
+                               "ObservedSeconds":  28800.5831265,
+                               "DispatcherTimeouts":  1,
+                               "ObservationGaps":  1,
+                               "SavedSamples":  2104,
+                               "HistoryIssues":  0,
+                               "TimingGaps":  0,
+                               "ActualExitCode":  null,
+                               "Scope":  "Original failed run retained. No OS exit code witness. No transfer to current version."
+                           },
+    "PortableAudit":  {
+                          "Entries":  108,
+                          "Bytes":  74160430,
+                          "ArchiveSha256":  "A2D326A870519A2059F2113715FC7D0725D2A6BBF2CED955E83B6B9040152FAF",
+                          "ExecutableSha256":  "EB7FA871D2499C345E04752EBD7520BB89216C8EE9D18B859E788785F10A459D",
+                          "ExtractedWorkingDirectory":  true,
+                          "IndependentEmptyDataRoot":  true,
+                          "Passed":  21,
+                          "Failed":  0,
+                          "ActualExitCode":  0,
+                          "Scope":  "Audited ZIP extracted on this same machine. Not a clean OS install or cross-hardware validation. Final documentation and READY may be updated without changing this EXE."
+                      }
+}
