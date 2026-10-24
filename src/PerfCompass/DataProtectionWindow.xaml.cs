@@ -15,6 +15,7 @@ public partial class DataProtectionWindow : Window
     public Task Completion { get; private set; } = Task.CompletedTask;
     public bool Busy => cancellation != null;
     internal Func<string?> PickSave = () => { var d = new Microsoft.Win32.SaveFileDialog { Filter = "PerfCompass 备份|*.pcbackup", DefaultExt = ".pcbackup", FileName = $"PerfCompass-{DateTime.Now:yyyyMMdd-HHmmss}.pcbackup" }; return d.ShowDialog() == true ? d.FileName : null; };
+    internal Func<string?> BeforeBackup = () => null;
     internal Func<string?> PickBackup = () => { var d = new Microsoft.Win32.OpenFileDialog { Filter = "PerfCompass 备份|*.pcbackup", CheckFileExists = true }; return d.ShowDialog() == true ? d.FileName : null; };
     internal Func<string?> PickParent = () => { var d = new Microsoft.Win32.OpenFolderDialog { Title = "选择恢复父目录（将在其中创建新文件夹）" }; return d.ShowDialog() == true ? d.FolderName : null; };
     internal Func<string, bool> ConfirmCleanup = text => MessageBox.Show(text, "重新启用自动清理", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes;
@@ -57,7 +58,10 @@ public partial class DataProtectionWindow : Window
     }
     private async void Create_Click(object sender, RoutedEventArgs e)
     {
-        if (Busy) return; string? path = PickSave(); if (path == null) return;
+        if (Busy) return;
+        string? blocked = BeforeBackup();
+        if (blocked != null) { OperationStatus.Text = blocked; return; }
+        string? path = PickSave(); if (path == null) return;
         await Work("正在保存并校验备份…", async token =>
         {
             var result = await Task.Run(() => DataBackup.Create(store, path, token), token);

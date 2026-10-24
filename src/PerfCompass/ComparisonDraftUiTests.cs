@@ -22,6 +22,7 @@ public partial class MainWindow
             "A completed candidate refresh cannot override a subsequent settings navigation");
         Click(ComparisonNav); await wait(() => ComparisonPage.Visibility == Visibility.Visible);
         var view = ComparisonPage;
+        File.WriteAllText(Path.Combine(output, "NOTICE.txt"), "The three common startup checks use actual local CPU and memory. Candidate names, values and editable cells in this focused flow are synthetic. A real owned file handle obstructs replacement; no production permission or user file is changed. Backup checks use the actual modal window and controls, compare archived comparison.json bytes with the committed file, and preserve blocked states. Data lives only in the guarded independent UI-test root. Screenshots are WPF visual-tree renders, not proof of all system mouse, tray or file-dialog paths; no crash, power-loss or cross-hardware claim.");
         string originalPath = Path.Combine(store.Root, "comparison.json");
         string exportPath = Path.Combine(output, "recovered-draft.json");
         string importPath = Path.Combine(output, "initial-draft.json");
@@ -75,6 +76,7 @@ public partial class MainWindow
             await wait(() => view.DraftStatus.Text.Contains("保存失败"));
             require(view.HasUnsavedDraft && File.ReadAllBytes(originalPath).SequenceEqual(previous) && view.Result == null,
                 "A real locked target causes autosave failure while preserving both old disk data and edited UI content");
+            await VerifyBackupPreparation(output, "backup-blocked-draft", false, "候选草稿无法保存", require);
             view.DraftExportPathProvider = () => output; Click(view.ExportDraftButton);
             require(view.HasUnsavedDraft && view.DraftStatus.Text.Contains("导出失败"), "A failed alternate export does not clear unsaved protection");
             view.DraftImportPathProvider = () => importPath; Click(view.ImportDraftButton);
@@ -88,6 +90,8 @@ public partial class MainWindow
             view.DraftExportPathProvider = () => exportPath; Click(view.ExportDraftButton);
             require(!view.HasUnsavedDraft && CandidateComparison.LoadFile(exportPath).Candidates[0].Name == "保存失败后仍保留的候选"
                 && File.ReadAllBytes(originalPath).SequenceEqual(previous), "A successful alternate export protects the unique edited draft without changing the blocked original");
+            require(StatusLine.Text == "候选草稿已保存或导出。", "Successful draft export clears the stale global exit warning");
+            await VerifyBackupPreparation(output, "backup-blocked-external-copy", false, "候选草稿无法保存", require);
             await EditComparisonCell(view.CandidatesGrid, 0, 6, "导出后继续修改");
             require(view.HasUnsavedDraft, "Any edit after export requires a new save or export");
             view.DraftImportPathProvider = () => null; Click(view.ImportDraftButton);
@@ -115,6 +119,14 @@ public partial class MainWindow
             editor.Text = "6800"; editor.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
             grid.CommitEdit(DataGridEditingUnit.Cell, true); grid.CommitEdit(DataGridEditingUnit.Row, true); Click(view.SaveDraftButton);
             require(!view.HasUnsavedDraft && CandidateComparison.Load(store.Root).Candidates[0].PriceCny == 6800, "Correcting the same invalid editor restores normal draft saving");
+            require(StatusLine.Text == "候选草稿已保存或导出。", "Successful native save clears the prior invalid-editor exit warning");
+            StatusLine.Text = "合成的独立操作提示"; Click(view.SaveDraftButton);
+            require(StatusLine.Text == "合成的独立操作提示", "Draft persistence does not overwrite a global notice owned by another operation");
+            var backupGrid = view.CandidatesGrid; var backupItem = backupGrid.Items[0]; var backupColumn = backupGrid.Columns[0];
+            backupGrid.CurrentCell = new(backupItem, backupColumn); backupGrid.ScrollIntoView(backupItem, backupColumn); backupGrid.UpdateLayout();
+            if (!backupGrid.BeginEdit()) throw new Exception("Could not open the pending backup editor.");
+            ((TextBox)backupColumn.GetCellContent(backupItem)).Text = "备份应包含的最新候选";
+            await VerifyBackupPreparation(output, "backup-latest-editor", true, "备份应包含的最新候选", require);
             await Capture("draft-recovered");
             // Final valid editor remains uncommitted; outer RunUiTests calls the real Exit.
             column = grid.Columns[0]; grid.CurrentCell = new(item, column); grid.ScrollIntoView(item, column); grid.UpdateLayout();

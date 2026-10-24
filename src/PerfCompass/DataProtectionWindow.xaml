@@ -5,8 +5,8 @@
    <TextBlock Text="备份与恢复" FontSize="25" FontWeight="SemiBold"/>
    <TextBlock Text="此窗口打开期间暂停监测，关闭后恢复此前状态。备份未加密，包含历史、需求原文、候选配置及测量参数，请保存在可信位置。" Foreground="{StaticResource Muted}" Margin="0,12,0,20"/>
    <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
-    <TextBlock Text="保存当前数据" FontSize="17" FontWeight="SemiBold"/>
-    <TextBlock Text="包含设置、历史记录、体验记录、候选比较、测量结果和已保留的损坏设置原件。排除日志、程序和模型文件。" Margin="0,10,0,14"/>
+    <TextBlock Text="备份数据目录" FontSize="17" FontWeight="SemiBold"/>
+    <TextBlock Text="包含数据目录中已保存的设置、历史、体验、候选比较、测量结果及损坏设置原件。创建前先保存当前候选草稿；未保存的测量需先导出。另存到其他目录的文件请单独保管。排除日志、程序和模型文件。" Margin="0,10,0,14"/>
     <Button x:Name="CreateBackupButton" Content="保存备份…" Click="Create_Click" HorizontalAlignment="Left"/>
    </StackPanel></Border>
    <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>

@@ -27,7 +27,7 @@ public partial class MainWindow
         if (!paused) TogglePause();
         try
         {
-            protectionWindow = new(store) { Owner = this };
+            protectionWindow = new(store) { Owner = this, BeforeBackup = PrepareBackupContents };
             ProtectionWindowReady?.Invoke(protectionWindow);
             protectionWindow.ShowDialog();
         }
@@ -36,5 +36,13 @@ public partial class MainWindow
             protectionWindow = null; RefreshDataProtection();
             if (!wasPaused && paused && !exiting) TogglePause();
         }
+    }
+    private string? PrepareBackupContents()
+    {
+        if (TaskMeasurementPage.HasUnsavedResult)
+            return "备份尚未开始：测量结果尚未保存，请先返回测量页导出结果。另存到数据目录以外的文件需单独保管。";
+        if (!ComparisonPage.TrySaveDraft())
+            return "备份尚未开始：当前候选草稿无法保存到数据目录，请返回候选页修正内容或排除文件占用后重试。外部导出的副本不包含在本次备份中。";
+        return null;
     }
 }

@@ -120,6 +120,7 @@ public partial class MainWindow
                 && File.Exists(markerPath) && !Directory.Exists(markerPath),
                 "Three real completed attempts survive autosave failure as an exportable unsaved result");
             var completed = retained ?? throw new InvalidOperationException("The unsaved completed result was lost.");
+            await VerifyBackupPreparation(output, "backup-blocked-measurement", false, "测量结果尚未保存", require);
             string originalName = completed.Recipe.Name;
             view.TaskNameBox.Text = "已编辑但尚未运行的新设置";
             bool editPreserved = ReferenceEquals(view.LastResult, completed) && completed.Recipe.Name == originalName;

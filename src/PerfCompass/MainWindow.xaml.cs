@@ -21,6 +21,7 @@ public partial class MainWindow : Window
     private bool exitPending;
     internal Func<bool>? DiscardUnsavedMeasurementOnExit;
     internal Func<bool>? DiscardUnsavedComparisonOnExit;
+    private const string UnsavedComparisonNotice = "候选草稿已保留。请保存或导出后再退出。";
     private bool measurementActive;
     private int recordingGeneration;
     private readonly object recordingGate = new();
@@ -42,6 +43,10 @@ public partial class MainWindow : Window
         InitializeComponent();
         ApplicationVersionLabel.Text = "本地记录 · v" + typeof(MainWindow).Assembly.GetName().Version?.ToString(3);
         ComparisonPage.OpenTaskMeasurement = () => Navigate("measurement");
+        ComparisonPage.DraftPersisted = () =>
+        {
+            if (StatusLine.Text == UnsavedComparisonNotice) StatusLine.Text = "候选草稿已保存或导出。";
+        };
         TaskMeasurementPage.Initialize(store,
             () => new(live?.CpuName ?? "", live?.GpuName ?? "", live?.Sample.MemoryTotalGb, Environment.OSVersion.VersionString, TaskMeasurements.PowerSource(), TaskMeasurementPage.DeclaredPowerProfile),
             active =>
@@ -510,7 +515,7 @@ public partial class MainWindow : Window
             if (!discard)
             {
                 exitPending = false; ComparisonPage.DraftStatus.BringIntoView();
-                StatusLine.Text = "候选草稿已保留。请保存或导出后再退出。"; return;
+                StatusLine.Text = UnsavedComparisonNotice; return;
             }
         }
         exiting = true; ModelApiKey.Clear(); stop.Cancel(); tray.Visible = false; tray.Dispose();

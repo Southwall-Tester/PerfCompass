@@ -9,6 +9,7 @@ public partial class ComparisonView
     private DispatcherTimer draftSaveTimer = null!;
     private bool draftDirty, exportedDraft;
     internal bool HasUnsavedDraft => draftDirty && !exportedDraft;
+    internal Action? DraftPersisted;
     internal Func<string?> DraftExportPathProvider = () =>
     {
         var dialog = new SaveFileDialog { Filter = "比较草稿 JSON|*.json", FileName = "PerfCompass-候选草稿.json" };
@@ -61,6 +62,7 @@ public partial class ComparisonView
             CandidateComparison.Save(store.Root, workspace);
             draftSaveTimer.Stop(); draftDirty = false; exportedDraft = false;
             DraftStatus.Text = "草稿已保存 · " + DateTimeOffset.Now.ToString("HH:mm:ss");
+            DraftPersisted?.Invoke();
             return true;
         }
         catch (ArgumentException e) { DraftStatus.Text = "草稿尚未保存：" + e.Message; }
@@ -82,6 +84,7 @@ public partial class ComparisonView
             CandidateComparison.SaveFile(path, workspace);
             draftSaveTimer.Stop(); exportedDraft = true;
             DraftStatus.Text = "草稿已导出。重启后可通过“导入草稿”打开；本地保存失败时也可安全退出。";
+            DraftPersisted?.Invoke();
         }
         catch (ArgumentException ex) { DraftStatus.Text = "草稿未导出：" + ex.Message; }
         catch (Exception ex) { store?.Log(ex); DraftStatus.Text = "草稿导出失败，编辑内容仍在页面。请选择可写目录重试。"; }
