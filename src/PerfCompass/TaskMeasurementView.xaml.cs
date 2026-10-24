@@ -24,6 +24,7 @@ public partial class TaskMeasurementView : UserControl
     internal Func<string?>? InputPathProvider;
     internal Func<string?>? WorkingDirectoryPathProvider;
     internal Func<string?>? MeasurementExportPathProvider;
+    internal Action? ResultPersisted;
     internal TaskMeasurementResult? LastResult { get; private set; }
     internal bool HasUnsavedResult => LastResult != null && !resultSaved;
     internal bool Running => cancellation != null;
@@ -223,7 +224,7 @@ public partial class TaskMeasurementView : UserControl
         var dialog = new SaveFileDialog { Filter = "任务测量 JSON|*.json", FileName = "PerfCompass-任务测量.json" };
         string? path = MeasurementExportPathProvider != null ? MeasurementExportPathProvider() : dialog.ShowDialog() == true ? dialog.FileName : null;
         if (path == null) return;
-        try { TaskMeasurements.Save(path, LastResult); resultSaved = true; TaskStatus.Text = "已导出测量文件，可在候选比较中选中对应结果行后导入。"; }
+        try { TaskMeasurements.Save(path, LastResult); resultSaved = true; TaskStatus.Text = "已导出测量文件，可在候选比较中选中对应结果行后导入。"; ResultPersisted?.Invoke(); }
         catch (Exception ex) { store?.Log(new InvalidOperationException("Task export failed: " + ex.GetType().Name)); TaskStatus.Text = "导出失败，请检查目标目录。"; }
     }
 }

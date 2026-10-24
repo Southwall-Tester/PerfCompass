@@ -165,6 +165,9 @@ public partial class MainWindow
             var savedCompleted = TaskMeasurements.Load(savedResultPath);
             bool exportReleased = !view.HasUnsavedResult && savedCompleted.Outcome == "completed"
                 && savedCompleted.Recipe.Name == originalName && savedCompleted.Attempts.Count == 3;
+            require(StatusLine.Text == "测量结果已导出。", "Exporting the preserved completed measurement clears its stale global exit notice");
+            StatusLine.Text = "合成的独立测量操作提示"; Click(view.ExportTaskButton);
+            require(StatusLine.Text == "合成的独立测量操作提示", "Measurement export preserves a global notice owned by another operation");
             Click(view.NewTaskPlanButton);
             require(exportReleased && view.LastResult == null && view.BoundPlan == null
                 && !view.HasUnsavedResult && ShortRuns() == 3,
@@ -193,6 +196,7 @@ public partial class MainWindow
             var savedCancelled = TaskMeasurements.Load(cancelledResultPath);
             bool cancellationExported = !view.HasUnsavedResult && savedCancelled.Outcome == "cancelled"
                 && savedCancelled.Attempts.Any(attempt => attempt.Outcome == "cancelled");
+            require(StatusLine.Text == "测量结果已导出。", "Exporting the preserved cancellation outcome clears its global exit notice too");
             Click(view.NewTaskPlanButton);
             finalState = cancellationExported && view.LastResult == null && view.BoundPlan == null
                 && !view.HasUnsavedResult && paused && !view.Running && !measurementActive;
