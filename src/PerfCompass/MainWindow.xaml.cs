@@ -17,7 +17,8 @@ public partial class MainWindow : Window
     private Collector? collector;
     private readonly Forms.NotifyIcon tray;
     private volatile bool paused;
-    private bool exiting, initialized, analyzing, refreshRequested;
+    private volatile bool exiting;
+    private bool initialized, analyzing, refreshRequested;
     private bool exitPending;
     internal Func<bool>? DiscardUnsavedMeasurementOnExit;
     internal Func<bool>? DiscardUnsavedComparisonOnExit;
@@ -42,6 +43,7 @@ public partial class MainWindow : Window
     {
         this.store = store;
         InitializeComponent();
+        liveUpdates = new(PostLiveUpdate, ApplyLiveUpdates);
         ApplicationVersionLabel.Text = "本地记录 · v" + typeof(MainWindow).Assembly.GetName().Version?.ToString(3);
         ComparisonPage.OpenTaskMeasurement = () => Navigate("measurement");
         ComparisonPage.DraftPersisted = () =>
@@ -118,7 +120,7 @@ public partial class MainWindow : Window
             while (!stop.IsCancellationRequested)
             {
                 await Task.Delay(2000, stop.Token);
-                if (store.ObserveRetentionTime()) await Dispatcher.InvokeAsync(RefreshDataProtection);
+                if (store.ObserveRetentionTime()) RequestProtectionRefresh();
                 if (paused || generation != Volatile.Read(ref recordingGeneration))
                 {
                     collector!.ResetTiming(); batch.Clear(); generation = Volatile.Read(ref recordingGeneration); continue;
@@ -135,7 +137,7 @@ public partial class MainWindow : Window
                         if (snapshot.Sample.Seconds == 0 || batch.Count >= 5) { store.Append(SampleBatch.Merge(batch)); batch.Clear(); historyWriteFailed = false; }
                     }
                     if (cleanupSchedule.Due(Stopwatch.GetTimestamp())) { store.Cleanup(); cleanupSchedule.Mark(Stopwatch.GetTimestamp()); }
-                    await Dispatcher.InvokeAsync(() => UpdateLive(snapshot));
+                    PublishLive(snapshot, generation);
                 }
                 catch (Exception ex)
                 {
@@ -146,7 +148,7 @@ public partial class MainWindow : Window
                         if (batch.Count > 5) batch.RemoveRange(0, batch.Count - 5);
                     }
                     store.Log(ex);
-                    await Dispatcher.InvokeAsync(() => { RecordState.Text = "● 采集重试中"; StatusLine.Text = "本次采样失败，2 秒后重试。错误已写入 data/errors.log。"; });
+                    PublishCollectionFailure(generation);
                 }
             }
         }
@@ -158,14 +160,11 @@ public partial class MainWindow : Window
         }
     }
     private static string Percent(double? value) => value is double d ? $"{d:0}%" : "—";
-    private void UpdateLive(LiveSnapshot snapshot)
+    private void RenderLiveSnapshot(LiveSnapshot snapshot)
     {
         if (paused || exiting) return;
         live = snapshot;
         var s = snapshot.Sample;
-        if (s.SamplingIssue.Length > 0) { experienceContext.Clear(); livePoints.Clear(); }
-        experienceContext.Add(s);
-        experienceContext.RemoveAll(p => p.Time < s.Time.AddMinutes(-2));
         CpuValue.Text = Percent(s.Cpu); CpuBar.Value = s.Cpu ?? 0;
         CpuDetail.Text = $"最忙核心 {Percent(s.CoreMax)}" + (s.CpuTemp.HasValue ? $" · {s.CpuTemp:0}°C" : "");
         double? memPct = s.MemoryTotalGb > 0 ? s.MemoryUsedGb / s.MemoryTotalGb * 100 : null;
@@ -344,8 +343,8 @@ public partial class MainWindow : Window
         if (protectionWindow != null && paused) { StatusLine.Text = "备份与恢复窗口打开期间暂停监测，请先完成或关闭该窗口。"; return; }
         if (semanticLocalRequest && paused) { StatusLine.Text = "本机模型正在解析，结束并停止服务后再继续监测。"; return; }
         if (measurementActive && paused) { StatusLine.Text = "测量操作仍在进行，结束后再继续监测。"; return; }
-        lock (recordingGate) { paused = !paused; recordingGeneration++; }
-        experienceContext.Clear();
+        lock (recordingGate)
+        { paused = !paused; recordingGeneration++; experienceContext.Clear(); pendingTimingInterruption = false; }
         PauseButton.Content = paused ? "继续记录" : "暂停记录";
         RecordState.Text = paused ? "● 已暂停" : "● 正在恢复";
         tray.Text = paused ? "PerfCompass · 已暂停" : "PerfCompass · 正在记录";
@@ -374,7 +373,7 @@ public partial class MainWindow : Window
         {
             string symptom = ((ComboBoxItem)ExperienceKind.SelectedItem).Content.ToString()!;
             var value = ExperienceAnalyzer.Create(DateTimeOffset.Now, collector.HardwareId, store.Settings.Scene, symptom,
-                ExperienceNote.Text, paused ? [] : experienceContext.ToArray());
+                ExperienceNote.Text, paused ? [] : RecentExperienceSamples());
             await Task.Run(() => store.AppendExperience(value));
             experienceRevision++;
             ExperienceNote.Clear();
@@ -505,7 +504,7 @@ public partial class MainWindow : Window
                 StatusLine.Text = UnsavedComparisonNotice; return;
             }
         }
-        exiting = true; ModelApiKey.Clear(); stop.Cancel(); tray.Visible = false; tray.Dispose();
+        exiting = true; liveUpdates.Dispose(); ModelApiKey.Clear(); stop.Cancel(); tray.Visible = false; tray.Dispose();
         if (collectionTask != null)
         {
             var finished = await Task.WhenAny(collectionTask, Task.Delay(5000));

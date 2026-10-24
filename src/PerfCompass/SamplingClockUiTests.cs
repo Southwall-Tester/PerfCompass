@@ -21,7 +21,7 @@ public partial class MainWindow
             require(live.Sample.Seconds == 0 && live.Sample.Cpu == null && live.Sample.CoreMax == null && live.Sample.MemoryTotalGb > 0,
                 "Actual collector rejects elapsed/calendar disagreement without losing the instantaneous memory reading");
             require(SamplingTimingBanner.Visibility == Visibility.Visible && SamplingTimingBanner.Text.Contains("经过时间不一致")
-                && RecordState.Text.Contains("采样时间中断") && experienceContext.All(s => s.Seconds == 0) && livePoints.Count == 1,
+                && RecordState.Text.Contains("采样时间中断") && RecentExperienceSamples().All(s => s.Seconds == 0) && livePoints.Count == 1,
                 "Native timing notice clears earlier experience and live-plot context at an interruption");
             require(store.Read(7, collector.HardwareId).Any(s => s.Time == interruptedAt && s.Seconds == 0 && s.SamplingIssue == "clock-change"),
                 "Production collection loop immediately persists the zero-duration interruption separately from measured batches");

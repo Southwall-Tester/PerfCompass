@@ -11,6 +11,7 @@ public partial class MainWindow
 {
     private async Task RunUiTests()
     {
+        bool samplingIsolationOnly = Environment.GetCommandLineArgs().Contains("--ui-test-sampling-isolation-only");
         bool historyOnly = Environment.GetCommandLineArgs().Contains("--ui-test-history-only");
         bool timingOnly = Environment.GetCommandLineArgs().Contains("--ui-test-timing-only");
         bool retentionOnly = Environment.GetCommandLineArgs().Contains("--ui-test-retention-only");
@@ -27,6 +28,7 @@ public partial class MainWindow
         bool experienceIntegrityOnly = Environment.GetCommandLineArgs().Contains("--ui-test-experience-integrity-only");
         bool analysisRefreshOnly = Environment.GetCommandLineArgs().Contains("--ui-test-analysis-refresh-only");
         var output = Path.GetFullPath(semanticUseOnly ? "artifacts/ui-semantic-use-focused" : experienceIntegrityOnly ? "artifacts/ui-experience-integrity-focused" : analysisRefreshOnly ? "artifacts/ui-analysis-refresh-focused" : fileProtectionOnly ? "artifacts/ui-file-protection-focused" : uncertaintyOnly ? "artifacts/ui-uncertainty-focused" : comparisonDraftOnly ? "artifacts/ui-comparison-draft-focused" : taskPlanOnly ? "artifacts/ui-task-plan-focused" : historyAggregationOnly ? "artifacts/ui-history-aggregation-focused" : observationOnly ? "artifacts/ui-observation-focused" : gpuFreshnessOnly ? "artifacts/ui-gpu-freshness-focused" : gpuOnly ? "artifacts/ui-gpu-focused" : cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
+        if (samplingIsolationOnly) { output = Path.GetFullPath("artifacts/ui-sampling-isolation-focused"); Directory.CreateDirectory(output); }
         var results = new List<string>();
         File.WriteAllText(Path.Combine(output, "results.txt"), "RUNNING " + DateTimeOffset.Now.ToString("O"));
         void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); File.AppendAllText(Path.Combine(output, "results.txt"), "\n" + results[^1]); if (!value) throw new Exception(name); }
@@ -51,6 +53,7 @@ public partial class MainWindow
             Require(live?.Sample.Cpu is >= 0 and <= 100, "Real CPU sample available");
             Require(live?.Sample.MemoryTotalGb > 0, "Real memory sample available");
             Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
+            if (samplingIsolationOnly) { await RunSamplingIsolationUiTests(output, Require, Screenshot); return; }
             if (semanticUseOnly) { await RunSemanticUseUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (experienceIntegrityOnly) { await RunExperienceIntegrityUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (analysisRefreshOnly) { await RunAnalysisRefreshUiTests(output, Require, WaitForAnalysis); return; }

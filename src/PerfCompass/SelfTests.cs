@@ -393,6 +393,7 @@ public static partial class SelfTests
         RunSamplingClockTests(Check, Assert);
         RunRetentionSafetyTests(Check, Assert);
         RunValidationRunTests(Check, Assert);
+        RunLiveUpdateTests(Check, Assert);
         RunActivityRulesTests(Check, Assert, Fixture);
         Task.Run(() => RunTaskMeasurementTests(Check, Assert)).GetAwaiter().GetResult();
         Task.Run(() => RunTaskFileProtectionTests(Check, Assert)).GetAwaiter().GetResult();

@@ -37,6 +37,7 @@
       <TextBlock x:Name="SensorHealthBanner" Foreground="#98631D" TextWrapping="Wrap" Margin="0,0,0,18" Visibility="Collapsed" AutomationProperties.LiveSetting="Polite"/>
       <TextBlock x:Name="CpuObservationBanner" Foreground="#98631D" TextWrapping="Wrap" Margin="0,0,0,18" Visibility="Collapsed" AutomationProperties.LiveSetting="Polite"/>
       <TextBlock x:Name="SamplingTimingBanner" Foreground="#98631D" TextWrapping="Wrap" Margin="0,0,0,18" Visibility="Collapsed" AutomationProperties.LiveSetting="Polite"/>
+      <TextBlock x:Name="LiveDisplayGapBanner" Text="实时曲线出现显示间隔，已保存的采样见历史趋势。" Foreground="#98631D" TextWrapping="Wrap" Margin="0,0,0,18" Visibility="Collapsed" AutomationProperties.LiveSetting="Polite"/>
       <Border Style="{StaticResource Card}" Margin="0,0,0,20"><Expander x:Name="ExperienceEntry" Header="刚才卡顿或等待过久？记录体验"><StackPanel Margin="0,14,0,0">
        <TextBlock Text="保存此前两分钟的采样线索，用来核对当时的资源占用。暂停记录时仅保存描述。" Foreground="{StaticResource Muted}" Margin="0,0,0,12"/>
        <ComboBox x:Name="ExperienceKind" SelectedIndex="0" HorizontalAlignment="Left" MinWidth="150" AutomationProperties.Name="体验类型"><ComboBoxItem Content="操作卡顿"/><ComboBoxItem Content="任务等待过久"/></ComboBox>
