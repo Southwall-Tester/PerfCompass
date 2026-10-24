@@ -1,0 +1,94 @@
+﻿{
+    "Notice":  "Local controlled checks; synthetic scenarios and measurement fixtures, common startup telemetry actual. Counts overlap and must not be added. Not commercial or cross-hardware validation.",
+    "ProductVersion":  "0.8.20+7c62fdb8314e23ca628ecfe3ef8d79d05512b240",
+    "CodeCommit":  "7c62fdb8314e23ca628ecfe3ef8d79d05512b240",
+    "Sha256":  "2FC95C9F5C56A9333015C9B59A9BFFC8CFE5347CF93AECC97A8599B7B8E72126",
+    "MethodVersion":  "1.15",
+    "ComparisonVersion":  "comparison-1.3",
+    "Checks":  [
+                   {
+                       "Name":  "uncertainty",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  19,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "self",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  409,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "draft",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  38,
+                       "Fail":  0,
+                       "ExitEditorSaved":  true
+                   },
+                   {
+                       "Name":  "full-ui",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  145,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "observation",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  44,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "task-plan",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  30,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   }
+               ],
+    "EntryGuards":  [
+                        {
+                            "Mode":  "missing-ui-flag",
+                            "ExitCode":  3,
+                            "OnlySentinelRemains":  true,
+                            "SentinelUnchanged":  true
+                        },
+                        {
+                            "Mode":  "nonempty-root",
+                            "ExitCode":  3,
+                            "OnlySentinelRemains":  true,
+                            "SentinelUnchanged":  true
+                        }
+                    ],
+    "Old019ReaderRejects13":  true,
+    "Screenshots":  [
+                        {
+                            "File":  "explicit-joint-trigger.png",
+                            "Sha256":  "B9474A8863F1121E8DA61ED5A7D0F49C47D15FF2B3281DB6AFF95B6B5EFA404B",
+                            "VisualInspected":  true
+                        },
+                        {
+                            "File":  "legacy-review-required.png",
+                            "Sha256":  "4CCEA986F7ADE5162EABE86793B497439462E0294AD40B76247A0D88F40969D8",
+                            "VisualInspected":  true
+                        },
+                        {
+                            "File":  "separate-unknown-options.png",
+                            "Sha256":  "D872F81940DED8B73F798D6A9EEA7AE008EBA84DCA3A6B241F55BBE5BA866BF7",
+                            "VisualInspected":  true
+                        }
+                    ],
+    "RawEvidence":  "artifacts/published-0.8.20-final-checks.json (local; contains machine paths)",
+    "Research":  "qwen3-8b-extended-20261024 raw outputs and 4 complete / 1 incomplete / 19 incorrect developer reviews, not independent human labeling",
+    "FrozenSoak":  "0.8.18 continues in separate directory and does not verify 0.8.20",
+    "CommercialGoalComplete":  false
+}
