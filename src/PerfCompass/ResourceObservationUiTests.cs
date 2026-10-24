@@ -13,7 +13,12 @@ public partial class MainWindow
     private async Task RunResourceObservationUiTests(string output, Action<bool, string> require,
         Func<string, Task> screenshot, Func<Func<bool>, Task> waitForAnalysis)
     {
-        void Click(Button button) => button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+        void Click(Button button)
+        {
+            // A user click moves keyboard focus out of the edited grid. A bare
+            // routed event leaves delayed cell BringIntoView requests queued.
+            button.Focus(); button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+        }
         IEnumerable<DependencyObject> Descendants(DependencyObject parent)
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
@@ -42,7 +47,9 @@ public partial class MainWindow
         Border Card(string key) => AdviceList.Items.OfType<Border>().Single(card => card.Tag as string == key);
         async Task RevealLeadingArea(FrameworkElement anchor, IEnumerable<FrameworkElement> labels)
         {
-            UpdateLayout();
+            // Settle queued focus/scroll and generated item containers before
+            // calculating the pixel offset against the final scroll extent.
+            await Dispatcher.InvokeAsync(() => UpdateLayout(), System.Windows.Threading.DispatcherPriority.ContextIdle);
             double bottom = labels
                 .Select(label => label.TransformToAncestor(anchor).TransformBounds(new Rect(label.RenderSize)).Bottom)
                 .DefaultIfEmpty(0).Max();
@@ -73,6 +80,8 @@ public partial class MainWindow
             File.WriteAllText(Path.Combine(output, capture + "-visibility-failure.json"), JsonSerializer.Serialize(new
             {
                 Key = key, DisplayTitle = title, StatusLabel = status, Width, Height,
+                Scroll = Descendants((DependencyObject)Content).OfType<ScrollViewer>().Select(s => new
+                { s.VerticalOffset, s.ExtentHeight, s.ViewportHeight, s.CanContentScroll, s.IsKeyboardFocusWithin, Content = s.Content?.GetType().Name }).ToArray(),
                 Text = text.Select(t => new
                 {
                     t.Text, t.IsVisible, t.ActualWidth, t.ActualHeight, FullyInViewport = InViewport(t),
