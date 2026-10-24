@@ -1,0 +1,115 @@
+﻿{
+    "Notice":  "Actual frozen EXE native checks with curated facts, synthetic task history and candidate verdicts in empty independent directories. Startup CPU/memory are actual. Counts overlap; no new inference, cross-hardware, long-term or commercial acceptance claim.",
+    "ProductVersion":  "0.8.24+e611bf92692f899feddbb6b1d6cc1610734d34c5",
+    "CodeCommit":  "e611bf92692f899feddbb6b1d6cc1610734d34c5",
+    "Sha256":  "EC366BA72415F19499D387294DF3C6D452F8A643F63F685F944476CB7448BF9E",
+    "MethodVersion":  "1.15",
+    "ComparisonVersion":  "comparison-1.3",
+    "MeasurementVersion":  "task-measurement-1.1",
+    "PlanVersion":  "task-plan-1.1",
+    "ExtractionVersion":  "semantic-1.0",
+    "SemanticPlanVersion":  "semantic-plan-1.1",
+    "Checks":  [
+                   {
+                       "Name":  "full-ui",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  146,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "uncertainty",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  21,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "semantic-use",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  23,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "experience-integrity",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  21,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "analysis-refresh",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  31,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "file-protection",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  28,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "self",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  453,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "draft",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  38,
+                       "Fail":  0,
+                       "ExitEditorSaved":  true
+                   },
+                   {
+                       "Name":  "observation",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  44,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "task-plan",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  30,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   }
+               ],
+    "Guards":  [
+                   {
+                       "Mode":  "missing-ui",
+                       "ExitCode":  3,
+                       "SentinelUnchanged":  true,
+                       "RootUnchanged":  true
+                   },
+                   {
+                       "Mode":  "nonempty",
+                       "ExitCode":  3,
+                       "SentinelUnchanged":  true,
+                       "RootUnchanged":  true
+                   }
+               ],
+    "ExtractedPackage":  {
+                             "Completed":  true,
+                             "ExitCode":  0,
+                             "Pass":  23,
+                             "Fail":  0,
+                             "Notice":  "ZIP extracted and actual native synthetic use flow run from extracted working directory; not clean-machine installation or physical hardware validation."
+                         }
+}

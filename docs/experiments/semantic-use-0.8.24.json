@@ -1,0 +1,42 @@
+﻿{
+    "Notice":  "Actual frozen old and new public assembly API comparison with curated synthetic facts and low load; no inference, user history or product hardware validation.",
+    "OldVersion":  "0.8.23+937ec7ddff61b58ca601b9730b4f83b574f36a9e",
+    "NewVersion":  "0.8.24+e611bf92692f899feddbb6b1d6cc1610734d34c5",
+    "OldAssemblySha256":  "631763602AE0509188FCF8716E3483A6EB979500F9538B0AC195498D8BD26CD1",
+    "NewAssemblySha256":  "581764404CBDB907924B4D838E50B73B6AF4FAA973E5EE9963DCF3DFFC300AEE",
+    "PositiveOriginCompatible":  true,
+    "Results":  [
+                    {
+                        "Subject":  "音频混音",
+                        "Old":  "优先比较较低档显卡",
+                        "LegacyNow":  "核对需求的购机用途，再决定配置取舍",
+                        "Use":  "avoid",
+                        "ReviewedNow":  "先验证已确认需求，再决定配置取舍",
+                        "Goals":  1
+                    },
+                    {
+                        "Subject":  "直播",
+                        "Old":  "优先比较较低档显卡",
+                        "LegacyNow":  "核对需求的购机用途，再决定配置取舍",
+                        "Use":  "avoid",
+                        "ReviewedNow":  "先验证已确认需求，再决定配置取舍",
+                        "Goals":  1
+                    },
+                    {
+                        "Subject":  "离线渲染",
+                        "Old":  "优先比较较低档显卡",
+                        "LegacyNow":  "核对需求的购机用途，再决定配置取舍",
+                        "Use":  "omit",
+                        "ReviewedNow":  "优先比较较低档显卡",
+                        "Goals":  0
+                    },
+                    {
+                        "Subject":  "内存",
+                        "Old":  "优先比较较低档显卡",
+                        "LegacyNow":  "优先比较较低档显卡",
+                        "Use":  "require",
+                        "ReviewedNow":  "优先比较较低档显卡",
+                        "Goals":  1
+                    }
+                ]
+}
