@@ -148,7 +148,7 @@ jobs:
           if (-not $p.WaitForExit(90000)) { $p.Kill(); throw 'Native uncertainty flow exceeded its bounded check.' }
           if ($p.ExitCode -ne 0) { throw 'Native uncertainty flow failed.' }
           $checks = Get-Content artifacts/ui-uncertainty-focused/results.txt
-          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 19 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Native uncertainty checks are incomplete.' }
+          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 21 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Native uncertainty checks are incomplete.' }
       - name: Native unresolved alternative evidence
         if: always()
         uses: actions/upload-artifact@v4

@@ -99,6 +99,15 @@ public partial class MainWindow
         require(view.Workspace.Observations.All(o => o.CandidateName == view.Workspace.Candidates.Single(c => c.Id == o.CandidateId).Name
             && o.CriterionName == view.Workspace.Criteria.Single(c => c.Id == o.CriterionId).Name), "Imported result labels derive from current referenced candidates and criteria even when legacy display copies were blank");
         Click(view.CompareButton);
+        require(view.Result == null && view.SemanticSourceNotice.Visibility == Visibility.Visible && view.ComparisonStatus.Text.Contains("源需求"),
+            "Legacy draft goals from a different local source require explicit source review before comparison");
+        foreach (var criterion in view.Workspace.Criteria.Where(c => c.OriginId.StartsWith("semantic:", StringComparison.Ordinal)).ToArray())
+        { view.CriteriaGrid.SelectedItem = criterion; Click(view.DetachCriterionButton); }
+        require(view.SemanticSourceNotice.Visibility == Visibility.Collapsed && view.Workspace.Criteria.All(c => c.OriginId == "")
+            && view.Workspace.Criteria.Where(CandidateComparison.IsUnresolvedCondition).All(c => !c.Reviewed)
+            && JsonSerializer.Serialize(legacyRaw.Observations.Select(EvidenceFields)) == JsonSerializer.Serialize(view.Workspace.Observations.Select(EvidenceFields)),
+            "Explicit independent-goal review retains legacy outcomes without restoring criterion or coverage confirmation");
+        Click(view.CompareButton);
         require(view.Result is { ScenarioSummaries.Length: 2 } && view.Result.Candidates.All(c => c.State == "unknown")
             && view.ContextStatus.Text.Contains("重新核对"), "Legacy evidence cannot silently become newly confirmed");
         await Capture("legacy-review-required");
