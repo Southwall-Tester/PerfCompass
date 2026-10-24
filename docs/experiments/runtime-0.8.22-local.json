@@ -1,0 +1,119 @@
+﻿{
+    "Notice":  "Local native lifecycle checks; synthetic history and candidates; startup telemetry is actual. Counts overlap and must not be added. Not cross-hardware calibration or commercial acceptance.",
+    "ProductVersion":  "0.8.22+74d7f035df0ef2756e8efeb39c5e48e1c9ca8cbc",
+    "CodeCommit":  "74d7f035df0ef2756e8efeb39c5e48e1c9ca8cbc",
+    "Sha256":  "E17F54F3918873095BBFB7D04EBA11F7AD443BB18B689C34DE37DCE6E7305223",
+    "MethodVersion":  "1.15",
+    "ComparisonVersion":  "comparison-1.3",
+    "MeasurementVersion":  "task-measurement-1.1",
+    "PlanVersion":  "task-plan-1.1",
+    "Checks":  [
+                   {
+                       "Name":  "analysis-refresh",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  31,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "file-protection",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  28,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "uncertainty",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  19,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "self",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  420,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "draft",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  38,
+                       "Fail":  0,
+                       "ExitEditorSaved":  true
+                   },
+                   {
+                       "Name":  "full-ui",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  145,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "observation",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  44,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "task-plan",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  30,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   }
+               ],
+    "EntryGuards":  [
+                        {
+                            "Mode":  "missing-ui-flag",
+                            "ExitCode":  3,
+                            "OnlySentinel":  true,
+                            "SentinelUnchanged":  true
+                        },
+                        {
+                            "Mode":  "nonempty-root",
+                            "ExitCode":  3,
+                            "OnlySentinel":  true,
+                            "SentinelUnchanged":  true
+                        }
+                    ],
+    "Screenshots":  [
+                        {
+                            "File":  "0.8.22-analysis-failed.png",
+                            "Sha256":  "8CBA822944440E2E9E019A8FA13F78BB2CB7CD4933FD75A376BD6A48E4D7ED79",
+                            "VisualInspected":  true
+                        },
+                        {
+                            "File":  "0.8.22-analysis-pending.png",
+                            "Sha256":  "337513B2439ED6D17EEC90257156EBE61B3A160381C5F8EC0749BA6698B19254",
+                            "VisualInspected":  true
+                        },
+                        {
+                            "File":  "0.8.22-comparison-pending.png",
+                            "Sha256":  "F1099868368219079935D62E56BB499FB79D3705F72E26ECE0331950E8DEC450",
+                            "VisualInspected":  true
+                        }
+                    ],
+    "PackagingAudit":  {
+                           "ArchiveBytes":  73769240,
+                           "Entries":  96,
+                           "ArchivedExecutableHashMatches":  true,
+                           "ExtractedFlowPass":  31,
+                           "ExtractedFlowFail":  0,
+                           "ExtractedExit":  0,
+                           "AuditReadyIsNotLauncherReady":  true
+                       },
+    "RawEvidence":  "artifacts/published-0.8.22-final-checks.json (local; machine paths omitted here)",
+    "FrozenSoak":  "Frozen 0.8.18 remains separate; no long-term result for 0.8.22",
+    "CommercialGoalComplete":  false
+}

@@ -1,0 +1,54 @@
+﻿{
+    "Notice":  "Native WPF synthetic-context diagnostic. Not hardware calibration or user demand.",
+    "OriginalProductionCoreDiffBytes":  0,
+    "Baseline":  "0.8.21 core unchanged with test-only entry; not an unsupported flag run against the shipped frozen executable",
+    "Before":  {
+                   "SelectedDays":  90,
+                   "PublishedDays":  7,
+                   "WaiterCompleted":  true,
+                   "OwnerCompleted":  false,
+                   "CurrentDirections":  [
+                                             {
+                                                 "Key":  "cpu",
+                                                 "Direction":  "优先比较较少核心、单核性能相近的处理器",
+                                                 "Scope":  "最近 7 天 · 全部场景 · CPU 与逻辑核心"
+                                             },
+                                             {
+                                                 "Key":  "memory",
+                                                 "Direction":  "按已测峰值筛选内存容量",
+                                                 "Scope":  "最近 7 天 · 全部场景 · 物理容量与提交量"
+                                             },
+                                             {
+                                                 "Key":  "gpu",
+                                                 "Direction":  "优先比较较低档显卡",
+                                                 "Scope":  "最近 7 天 · 全部场景 · 已测核心/3D，其他引擎另核对"
+                                             },
+                                             {
+                                                 "Key":  "disk",
+                                                 "Direction":  "按文件与增长量选容量，按任务耗时选速度",
+                                                 "Scope":  "所选 7 天 · 全部场景"
+                                             }
+                                         ]
+               },
+    "After":  {
+                  "SelectedDays":  90,
+                  "PublishedDays":  null,
+                  "WaiterCompleted":  false,
+                  "OwnerCompleted":  false,
+                  "CurrentDirections":  [
+
+                                        ]
+              },
+    "BaselineExit":  1,
+    "NewFlowChecks":  31,
+    "NewFlowExit":  0,
+    "TestReadBarrier":  "Real LocalStore lock for original queued refresh; after-read test barrier for durable edits",
+    "InjectedFailure":  "Analysis-stage exception, not a physical I/O or device fault",
+    "PreservedFailedExpandedRun":  "An older diagnostic export file made a not-created assertion fail. Export targets are now unique per run; old evidence retained.",
+    "SharedLatestCompletion":  true,
+    "ObsoleteIntermediateResultsNotPublished":  true,
+    "DraftEditingAndSavingRemainAvailable":  true,
+    "SameScopeValidComparisonPreserved":  true,
+    "NoUserHistoryUsed":  true,
+    "CommercialGoalComplete":  false
+}
