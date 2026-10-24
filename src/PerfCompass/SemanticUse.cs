@@ -51,7 +51,7 @@ public static partial class SemanticRequirements
         {
             bool resource = active.Any(f => f.Kind == "experience" || f.Kind == "resource" && MatchesResource(f, c.Key));
             bool protects = c.Key is "cpu" or "gpu" or "memory" && (futureWork || resource);
-            bool replace = protects && (WouldSuggestDowngrade(c) || c.Status is ("unknown" or "fit") && c.Observation == null && !c.UsesRetainedWorkload);
+            bool replace = protects && (WouldSuggestDowngrade(c) || c.Status is ("unknown" or "fit") && c.Observation?.State != "busy" && !c.UsesRetainedWorkload);
             bool clarify = !replace && pendingUse && WouldSuggestDowngrade(c);
             if (!protects && !pending) return c;
             return c with

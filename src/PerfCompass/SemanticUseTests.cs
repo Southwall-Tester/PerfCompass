@@ -35,6 +35,13 @@ public static partial class SelfTests
             var empty = basis with { SampleCount = 0, Ready = false, Cards = [new("gpu", "显卡", "unknown", "", "", "", "")], History = [] };
             var needs = SemanticRequirements.Apply(empty, new(FutureNeeds: f.Evidence, SemanticRequirements: Review(f)));
             assert(needs.Cards.Single(c => c.Key == "gpu").Status == "requirements" && !needs.Ready && Goals(needs).Count == 1, "explicit goals disappeared while waiting for telemetry");
+            var memory = new SemanticFact("内存", "resource", "required", "current", "至少64", "GB", "", "内存至少64GB") { DecisionUse = "require" };
+            var observed = new ResourceObservation("observed", "已记录容量需求", "synthetic 20GiB peak", "按峰值核对", "最近7天", 11, 1);
+            var recorded = basis with { Cards = [new("memory", "内存", "unknown", "保留峰值", "synthetic peak", "按峰值核对", "") { Observation = observed }] };
+            var capacity = SemanticRequirements.Apply(recorded, new(FutureNeeds: memory.Evidence, SemanticRequirements: Review(memory)));
+            assert(capacity.Cards.Single(c => c.Key == "memory").Status == "requirements" && capacity.Cards.Single(c => c.Key == "memory").Observation == observed
+                && Goals(capacity).Single().Target == 64 && PurchaseGuidance.Build(capacity).Single(d => d.Key == "memory").Direction.Contains("已确认需求"),
+                "an ordinary observed capacity hid an explicit larger purchasing target or lost its peak evidence");
         });
         check("The same excluded statement can be forbidden waived or awaiting review without guessing from its words", () =>
         {
@@ -173,9 +180,11 @@ public static partial class SelfTests
             var f = Fact("昨天混音时卡顿"); var plan = Review(f);
             var heavy = new ResourceObservation("busy", "已测重任务", "synthetic heavy", "核对重任务", "所选90天", 1, 1);
             foreach (bool retained in new[] { false, true })
+            foreach (var use in new string?[] { null, "avoid" })
             {
                 var c = new Advice("gpu", "显卡", "unknown", "", "", "", "") { Observation = retained ? null : heavy, RetainedWorkload = retained ? heavy : null };
-                var r = SemanticRequirements.Apply(basis with { Cards = [c] }, new(FutureNeeds: plan.Source, SemanticRequirements: plan));
+                var selected = Review(f with { DecisionUse = use });
+                var r = SemanticRequirements.Apply(basis with { Cards = [c] }, new(FutureNeeds: selected.Source, SemanticRequirements: selected));
                 assert(r.Cards.Single(c => c.Key == "gpu").Status == "unknown" && PurchaseGuidance.Build(r).Single(d => d.Key == "gpu").Reason.Contains("synthetic heavy"), "known heavy evidence hidden by unknown goal use");
             }
         });
