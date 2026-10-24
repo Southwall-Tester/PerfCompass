@@ -1,0 +1,26 @@
+{
+  "Version": "0.8.27+f933014b8ea75b69747012d16436cab76fd786b3",
+  "ExeSha256": "9AED6CF21D4AC4C7193FE6943F54E44DD1C97629A124DF9B1D5A4E3D244EA3B3",
+  "SameFrozenExecutable": true,
+  "SelfTests": { "Passed": 478, "Failed": 0, "CapturedProcessExitCode": 0 },
+  "FullNativeWpf": { "Passed": 146, "Failed": 0, "CapturedProcessExitCode": 0 },
+  "ObservationAndCandidateFlow": { "Passed": 53, "Failed": 0, "CapturedProcessExitCode": 0 },
+  "CountsOverlapAndMustNotBeSummed": true,
+  "NewCoverage": [
+    "Integrated and discrete system shopping routes from existing structured observations",
+    "Media heavy engines do not replace retained graphics or compute work",
+    "Confirmed new needs, separate conditional requirements, and omitted facts",
+    "Missing and mixed source observations do not certify cheaper configurations",
+    "Decimal advertised storage bytes versus binary telemetry and missing field presence",
+    "Native expansion survives ordinary refresh; no automatic candidate criteria or fit result",
+    "HTML uses the same plan and escapes source evidence"
+  ],
+  "RenderedNativeInterfaceReviewed": true,
+  "HtmlContentChecked": true,
+  "HtmlBrowserRenderingReviewed": false,
+  "SyntheticInputOnlyInIsolatedTestDirectories": true,
+  "PrivateUserReportReviewedWithoutCommittingHistory": true,
+  "RealCandidateHardwareCalibrationCompleted": false,
+  "CommercialMaturityEstablished": false,
+  "LongRun": "The independent frozen 0.8.25 trial remains separate; no 0.8.27 long-run pass is claimed."
+}
