@@ -381,6 +381,7 @@ public static partial class SelfTests
         RunStorageCapacityTests(Check, Assert);
         RunGpuPurchasePlanTests(Check, Assert);
         RunPurchaseShortlistTests(Check, Assert);
+        RunSpecificationImportTests(Check, Assert);
         RunPurchaseGuidanceTests(Check, Assert);
         RunCandidateEvidenceLevelTests(Check, Assert);
         RunHistoryAggregationTests(Check, Assert);

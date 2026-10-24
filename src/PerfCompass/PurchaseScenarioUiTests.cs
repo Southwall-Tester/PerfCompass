@@ -73,8 +73,8 @@ public partial class MainWindow
         }
         await Capture("separate-unknown-options");
         string html = view.ExportHtml(); File.WriteAllText(Path.Combine(output, "separate-options.html"), html);
-        require(html.Contains("comparison-1.3") && html.Contains("光谱工具甲") && html.Contains("音频插件乙")
-            && CandidateComparison.Load(store.Root).Version == "comparison-1.3", "Export and saved draft use the scope-safe schema");
+        require(html.Contains("comparison-1.4") && html.Contains("光谱工具甲") && html.Contains("音频插件乙")
+            && CandidateComparison.Load(store.Root).Version == "comparison-1.4", "Export and saved draft use the scope-safe schema");
         var previous = view.Result; view.CandidatesGrid.BringIntoView(); UpdateLayout();
         require(ReferenceEquals(previous, view.Result), "Display-only layout retains the computed result");
         foreach (var branch in branches) await EditComparisonCell(view.CriteriaGrid, view.Workspace.Criteria.IndexOf(branch), 6, "同时接到联合项目");
@@ -92,7 +92,7 @@ public partial class MainWindow
         var oldPicker = view.DraftImportPathProvider;
         try { view.DraftImportPathProvider = () => legacyPath; Click(view.ImportDraftButton); }
         finally { view.DraftImportPathProvider = oldPicker; }
-        require(view.Workspace.Version == "comparison-1.3" && view.Workspace.Criteria.Where(CandidateComparison.IsUnresolvedCondition).All(c => !c.Reviewed)
+        require(view.Workspace.Version == "comparison-1.4" && view.Workspace.Criteria.Where(CandidateComparison.IsUnresolvedCondition).All(c => !c.Reviewed)
             && view.CoverageConfirm.IsChecked != true, "Actual old-writer draft import clears obsolete unknown-scope reviews and coverage");
         object EvidenceFields(PurchaseObservation o) => new { o.CandidateId, o.CriterionId, o.Value, o.Verdict, o.Evidence, o.Measurement, o.Comparable, o.ProofStamp };
         require(original.SequenceEqual(File.ReadAllBytes(legacyPath)) && JsonSerializer.Serialize(legacyRaw.Observations.Select(EvidenceFields)) == JsonSerializer.Serialize(view.Workspace.Observations.Select(EvidenceFields)), "Legacy import preserves source bytes and all result evidence");

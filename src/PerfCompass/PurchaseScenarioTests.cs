@@ -91,7 +91,7 @@ public static partial class SelfTests
                 var w = Workspace(context, c); Evidence(w); w.Version = "comparison-1.2";
                 string path = Path.Combine(root, "legacy.json"); File.WriteAllText(path, JsonSerializer.Serialize(w)); byte[] bytes = File.ReadAllBytes(path);
                 var loaded = CandidateComparison.LoadFile(path);
-                assert(loaded.Version == "comparison-1.3" && !loaded.CoverageConfirmed && !loaded.Criteria[1].Reviewed && loaded.Criteria[1].ReviewStamp == legacy, "legacy review improperly migrated");
+                assert(loaded.Version == "comparison-1.4" && !loaded.CoverageConfirmed && !loaded.Criteria[1].Reviewed && loaded.Criteria[1].ReviewStamp == legacy, "legacy review improperly migrated");
                 assert(loaded.Criteria[0].Reviewed && JsonSerializer.Serialize(w.Observations) == JsonSerializer.Serialize(loaded.Observations)
                     && bytes.SequenceEqual(File.ReadAllBytes(path)), "migration overwrote source or unrelated evidence");
             }
@@ -104,7 +104,7 @@ public static partial class SelfTests
             {
                 var context = Context(); var w = Workspace(context, Goal("甲"), Goal("乙")); Evidence(w);
                 CandidateComparison.SaveFile(path, w); var loaded = CandidateComparison.LoadFile(path);
-                assert(loaded.Version == "comparison-1.3" && loaded.CoverageConfirmed && loaded.Criteria.All(c => c.Reviewed)
+                assert(loaded.Version == "comparison-1.4" && loaded.CoverageConfirmed && loaded.Criteria.All(c => c.Reviewed)
                     && CandidateComparison.Evaluate(loaded, context).ScenarioSummaries.Length == 2, "current saved checks lost or merged");
             }
             finally { if (File.Exists(path)) File.Delete(path); }

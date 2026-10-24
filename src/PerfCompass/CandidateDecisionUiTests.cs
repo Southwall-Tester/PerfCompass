@@ -231,5 +231,59 @@ public partial class MainWindow
             && view.Result.Shortlists[1].Options.All(o => o.CandidateId.Length == 0)
             && !view.ExportHtml().Contains("手填任务值 9 → 5"),
             "Unreviewed conditional goals retract their purchasing recommendation without erasing the independent base budget");
+
+        const string excerpt = "Model: 合成摘录候选（非商品）\nProcessor: 合成 CPU\nGraphics: 合成 GPU 8GB GDDR7\nMemory: 2x 16GB DDR5\nMax Memory: Up to 128GB\nStorage: 1TB SSD";
+        var oldResult = view.Result;
+        var specExpander = Descendants(view).OfType<Expander>().Single(e => e.Header as string == "从规格摘录添加候选");
+        specExpander.IsExpanded = true;
+        view.SpecSourceBox.Text = "合成规格资料，不含报价"; view.SpecTextBox.Text = excerpt;
+        string importedExcerpt = view.SpecTextBox.Text;
+        Click(view.SpecPreviewButton); UpdateLayout();
+        var previewHeading = Descendants(view.SpecPreviewPanel).OfType<TextBlock>().Single(t => t.Text.StartsWith("核对后的候选字段"));
+        bool specVisible = await Capture("76-specification-preview", view.SpecPreviewPanel, previewHeading);
+        require(ReferenceEquals(oldResult, view.Result) && view.SpecMemoryBox.Text == "32" && view.SpecStorageBox.Text == "1000"
+            && view.SpecVramBox.Text == "8" && view.SpecAddButton.IsEnabled && specVisible && InViewport(view.SpecMemoryBox),
+            "Actual specification preview extracts installed values without invalidating the existing comparison or selecting maximum options");
+        view.SpecMemoryBox.Text = "未完成的修订";
+        require(view.TrySaveDraft(force: true) && CandidateComparison.Load(store.Root).SpecificationDraft.Memory == "未完成的修订",
+            "Specification draft autosave accepts incomplete capacity input without losing original text");
+        view.DraftImportPathProvider = () => Path.Combine(store.Root, "comparison.json");
+        Click(view.ImportDraftButton); UpdateLayout();
+        require(view.SpecMemoryBox.Text == "未完成的修订" && view.SpecTextBox.Text == importedExcerpt && view.SpecAddButton.IsEnabled
+            && view.CoverageConfirm.IsChecked != true && view.Result == null,
+            "Actual draft import restores editable specification fields and clears comparison coverage confirmation");
+        view.SpecMemoryBox.Text = "32"; view.SpecSourceBox.Text += "（修订来源）";
+        require(!view.SpecAddButton.IsEnabled && view.SpecMemoryBox.Text == "32",
+            "Editing the source disables stale specification application while preserving manually edited fields");
+        Click(view.SpecPreviewButton); Click(view.SpecAddButton); UpdateLayout();
+        var imported = view.Workspace.Candidates.Single(c => c.Name == "合成摘录候选（非商品）");
+        require(view.Workspace.Candidates.Count == 3 && imported.MemoryGb == 32 && imported.VramGb == 8 && imported.StorageGb == 1000
+            && imported.PriceCny == null && imported.Source == "" && imported.SpecificationSource.Contains(importedExcerpt)
+            && view.Workspace.SpecificationDraft.Text == "" && view.Result == null && view.CoverageConfirm.IsChecked != true
+            && view.TrySaveDraft(force: true) && CandidateComparison.Load(store.Root).Candidates.Single(c => c.Id == imported.Id).SpecificationSource == imported.SpecificationSource,
+            "Actual add action preserves excerpt provenance without creating a quote task result or coverage confirmation");
+        await Cell(view.CandidatesGrid, 2, 1, 5000);
+        foreach (var goal in new[] { (Name: "合成独立规格内存", Metric: "memory", Direction: "min", Target: 16, Unit: "GB"),
+            (Name: "合成独立报价预算", Metric: "price", Direction: "max", Target: 10000, Unit: "元") })
+        {
+            Click(view.AddCriterionButton); int index = view.CriteriaGrid.Items.Count - 1;
+            await Cell(view.CriteriaGrid, index, 1, goal.Name); await Cell(view.CriteriaGrid, index, 2, goal.Metric);
+            await Cell(view.CriteriaGrid, index, 3, goal.Direction); await Cell(view.CriteriaGrid, index, 4, goal.Target);
+            await Cell(view.CriteriaGrid, index, 5, goal.Unit); await Cell(view.CriteriaGrid, index, 0, true);
+        }
+        Compare();
+        var importedResult = view.Result!.Candidates.Single(c => c.Id == imported.Id);
+        require(importedResult.Checks.Single(c => c.Name == "合成独立规格内存").State == "pass"
+            && importedResult.Checks.Single(c => c.Name == "合成独立报价预算").State == "unknown"
+            && view.Result.Shortlists[0].Options.All(o => o.CandidateId != imported.Id),
+            "Actual comparison uses imported specifications for capacity goals while an entered price still needs its own quote source");
+        var sourceExpander = Descendants(view.ComparisonResults).OfType<Expander>().Single(e => e.Tag as string == "candidate-specification"
+            && e.Content is TextBlock t && t.Text == imported.SpecificationSource);
+        sourceExpander.IsExpanded = true; UpdateLayout();
+        bool sourceVisible = await Capture("77-specification-provenance", sourceExpander, (TextBlock)sourceExpander.Content);
+        require(sourceVisible && view.ExportHtml().Contains(WebUtility.HtmlEncode(importedExcerpt))
+            && importedResult.Checks.Single(c => c.Name == "合成独立规格内存").Evidence.Contains("完整原文见")
+            && paused && !TaskMeasurementPage.Running,
+            "Native result and HTML preserve the complete specification excerpt without repeating it in every numeric check or executing a task");
     }
 }

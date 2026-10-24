@@ -17,6 +17,7 @@ public sealed class PurchaseCandidate
     public double? VramGb { get; set; }
     public double? StorageGb { get; set; }
     public string Source { get; set; } = "";
+    public string SpecificationSource { get; set; } = "";
 }
 public sealed class PurchaseCriterion
 {
@@ -53,12 +54,13 @@ public sealed class PurchaseObservation
 }
 public sealed class PurchaseWorkspace
 {
-    public string Version { get; set; } = "comparison-1.3";
+    public string Version { get; set; } = "comparison-1.4";
     public string ContextStamp { get; set; } = "";
     public bool CoverageConfirmed { get; set; }
     public List<PurchaseCandidate> Candidates { get; set; } = [];
     public List<PurchaseCriterion> Criteria { get; set; } = [];
     public List<PurchaseObservation> Observations { get; set; } = [];
+    public SpecificationDraft SpecificationDraft { get; set; } = new();
 }
 public record PurchaseCheck(string Name, string State, string Reading, string Evidence, string Condition)
 {
@@ -175,10 +177,15 @@ public static partial class CandidateComparison
         void Need([System.Diagnostics.CodeAnalysis.DoesNotReturnIf(false)] bool value, string message) { if (!value) throw new ArgumentException(message); }
         bool Text(string? text, int max) => text != null && text.Length <= max;
         bool Number(double? value) => value == null || double.IsFinite(value.Value) && value >= 0 && value <= 1e12;
-        Need(workspace.Version is "comparison-1.0" or "comparison-1.1" or "comparison-1.2" or "comparison-1.3" && workspace.Candidates != null && workspace.Criteria != null && workspace.Observations != null, "比较文件版本或内容无效。");
+        Need(workspace.Version is "comparison-1.0" or "comparison-1.1" or "comparison-1.2" or "comparison-1.3" or "comparison-1.4" && workspace.Candidates != null && workspace.Criteria != null && workspace.Observations != null, "比较文件版本或内容无效。");
         Need(workspace.Candidates!.Count <= 3 && workspace.Criteria!.Count <= 40 && workspace.Observations!.Count <= 120, "最多比较三套配置、40 项条件。");
         Need(workspace.Candidates.All(c => c != null && Text(c.Id, 100) && !string.IsNullOrWhiteSpace(c.Id) && Text(c.Name, 150) && !string.IsNullOrWhiteSpace(c.Name) && Text(c.Cpu, 200) && Text(c.Gpu, 200) && Text(c.Source, 2000) && new[] { c.PriceCny, c.MemoryGb, c.VramGb, c.StorageGb }.All(Number)), "候选名称、容量、价格或来源无效；数值须非负且有限。");
         Need(workspace.Candidates.Select(c => c.Id).Distinct().Count() == workspace.Candidates.Count, "候选编号重复。");
+        Need(workspace.Candidates.All(c => Text(c.SpecificationSource, 12000)), "规格来源过长或缺失。");
+        var draft = workspace.SpecificationDraft;
+        Need(draft != null && Text(draft.Source, 1000) && Text(draft.Text, 8000) && Text(draft.Name, 150) && Text(draft.Cpu, 200) && Text(draft.Gpu, 200)
+            && new[] { draft.Memory, draft.Vram, draft.Storage }.All(s => Text(s, 100)) && Text(draft.ParsedStamp, 64)
+            && (draft.RecordedAt == null || draft.RecordedAt >= DateTimeOffset.UnixEpoch), "规格摘录草稿字段无效。");
         Need(workspace.Candidates.Select(c => c.Name.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).Count() == workspace.Candidates.Count, "请为每套候选填写不同名称。");
         Need(workspace.Criteria.All(c => c != null && Text(c.Id, 100) && !string.IsNullOrWhiteSpace(c.Id) && Text(c.OriginId, 200) && Text(c.Name, 2000) && !string.IsNullOrWhiteSpace(c.Name) && Metrics.Any(m => m.Key == c.Metric) && Directions.Any(d => d.Key == c.Direction) && Number(c.Target) && Text(c.Unit, 50) && Text(c.Condition, 500) && Text(c.Evidence, 3000) && Text(c.Procedure, 2000)), "条件名称、类型、数值或依据无效。");
         Need(workspace.Criteria.Select(c => c.Id).Distinct().Count() == workspace.Criteria.Count, "条件编号重复。");
@@ -204,8 +211,15 @@ public static partial class CandidateComparison
             {
                 var o = workspace.Observations.SingleOrDefault(o => o.CandidateId == candidate.Id && o.CriterionId == c.Id);
                 double? value = c.Metric switch { "price" => candidate.PriceCny, "memory" => candidate.MemoryGb, "vram" => candidate.VramGb, "storage" => candidate.StorageGb, _ => o?.Value };
-                string source = c.Metric is "check" or "task" ? o?.Evidence ?? "" : candidate.Source;
+                string source = c.Metric is "check" or "task" ? o?.Evidence ?? ""
+                    : c.Metric == "price" || string.IsNullOrWhiteSpace(candidate.SpecificationSource) ? candidate.Source : candidate.SpecificationSource;
                 bool evidence = !string.IsNullOrWhiteSpace(source);
+                string sourceDisplay = source;
+                if (c.Metric is "memory" or "vram" or "storage" && !string.IsNullOrWhiteSpace(candidate.SpecificationSource))
+                {
+                    int rawStart = source.IndexOf("\n原文：\n", StringComparison.Ordinal);
+                    if (rawStart >= 0) sourceDisplay = source[..rawStart] + "\n完整原文见本候选的独立规格资料。";
+                }
                 string state = "unknown", reading = "待补充结果与来源";
                 string evidenceKind = c.Metric switch
                 {
@@ -238,6 +252,7 @@ public static partial class CandidateComparison
                 }
                 string evidenceLabel = evidenceKind switch
                 {
+                    "specification" when c.Metric is "memory" or "vram" or "storage" && !string.IsNullOrWhiteSpace(candidate.SpecificationSource) => "独立规格资料",
                     "specification" => "规格 / 报价资料",
                     "manual-check" => "人工核对",
                     "manual-measurement" => "手填任务数值",
@@ -246,7 +261,7 @@ public static partial class CandidateComparison
                     "repeated-measurement" => "重复耗时测量待核对",
                     _ => "尚缺原始重复测量"
                 };
-                checks.Add(new(c.Name, state, reading, source, c.Condition) { ScenarioKey = ScenarioKey(c), EvidenceKind = evidenceKind, EvidenceLabel = evidenceLabel });
+                checks.Add(new(c.Name, state, reading, sourceDisplay, c.Condition) { ScenarioKey = ScenarioKey(c), EvidenceKind = evidenceKind, EvidenceLabel = evidenceLabel });
             }
             var required = checks.Where(c => string.IsNullOrWhiteSpace(c.Condition)).ToArray();
             string overall = requiredConflict ? "unknown" : required.Any(c => c.State == "fail") ? "fail" : !current || !workspace.CoverageConfirmed || required.Length == 0 || required.Any(c => c.State != "pass") ? "unknown" : "pass";
@@ -327,17 +342,17 @@ public static partial class CandidateComparison
         using var reader = new StreamReader(stream, new UTF8Encoding(false, true), true);
         var workspace = JsonSerializer.Deserialize<PurchaseWorkspace>(reader.ReadToEnd()) ?? throw new InvalidDataException("比较文件为空。");
         Validate(workspace);
-        if (workspace.Version != "comparison-1.3" && workspace.Criteria.Any(IsUnresolvedCondition))
+        if (workspace.Version is not ("comparison-1.3" or "comparison-1.4") && workspace.Criteria.Any(IsUnresolvedCondition))
         {
             workspace.CoverageConfirmed = false;
             foreach (var criterion in workspace.Criteria.Where(IsUnresolvedCondition)) criterion.Reviewed = false;
         }
-        workspace.Version = "comparison-1.3"; return workspace;
+        workspace.Version = "comparison-1.4"; return workspace;
     }
     public static void Save(string root, PurchaseWorkspace workspace) => SaveFile(Path.Combine(root, "comparison.json"), workspace);
     public static void SaveFile(string path, PurchaseWorkspace workspace)
     {
-        Validate(workspace); workspace.Version = "comparison-1.3";
+        Validate(workspace); workspace.Version = "comparison-1.4";
         var bytes = JsonSerializer.SerializeToUtf8Bytes(workspace);
         if (bytes.Length > 8388608) throw new InvalidDataException("比较文件过大，请减少原始测量或拆分比较后再保存。");
         string target = Path.GetFullPath(path);
@@ -354,13 +369,15 @@ public static partial class CandidateComparison
     {
         string E(string? s) => WebUtility.HtmlEncode(s ?? "");
         string State(string s) => s switch { "pass" => "满足已核对条件", "fail" => "有不满足项", _ => "待验证" };
-        return "<!doctype html><html lang='zh-CN'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>候选配置比较</title><style>body{font:15px/1.8 system-ui,'Microsoft YaHei';background:#f4f7f8;color:#192a36;margin:30px auto;max-width:1000px;padding:20px}section{background:white;padding:24px;margin:20px 0;border-radius:12px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd;vertical-align:top;overflow-wrap:anywhere;box-sizing:border-box}table{width:100%;border-collapse:collapse;table-layout:fixed}th:nth-child(1){width:30%}th:nth-child(2){width:28%}th:nth-child(3){width:42%}small{color:#677a87}</style><h1>候选配置比较</h1><p>" + E(comparison.Summary) + "</p><small>" + DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm") + " · comparison-1.3 · 报价与测量由用户提供；未独立验证其真实性。GB 容量按 1 TB = 1000 GB 归一化，GiB/TiB 请先换算，购买前核对厂商口径。</small>"
+        string Specification(PurchaseCandidate c) => string.IsNullOrWhiteSpace(c.SpecificationSource) ? ""
+            : "<details><summary>独立规格资料与摘录原文</summary><pre style='white-space:pre-wrap'>" + E(c.SpecificationSource) + "</pre></details>";
+        return "<!doctype html><html lang='zh-CN'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>候选配置比较</title><style>body{font:15px/1.8 system-ui,'Microsoft YaHei';background:#f4f7f8;color:#192a36;margin:30px auto;max-width:1000px;padding:20px}section{background:white;padding:24px;margin:20px 0;border-radius:12px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd;vertical-align:top;overflow-wrap:anywhere;box-sizing:border-box}table{width:100%;border-collapse:collapse;table-layout:fixed}th:nth-child(1){width:30%}th:nth-child(2){width:28%}th:nth-child(3){width:42%}small{color:#677a87}</style><h1>候选配置比较</h1><p>" + E(comparison.Summary) + "</p><small>" + DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm") + " · comparison-1.4 · 报价与测量由用户提供；未独立验证其真实性。GB 容量按 1 TB = 1000 GB 归一化，GiB/TiB 请先换算，购买前核对厂商口径。</small>"
             + string.Join("", comparison.Shortlists.Select(s => "<section><h2>购机建议与加价取舍</h2><p>" + E(s.Scope) + "</p><h3>" + E(s.Summary) + "</h3>"
                 + string.Join("", s.Options.Select(o => "<h4>" + E(o.Name) + " · " + E(o.Label) + "</h4><p>" + E(o.Detail) + "</p>")) + "<small>" + E(s.Notice) + "</small></section>"))
             + string.Join("", comparison.Conflicts.Select(c => "<section><h2>条件数值冲突</h2><p>" + E(c.Message) + "</p></section>"))
             + string.Join("", comparison.ScenarioSummaries.Select(t => "<section><h2>条件情景</h2><p>" + E(t) + "</p></section>"))
             + string.Join("", comparison.Tradeoffs.Select(t => "<section><p>" + E(t) + "</p></section>"))
-            + string.Join("", comparison.Candidates.Select(a => { var candidate = workspace.Candidates.Single(c => c.Id == a.Id); return "<section><h2>" + E(a.Name) + " · 必需条件：" + State(a.State) + "</h2><p>" + E(candidate.Cpu) + " / " + E(candidate.Gpu) + "；报价 " + (a.PriceCny.HasValue ? E(a.PriceCny.Value.ToString("0.##")) + " 元" : "未填写") + "</p><p>配置/报价来源：" + E(string.IsNullOrWhiteSpace(candidate.Source) ? a.PriceCny.HasValue ? "待补报价来源，此金额不参与价格比较。" : "未填写" : candidate.Source) + "</p><table><tr><th>条件</th><th>结果</th><th>依据类型与记录</th></tr>" + string.Join("", a.Checks.Select(c => "<tr><td>" + E(c.Name) + (c.Condition.Length > 0 ? "<br>条件：" + E(c.Condition) : "") + "</td><td>" + State(c.State) + "<br>" + E(c.Reading) + "</td><td><b>" + E(c.EvidenceLabel) + "</b><br>" + E(c.Evidence) + "</td></tr>")) + "</table></section>"; }))
+            + string.Join("", comparison.Candidates.Select(a => { var candidate = workspace.Candidates.Single(c => c.Id == a.Id); return "<section><h2>" + E(a.Name) + " · 必需条件：" + State(a.State) + "</h2><p>" + E(candidate.Cpu) + " / " + E(candidate.Gpu) + "；报价 " + (a.PriceCny.HasValue ? E(a.PriceCny.Value.ToString("0.##")) + " 元" : "未填写") + "</p><p>报价/旧合并来源：" + E(string.IsNullOrWhiteSpace(candidate.Source) ? a.PriceCny.HasValue ? "待补报价来源，此金额不参与价格比较。" : "未填写" : candidate.Source) + "</p>" + Specification(candidate) + "<table><tr><th>条件</th><th>结果</th><th>依据类型与记录</th></tr>" + string.Join("", a.Checks.Select(c => "<tr><td>" + E(c.Name) + (c.Condition.Length > 0 ? "<br>条件：" + E(c.Condition) : "") + "</td><td>" + State(c.State) + "<br>" + E(c.Reading) + "</td><td><b>" + E(c.EvidenceLabel) + "</b><br>" + E(c.Evidence) + "</td></tr>")) + "</table></section>"; }))
             + "<section><h2>历史与近期任务依据</h2>" + string.Join("", comparison.Context.Select(c => "<p>" + E(c) + "</p>")) + "</section><section><h2>目标、条件与测试步骤</h2>" + string.Join("", workspace.Criteria.Select(c => "<p><b>" + E(c.Name) + "</b><br>需求依据：" + E(c.Evidence) + "<br>测试步骤：" + E(c.Procedure) + "</p>")) + "</section></html>";
     }
 }

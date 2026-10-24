@@ -26,10 +26,32 @@
      <DataGridTextColumn Header="存储 / GB" Binding="{Binding StorageGb}" Width="95"/>
      <DataGridTextColumn Header="CPU 型号" Binding="{Binding Cpu}" Width="170"/>
      <DataGridTextColumn Header="GPU 型号" Binding="{Binding Gpu}" Width="170"/>
-     <DataGridTextColumn Header="配置与报价来源（含日期）" Binding="{Binding Source}" Width="300"/>
+     <DataGridTextColumn Header="报价 / 合并资料来源（含日期）" Binding="{Binding Source}" Width="300"/>
+     <DataGridTextColumn Header="独立规格资料（可单独填写）" Binding="{Binding SpecificationSource}" Width="300"/>
     </DataGrid.Columns>
    </DataGrid>
-   <TextBlock Text="来源可填报价单、商品页与日期；型号名称不用于猜测性能。内存、独立显存分别填写；共享内存不能当作独立显存。1 TB = 1000 GB；GiB/TiB 请先换算，核对厂商口径。" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,10,0,0"/>
+   <TextBlock Text="报价来源可填报价单、商品页与日期；独立规格资料只支持规格目标，不充当价格依据。型号名称不用于猜测性能，共享内存不能当作独立显存。1 TB = 1000 GB；GiB/TiB 请先换算。" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,10,0,0"/>
+   <Expander Header="从规格摘录添加候选" Foreground="#007F73" Margin="0,12,0,0"><StackPanel Margin="0,12,0,0">
+    <TextBlock Text="粘贴带字段名的规格文本，例如 Processor、Graphics、Memory、Storage 或处理器、显卡、内存、硬盘。预览后核对具体 SKU；此入口不联网取价。" TextWrapping="Wrap" Foreground="{StaticResource Muted}"/>
+    <TextBlock Text="资料来源（网址或文件说明）" Foreground="#192A36" Margin="0,12,0,5"/>
+    <TextBox x:Name="SpecSourceBox" MaxLength="1000" Padding="8" TextChanged="SpecInputChanged" AutomationProperties.Name="规格资料来源"/>
+    <TextBlock Text="规格摘录原文" Foreground="#192A36" Margin="0,12,0,5"/>
+    <TextBox x:Name="SpecTextBox" MaxLength="8000" Height="140" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Padding="8" TextChanged="SpecInputChanged" AutomationProperties.Name="规格摘录原文"/>
+    <Button x:Name="SpecPreviewButton" Content="生成规格预览" Click="SpecPreview_Click" HorizontalAlignment="Left" Margin="0,12,0,8"/>
+    <TextBlock x:Name="SpecImportStatus" TextWrapping="Wrap" Foreground="{StaticResource Muted}" Margin="0,0,0,10"/>
+    <StackPanel x:Name="SpecPreviewPanel" Visibility="Collapsed">
+     <TextBlock Text="核对后的候选字段 · 容量单位为 GB，空白保留未知" Foreground="#192A36" FontWeight="SemiBold" TextWrapping="Wrap"/>
+     <TextBlock Text="名称 / 具体 SKU" Foreground="#192A36" Margin="0,10,0,4"/><TextBox x:Name="SpecNameBox" MaxLength="150" Padding="8" TextChanged="SpecFieldsChanged"/>
+     <TextBlock Text="CPU" Foreground="#192A36" Margin="0,10,0,4"/><TextBox x:Name="SpecCpuBox" MaxLength="200" Padding="8" TextChanged="SpecFieldsChanged"/>
+     <TextBlock Text="GPU" Foreground="#192A36" Margin="0,10,0,4"/><TextBox x:Name="SpecGpuBox" MaxLength="200" Padding="8" TextChanged="SpecFieldsChanged"/>
+     <UniformGrid Columns="3" Margin="0,10,0,0">
+      <StackPanel Margin="0,0,12,0"><TextBlock Text="内存 / GB" Foreground="#192A36" Margin="0,0,0,4"/><TextBox x:Name="SpecMemoryBox" MaxLength="100" Padding="8" TextChanged="SpecFieldsChanged"/></StackPanel>
+      <StackPanel Margin="0,0,12,0"><TextBlock Text="独立显存 / GB" Foreground="#192A36" Margin="0,0,0,4"/><TextBox x:Name="SpecVramBox" MaxLength="100" Padding="8" TextChanged="SpecFieldsChanged"/></StackPanel>
+      <StackPanel><TextBlock Text="存储 / GB" Foreground="#192A36" Margin="0,0,0,4"/><TextBox x:Name="SpecStorageBox" MaxLength="100" Padding="8" TextChanged="SpecFieldsChanged"/></StackPanel>
+     </UniformGrid>
+     <Button x:Name="SpecAddButton" Content="核对并添加候选" Click="SpecAdd_Click" HorizontalAlignment="Left" Margin="0,12,0,0" IsEnabled="False"/>
+    </StackPanel>
+   </StackPanel></Expander>
   </StackPanel></Border>
   <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
    <TextBlock Text="购机条件与任务目标" FontSize="18" FontWeight="SemiBold"/>
@@ -87,6 +109,9 @@
   <ItemsControl x:Name="ComparisonTradeoffs" Margin="0,0,0,16"><ItemsControl.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" Margin="0,0,0,12"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
   <ItemsControl x:Name="ComparisonResults"><ItemsControl.ItemTemplate><DataTemplate><Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
    <TextBlock Text="{Binding Name}" FontSize="19" FontWeight="SemiBold"/><TextBlock Text="{Binding StatusLabel}" Foreground="{Binding StatusBrush}" Margin="0,8,0,12"/>
+   <Expander Tag="candidate-specification" Header="查看独立规格资料与摘录原文" Margin="0,0,0,12"><Expander.Style><Style TargetType="Expander"><Style.Triggers><DataTrigger Binding="{Binding SpecificationSource}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Expander.Style>
+    <TextBlock Text="{Binding SpecificationSource}" TextWrapping="Wrap" Foreground="{StaticResource Muted}" LineHeight="21" Margin="0,10,0,0"/>
+   </Expander>
    <ItemsControl ItemsSource="{Binding Checks}"><ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,0,0,14"><TextBlock Text="{Binding Name}" FontWeight="SemiBold"/><TextBlock Text="{Binding Reading}"/><TextBlock Text="{Binding ConditionLabel}" Foreground="{StaticResource Muted}"/><TextBlock Text="{Binding Evidence}" FontSize="12" Foreground="{StaticResource Muted}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
   </StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
   </StackPanel>

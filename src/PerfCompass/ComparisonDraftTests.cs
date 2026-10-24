@@ -25,7 +25,7 @@ public static partial class SelfTests
         {
             var draft = Draft(); var goal = draft.Criteria[0]; goal.Target = 120; goal.Direction = "lt"; goal.Reviewed = true;
             var path = Path.Combine(root, "export.json"); CandidateComparison.SaveFile(path, draft); var saved = CandidateComparison.LoadFile(path);
-            assert(saved.Version == "comparison-1.3" && saved.Criteria[0].Direction == "lt" && saved.Criteria[0].Reviewed
+            assert(saved.Version == "comparison-1.4" && saved.Criteria[0].Direction == "lt" && saved.Criteria[0].Reviewed
                 && saved.Criteria[0].ReviewStamp == goal.ReviewStamp, "strict target or reviewed evidence changed");
         }));
         check("Failed comparison replacement keeps the previous file and cleans only its own unique temporary", () => WithRoot(root =>
