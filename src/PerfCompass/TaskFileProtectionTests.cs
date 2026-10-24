@@ -33,9 +33,41 @@ public static partial class SelfTests
         void Fixture(Action<string> action)
         {
             string root = Path.Combine(Path.GetTempPath(), "PerfCompass-input-" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(root);
-            try { action(root); } finally { Directory.Delete(root, true); }
+            Exception? failure = null;
+            try { action(root); } catch (Exception error) { failure = error; }
+            try
+            {
+                string expectedPrefix = Path.Combine(Path.GetFullPath(Path.GetTempPath()), "PerfCompass-input-");
+                if (!Path.GetFullPath(root).StartsWith(expectedPrefix, StringComparison.OrdinalIgnoreCase)
+                    || !Guid.TryParseExact(Path.GetFileName(root)["PerfCompass-input-".Length..], "N", out _)) throw new IOException("Unexpected fixture cleanup scope.");
+                var cleanup = System.Diagnostics.Stopwatch.StartNew();
+                while (true)
+                {
+                    try { Directory.Delete(root, true); break; }
+                    catch (Exception error) when ((error is IOException or UnauthorizedAccessException) && cleanup.Elapsed < TimeSpan.FromSeconds(2)) { Thread.Sleep(20); }
+                }
+            }
+            catch (Exception cleanupError) { if (failure != null) throw new AggregateException(failure, cleanupError); throw; }
+            if (failure != null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
         }
         void Writable(string path) { using var handle = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite); }
+        void EventuallyWritable(string path, string outcome)
+        {
+            // Windows may retain an executable image briefly after its root has
+            // signaled exit. Do not confuse that with our own read-share guard.
+            // A leaked guard still fails this bounded check; no GC is forced.
+            var elapsed = System.Diagnostics.Stopwatch.StartNew(); int denied = 0;
+            while (true)
+            {
+                try { Writable(path); break; }
+                catch (Exception error) when ((error is IOException or UnauthorizedAccessException) && elapsed.Elapsed < TimeSpan.FromSeconds(2)) { denied++; Thread.Sleep(20); }
+            }
+            if (denied > 0)
+            {
+                Directory.CreateDirectory("artifacts");
+                File.AppendAllText("artifacts/task-file-release-diagnostics.jsonl", JsonSerializer.Serialize(new { Outcome = outcome, File = Path.GetFileName(path), DeniedAttempts = denied, WaitMilliseconds = elapsed.Elapsed.TotalMilliseconds }) + Environment.NewLine);
+            }
+        }
         bool Blocked(Action action) { try { action(); return false; } catch (IOException) { return true; } }
         check("Selected input and executable remain readable but ordinary writes and renames are blocked through warmup and every repeat", () => Fixture(root =>
         {
@@ -52,7 +84,7 @@ public static partial class SelfTests
             });
             var result = TaskMeasurements.RunAsync(request, Machine(), progress, CancellationToken.None).GetAwaiter().GetResult();
             assert(result.Outcome == "completed" && protectedRounds == 4 && File.Exists(Path.Combine(root, "sentinel.txt")), "guarded real executable could not run");
-            Writable(request.Executable); Writable(request.InputFile);
+            EventuallyWritable(request.Executable, "completed-warmup"); Writable(request.InputFile);
         }));
         check("Real restore-at-end input counterexample stops at the denied first write and never becomes comparable", () => Fixture(root =>
         {
@@ -93,7 +125,7 @@ public static partial class SelfTests
                 var result = TaskMeasurements.RunAsync(request, Machine(), null, cancellation.Token).GetAwaiter().GetResult();
                 cancelAfterStart.GetAwaiter().GetResult();
                 assert(result.Outcome == outcome && result.Attempts.All(a => a.RootExited), "unexpected real process terminal state " + outcome);
-                Writable(request.Executable); Writable(request.InputFile);
+                EventuallyWritable(request.Executable, outcome); Writable(request.InputFile);
                 File.Move(request.InputFile, request.InputFile + ".moved");
             });
         });

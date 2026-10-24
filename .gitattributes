@@ -14,5 +14,5 @@ tests/nlp-output.schema.json text eol=lf
 # Preserve hashed provider records, including their original CRLF endings.
 tests/semantic-results/** -text whitespace=cr-at-eol
 tests/fixtures/comparison-1.2-uncertainty.json -text
-tests/fixtures/task-measurement-1.0-input-restore.json -text
-tests/fixtures/task-plan-1.0-input-restore.json -text
+tests/fixtures/task-measurement-1.0-input-restore.json -text whitespace=cr-at-eol
+tests/fixtures/task-plan-1.0-input-restore.json -text whitespace=cr-at-eol
