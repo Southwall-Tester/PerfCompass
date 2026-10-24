@@ -117,7 +117,7 @@ public sealed class Collector : IDisposable
             GpuEngineVersion = GpuEngineEvidence.Version, GpuEngines = GpuEngineEvidence.Current(gpuEngines),
             DiskReadMbps = diskRead, DiskWriteMbps = diskWrite, DiskBusy = diskBusy,
             MaxDiskPercent = disks.Count > 0 ? disks.Max(d => d.Percent) : 0,
-            DiskUsedGb = disks.Sum(d => d.UsedGb), DiskTotalGb = disks.Sum(d => d.TotalGb)
+            DiskUsedGb = disks.Sum(d => d.UsedGb), DiskTotalGb = disks.Sum(d => d.TotalGb), DiskCapacityFieldsPresent = disks.Count > 0
         };
         return new(sample, CpuName, GpuName, sensorStatus, disks, lastApps)
         {

@@ -52,6 +52,7 @@ public record Sample
     public double MaxDiskPercent { get; init; }
     public double DiskUsedGb { get; init; }
     public double DiskTotalGb { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore] public bool? DiskCapacityFieldsPresent { get; init; }
 }
 public record LiveSnapshot(Sample Sample, string CpuName, string GpuName, string SensorStatus, List<DiskInfo> Disks, List<AppUsage> Apps)
 {
@@ -151,6 +152,7 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
 {
     public List<SceneProfile> SceneProfiles { get; init; } = [];
     public MemoryCapacityEvidence? SelectedMemoryCapacity { get; init; }
+    public StorageCapacityEvidence? LatestStorageCapacity { get; init; }
     public List<GpuEngineProfile> GpuEngineProfiles { get; init; } = [];
     public string[] GpuMetricScopes { get; init; } = [];
     public bool GpuHistoryHasMixedSources { get; init; }

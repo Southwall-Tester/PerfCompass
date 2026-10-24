@@ -73,6 +73,7 @@
           <TextBlock Grid.Column="2" Text="{Binding Level}" Foreground="#007F73" FontSize="11" Margin="16,2,0,0"/>
          </Grid>
          <TextBlock Text="{Binding NextStep}" TextWrapping="Wrap" LineHeight="21" Margin="0,7,0,0" Foreground="#45606C"/>
+         <TextBlock Text="{Binding ComparisonAction}" Foreground="#007F73" TextWrapping="Wrap" Margin="0,7,0,0"><TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding ComparisonAction}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
          <Expander Header="依据与适用范围" Foreground="#007F73" FontSize="12" Margin="0,7,0,0"><StackPanel Margin="0,7,0,0">
           <TextBlock Text="{Binding Reason}" Foreground="#45606C" TextWrapping="Wrap" LineHeight="21"/>
           <TextBlock Text="{Binding Scope}" Foreground="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,5,0,0"/>

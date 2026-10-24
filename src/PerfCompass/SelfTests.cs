@@ -378,6 +378,8 @@ public static partial class SelfTests
         RunGpuObservationScopeTests(Check, Assert);
         RunResourceObservationTests(Check, Assert);
         RunMemoryCapacityTests(Check, Assert);
+        RunStorageCapacityTests(Check, Assert);
+        RunGpuPurchasePlanTests(Check, Assert);
         RunPurchaseGuidanceTests(Check, Assert);
         RunCandidateEvidenceLevelTests(Check, Assert);
         RunHistoryAggregationTests(Check, Assert);

@@ -123,7 +123,7 @@ jobs:
           $report = Join-Path $PWD 'artifacts/ui-observation-focused/results.txt'
           if (-not (Test-Path -LiteralPath $report)) { throw 'Native observation results are missing.' }
           $checks = Get-Content -LiteralPath $report
-          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 47 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Native observation checks are incomplete.' }
+          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 53 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Native observation checks are incomplete.' }
       - name: Native preliminary observation evidence
         if: always()
         uses: actions/upload-artifact@v4

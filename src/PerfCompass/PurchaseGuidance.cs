@@ -4,6 +4,7 @@ public record ConfigurationDecision(string Key, string Name, string Direction, s
     string NextStep, string Scope, string Level)
 {
     public int Priority { get; init; }
+    public string ComparisonAction { get; init; } = "";
 }
 
 /// <summary>
@@ -20,7 +21,9 @@ public static class PurchaseGuidance
         foreach (var (key, name) in new[] { ("cpu", "处理器"), ("memory", "内存"), ("gpu", "显卡"), ("disk", "存储") })
             if (!cards.Any(c => c.Key == key))
                 cards.Add(new(key, name, "unknown", "", "本范围尚无该项分析结果。", "", ""));
-        return cards.Select(card => Decide(report, card)).OrderBy(d => d.Priority).ToList();
+        var gpuPlan = GpuPurchasePlan.Build(report);
+        return cards.Select(card => Decide(report, card)).Select(d => d.Key == "gpu"
+            ? d with { ComparisonAction = gpuPlan.Title } : d).OrderBy(d => d.Priority).ToList();
     }
 
     private static ConfigurationDecision Decide(AnalysisReport report, Advice card)

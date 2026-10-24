@@ -129,9 +129,10 @@ public static class AnalysisEngine
             $"核心/3D读数覆盖 {gpuSeconds / Math.Max(seconds, 1) * 100:0}% 有效时段；P95 {F(g95)}，峰值 {F(gpuPeak)}；显存分配峰值 {F(vram.Maximum, " GiB")}。" + gpuScopeNotice,
             observedHeavyGpuWork ? "在场景明细中找出重负载任务，再用候选显卡验证该任务的帧率、耗时与功能。" : "核对目标分辨率、帧率、编码、CUDA/AI 和多屏需求。只有低档候选卡也满足这些条件，才有降档依据。",
             "核心/3D为既有记录口径，分引擎观测另列。本版没有帧时间与候选卡基准测试。低利用率可能来自锁帧或 CPU 瓶颈，不直接判定独显过剩。多显卡仅分析界面标明的卡。"));
+        var storageCapacity = StorageCapacityPreview.Capture(latest, $"所选 {windowDays} 天 · {selectedScene ?? "全部场景"}");
         cards.Add(new("disk", "存储", diskPeak >= 90 ? "pressure" : State(ready),
             diskPeak >= 90 ? "至少一个分区空间曾接近用满" : "容量和速度需要分别评估",
-            $"当前固定卷合计已用 {latest?.DiskUsedGb:0} / {latest?.DiskTotalGb:0} GiB；观测到最高分区使用率 {diskPeak:0.0}%。",
+            (storageCapacity == null ? "最近记录未取得完整有效的卷容量读数；" : $"最近读数 {storageCapacity.RecordedAt.LocalDateTime:MM/dd HH:mm}：已取得固定卷合计占用 {storageCapacity.OccupiedGiB:0} / {storageCapacity.ObservedTotalGiB:0} GiB；") + $"观测到最高分区使用率 {diskPeak:0.0}%。",
             "下次选容量时逐卷核对数据、安装空间与增长量；判断 SSD 性能档位时，需要比较实际任务耗时。",
             "分区不等于物理硬盘。低读写吞吐不能证明高端 SSD 无用；本版不据此推荐降速或具体型号。"));
         if (count == 0)
@@ -177,6 +178,7 @@ public static class AnalysisEngine
                 }).ToList(), settings.FutureNeeds)
             { HardwareId = scopeHardwareId, RepresentativeConfirmed = coverage.Confirmed, CoverageMessage = coverage.Message, SamplingGapCount = samplingGaps, HistoryQuality = quality,
                 SelectedMemoryCapacity = temporal.SelectedCapacity($"所选 {windowDays} 天 · {selectedScene ?? "全部场景"} · 已测物理容量"),
+                LatestStorageCapacity = storageCapacity,
                 GpuMetricScopes = string.IsNullOrWhiteSpace(scopeHardwareId) ? [] : gpuMetricScopes.Order(StringComparer.Ordinal).ToArray(),
                 GpuHistoryHasMixedSources = gpuHistoryScopes.Count > 1,
                 SelectedScene = selectedScene, DemandTrends = trends, FreshActiveHours = temporal.FreshHours, FreshActiveDays = temporal.FreshDays,

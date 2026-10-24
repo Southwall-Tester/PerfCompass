@@ -103,6 +103,8 @@ public sealed partial class LocalStore
                                     if (!engineNames.Add(property.Name)) throw new InvalidDataException("显卡引擎对象存在重复字段");
                             }
                         sample = root.Deserialize<Sample>();
+                        if(sample != null) sample = sample with { DiskCapacityFieldsPresent = root.TryGetProperty("DiskUsedGb",out var occupied)
+                            && occupied.ValueKind == JsonValueKind.Number && root.TryGetProperty("DiskTotalGb",out var capacity) && capacity.ValueKind == JsonValueKind.Number };
                         if (sample != null && !string.IsNullOrEmpty(sample.ObservationVersion) && !ActivityRules.KnownVersion(sample.ObservationVersion))
                             throw new InvalidDataException("采样活动规则版本未知，暂不解释此记录");
                         if (sample != null && (!string.IsNullOrEmpty(sample.GpuEngineVersion) ? !GpuEngineEvidence.Valid(sample) : sample.GpuEngines?.Count > 0))

@@ -217,6 +217,32 @@ public partial class MainWindow
         require(Descendants(Card("memory")).OfType<Expander>().Single(e => e.Tag as string == "memory-capacity").IsExpanded,
             "Ordinary analysis refresh preserves the capacity comparison expansion");
         await ShowCard("gpu", "55-resource-observation-gpu-light");
+        var storageExpander=Descendants(Card("disk")).OfType<Expander>().Single(e=>e.Tag as string=="storage-capacity");
+        storageExpander.IsExpanded=true;UpdateLayout();
+        var storagePreview=StorageCapacityPreview.From(report!)!;var storagePanel=(FrameworkElement)storageExpander.Content;
+        require(storagePreview!=null && storagePreview.Rows.All(r=>Descendants(storagePanel).OfType<TextBlock>().Any(t=>t.Text==r.ConvertedLabel))
+            && Descendants(storagePanel).OfType<TextBlock>().Any(t=>t.Text==storagePreview.Period),
+            "Native storage comparison shows converted nominal capacity and the actual snapshot date");
+        storagePanel.BringIntoView();await screenshot("72-storage-capacity-comparison");
+        require(ReportExporter.Html(report!,live).Contains("标称容量与已测卷占用") && ComparisonPage.Workspace.Criteria.Count==0,
+            "Storage comparison exports its conditional volume scope without creating a capacity requirement");
+        await RefreshAnalysis();await waitForAnalysis(()=>report!.SelectedScene==scene);
+        require(Descendants(Card("disk")).OfType<Expander>().Single(e=>e.Tag as string=="storage-capacity").IsExpanded,
+            "Ordinary analysis refresh preserves the storage capacity comparison expansion");
+        var gpuPurchaseExpander = Descendants(Card("gpu")).OfType<Expander>().Single(e => e.Tag as string == "gpu-purchase");
+        gpuPurchaseExpander.IsExpanded = true; UpdateLayout();
+        var gpuPurchasePanel = (FrameworkElement)gpuPurchaseExpander.Content;
+        var gpuPlan = GpuPurchasePlan.Build(report!);
+        var gpuTexts = Descendants(gpuPurchasePanel).OfType<TextBlock>().Select(t => t.Text).ToArray();
+        require(gpuPlan.Mode == "light" && gpuPurchaseExpander.Header as string == gpuPlan.Title
+            && gpuPlan.Routes.All(r => gpuTexts.Contains(r.Name + " · " + r.Order)) && gpuTexts.Contains(gpuPlan.NextStep),
+            "GPU purchasing compares integrated lower discrete and current systems using the actual analysis plan");
+        gpuPurchasePanel.BringIntoView(); await screenshot("73-gpu-purchasing-routes");
+        require(ReportExporter.Html(report!, live).Contains("核显与独显的比较顺序") && ComparisonPage.Workspace.Criteria.Count == 0,
+            "GPU purchasing exports the same plan without manufacturing candidate conditions or fit results");
+        await RefreshAnalysis(); await waitForAnalysis(() => report!.SelectedScene == scene);
+        require(Descendants(Card("gpu")).OfType<Expander>().Single(e => e.Tag as string == "gpu-purchase").IsExpanded,
+            "Ordinary refresh preserves the GPU purchasing route expansion");
         string oldGpuTitle = lightCards.Single(card => card.Key == "gpu").DisplayTitle;
 
         await Task.Run(() => store.Append(Frame(0) with

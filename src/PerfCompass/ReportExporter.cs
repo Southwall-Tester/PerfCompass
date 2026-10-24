@@ -14,7 +14,7 @@ public static class ReportExporter
         string E(string? text) => WebUtility.HtmlEncode(text ?? "");
         string semanticUseSection = report.SemanticUseNotice.Length > 0 ? $"<section><h2>购机用途待核对</h2><p>{E(report.SemanticUseNotice)}</p></section>" : "";
         string guidance = "<section class='guidance'><h2>当前配置取舍</h2><p class='muted'>先确定值得比较的方向，再用实际任务筛选候选。</p>"
-            + string.Join("", PurchaseGuidance.Build(report).Select(d => $"<article class='demand'><small>{E(d.Name)} · {E(d.Level)}</small><h3>{E(d.Direction)}</h3><p>{E(d.NextStep)}</p><details><summary>依据与适用范围</summary><p class='evidence'>{E(d.Reason)}</p><p class='muted'>{E(d.Scope)}</p></details></article>")) + "</section>";
+            + string.Join("", PurchaseGuidance.Build(report).Select(d => $"<article class='demand'><small>{E(d.Name)} · {E(d.Level)}</small><h3>{E(d.Direction)}</h3><p>{E(d.NextStep)}</p>" + (d.ComparisonAction.Length > 0 ? $"<p>{E(d.ComparisonAction)}</p>" : "") + $"<details><summary>依据与适用范围</summary><p class='evidence'>{E(d.Reason)}</p><p class='muted'>{E(d.Scope)}</p></details></article>")) + "</section>";
         string samplingSection = report.SamplingGapCount > 0 ? $"<p>{E(report.SamplingGapSummary)}</p>" : "";
         string qualitySection = report.HistoryQuality.HasNotices ? $"<section><h2>{(report.HistoryQuality.HasIssues ? "历史记录异常" : "历史重复记录已排除")}</h2><p>{E(report.HistoryQuality.Message)}</p><p class='evidence'>{E(report.HistoryQuality.Details).Replace("\n", "<br>")}</p><p>原文件保留。可在记录设置备份，并从已核对的备份恢复到新目录。</p></section>" : "";
         string Observation(Advice advice) => string.Join("", new[] { advice.RetainedWorkload, advice.Observation }.OfType<ResourceObservation>()
@@ -24,7 +24,17 @@ public static class ReportExporter
             + "</p><div class='table-wrap'><table><thead><tr><th>候选可用容量</th><th>相对物理峰值</th><th>如何使用这个差额</th></tr></thead><tbody>"
             + string.Join("", capacity.Rows.Select(r => $"<tr><td>{E(r.CapacityLabel)}</td><td>{E(r.DifferenceLabel)}</td><td>{E(r.Meaning)}</td></tr>"))
             + "</tbody></table></div><p class='muted'>" + E(MemoryCapacityPreview.Notice) + "</p>";
-        var cards = string.Join("", report.Cards.Select(c => $"<section><small>{E(c.Name)} · {E(c.StatusLabel)}</small><h2>{E(c.DisplayTitle)}</h2>{Observation(c)}<p>{E(c.DisplaySuggestion)}</p>{(c.Key == "memory" ? capacitySection : "")}<p class='evidence'>{E(c.Evidence)}</p><p class='muted'>{E(c.Limits)}</p></section>"));
+        var storage=StorageCapacityPreview.From(report);
+        string storageSection=storage == null ? "" : "<h3>标称容量与已测卷占用</h3><p>"+E(storage.Baseline)+"</p><p class='muted'>"+E(storage.Period)
+            +"</p><div class='table-wrap'><table><thead><tr><th>标称容量</th><th>换算容量</th><th>相对已测占用</th><th>保留这部分占用时</th></tr></thead><tbody>"
+            +string.Join("",storage.Rows.Select(r=>$"<tr><td>{E(r.NominalLabel)}</td><td>{E(r.ConvertedLabel)}</td><td>{E(r.DifferenceLabel)}</td><td>{E(r.Meaning)}</td></tr>"))
+            +"</tbody></table></div><p class='muted'>"+E(StorageCapacityPreview.Notice)+"</p>";
+        var gpuPlan = GpuPurchasePlan.Build(report);
+        string gpuSection = "<h3>核显与独显的比较顺序</h3><p>" + E(gpuPlan.Title) + "</p><p>" + E(gpuPlan.NextStep)
+            + "</p><p class='muted'>" + E(gpuPlan.Scope) + "</p><table><thead><tr><th>方案</th><th>比较顺序</th><th>重点检查</th></tr></thead><tbody>"
+            + string.Join("", gpuPlan.Routes.Select(r => $"<tr><td>{E(r.Name)}</td><td>{E(r.Order)}</td><td>{E(r.Check)}</td></tr>"))
+            + "</tbody></table>" + string.Join("", gpuPlan.Needs.Select(n => "<p>" + E(n) + "</p>")) + "<p class='muted'>" + E(GpuPurchasePlan.Notice) + "</p>";
+        var cards = string.Join("", report.Cards.Select(c => $"<section><small>{E(c.Name)} · {E(c.StatusLabel)}</small><h2>{E(c.DisplayTitle)}</h2>{Observation(c)}<p>{E(c.DisplaySuggestion)}</p>{(c.Key == "memory" ? capacitySection : c.Key == "disk" ? storageSection : c.Key == "gpu" ? gpuSection : "")}<p class='evidence'>{E(c.Evidence)}</p><p class='muted'>{E(c.Limits)}</p></section>"));
         string P(double? value, string unit = "%") => value.HasValue ? $"{value:0.0}{unit}" : "—";
         var sceneRows = string.Join("", report.SceneProfiles.Select(p => $"<tr><td>{E(p.Name)}</td><td>{E(p.DurationLabel)}</td><td>{P(p.CpuP95)}</td><td>{P(p.MemoryPeakGb, " GiB")}</td><td>{(p.GpuHasMixedSources ? "来源混合，未合并" : P(p.GpuP95))}</td><td>{P(p.GpuPeak)}</td></tr>"));
         string sceneTable = report.SceneProfiles.Count > 0 ? $"<section><h2>场景明细</h2><p class='muted'>当前时间范围内的全部场景 · 有效时长加权{(report.HistoryQuality.HasIntervalConflicts ? "；场景时段互有重叠，不能相加，负载值暂不解释" : "")}</p><div class='table-wrap'><table><thead><tr><th>场景</th><th>有效时长</th><th>CPU P95</th><th>内存峰值</th><th>GPU 核心/3D P95</th><th>GPU 核心/3D 峰值</th></tr></thead><tbody>{sceneRows}</tbody></table></div></section>" : "";
