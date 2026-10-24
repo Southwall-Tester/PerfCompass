@@ -135,7 +135,7 @@ jobs:
           $report = Join-Path $PWD 'artifacts/ui-comparison-draft-focused/results.txt'
           if (-not (Test-Path -LiteralPath $report)) { throw 'Candidate draft results are missing.' }
           $checks = Get-Content -LiteralPath $report
-          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 30 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Candidate draft checks are incomplete.' }
+          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 32 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Candidate draft checks are incomplete.' }
           $expected = Get-Content artifacts/ui-comparison-draft-focused/expected-exit-draft.json -Raw | ConvertFrom-Json
           $saved = Get-Content (Join-Path $root 'comparison.json') -Raw | ConvertFrom-Json
           if ($saved.Candidates[0].Name -ne $expected.Name -or $saved.Candidates[0].PriceCny -ne $expected.PriceCny) { throw 'Actual final exit did not save the last uncommitted editor.' }

@@ -333,7 +333,12 @@ public partial class MainWindow : Window
     }
     private void LiveNav_Click(object sender, RoutedEventArgs e) => Navigate("live");
     private void AdviceNav_Click(object sender, RoutedEventArgs e) => Navigate("advice");
-    private async void ComparisonNav_Click(object sender, RoutedEventArgs e) { await RefreshAnalysis(); Navigate("comparison"); }
+    private async void ComparisonNav_Click(object sender, RoutedEventArgs e)
+    {
+        Navigate("comparison");
+        await RefreshAnalysis();
+        if (activePage == "comparison" && report != null) ComparisonPage.SetContext(store, report);
+    }
     private void TaskMeasurementNav_Click(object sender, RoutedEventArgs e) => Navigate("measurement");
     private void HistoryNav_Click(object sender, RoutedEventArgs e) => Navigate("history");
     private void SettingsNav_Click(object sender, RoutedEventArgs e) => Navigate("settings");

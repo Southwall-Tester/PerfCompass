@@ -19,7 +19,20 @@ public partial class MainWindow
             var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
             using var file = File.Create(Path.Combine(output, name + ".png")); encoder.Save(file);
         }
-        Click(SettingsNav); DataProtectionButton.BringIntoView();
+        Click(SettingsNav);
+        await Dispatcher.InvokeAsync(() => UpdateLayout(), System.Windows.Threading.DispatcherPriority.Loaded);
+        DataProtectionButton.BringIntoView(); await Task.Delay(100); UpdateLayout();
+        if (!DataProtectionButton.IsVisible)
+        {
+            File.WriteAllText(Path.Combine(output, "data-protection-entry-state.json"), System.Text.Json.JsonSerializer.Serialize(new
+            {
+                activePage, IsVisible, IsEnabled, WindowState = WindowState.ToString(),
+                SettingsVisibility = SettingsPage.Visibility.ToString(), SettingsVisible = SettingsPage.IsVisible,
+                ButtonVisibility = DataProtectionButton.Visibility.ToString(), ButtonVisible = DataProtectionButton.IsVisible,
+                DataProtectionButton.ActualWidth, DataProtectionButton.ActualHeight
+            }));
+            await Capture(this, "data-protection-entry-failure");
+        }
         require(DataProtectionButton.IsVisible, "Data protection has a visible entry in record settings");
         if (paused) TogglePause();
         string backup = Path.Combine(output, "native-flow.pcbackup");

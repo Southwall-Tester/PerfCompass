@@ -14,6 +14,12 @@ public partial class MainWindow
     {
         void Click(Button button) => button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
         if (!paused) Click(PauseButton);
+        Click(ComparisonNav);
+        require(activePage == "comparison" && ComparisonPage.Visibility == Visibility.Visible,
+            "Candidate navigation selects its page immediately before awaiting analysis");
+        Click(SettingsNav); await wait(() => !analyzing && !refreshRequested);
+        require(activePage == "settings" && SettingsPage.Visibility == Visibility.Visible && ComparisonPage.Visibility == Visibility.Collapsed,
+            "A completed candidate refresh cannot override a subsequent settings navigation");
         Click(ComparisonNav); await wait(() => ComparisonPage.Visibility == Visibility.Visible);
         var view = ComparisonPage;
         string originalPath = Path.Combine(store.Root, "comparison.json");
