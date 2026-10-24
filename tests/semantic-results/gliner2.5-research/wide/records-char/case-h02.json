@@ -1,0 +1,129 @@
+{
+  "id": "h02",
+  "source": "从下个月开始给博物馆做摄影测量，软件叫Metashape，每批约两千张照片；现在还没有做过。",
+  "seconds": 1.1718611999967834,
+  "cpu_seconds": 4.625,
+  "memory": {
+    "working_set_bytes": 2040475648,
+    "peak_working_set_bytes": 3121037312
+  },
+  "raw": {
+    "computer_requirement": [
+      {
+        "subject": {
+          "text": "博物馆",
+          "confidence": 0.7795453667640686,
+          "start": 7,
+          "end": 10
+        },
+        "statement": null,
+        "holder": {
+          "text": "博物馆",
+          "confidence": 0.8379468321800232,
+          "start": 7,
+          "end": 10
+        },
+        "execution_location": null,
+        "time_expression": null,
+        "trigger": {
+          "text": "现在还没有做过。",
+          "confidence": 0.8124276399612427,
+          "start": 38,
+          "end": 46
+        },
+        "quantity": {
+          "text": "约两千张照片",
+          "confidence": 0.5604180693626404,
+          "start": 31,
+          "end": 37
+        },
+        "frequency_or_concurrency": null,
+        "owner_scope": {
+          "text": "unclear owner",
+          "confidence": 0.9090979099273682,
+          "start": 7,
+          "end": 10
+        },
+        "source_relation": {
+          "text": "uncertain",
+          "confidence": 0.5971713662147522,
+          "start": 7,
+          "end": 10
+        },
+        "timeframe": {
+          "text": "unspecified",
+          "confidence": 0.5990001559257507,
+          "start": 7,
+          "end": 10
+        },
+        "confidence": 0.7795453667640686
+      }
+    ],
+    "entities": {
+      "software": [
+        {
+          "text": "Metashape",
+          "confidence": 0.9988448619842529,
+          "start": 19,
+          "end": 28
+        }
+      ],
+      "computer_task": [
+        {
+          "text": "摄影测量",
+          "confidence": 0.9670721292495728,
+          "start": 11,
+          "end": 15
+        }
+      ],
+      "hardware_component": [],
+      "hardware_quantity": [
+        {
+          "text": "约两千张照片",
+          "confidence": 0.763271689414978,
+          "start": 31,
+          "end": 37
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.computer_requirement[0].subject",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].holder",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].trigger",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].quantity",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.computer_task[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "id": "h14",
+  "source": "这台公共电脑有五个人轮流用，不会同时登录。每个人资料大约8GB，但不是每人都要8GB显存。",
+  "seconds": 0.8264330000092741,
+  "cpu_seconds": 3.234375,
+  "memory": {
+    "working_set_bytes": 1840357376,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [
+        {
+          "text": "8GB",
+          "confidence": 0.9981529116630554,
+          "start": 28,
+          "end": 31,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.3268270194530487
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.4351225197315216
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.37961214780807495
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.9290510416030884
+          }
+        },
+        {
+          "text": "8GB",
+          "confidence": 0.9965634942054749,
+          "start": 39,
+          "end": 42,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.31412920355796814
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.43131330609321594
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.36405614018440247
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.8924120664596558
+          }
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    }
+  ]
+}

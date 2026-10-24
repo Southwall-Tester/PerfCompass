@@ -1,0 +1,99 @@
+{
+  "id": "h14",
+  "source": "这台公共电脑有五个人轮流用，不会同时登录。每个人资料大约8GB，但不是每人都要8GB显存。",
+  "seconds": 1.1504727999999886,
+  "cpu_seconds": 4.453125,
+  "memory": {
+    "working_set_bytes": 1943588864,
+    "peak_working_set_bytes": 3121037312
+  },
+  "raw": {
+    "computer_requirement": [
+      {
+        "subject": {
+          "text": "公共电脑",
+          "confidence": 0.7529762983322144,
+          "start": 2,
+          "end": 6
+        },
+        "statement": null,
+        "holder": null,
+        "execution_location": null,
+        "time_expression": null,
+        "trigger": null,
+        "quantity": null,
+        "frequency_or_concurrency": {
+          "text": "五个人轮流用",
+          "confidence": 0.5791409611701965,
+          "start": 7,
+          "end": 13
+        },
+        "owner_scope": {
+          "text": "unclear owner",
+          "confidence": 0.6496233940124512,
+          "start": 2,
+          "end": 6
+        },
+        "source_relation": {
+          "text": "uncertain",
+          "confidence": 0.544991672039032,
+          "start": 2,
+          "end": 6
+        },
+        "timeframe": {
+          "text": "unspecified",
+          "confidence": 0.723736584186554,
+          "start": 2,
+          "end": 6
+        },
+        "confidence": 0.7529762983322144
+      }
+    ],
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [
+        {
+          "text": "8GB",
+          "confidence": 0.9945268034934998,
+          "start": 28,
+          "end": 31
+        },
+        {
+          "text": "8GB",
+          "confidence": 0.9909880757331848,
+          "start": 39,
+          "end": 42
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.computer_requirement[0].subject",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].frequency_or_concurrency",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    }
+  ]
+}

@@ -20,6 +20,14 @@ jobs:
       - name: Build, test and publish
         shell: pwsh
         run: ./build.ps1 -Test -Publish -OutputDirectory release-next
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Verify recorded research provenance without inference
+        shell: pwsh
+        run: |
+          python research/gliner/verify_public.py
+          if ($LASTEXITCODE -ne 0) { throw 'Research source, raw-output or review binding differs.' }
       - name: Build explicit GPU validation tool without starting workloads
         shell: pwsh
         run: |

@@ -1,0 +1,109 @@
+{
+  "id": "h18",
+  "source": "新工作每天要用ZetaWeave处理一批数据，我不知道软件是哪类，也不知道吃CPU还是GPU；先保留这个任务别猜配置。",
+  "seconds": 1.010306500000297,
+  "cpu_seconds": 3.921875,
+  "memory": {
+    "working_set_bytes": 1983475712,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "ZetaWeave",
+          "confidence": 0.99932861328125,
+          "start": 7,
+          "end": 16,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.7214949131011963
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.41247451305389404
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.6849662661552429
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.5348221659660339
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [
+        {
+          "text": "CPU",
+          "confidence": 0.993391752243042,
+          "start": 38,
+          "end": 41,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.4764954447746277
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.4669380784034729
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.7058390378952026
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.910372257232666
+          }
+        },
+        {
+          "text": "GPU",
+          "confidence": 0.9874580502510071,
+          "start": 43,
+          "end": 46,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.3470127284526825
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.3888856768608093
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.5321742296218872
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.7071620225906372
+          }
+        }
+      ],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_component[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_component[1]",
+      "valid": true
+    }
+  ]
+}

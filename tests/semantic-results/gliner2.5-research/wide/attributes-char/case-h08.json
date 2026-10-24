@@ -1,0 +1,135 @@
+{
+  "id": "h08",
+  "source": "QGIS要同时开三幅20GB的栅格图和PostGIS数据库客户端；我不清楚这是不是就得买64GB内存。",
+  "seconds": 0.7219228000030853,
+  "cpu_seconds": 2.828125,
+  "memory": {
+    "working_set_bytes": 1950793728,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "QGIS",
+          "confidence": 0.9968835711479187,
+          "start": 0,
+          "end": 4,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.6703811287879944
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.7978671193122864
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.5472486019134521
+          },
+          "execution_environment": {
+            "label": "shared computer",
+            "confidence": 0.47668299078941345
+          }
+        },
+        {
+          "text": "PostGIS",
+          "confidence": 0.9556940197944641,
+          "start": 19,
+          "end": 26,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.5207775831222534
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.6926427483558655
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.43140456080436707
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.41833123564720154
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [
+        {
+          "text": "64GB",
+          "confidence": 0.9368640780448914,
+          "start": 44,
+          "end": 48,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.41088223457336426
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.37780147790908813
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.4438532590866089
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.6837368607521057
+          }
+        },
+        {
+          "text": "20GB",
+          "confidence": 0.9286937117576599,
+          "start": 10,
+          "end": 14,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.4071807861328125
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.492652028799057
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.7419975996017456
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.9357793927192688
+          }
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[1]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    }
+  ]
+}

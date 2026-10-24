@@ -1,0 +1,136 @@
+{
+  "id": "h09",
+  "source": "实验室的LabVIEW程序依赖老款USB授权钥匙，还要接串口仪器；只要能兼容，跑分高一点低一点无所谓。",
+  "seconds": 1.0206799000006868,
+  "cpu_seconds": 3.953125,
+  "memory": {
+    "working_set_bytes": 1931481088,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "LabVIEW",
+          "confidence": 0.9805520176887512,
+          "start": 4,
+          "end": 11,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.4358919560909271
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.7867831587791443
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.7876609563827515
+          },
+          "execution_environment": {
+            "label": "shared computer",
+            "confidence": 0.4648391306400299
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [
+        {
+          "text": "串口仪器",
+          "confidence": 0.983984112739563,
+          "start": 28,
+          "end": 32,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.37480103969573975
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.5468804240226746
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.4858640432357788
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.4535118639469147
+          }
+        },
+        {
+          "text": "USB授权钥匙",
+          "confidence": 0.6178228855133057,
+          "start": 17,
+          "end": 24,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.4291759431362152
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.6204506158828735
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.5050200819969177
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.9528481960296631
+          }
+        }
+      ],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [
+        {
+          "text": "高一点低一点",
+          "confidence": 0.7899052500724792,
+          "start": 41,
+          "end": 47,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.7702146768569946
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.7784833312034607
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.3647342324256897
+          },
+          "execution_environment": {
+            "label": "remote or cloud computer",
+            "confidence": 0.5521625280380249
+          }
+        }
+      ],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_component[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_component[1]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.noise_constraint[0]",
+      "valid": true
+    }
+  ]
+}

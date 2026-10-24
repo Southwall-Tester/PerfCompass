@@ -1,0 +1,163 @@
+{
+  "id": "h11",
+  "source": "VR只玩节奏游戏，希望稳定90fps；头显每只眼的分辨率是2160乘2160，不能把它当成我想买的显存。",
+  "seconds": 1.0777477000083309,
+  "cpu_seconds": 4.140625,
+  "memory": {
+    "working_set_bytes": 1930506240,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "VR",
+          "confidence": 0.997775137424469,
+          "start": 0,
+          "end": 2,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.6081553101539612
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.6776720285415649
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.625686764717102
+          },
+          "execution_environment": {
+            "label": "shared computer",
+            "confidence": 0.512789785861969
+          }
+        }
+      ],
+      "computer_task": [
+        {
+          "text": "节奏游戏",
+          "confidence": 0.7408028244972229,
+          "start": 4,
+          "end": 8,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.28570663928985596
+          },
+          "source_relation": {
+            "label": "conditional",
+            "confidence": 0.3853674530982971
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.37657368183135986
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.5320839881896973
+          }
+        }
+      ],
+      "hardware_component": [],
+      "hardware_quantity": [
+        {
+          "text": "2160",
+          "confidence": 0.8627726435661316,
+          "start": 34,
+          "end": 38,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.2934032678604126
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.5037360191345215
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.4733825623989105
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.8416838049888611
+          }
+        },
+        {
+          "text": "2160",
+          "confidence": 0.5736154317855835,
+          "start": 29,
+          "end": 33,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.29421451687812805
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.49057289958000183
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.47856560349464417
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.835802435874939
+          }
+        }
+      ],
+      "performance_goal": [
+        {
+          "text": "90fps",
+          "confidence": 0.9658376574516296,
+          "start": 13,
+          "end": 18,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.3305409252643585
+          },
+          "source_relation": {
+            "label": "conditional",
+            "confidence": 0.4752572476863861
+          },
+          "timeframe": {
+            "label": "past",
+            "confidence": 0.3628040552139282
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.6250730156898499
+          }
+        }
+      ],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.computer_task[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.performance_goal[0]",
+      "valid": true
+    }
+  ]
+}

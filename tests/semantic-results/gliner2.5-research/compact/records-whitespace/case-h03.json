@@ -1,0 +1,20 @@
+{
+  "id": "h03",
+  "source": "以前不碰剪辑，现在每天都在DaVinci里剪8K素材，不能再只按我去年的办公记录选。",
+  "seconds": 0.7175347000011243,
+  "cpu_seconds": 2.703125,
+  "memory": {
+    "working_set_bytes": 1947955200,
+    "peak_working_set_bytes": 3121487872
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": []
+}

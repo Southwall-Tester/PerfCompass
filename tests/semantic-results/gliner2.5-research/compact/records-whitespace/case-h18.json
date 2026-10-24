@@ -1,0 +1,32 @@
+{
+  "id": "h18",
+  "source": "新工作每天要用ZetaWeave处理一批数据，我不知道软件是哪类，也不知道吃CPU还是GPU；先保留这个任务别猜配置。",
+  "seconds": 0.8686947999958647,
+  "cpu_seconds": 3.328125,
+  "memory": {
+    "working_set_bytes": 1838604288,
+    "peak_working_set_bytes": 3121487872
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [
+        {
+          "text": "新工作每天要用ZetaWeave处理一批数据",
+          "confidence": 0.7432793974876404,
+          "start": 0,
+          "end": 22
+        }
+      ],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.computer_task[0]",
+      "valid": true
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "id": "h16",
+  "source": "朋友说他要128GB内存做有限元，那是他的电脑。我这台只要能做KiCad和浏览器查资料，还没提内存数值要求。",
+  "seconds": 1.17385770000692,
+  "cpu_seconds": 4.46875,
+  "memory": {
+    "working_set_bytes": 1985413120,
+    "peak_working_set_bytes": 3120898048
+  },
+  "raw": {
+    "computer_requirement": [
+      {
+        "subject": {
+          "text": "电脑",
+          "confidence": 0.5584543347358704,
+          "start": 21,
+          "end": 23
+        },
+        "statement": null,
+        "holder": null,
+        "execution_location": null,
+        "time_expression": null,
+        "trigger": null,
+        "quantity": {
+          "text": "128GB",
+          "confidence": 0.8248343467712402,
+          "start": 5,
+          "end": 10
+        },
+        "frequency_or_concurrency": null,
+        "owner_scope": {
+          "text": "unclear owner",
+          "confidence": 0.5912483930587769,
+          "start": 21,
+          "end": 23
+        },
+        "source_relation": {
+          "text": "uncertain",
+          "confidence": 0.653688371181488,
+          "start": 21,
+          "end": 23
+        },
+        "timeframe": {
+          "text": "past",
+          "confidence": 0.0005625935737043619,
+          "start": 21,
+          "end": 23
+        },
+        "confidence": 0.5584543347358704
+      }
+    ],
+    "entities": {
+      "software": [
+        {
+          "text": "KiCad",
+          "confidence": 0.9961479902267456,
+          "start": 31,
+          "end": 36
+        },
+        {
+          "text": "浏览器查资料",
+          "confidence": 0.9692890048027039,
+          "start": 37,
+          "end": 43
+        }
+      ],
+      "computer_task": [],
+      "hardware_quantity": [
+        {
+          "text": "128GB",
+          "confidence": 0.9450812339782715,
+          "start": 5,
+          "end": 10
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [
+        {
+          "text": "有限元",
+          "confidence": 0.6439329981803894,
+          "start": 13,
+          "end": 16
+        }
+      ]
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.computer_requirement[0].subject",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].quantity",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[1]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.money_constraint[0]",
+      "valid": true
+    }
+  ]
+}

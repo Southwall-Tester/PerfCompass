@@ -1,0 +1,44 @@
+{
+    "version":  "gliner-wide-attributes-1.0",
+    "entities":  {
+                     "software":  "Names of software, tools, applications or services used for computer tasks; retain unfamiliar names",
+                     "computer_task":  "A task performed with a computer, including work, study and entertainment",
+                     "hardware_component":  "A computer, its form factor, or a hardware component whose inclusion or capabilities are discussed",
+                     "hardware_quantity":  "An explicit hardware component quantity including its number and unit",
+                     "performance_goal":  "A stated desired or acceptable experience, throughput, latency or task duration",
+                     "money_constraint":  "Budget or price with amount and direction, including its included or excluded scope",
+                     "portability_constraint":  "Portability requirements including device weight, battery life and carrying scope",
+                     "compatibility_requirement":  "Required compatibility with software, peripherals, licenses, connectors, protocols or formats",
+                     "noise_constraint":  "A preference or limit concerning computer noise",
+                     "power_constraint":  "Power consumption or charging requirements, with the device and role preserved",
+                     "usage_pattern":  "Frequency, workload scale, concurrent tasks, shared use or alternating users",
+                     "schedule_constraint":  "A time window, deadline or schedule for a task",
+                     "other_constraint":  "Other explicitly stated constraints or preferences affecting computer choice"
+                 },
+    "attributes":  {
+                       "owner_scope":  [
+                                           "user\u0027s computer requirement",
+                                           "another person\u0027s requirement",
+                                           "quoted or test text, not a personal requirement",
+                                           "unclear owner"
+                                       ],
+                       "source_relation":  [
+                                               "affirmed",
+                                               "negated",
+                                               "conditional",
+                                               "uncertain"
+                                           ],
+                       "timeframe":  [
+                                         "past",
+                                         "current",
+                                         "future",
+                                         "unspecified"
+                                     ],
+                       "execution_environment":  [
+                                                     "local computer",
+                                                     "remote or cloud computer",
+                                                     "shared computer",
+                                                     "unspecified environment"
+                                                 ]
+                   }
+}

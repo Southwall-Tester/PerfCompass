@@ -1,0 +1,20 @@
+{
+  "id": "h14",
+  "source": "这台公共电脑有五个人轮流用，不会同时登录。每个人资料大约8GB，但不是每人都要8GB显存。",
+  "seconds": 0.34338770000613295,
+  "cpu_seconds": 1.34375,
+  "memory": {
+    "working_set_bytes": 1862336512,
+    "peak_working_set_bytes": 3120603136
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": []
+}

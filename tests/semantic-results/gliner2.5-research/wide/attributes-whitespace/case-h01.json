@@ -1,0 +1,28 @@
+{
+  "id": "h01",
+  "source": "以前每周做Ansys仿真，这学期已经停了。下学期可能恢复，现在还没定。",
+  "seconds": 0.7845156999974279,
+  "cpu_seconds": 3.0625,
+  "memory": {
+    "working_set_bytes": 1892769792,
+    "peak_working_set_bytes": 3120828416
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": []
+}

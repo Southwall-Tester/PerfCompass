@@ -1,0 +1,74 @@
+{
+  "id": "h05",
+  "source": "内存不能低于32GB，但我没有说一定要64GB；显存也不是越大越好。",
+  "seconds": 0.29033889999845996,
+  "cpu_seconds": 1.125,
+  "memory": {
+    "working_set_bytes": 1841278976,
+    "peak_working_set_bytes": 3121045504
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_quantity": [
+        {
+          "text": "64GB",
+          "confidence": 0.9980816841125488,
+          "start": 19,
+          "end": 23,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.5555933713912964
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.4956066906452179
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.6880917549133301
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.5195754766464233
+          }
+        },
+        {
+          "text": "32GB",
+          "confidence": 0.9965062141418457,
+          "start": 6,
+          "end": 10,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.5974996089935303
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.49034032225608826
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.9303138852119446
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.739898681640625
+          }
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    }
+  ]
+}

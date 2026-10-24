@@ -1,0 +1,56 @@
+{
+  "id": "h22",
+  "source": "我正在整理一篇文章里的句子“训练服务器至少512GB内存”，这是引文，不是我个人购机条件。我的需求还没写。",
+  "seconds": 0.8181733999954304,
+  "cpu_seconds": 3.171875,
+  "memory": {
+    "working_set_bytes": 1916108800,
+    "peak_working_set_bytes": 3120828416
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "训练服务器至少512GB内存",
+          "confidence": 0.8113248944282532,
+          "start": 14,
+          "end": 28,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.3756144344806671
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.37497448921203613
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.3922289311885834
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.576237142086029
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    }
+  ]
+}

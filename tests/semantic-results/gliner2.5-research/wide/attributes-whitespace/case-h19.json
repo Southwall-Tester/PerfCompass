@@ -1,0 +1,56 @@
+{
+  "id": "h19",
+  "source": "I no longer need local rendering. Next spring I might start CAD, unless the course stays on cloud workstations. Mostly writing now.",
+  "seconds": 0.7678627999994205,
+  "cpu_seconds": 3.015625,
+  "memory": {
+    "working_set_bytes": 1914494976,
+    "peak_working_set_bytes": 3120828416
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "CAD",
+          "confidence": 0.9968909621238708,
+          "start": 60,
+          "end": 63,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.38824525475502014
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.7211301922798157
+          },
+          "timeframe": {
+            "label": "past",
+            "confidence": 0.4292304217815399
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.6676805019378662
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    }
+  ]
+}

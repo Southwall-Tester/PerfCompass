@@ -1,0 +1,128 @@
+{
+  "id": "h17",
+  "source": "笔记本本体最多1.4公斤，适配器重量不计入；我可以接受65瓦充电器，不是说整机功耗要65瓦以上。",
+  "seconds": 0.33666690000973176,
+  "cpu_seconds": 1.34375,
+  "memory": {
+    "working_set_bytes": 1879683072,
+    "peak_working_set_bytes": 3121045504
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "笔记本",
+          "confidence": 0.9567455053329468,
+          "start": 0,
+          "end": 3,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.32875409722328186
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.33904293179512024
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.3854947090148926
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.6680415272712708
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_quantity": [
+        {
+          "text": "65瓦",
+          "confidence": 0.9882319569587708,
+          "start": 42,
+          "end": 45,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.3659822642803192
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.36827898025512695
+          },
+          "timeframe": {
+            "label": "past",
+            "confidence": 0.35483428835868835
+          },
+          "execution_environment": {
+            "label": "remote or cloud computer",
+            "confidence": 0.36234158277511597
+          }
+        },
+        {
+          "text": "65瓦",
+          "confidence": 0.9798952341079712,
+          "start": 27,
+          "end": 30,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.3628341555595398
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.4215069115161896
+          },
+          "timeframe": {
+            "label": "past",
+            "confidence": 0.3545636832714081
+          },
+          "execution_environment": {
+            "label": "shared computer",
+            "confidence": 0.3507310152053833
+          }
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [
+        {
+          "text": "1.4公斤",
+          "confidence": 0.9498860239982605,
+          "start": 7,
+          "end": 12,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.6555625200271606
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.8459914326667786
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.5047998428344727
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.8466728925704956
+          }
+        }
+      ]
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.money_constraint[0]",
+      "valid": true
+    }
+  ]
+}

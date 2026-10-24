@@ -1,0 +1,101 @@
+{
+  "id": "h12",
+  "source": "UE项目两个月才完整编译一次shader，等十五分钟可以；但编辑器每天拖动物体都要顺畅。",
+  "seconds": 0.316378600007738,
+  "cpu_seconds": 1.25,
+  "memory": {
+    "working_set_bytes": 1879502848,
+    "peak_working_set_bytes": 3121045504
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "shader",
+          "confidence": 0.9189064502716064,
+          "start": 14,
+          "end": 20,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.5130960941314697
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.41400113701820374
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.621242105960846
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.5069378018379211
+          }
+        },
+        {
+          "text": "编辑器",
+          "confidence": 0.5345414280891418,
+          "start": 30,
+          "end": 33,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.36823511123657227
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.3290088474750519
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.7338465452194214
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.402683824300766
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [
+        {
+          "text": "顺畅",
+          "confidence": 0.8040491938591003,
+          "start": 41,
+          "end": 43,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.45857709646224976
+          },
+          "source_relation": {
+            "label": "conditional",
+            "confidence": 0.410980761051178
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.5958650708198547
+          },
+          "execution_environment": {
+            "label": "shared computer",
+            "confidence": 0.2910519242286682
+          }
+        }
+      ],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[1]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.performance_goal[0]",
+      "valid": true
+    }
+  ]
+}

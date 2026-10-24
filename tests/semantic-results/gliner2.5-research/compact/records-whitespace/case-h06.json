@@ -1,0 +1,20 @@
+{
+  "id": "h06",
+  "source": "整台主机预算一万五，不含屏幕；其中显卡最多花五千。每月30美元的云计算额度另外算。",
+  "seconds": 0.7743545999983326,
+  "cpu_seconds": 2.984375,
+  "memory": {
+    "working_set_bytes": 1934467072,
+    "peak_working_set_bytes": 3121487872
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": []
+}

@@ -1,0 +1,28 @@
+{
+  "id": "h02",
+  "source": "从下个月开始给博物馆做摄影测量，软件叫Metashape，每批约两千张照片；现在还没有做过。",
+  "seconds": 1.1055954999901587,
+  "cpu_seconds": 4.203125,
+  "memory": {
+    "working_set_bytes": 1995722752,
+    "peak_working_set_bytes": 3120320512
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": []
+}

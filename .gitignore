@@ -10,3 +10,4 @@ SHA256SUMS.txt
 /licenses/LibreHardwareMonitor-perfcompass/*.zip
 *.user
 .vs/
+/research/**/__pycache__/

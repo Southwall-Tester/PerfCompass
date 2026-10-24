@@ -1,0 +1,28 @@
+{
+  "id": "h24",
+  "source": "留在家买台式机最多6000元，若必须搬宿舍改买笔记本则最多8000元。这是两种选择，不要求一台机器同时符合两种形态。",
+  "seconds": 1.1688216000038665,
+  "cpu_seconds": 4.609375,
+  "memory": {
+    "working_set_bytes": 1893089280,
+    "peak_working_set_bytes": 3120320512
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": []
+}

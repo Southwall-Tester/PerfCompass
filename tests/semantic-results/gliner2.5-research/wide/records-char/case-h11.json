@@ -1,0 +1,72 @@
+{
+  "id": "h11",
+  "source": "VR只玩节奏游戏，希望稳定90fps；头显每只眼的分辨率是2160乘2160，不能把它当成我想买的显存。",
+  "seconds": 1.2078570000012405,
+  "cpu_seconds": 4.828125,
+  "memory": {
+    "working_set_bytes": 2043523072,
+    "peak_working_set_bytes": 3121037312
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "VR",
+          "confidence": 0.979093611240387,
+          "start": 0,
+          "end": 2
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [
+        {
+          "text": "2160",
+          "confidence": 0.937079906463623,
+          "start": 34,
+          "end": 38
+        },
+        {
+          "text": "2160",
+          "confidence": 0.6990376114845276,
+          "start": 29,
+          "end": 33
+        }
+      ],
+      "performance_goal": [
+        {
+          "text": "90fps",
+          "confidence": 0.8124035000801086,
+          "start": 13,
+          "end": 18
+        }
+      ],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.performance_goal[0]",
+      "valid": true
+    }
+  ]
+}

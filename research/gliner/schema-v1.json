@@ -1,0 +1,25 @@
+{
+  "version": "gliner-scope-research-1.0",
+  "entities": {
+    "software": "Names of software, tools, applications or services used for computer tasks; retain unfamiliar names",
+    "computer_task": "A task performed with a computer, including work, study and entertainment",
+    "hardware_quantity": "An explicit hardware component quantity including its number and unit",
+    "performance_goal": "A stated desired or acceptable experience, throughput, latency or task duration",
+    "money_constraint": "Budget or price with amount and direction, including its included or excluded scope"
+  },
+  "record": "computer_requirement",
+  "anchor": "subject",
+  "fields": [
+    {"name":"subject", "description":"Software, task, hardware or object that this single statement is about", "cardinality":"required_one"},
+    {"name":"statement", "description":"The complete original statement about this subject, retaining negation, time and conditions"},
+    {"name":"holder", "description":"The person or computer whose requirement is being stated; retain another person's or a quoted subject"},
+    {"name":"execution_location", "description":"Original words locating the task on this computer, a remote server, a cloud service or a shared computer"},
+    {"name":"time_expression", "description":"Original words indicating when this task or need applied or will apply"},
+    {"name":"trigger", "description":"An actual prerequisite or if/unless condition for this particular statement; not ordinary frequency or concurrent tasks"},
+    {"name":"quantity", "description":"Original quantitative target or observation including direction, number and unit; do not infer hardware needs"},
+    {"name":"frequency_or_concurrency", "description":"Original statement of task frequency, workload size or simultaneously running tasks"},
+    {"name":"owner_scope", "description":"Whose requirement this is, not who is merely mentioned", "choices":["user's computer requirement","another person's requirement","quoted or test text, not a personal requirement","unclear owner"]},
+    {"name":"source_relation", "description":"Whether this statement affirms, negates, conditions or leaves uncertain the subject and value", "choices":["affirmed","negated","conditional","uncertain"]},
+    {"name":"timeframe", "description":"Time of this particular statement, not a document-wide label", "choices":["past","current","future","unspecified"]}
+  ]
+}

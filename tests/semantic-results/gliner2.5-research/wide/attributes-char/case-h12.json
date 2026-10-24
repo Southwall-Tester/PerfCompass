@@ -1,0 +1,56 @@
+{
+  "id": "h12",
+  "source": "UE项目两个月才完整编译一次shader，等十五分钟可以；但编辑器每天拖动物体都要顺畅。",
+  "seconds": 0.8946683999965899,
+  "cpu_seconds": 3.515625,
+  "memory": {
+    "working_set_bytes": 1931886592,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "shader",
+          "confidence": 0.8466117978096008,
+          "start": 14,
+          "end": 20,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.4308203458786011
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.33981573581695557
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.396069198846817
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.6512402892112732
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    }
+  ]
+}

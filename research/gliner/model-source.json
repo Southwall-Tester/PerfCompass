@@ -1,0 +1,46 @@
+﻿{
+    "id":  "fastino/gliner2.5-multi-v1",
+    "sha":  "cf5593a5d45e3bbf204b9df621b13b1c0cf25ee3",
+    "siblings":  [
+                     {
+                         "rfilename":  "README.md",
+                         "blobId":  "33e7d5025d8de46a670cd5db99db703297bff62d",
+                         "size":  21990
+                     },
+                     {
+                         "rfilename":  "config.json",
+                         "blobId":  "8c007d142de357021db193f1965b7437516fa720",
+                         "size":  4104
+                     },
+                     {
+                         "rfilename":  "encoder_config/config.json",
+                         "blobId":  "0bb5e495baad2e7fdc35500f0072d5f2d957ed5a",
+                         "size":  857
+                     },
+                     {
+                         "rfilename":  "model.safetensors",
+                         "blobId":  "058ee36213f2851edaef1bcc213ff71f7e045a7b",
+                         "size":  1149461028,
+                         "lfs":  {
+                                     "sha256":  "c1ff4ec0bc00031c15530b8f3c33d3677f27949e6a0cb52e1247a6224b6c5395",
+                                     "size":  1149461028,
+                                     "pointerSize":  135
+                                 }
+                     },
+                     {
+                         "rfilename":  "tokenizer.json",
+                         "blobId":  "68f13318410c91def2c27f608b69446f28254bf9",
+                         "size":  16035853,
+                         "lfs":  {
+                                     "sha256":  "c62446df87ae18ec98b133f8f84fc449a07cc89bbf8ef192a4cb5f9c53777a7a",
+                                     "size":  16035853,
+                                     "pointerSize":  133
+                                 }
+                     },
+                     {
+                         "rfilename":  "tokenizer_config.json",
+                         "blobId":  "5efd586306801b08ca13390b0619a94c943046e4",
+                         "size":  645
+                     }
+                 ]
+}

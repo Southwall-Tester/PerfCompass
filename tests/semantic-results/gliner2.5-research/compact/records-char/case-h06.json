@@ -1,0 +1,72 @@
+{
+  "id": "h06",
+  "source": "整台主机预算一万五，不含屏幕；其中显卡最多花五千。每月30美元的云计算额度另外算。",
+  "seconds": 0.877131899993401,
+  "cpu_seconds": 3.421875,
+  "memory": {
+    "working_set_bytes": 1991438336,
+    "peak_working_set_bytes": 3120898048
+  },
+  "raw": {
+    "computer_requirement": [
+      {
+        "subject": {
+          "text": "主机",
+          "confidence": 0.8106962442398071,
+          "start": 2,
+          "end": 4
+        },
+        "statement": null,
+        "holder": null,
+        "execution_location": null,
+        "time_expression": null,
+        "trigger": null,
+        "quantity": null,
+        "frequency_or_concurrency": null,
+        "owner_scope": {
+          "text": "unclear owner",
+          "confidence": 0.5446221232414246,
+          "start": 2,
+          "end": 4
+        },
+        "source_relation": {
+          "text": "uncertain",
+          "confidence": 0.5573416352272034,
+          "start": 2,
+          "end": 4
+        },
+        "timeframe": {
+          "text": "unspecified",
+          "confidence": 0.7781212329864502,
+          "start": 2,
+          "end": 4
+        },
+        "confidence": 0.8106962442398071
+      }
+    ],
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [
+        {
+          "text": "30美元",
+          "confidence": 0.5221445560455322,
+          "start": 27,
+          "end": 31
+        }
+      ]
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.computer_requirement[0].subject",
+      "valid": true
+    },
+    {
+      "location": "root.entities.money_constraint[0]",
+      "valid": true
+    }
+  ]
+}

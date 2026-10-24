@@ -1,0 +1,32 @@
+{
+  "id": "h12",
+  "source": "UE项目两个月才完整编译一次shader，等十五分钟可以；但编辑器每天拖动物体都要顺畅。",
+  "seconds": 1.0252084999956423,
+  "cpu_seconds": 4.03125,
+  "memory": {
+    "working_set_bytes": 1988997120,
+    "peak_working_set_bytes": 3120898048
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "shader",
+          "confidence": 0.7565292119979858,
+          "start": 14,
+          "end": 20
+        }
+      ],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    }
+  ]
+}

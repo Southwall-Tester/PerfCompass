@@ -1,0 +1,83 @@
+{
+  "id": "h06",
+  "source": "整台主机预算一万五，不含屏幕；其中显卡最多花五千。每月30美元的云计算额度另外算。",
+  "seconds": 0.797094499997911,
+  "cpu_seconds": 3.125,
+  "memory": {
+    "working_set_bytes": 1929359360,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [
+        {
+          "text": "屏幕",
+          "confidence": 0.7190923094749451,
+          "start": 12,
+          "end": 14,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.3859228193759918
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.3620527684688568
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.46154770255088806
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.6976362466812134
+          }
+        }
+      ],
+      "hardware_quantity": [
+        {
+          "text": "30美元",
+          "confidence": 0.6112992763519287,
+          "start": 27,
+          "end": 31,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.4765450358390808
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.3963328003883362
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.3711339235305786
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.3539201319217682
+          }
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.hardware_component[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    }
+  ]
+}

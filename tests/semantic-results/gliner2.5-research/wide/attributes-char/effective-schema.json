@@ -1,0 +1,115 @@
+{
+  "entities": {
+    "software": "Names of software, tools, applications or services used for computer tasks; retain unfamiliar names",
+    "computer_task": "A task performed with a computer, including work, study and entertainment",
+    "hardware_component": "A computer, its form factor, or a hardware component whose inclusion or capabilities are discussed",
+    "hardware_quantity": "An explicit hardware component quantity including its number and unit",
+    "performance_goal": "A stated desired or acceptable experience, throughput, latency or task duration",
+    "money_constraint": "Budget or price with amount and direction, including its included or excluded scope",
+    "portability_constraint": "Portability requirements including device weight, battery life and carrying scope",
+    "compatibility_requirement": "Required compatibility with software, peripherals, licenses, connectors, protocols or formats",
+    "noise_constraint": "A preference or limit concerning computer noise",
+    "power_constraint": "Power consumption or charging requirements, with the device and role preserved",
+    "usage_pattern": "Frequency, workload scale, concurrent tasks, shared use or alternating users",
+    "schedule_constraint": "A time window, deadline or schedule for a task",
+    "other_constraint": "Other explicitly stated constraints or preferences affecting computer choice"
+  },
+  "entity_attributes": {
+    "owner_scope": {
+      "labels": [
+        "user's computer requirement",
+        "another person's requirement",
+        "quoted or test text, not a personal requirement",
+        "unclear owner"
+      ],
+      "applies_to": [
+        "software",
+        "computer_task",
+        "hardware_component",
+        "hardware_quantity",
+        "performance_goal",
+        "money_constraint",
+        "portability_constraint",
+        "compatibility_requirement",
+        "noise_constraint",
+        "power_constraint",
+        "usage_pattern",
+        "schedule_constraint",
+        "other_constraint"
+      ],
+      "qualify_labels": true
+    },
+    "source_relation": {
+      "labels": [
+        "affirmed",
+        "negated",
+        "conditional",
+        "uncertain"
+      ],
+      "applies_to": [
+        "software",
+        "computer_task",
+        "hardware_component",
+        "hardware_quantity",
+        "performance_goal",
+        "money_constraint",
+        "portability_constraint",
+        "compatibility_requirement",
+        "noise_constraint",
+        "power_constraint",
+        "usage_pattern",
+        "schedule_constraint",
+        "other_constraint"
+      ],
+      "qualify_labels": true
+    },
+    "timeframe": {
+      "labels": [
+        "past",
+        "current",
+        "future",
+        "unspecified"
+      ],
+      "applies_to": [
+        "software",
+        "computer_task",
+        "hardware_component",
+        "hardware_quantity",
+        "performance_goal",
+        "money_constraint",
+        "portability_constraint",
+        "compatibility_requirement",
+        "noise_constraint",
+        "power_constraint",
+        "usage_pattern",
+        "schedule_constraint",
+        "other_constraint"
+      ],
+      "qualify_labels": true
+    },
+    "execution_environment": {
+      "labels": [
+        "local computer",
+        "remote or cloud computer",
+        "shared computer",
+        "unspecified environment"
+      ],
+      "applies_to": [
+        "software",
+        "computer_task",
+        "hardware_component",
+        "hardware_quantity",
+        "performance_goal",
+        "money_constraint",
+        "portability_constraint",
+        "compatibility_requirement",
+        "noise_constraint",
+        "power_constraint",
+        "usage_pattern",
+        "schedule_constraint",
+        "other_constraint"
+      ],
+      "qualify_labels": true
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "h08",
+  "source": "QGIS要同时开三幅20GB的栅格图和PostGIS数据库客户端；我不清楚这是不是就得买64GB内存。",
+  "seconds": 0.85481499999878,
+  "cpu_seconds": 3.34375,
+  "memory": {
+    "working_set_bytes": 1933725696,
+    "peak_working_set_bytes": 3121487872
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "QGIS要同时开三幅20GB的栅格图和PostGIS数据库客户端",
+          "confidence": 0.9747378826141357,
+          "start": 0,
+          "end": 32
+        }
+      ],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "h22",
+  "source": "我正在整理一篇文章里的句子“训练服务器至少512GB内存”，这是引文，不是我个人购机条件。我的需求还没写。",
+  "seconds": 0.9305186999990838,
+  "cpu_seconds": 3.546875,
+  "memory": {
+    "working_set_bytes": 1840898048,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "训练服务器",
+          "confidence": 0.9500081539154053,
+          "start": 14,
+          "end": 19,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.4204867482185364
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.8140959739685059
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.47770124673843384
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.5640168190002441
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [
+        {
+          "text": "512GB",
+          "confidence": 0.9955543875694275,
+          "start": 21,
+          "end": 26,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.606533944606781
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.39337047934532166
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.6455333828926086
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.9195051789283752
+          }
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    }
+  ]
+}

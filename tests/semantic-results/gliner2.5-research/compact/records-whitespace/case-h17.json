@@ -1,0 +1,20 @@
+{
+  "id": "h17",
+  "source": "笔记本本体最多1.4公斤，适配器重量不计入；我可以接受65瓦充电器，不是说整机功耗要65瓦以上。",
+  "seconds": 0.8671509999985574,
+  "cpu_seconds": 3.375,
+  "memory": {
+    "working_set_bytes": 1930285056,
+    "peak_working_set_bytes": 3121487872
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": []
+}

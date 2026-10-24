@@ -1,0 +1,28 @@
+{
+  "id": "h05",
+  "source": "内存不能低于32GB，但我没有说一定要64GB；显存也不是越大越好。",
+  "seconds": 1.0976086000009673,
+  "cpu_seconds": 4.375,
+  "memory": {
+    "working_set_bytes": 1891016704,
+    "peak_working_set_bytes": 3120320512
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": []
+}

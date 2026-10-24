@@ -1,0 +1,56 @@
+{
+  "id": "h01",
+  "source": "以前每周做Ansys仿真，这学期已经停了。下学期可能恢复，现在还没定。",
+  "seconds": 0.9298948000068776,
+  "cpu_seconds": 3.640625,
+  "memory": {
+    "working_set_bytes": 1945427968,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "Ansys",
+          "confidence": 0.9626822471618652,
+          "start": 5,
+          "end": 10,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.47540733218193054
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.5177702307701111
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.35869887471199036
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.5461546778678894
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    }
+  ]
+}

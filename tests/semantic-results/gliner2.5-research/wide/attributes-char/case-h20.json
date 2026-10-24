@@ -1,0 +1,28 @@
+{
+  "id": "h20",
+  "source": "不是说不想要独显，只是没确定要不要；不要替我填成必须有，也别填成必须没有。",
+  "seconds": 0.8246664000034798,
+  "cpu_seconds": 3.203125,
+  "memory": {
+    "working_set_bytes": 1927315456,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": []
+}

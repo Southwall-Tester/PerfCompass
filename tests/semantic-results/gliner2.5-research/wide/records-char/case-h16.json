@@ -1,0 +1,119 @@
+{
+  "id": "h16",
+  "source": "朋友说他要128GB内存做有限元，那是他的电脑。我这台只要能做KiCad和浏览器查资料，还没提内存数值要求。",
+  "seconds": 1.2951938000041991,
+  "cpu_seconds": 5.0625,
+  "memory": {
+    "working_set_bytes": 2081349632,
+    "peak_working_set_bytes": 3121037312
+  },
+  "raw": {
+    "computer_requirement": [
+      {
+        "subject": {
+          "text": "电脑",
+          "confidence": 0.513235330581665,
+          "start": 21,
+          "end": 23
+        },
+        "statement": null,
+        "holder": null,
+        "execution_location": null,
+        "time_expression": null,
+        "trigger": null,
+        "quantity": {
+          "text": "128GB",
+          "confidence": 0.8095152974128723,
+          "start": 5,
+          "end": 10
+        },
+        "frequency_or_concurrency": null,
+        "owner_scope": {
+          "text": "unclear owner",
+          "confidence": 0.5668094754219055,
+          "start": 21,
+          "end": 23
+        },
+        "source_relation": {
+          "text": "uncertain",
+          "confidence": 0.5394449234008789,
+          "start": 21,
+          "end": 23
+        },
+        "timeframe": {
+          "text": "unspecified",
+          "confidence": 0.999061644077301
+        },
+        "confidence": 0.513235330581665
+      }
+    ],
+    "entities": {
+      "software": [
+        {
+          "text": "KiCad",
+          "confidence": 0.9951627254486084,
+          "start": 31,
+          "end": 36
+        },
+        {
+          "text": "浏览器查资料",
+          "confidence": 0.9858778715133667,
+          "start": 37,
+          "end": 43
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [
+        {
+          "text": "电脑",
+          "confidence": 0.6564909815788269,
+          "start": 21,
+          "end": 23
+        }
+      ],
+      "hardware_quantity": [
+        {
+          "text": "128GB",
+          "confidence": 0.880686342716217,
+          "start": 5,
+          "end": 10
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.computer_requirement[0].subject",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].quantity",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[1]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_component[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "id": "h17",
+  "source": "笔记本本体最多1.4公斤，适配器重量不计入；我可以接受65瓦充电器，不是说整机功耗要65瓦以上。",
+  "seconds": 1.0519570000033127,
+  "cpu_seconds": 4.109375,
+  "memory": {
+    "working_set_bytes": 1839529984,
+    "peak_working_set_bytes": 3120898048
+  },
+  "raw": {
+    "computer_requirement": [
+      {
+        "subject": {
+          "text": "笔记本",
+          "confidence": 0.8383296132087708,
+          "start": 0,
+          "end": 3
+        },
+        "statement": null,
+        "holder": null,
+        "execution_location": null,
+        "time_expression": null,
+        "trigger": null,
+        "quantity": null,
+        "frequency_or_concurrency": null,
+        "owner_scope": {
+          "text": "unclear owner",
+          "confidence": 0.7839233875274658,
+          "start": 0,
+          "end": 3
+        },
+        "source_relation": {
+          "text": "uncertain",
+          "confidence": 0.7979310154914856,
+          "start": 0,
+          "end": 3
+        },
+        "timeframe": {
+          "text": "unspecified",
+          "confidence": 0.7934046387672424,
+          "start": 0,
+          "end": 3
+        },
+        "confidence": 0.8383296132087708
+      }
+    ],
+    "entities": {
+      "software": [
+        {
+          "text": "笔记本",
+          "confidence": 0.7673115730285645,
+          "start": 0,
+          "end": 3
+        }
+      ],
+      "computer_task": [
+        {
+          "text": "笔记本",
+          "confidence": 0.6367239952087402,
+          "start": 0,
+          "end": 3
+        }
+      ],
+      "hardware_quantity": [
+        {
+          "text": "65瓦",
+          "confidence": 0.9867423176765442,
+          "start": 27,
+          "end": 30
+        },
+        {
+          "text": "65瓦",
+          "confidence": 0.9839633107185364,
+          "start": 42,
+          "end": 45
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.computer_requirement[0].subject",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.computer_task[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    }
+  ]
+}

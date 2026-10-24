@@ -1,0 +1,20 @@
+{
+  "id": "h22",
+  "source": "我正在整理一篇文章里的句子“训练服务器至少512GB内存”，这是引文，不是我个人购机条件。我的需求还没写。",
+  "seconds": 1.0081979000096908,
+  "cpu_seconds": 3.984375,
+  "memory": {
+    "working_set_bytes": 1936367616,
+    "peak_working_set_bytes": 3121487872
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": []
+}

@@ -1,0 +1,20 @@
+{
+  "id": "h16",
+  "source": "朋友说他要128GB内存做有限元，那是他的电脑。我这台只要能做KiCad和浏览器查资料，还没提内存数值要求。",
+  "seconds": 0.37821189999522176,
+  "cpu_seconds": 1.5,
+  "memory": {
+    "working_set_bytes": 1862021120,
+    "peak_working_set_bytes": 3120603136
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": []
+}

@@ -1,0 +1,121 @@
+{
+  "id": "h02",
+  "source": "从下个月开始给博物馆做摄影测量，软件叫Metashape，每批约两千张照片；现在还没有做过。",
+  "seconds": 0.8887450999900466,
+  "cpu_seconds": 3.390625,
+  "memory": {
+    "working_set_bytes": 1975386112,
+    "peak_working_set_bytes": 3120898048
+  },
+  "raw": {
+    "computer_requirement": [
+      {
+        "subject": {
+          "text": "博物馆",
+          "confidence": 0.6665854454040527,
+          "start": 7,
+          "end": 10
+        },
+        "statement": null,
+        "holder": {
+          "text": "博物馆",
+          "confidence": 0.9050846695899963,
+          "start": 7,
+          "end": 10
+        },
+        "execution_location": null,
+        "time_expression": null,
+        "trigger": {
+          "text": "现在还没有做过。",
+          "confidence": 0.9061880111694336,
+          "start": 38,
+          "end": 46
+        },
+        "quantity": {
+          "text": "约两千张照片",
+          "confidence": 0.637708842754364,
+          "start": 31,
+          "end": 37
+        },
+        "frequency_or_concurrency": null,
+        "owner_scope": {
+          "text": "unclear owner",
+          "confidence": 0.9208148717880249,
+          "start": 7,
+          "end": 10
+        },
+        "source_relation": {
+          "text": "uncertain",
+          "confidence": 0.7202569842338562,
+          "start": 7,
+          "end": 10
+        },
+        "timeframe": {
+          "text": "unspecified",
+          "confidence": 0.6087786555290222,
+          "start": 7,
+          "end": 10
+        },
+        "confidence": 0.6665854454040527
+      }
+    ],
+    "entities": {
+      "software": [
+        {
+          "text": "Metashape",
+          "confidence": 0.9985572695732117,
+          "start": 19,
+          "end": 28
+        }
+      ],
+      "computer_task": [
+        {
+          "text": "摄影测量",
+          "confidence": 0.9942769408226013,
+          "start": 11,
+          "end": 15
+        }
+      ],
+      "hardware_quantity": [
+        {
+          "text": "约两千张照片",
+          "confidence": 0.8046447038650513,
+          "start": 31,
+          "end": 37
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.computer_requirement[0].subject",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].holder",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].trigger",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].quantity",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.computer_task[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    }
+  ]
+}

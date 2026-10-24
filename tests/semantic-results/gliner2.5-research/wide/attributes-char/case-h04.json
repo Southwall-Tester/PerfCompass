@@ -1,0 +1,83 @@
+{
+  "id": "h04",
+  "source": "我的大模型训练在学校的远程集群上跑，本机只开SSH和浏览器；不要把集群的八张A100算进我的笔记本需求。",
+  "seconds": 0.9508741999889025,
+  "cpu_seconds": 3.671875,
+  "memory": {
+    "working_set_bytes": 1984577536,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "浏览器",
+          "confidence": 0.9193969368934631,
+          "start": 26,
+          "end": 29,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.2913811504840851
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.38835522532463074
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.3900316059589386
+          },
+          "execution_environment": {
+            "label": "remote or cloud computer",
+            "confidence": 0.4177197217941284
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [
+        {
+          "text": "SSH",
+          "confidence": 0.6698350310325623,
+          "start": 22,
+          "end": 25,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.5154385566711426
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.601114809513092
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.6933848261833191
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.6598755121231079
+          }
+        }
+      ],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.compatibility_requirement[0]",
+      "valid": true
+    }
+  ]
+}

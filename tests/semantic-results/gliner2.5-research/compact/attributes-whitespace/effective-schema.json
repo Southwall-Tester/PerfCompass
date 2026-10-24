@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "software": "Names of software, tools, applications or services used for computer tasks; retain unfamiliar names",
+    "computer_task": "A task performed with a computer, including work, study and entertainment",
+    "hardware_quantity": "An explicit hardware component quantity including its number and unit",
+    "performance_goal": "A stated desired or acceptable experience, throughput, latency or task duration",
+    "money_constraint": "Budget or price with amount and direction, including its included or excluded scope"
+  },
+  "entity_attributes": {
+    "owner_scope": {
+      "labels": [
+        "user's computer requirement",
+        "another person's requirement",
+        "quoted or test text, not a personal requirement",
+        "unclear owner"
+      ],
+      "applies_to": [
+        "software",
+        "computer_task",
+        "hardware_quantity",
+        "performance_goal",
+        "money_constraint"
+      ],
+      "qualify_labels": true
+    },
+    "source_relation": {
+      "labels": [
+        "affirmed",
+        "negated",
+        "conditional",
+        "uncertain"
+      ],
+      "applies_to": [
+        "software",
+        "computer_task",
+        "hardware_quantity",
+        "performance_goal",
+        "money_constraint"
+      ],
+      "qualify_labels": true
+    },
+    "timeframe": {
+      "labels": [
+        "past",
+        "current",
+        "future",
+        "unspecified"
+      ],
+      "applies_to": [
+        "software",
+        "computer_task",
+        "hardware_quantity",
+        "performance_goal",
+        "money_constraint"
+      ],
+      "qualify_labels": true
+    },
+    "execution_environment": {
+      "labels": [
+        "local computer",
+        "remote or cloud computer",
+        "shared computer",
+        "unspecified environment"
+      ],
+      "applies_to": [
+        "software",
+        "computer_task",
+        "hardware_quantity",
+        "performance_goal",
+        "money_constraint"
+      ],
+      "qualify_labels": true
+    }
+  }
+}

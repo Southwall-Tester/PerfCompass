@@ -1,0 +1,91 @@
+{
+  "id": "h14",
+  "source": "这台公共电脑有五个人轮流用，不会同时登录。每个人资料大约8GB，但不是每人都要8GB显存。",
+  "seconds": 1.036293700002716,
+  "cpu_seconds": 4.09375,
+  "memory": {
+    "working_set_bytes": 1838968832,
+    "peak_working_set_bytes": 3120898048
+  },
+  "raw": {
+    "computer_requirement": [
+      {
+        "subject": {
+          "text": "公共电脑",
+          "confidence": 0.815696656703949,
+          "start": 2,
+          "end": 6
+        },
+        "statement": null,
+        "holder": null,
+        "execution_location": null,
+        "time_expression": null,
+        "trigger": null,
+        "quantity": {
+          "text": "五个人",
+          "confidence": 0.6968120336532593,
+          "start": 7,
+          "end": 10
+        },
+        "frequency_or_concurrency": null,
+        "owner_scope": {
+          "text": "unclear owner",
+          "confidence": 0.7802098393440247,
+          "start": 2,
+          "end": 6
+        },
+        "source_relation": {
+          "text": "uncertain",
+          "confidence": 0.7763448357582092,
+          "start": 2,
+          "end": 6
+        },
+        "timeframe": {
+          "text": "unspecified",
+          "confidence": 0.6782715916633606,
+          "start": 2,
+          "end": 6
+        },
+        "confidence": 0.815696656703949
+      }
+    ],
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_quantity": [
+        {
+          "text": "8GB",
+          "confidence": 0.9955743551254272,
+          "start": 28,
+          "end": 31
+        },
+        {
+          "text": "8GB",
+          "confidence": 0.9914636015892029,
+          "start": 39,
+          "end": 42
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.computer_requirement[0].subject",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].quantity",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    }
+  ]
+}

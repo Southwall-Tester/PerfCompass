@@ -1,0 +1,40 @@
+{
+  "id": "h10",
+  "source": "Reaper里录人声时，要同时开Kontakt和网课回放；直播时不录音。监听延迟不超过12ms即可，不追求更低。",
+  "seconds": 1.2337361000099918,
+  "cpu_seconds": 4.875,
+  "memory": {
+    "working_set_bytes": 2078257152,
+    "peak_working_set_bytes": 3121037312
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "Reaper",
+          "confidence": 0.9799436926841736,
+          "start": 0,
+          "end": 6
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "h04",
+  "source": "我的大模型训练在学校的远程集群上跑，本机只开SSH和浏览器；不要把集群的八张A100算进我的笔记本需求。",
+  "seconds": 1.2153891000052681,
+  "cpu_seconds": 4.765625,
+  "memory": {
+    "working_set_bytes": 2014715904,
+    "peak_working_set_bytes": 3121037312
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": []
+}

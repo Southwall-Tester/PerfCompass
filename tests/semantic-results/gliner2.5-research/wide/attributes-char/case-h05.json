@@ -1,0 +1,82 @@
+{
+  "id": "h05",
+  "source": "内存不能低于32GB，但我没有说一定要64GB；显存也不是越大越好。",
+  "seconds": 0.8194570000050589,
+  "cpu_seconds": 3.1875,
+  "memory": {
+    "working_set_bytes": 1949229056,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [
+        {
+          "text": "32GB",
+          "confidence": 0.9975199103355408,
+          "start": 6,
+          "end": 10,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.46948227286338806
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.5154657363891602
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.7687781453132629
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.9532399773597717
+          }
+        },
+        {
+          "text": "64GB",
+          "confidence": 0.9973351359367371,
+          "start": 19,
+          "end": 23,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.4885578751564026
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.3950982093811035
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.5016820430755615
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.8641560077667236
+          }
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    }
+  ]
+}

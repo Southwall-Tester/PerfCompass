@@ -1,0 +1,127 @@
+{
+  "id": "h24",
+  "source": "留在家买台式机最多6000元，若必须搬宿舍改买笔记本则最多8000元。这是两种选择，不要求一台机器同时符合两种形态。",
+  "seconds": 0.3228138999984367,
+  "cpu_seconds": 1.28125,
+  "memory": {
+    "working_set_bytes": 1876418560,
+    "peak_working_set_bytes": 3121045504
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "台式机",
+          "confidence": 0.9331051707267761,
+          "start": 4,
+          "end": 7,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.3311833441257477
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.47777560353279114
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.6286690831184387
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.561099112033844
+          }
+        },
+        {
+          "text": "笔记本",
+          "confidence": 0.9061108231544495,
+          "start": 23,
+          "end": 26,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.3356434106826782
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.5134559273719788
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.45263370871543884
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.35953018069267273
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [
+        {
+          "text": "8000元",
+          "confidence": 0.9960933327674866,
+          "start": 29,
+          "end": 34,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.5127290487289429
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.5631191730499268
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.5793126225471497
+          },
+          "execution_environment": {
+            "label": "remote or cloud computer",
+            "confidence": 0.5927368998527527
+          }
+        },
+        {
+          "text": "6000元",
+          "confidence": 0.99445641040802,
+          "start": 9,
+          "end": 14,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.5495644807815552
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.4702209532260895
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.6890373826026917
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.4244855046272278
+          }
+        }
+      ]
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[1]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.money_constraint[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.money_constraint[1]",
+      "valid": true
+    }
+  ]
+}

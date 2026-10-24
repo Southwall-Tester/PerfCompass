@@ -1,0 +1,75 @@
+{
+  "id": "h22",
+  "source": "我正在整理一篇文章里的句子“训练服务器至少512GB内存”，这是引文，不是我个人购机条件。我的需求还没写。",
+  "seconds": 0.32318140000279527,
+  "cpu_seconds": 1.28125,
+  "memory": {
+    "working_set_bytes": 1892114432,
+    "peak_working_set_bytes": 3121045504
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "训练服务器",
+          "confidence": 0.8972292542457581,
+          "start": 14,
+          "end": 19,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.5587407350540161
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.7175052762031555
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.34757065773010254
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.619896650314331
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_quantity": [
+        {
+          "text": "512GB",
+          "confidence": 0.9974282383918762,
+          "start": 21,
+          "end": 26,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.5449423789978027
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.3522954285144806
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.726552426815033
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.653948187828064
+          }
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    }
+  ]
+}

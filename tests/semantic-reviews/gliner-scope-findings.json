@@ -1,0 +1,170 @@
+{
+  "format": "gliner-developer-findings-1.0",
+  "reviewer": "development-agent",
+  "scope": "Six selected inputs, all four wide variants inspected. Not independent human labels, not a full-corpus semantic grade or accuracy estimate.",
+  "corpus_sha256": "3cdfba654b58b7d1810d4410e095d86b00a15c6bd3aac908fe80e660975d80a4",
+  "findings": [
+    {
+      "id": "h01",
+      "source_sha256": "c5c726920ae7a2d6f07182634911ae02ca1a1f94a04c99c0c9b7bc98853a575d",
+      "note": "Ansys is located, but the past use, present stop and uncertain future resumption are not represented separately. An entity-level label is not a complete temporal event representation.",
+      "outputs": [
+        {
+          "variant": "records-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-char/case-h01.json",
+          "sha256": "5db4b938152c6a71751f8c9315336558b6a1ab228175ea7c15d585c447a94198"
+        },
+        {
+          "variant": "records-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-whitespace/case-h01.json",
+          "sha256": "fc660921d85ee5e4bc638eb1a72b86e134e741f59fa4ca81698260522dced27d"
+        },
+        {
+          "variant": "attributes-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-char/case-h01.json",
+          "sha256": "d30224d953b03e0133c1212add36f3425bb814844179b4c53817b7f1830ea2eb"
+        },
+        {
+          "variant": "attributes-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-whitespace/case-h01.json",
+          "sha256": "8f82a70a3a9282f742283e6d6bcaf043488ea4017a4cd495ef3fb2485ebddc24"
+        }
+      ]
+    },
+    {
+      "id": "h04",
+      "source_sha256": "82e20e7ac78f574f70ea73b3e19aec1900a7fcd013dbbb780ac18d327be4177d",
+      "note": "wide-attributes-char marks local SSH as quoted/test text and the explicitly local browser as remote. Other wide combinations emit no facts. These are not purchasing scope facts supported by the source.",
+      "outputs": [
+        {
+          "variant": "records-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-char/case-h04.json",
+          "sha256": "dc85cc7a63df8f6f0f2beb8e1866b318d39cce0a065c8923587a7cb48874f487"
+        },
+        {
+          "variant": "records-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-whitespace/case-h04.json",
+          "sha256": "eb19f90064ed8b79e2f94ad4b2f7f5f9a7cbd6d70dbc6ab1fb59739c358af346"
+        },
+        {
+          "variant": "attributes-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-char/case-h04.json",
+          "sha256": "0f7bd09ec22cfd9f65812d2bed94f21802b5482a3092674ed7a76a3c92ea8ab0"
+        },
+        {
+          "variant": "attributes-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-whitespace/case-h04.json",
+          "sha256": "675bbb64387f19651e541fd1545a5215e6555c7c2b77c4395a2a863caa234659"
+        }
+      ]
+    },
+    {
+      "id": "h16",
+      "source_sha256": "e76079227df29b741e68bd2ce353e0364552ff379ac532e002920a3e61bfaea0",
+      "note": "The 128GB span is correctly suggested as non-personal quoted text in the attribute variant, a useful partial clue; KiCad/browser requirements are nevertheless marked conditional without an external trigger. The record variant retains computer/128GB with unclear ownership and cannot justify a local capacity target.",
+      "outputs": [
+        {
+          "variant": "records-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-char/case-h16.json",
+          "sha256": "2114909788698be8f0e13f26f1b2f55ac4b8201ce3810b5fa23a108599767da3"
+        },
+        {
+          "variant": "records-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-whitespace/case-h16.json",
+          "sha256": "34743d03c32a00fcfa8bf21b2eab1f0b0ac7e2d9fabee1f1d665ee3e4fdb01ee"
+        },
+        {
+          "variant": "attributes-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-char/case-h16.json",
+          "sha256": "49dae85d0054f1167141faf3935fec8070177fc0c2259832b0a641c3c63e9a62"
+        },
+        {
+          "variant": "attributes-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-whitespace/case-h16.json",
+          "sha256": "39d81ade49f066c06755a345d2f8829951e5c5fb42f603c4a4d3c59026ab3d14"
+        }
+      ]
+    },
+    {
+      "id": "h20",
+      "source_sha256": "d291a7f679ffbb797b60c889b8647815c8454825dd90215821c0c2af853bdd4e",
+      "note": "All four wide variants emit no entities or records for the explicitly unresolved discrete-GPU decision. This does not preserve the user's uncertainty.",
+      "outputs": [
+        {
+          "variant": "records-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-char/case-h20.json",
+          "sha256": "2709d4ec519b444bb121f14a8248d017c6fab99b9c5b66dfe84ee74b8f5dda08"
+        },
+        {
+          "variant": "records-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-whitespace/case-h20.json",
+          "sha256": "f84e2e551220da1b0b5fe0f758d954230a79392a06a5df7a06c4ce4aea6e9200"
+        },
+        {
+          "variant": "attributes-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-char/case-h20.json",
+          "sha256": "c63fb5f35bff6c64b6e2d412328426db3e231459cf43616e2f1ce2df5d853c19"
+        },
+        {
+          "variant": "attributes-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-whitespace/case-h20.json",
+          "sha256": "6ac61cec643a60b9fb0619a594e310999ed90a868b1d144a76255e6f9e89dfbb"
+        }
+      ]
+    },
+    {
+      "id": "h22",
+      "source_sha256": "da22dcfd174e402e73cd58ca9f6dbff5026c56ee6f932da5a1e8ab6d1fb5e34a",
+      "note": "The attribute variant identifies quoted/non-personal scope for 512GB, a useful partial success; it also labels the training server as software and supplies a local execution label. The record variant has only an unlinked quantity. No local capacity goal is justified.",
+      "outputs": [
+        {
+          "variant": "records-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-char/case-h22.json",
+          "sha256": "ebe5e4d4049f1acb149b24b14a330b28c6bbf33263e79883234498a70c20c64f"
+        },
+        {
+          "variant": "records-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-whitespace/case-h22.json",
+          "sha256": "3a75d2f7eb5988df3a434f61e44f7f0370092c9a432771a4eb8e03ad414db3e6"
+        },
+        {
+          "variant": "attributes-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-char/case-h22.json",
+          "sha256": "ee095ae8f8e16477b9e5369fe02adb2e192165e40243aaebf80130034ae1619d"
+        },
+        {
+          "variant": "attributes-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-whitespace/case-h22.json",
+          "sha256": "71708fb73b98aa6bb5457b2d6da54c652bf254502ab559e5998d6e04cff3f62e"
+        }
+      ]
+    },
+    {
+      "id": "h24",
+      "source_sha256": "48bf02465ead9764e46ae08c382ef142a78bd06233cab1c40f149d1b8d16dd7e",
+      "note": "Both amounts are located, but the attribute variant marks personal scenario budgets as quoted/test text. Record outputs do not link the amounts and actual triggers to the two computer types. Entity scores do not establish conditional-budget semantics.",
+      "outputs": [
+        {
+          "variant": "records-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-char/case-h24.json",
+          "sha256": "2e2327cf3fdef5d65c4c35e7e37e1174594ef8bfbd4b523ff863c9f4cc5b95dd"
+        },
+        {
+          "variant": "records-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/records-whitespace/case-h24.json",
+          "sha256": "8adc4f8074ef800f3a83f733e535a211f9c47de01e744787d0658a38db088457"
+        },
+        {
+          "variant": "attributes-char",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-char/case-h24.json",
+          "sha256": "0f52cc5cc808c12cb006cb350ef8d1ec1df56b00f3655d79c85d7aca1bbae49f"
+        },
+        {
+          "variant": "attributes-whitespace",
+          "file": "tests/semantic-results/gliner2.5-research/wide/attributes-whitespace/case-h24.json",
+          "sha256": "0f402fbe7d30a190d6a69da9101bd719c29d63d25c91b6fa3e57ad94e9618492"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "id": "h11",
+  "source": "VR只玩节奏游戏，希望稳定90fps；头显每只眼的分辨率是2160乘2160，不能把它当成我想买的显存。",
+  "seconds": 1.0031569999991916,
+  "cpu_seconds": 3.9375,
+  "memory": {
+    "working_set_bytes": 1925976064,
+    "peak_working_set_bytes": 3121487872
+  },
+  "raw": {
+    "computer_requirement": [
+      {
+        "subject": {
+          "text": "VR只玩节奏游戏",
+          "confidence": 0.6201329827308655,
+          "start": 0,
+          "end": 8
+        },
+        "statement": {
+          "text": "希望稳定90fps",
+          "confidence": 0.8631574511528015,
+          "start": 9,
+          "end": 18
+        },
+        "holder": null,
+        "execution_location": null,
+        "time_expression": null,
+        "trigger": {
+          "text": "不能把它当成我想买的显存。",
+          "confidence": 0.7230889797210693,
+          "start": 39,
+          "end": 52
+        },
+        "quantity": null,
+        "frequency_or_concurrency": null,
+        "owner_scope": {
+          "text": "unclear owner",
+          "confidence": 0.5047899484634399,
+          "start": 0,
+          "end": 8
+        },
+        "source_relation": {
+          "text": "uncertain",
+          "confidence": 0.8902897238731384,
+          "start": 0,
+          "end": 8
+        },
+        "timeframe": {
+          "text": "unspecified",
+          "confidence": 0.6879122853279114,
+          "start": 0,
+          "end": 8
+        },
+        "confidence": 0.6201329827308655
+      }
+    ],
+    "entities": {
+      "software": [
+        {
+          "text": "VR只玩节奏游戏",
+          "confidence": 0.979373574256897,
+          "start": 0,
+          "end": 8
+        }
+      ],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.computer_requirement[0].subject",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].statement",
+      "valid": true
+    },
+    {
+      "location": "root.computer_requirement[0].trigger",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    }
+  ]
+}

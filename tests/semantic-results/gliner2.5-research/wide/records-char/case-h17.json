@@ -1,0 +1,101 @@
+{
+  "id": "h17",
+  "source": "笔记本本体最多1.4公斤，适配器重量不计入；我可以接受65瓦充电器，不是说整机功耗要65瓦以上。",
+  "seconds": 1.2600663999910466,
+  "cpu_seconds": 4.96875,
+  "memory": {
+    "working_set_bytes": 2044375040,
+    "peak_working_set_bytes": 3121037312
+  },
+  "raw": {
+    "computer_requirement": [
+      {
+        "subject": {
+          "text": "笔记本",
+          "confidence": 0.6504727005958557,
+          "start": 0,
+          "end": 3
+        },
+        "statement": null,
+        "holder": null,
+        "execution_location": null,
+        "time_expression": null,
+        "trigger": null,
+        "quantity": null,
+        "frequency_or_concurrency": null,
+        "owner_scope": {
+          "text": "unclear owner",
+          "confidence": 0.7592466473579407,
+          "start": 0,
+          "end": 3
+        },
+        "source_relation": {
+          "text": "uncertain",
+          "confidence": 0.5816469788551331,
+          "start": 0,
+          "end": 3
+        },
+        "timeframe": {
+          "text": "unspecified",
+          "confidence": 0.7613455057144165,
+          "start": 0,
+          "end": 3
+        },
+        "confidence": 0.6504727005958557
+      }
+    ],
+    "entities": {
+      "software": [
+        {
+          "text": "笔记本",
+          "confidence": 0.8288555145263672,
+          "start": 0,
+          "end": 3
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [
+        {
+          "text": "65瓦",
+          "confidence": 0.9895832538604736,
+          "start": 27,
+          "end": 30
+        },
+        {
+          "text": "65瓦",
+          "confidence": 0.9860777854919434,
+          "start": 42,
+          "end": 45
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.computer_requirement[0].subject",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    }
+  ]
+}

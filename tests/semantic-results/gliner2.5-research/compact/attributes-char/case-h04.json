@@ -1,0 +1,129 @@
+{
+  "id": "h04",
+  "source": "我的大模型训练在学校的远程集群上跑，本机只开SSH和浏览器；不要把集群的八张A100算进我的笔记本需求。",
+  "seconds": 0.3230162999971071,
+  "cpu_seconds": 1.25,
+  "memory": {
+    "working_set_bytes": 1893888000,
+    "peak_working_set_bytes": 3121045504
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "浏览器",
+          "confidence": 0.9685483574867249,
+          "start": 26,
+          "end": 29,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.407772034406662
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.540660560131073
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.6714329123497009
+          },
+          "execution_environment": {
+            "label": "shared computer",
+            "confidence": 0.36465197801589966
+          }
+        }
+      ],
+      "computer_task": [
+        {
+          "text": "训练",
+          "confidence": 0.611868679523468,
+          "start": 5,
+          "end": 7,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.3745293617248535
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.32232916355133057
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.558536171913147
+          },
+          "execution_environment": {
+            "label": "remote or cloud computer",
+            "confidence": 0.7637289762496948
+          }
+        }
+      ],
+      "hardware_quantity": [
+        {
+          "text": "八张A100",
+          "confidence": 0.7781956195831299,
+          "start": 36,
+          "end": 42,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.40823042392730713
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.42672330141067505
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.6004816889762878
+          },
+          "execution_environment": {
+            "label": "shared computer",
+            "confidence": 0.3717487156391144
+          }
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [
+        {
+          "text": "SSH",
+          "confidence": 0.8219251036643982,
+          "start": 22,
+          "end": 25,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.39015236496925354
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.4744603633880615
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.811785876750946
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.4861936867237091
+          }
+        }
+      ]
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.computer_task[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.money_constraint[0]",
+      "valid": true
+    }
+  ]
+}

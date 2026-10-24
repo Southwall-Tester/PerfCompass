@@ -1,0 +1,109 @@
+{
+  "entities": {
+    "software": "Names of software, tools, applications or services used for computer tasks; retain unfamiliar names",
+    "computer_task": "A task performed with a computer, including work, study and entertainment",
+    "hardware_component": "A computer, its form factor, or a hardware component whose inclusion or capabilities are discussed",
+    "hardware_quantity": "An explicit hardware component quantity including its number and unit",
+    "performance_goal": "A stated desired or acceptable experience, throughput, latency or task duration",
+    "money_constraint": "Budget or price with amount and direction, including its included or excluded scope",
+    "portability_constraint": "Portability requirements including device weight, battery life and carrying scope",
+    "compatibility_requirement": "Required compatibility with software, peripherals, licenses, connectors, protocols or formats",
+    "noise_constraint": "A preference or limit concerning computer noise",
+    "power_constraint": "Power consumption or charging requirements, with the device and role preserved",
+    "usage_pattern": "Frequency, workload scale, concurrent tasks, shared use or alternating users",
+    "schedule_constraint": "A time window, deadline or schedule for a task",
+    "other_constraint": "Other explicitly stated constraints or preferences affecting computer choice"
+  },
+  "structures": {
+    "computer_requirement": {
+      "fields": [
+        {
+          "name": "subject",
+          "dtype": "str",
+          "description": "Software, task, hardware or object that this single statement is about",
+          "cardinality": "required_one"
+        },
+        {
+          "name": "statement",
+          "dtype": "str",
+          "description": "The complete original statement about this subject, retaining negation, time and conditions",
+          "cardinality": "optional_one"
+        },
+        {
+          "name": "holder",
+          "dtype": "str",
+          "description": "The person or computer whose requirement is being stated; retain another person's or a quoted subject",
+          "cardinality": "optional_one"
+        },
+        {
+          "name": "execution_location",
+          "dtype": "str",
+          "description": "Original words locating the task on this computer, a remote server, a cloud service or a shared computer",
+          "cardinality": "optional_one"
+        },
+        {
+          "name": "time_expression",
+          "dtype": "str",
+          "description": "Original words indicating when this task or need applied or will apply",
+          "cardinality": "optional_one"
+        },
+        {
+          "name": "trigger",
+          "dtype": "str",
+          "description": "An actual prerequisite or if/unless condition for this particular statement; not ordinary frequency or concurrent tasks",
+          "cardinality": "optional_one"
+        },
+        {
+          "name": "quantity",
+          "dtype": "str",
+          "description": "Original quantitative target or observation including direction, number and unit; do not infer hardware needs",
+          "cardinality": "optional_one"
+        },
+        {
+          "name": "frequency_or_concurrency",
+          "dtype": "str",
+          "description": "Original statement of task frequency, workload size or simultaneously running tasks",
+          "cardinality": "optional_one"
+        },
+        {
+          "name": "owner_scope",
+          "dtype": "str",
+          "choices": [
+            "user's computer requirement",
+            "another person's requirement",
+            "quoted or test text, not a personal requirement",
+            "unclear owner"
+          ],
+          "description": "Whose requirement this is, not who is merely mentioned",
+          "cardinality": "optional_one"
+        },
+        {
+          "name": "source_relation",
+          "dtype": "str",
+          "choices": [
+            "affirmed",
+            "negated",
+            "conditional",
+            "uncertain"
+          ],
+          "description": "Whether this statement affirms, negates, conditions or leaves uncertain the subject and value",
+          "cardinality": "optional_one"
+        },
+        {
+          "name": "timeframe",
+          "dtype": "str",
+          "choices": [
+            "past",
+            "current",
+            "future",
+            "unspecified"
+          ],
+          "description": "Time of this particular statement, not a document-wide label",
+          "cardinality": "optional_one"
+        }
+      ],
+      "mode": "natural",
+      "anchor": "subject"
+    }
+  }
+}

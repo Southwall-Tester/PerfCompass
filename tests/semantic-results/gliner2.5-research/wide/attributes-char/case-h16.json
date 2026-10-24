@@ -1,0 +1,136 @@
+{
+  "id": "h16",
+  "source": "朋友说他要128GB内存做有限元，那是他的电脑。我这台只要能做KiCad和浏览器查资料，还没提内存数值要求。",
+  "seconds": 0.8883044999965932,
+  "cpu_seconds": 3.40625,
+  "memory": {
+    "working_set_bytes": 1974112256,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "KiCad",
+          "confidence": 0.9954949617385864,
+          "start": 31,
+          "end": 36,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.3398585915565491
+          },
+          "source_relation": {
+            "label": "conditional",
+            "confidence": 0.36026784777641296
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.3383384943008423
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.5758107304573059
+          }
+        },
+        {
+          "text": "浏览器查资料",
+          "confidence": 0.8885628581047058,
+          "start": 37,
+          "end": 43,
+          "owner_scope": {
+            "label": "user's computer requirement",
+            "confidence": 0.4355127513408661
+          },
+          "source_relation": {
+            "label": "conditional",
+            "confidence": 0.4599764049053192
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.4109792411327362
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.5167566537857056
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [
+        {
+          "text": "电脑",
+          "confidence": 0.5984554290771484,
+          "start": 21,
+          "end": 23,
+          "owner_scope": {
+            "label": "unclear owner",
+            "confidence": 0.6274327039718628
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.3804772198200226
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.41154342889785767
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.8698148131370544
+          }
+        }
+      ],
+      "hardware_quantity": [
+        {
+          "text": "128GB",
+          "confidence": 0.9972466230392456,
+          "start": 5,
+          "end": 10,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.3409653604030609
+          },
+          "source_relation": {
+            "label": "affirmed",
+            "confidence": 0.4065179228782654
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.4528520107269287
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.879412829875946
+          }
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[1]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_component[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    }
+  ]
+}

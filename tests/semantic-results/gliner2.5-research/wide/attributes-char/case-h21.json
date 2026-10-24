@@ -1,0 +1,56 @@
+{
+  "id": "h21",
+  "source": "上个月我基本只看网页，这周开始每天跑本地语音转写，每次等半小时太久；不要让一个月的低平均占用盖过这周的新需求。",
+  "seconds": 0.9060192999895662,
+  "cpu_seconds": 3.546875,
+  "memory": {
+    "working_set_bytes": 1981476864,
+    "peak_working_set_bytes": 3120377856
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [
+        {
+          "text": "每次等半小时太久",
+          "confidence": 0.827019214630127,
+          "start": 25,
+          "end": 33,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.5174116492271423
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.3676188290119171
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.6000644564628601
+          },
+          "execution_environment": {
+            "label": "local computer",
+            "confidence": 0.505683183670044
+          }
+        }
+      ],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.schedule_constraint[0]",
+      "valid": true
+    }
+  ]
+}

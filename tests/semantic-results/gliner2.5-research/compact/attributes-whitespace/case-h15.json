@@ -1,0 +1,20 @@
+{
+  "id": "h15",
+  "source": "2027年6月之前要交数字人毕业设计，预算上限9000元。现在还没选引擎，可能用Godot，也可能Unity。",
+  "seconds": 0.3764779999910388,
+  "cpu_seconds": 1.46875,
+  "memory": {
+    "working_set_bytes": 1861746688,
+    "peak_working_set_bytes": 3120603136
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": []
+}

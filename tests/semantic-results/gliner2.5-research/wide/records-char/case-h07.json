@@ -1,0 +1,78 @@
+{
+  "id": "h07",
+  "source": "用PrusaSlicer给3D打印机切片，平常两分钟能等，复杂模型偶尔等十分钟也能接受；别按十分钟算成日常卡顿。",
+  "seconds": 1.1833595999924,
+  "cpu_seconds": 4.671875,
+  "memory": {
+    "working_set_bytes": 2048663552,
+    "peak_working_set_bytes": 3121037312
+  },
+  "raw": {
+    "computer_requirement": [
+      {
+        "subject": {
+          "text": "3D打印机",
+          "confidence": 0.6183865666389465,
+          "start": 13,
+          "end": 18
+        },
+        "statement": null,
+        "holder": null,
+        "execution_location": null,
+        "time_expression": null,
+        "trigger": null,
+        "quantity": null,
+        "frequency_or_concurrency": null,
+        "owner_scope": {
+          "text": "unclear owner",
+          "confidence": 0.5748950242996216,
+          "start": 13,
+          "end": 18
+        },
+        "source_relation": {
+          "text": "uncertain",
+          "confidence": 0.558681845664978,
+          "start": 13,
+          "end": 18
+        },
+        "timeframe": {
+          "text": "unspecified",
+          "confidence": 0.9980474710464478
+        },
+        "confidence": 0.6183865666389465
+      }
+    ],
+    "entities": {
+      "software": [
+        {
+          "text": "PrusaSlicer",
+          "confidence": 0.9915905594825745,
+          "start": 1,
+          "end": 12
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.computer_requirement[0].subject",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    }
+  ]
+}

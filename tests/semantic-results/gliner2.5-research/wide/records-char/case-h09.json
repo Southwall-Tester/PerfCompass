@@ -1,0 +1,51 @@
+{
+  "id": "h09",
+  "source": "实验室的LabVIEW程序依赖老款USB授权钥匙，还要接串口仪器；只要能兼容，跑分高一点低一点无所谓。",
+  "seconds": 1.2183878000068944,
+  "cpu_seconds": 4.78125,
+  "memory": {
+    "working_set_bytes": 2044342272,
+    "peak_working_set_bytes": 3121037312
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "LabVIEW",
+          "confidence": 0.5157269239425659,
+          "start": 4,
+          "end": 11
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [
+        {
+          "text": "串口仪器",
+          "confidence": 0.6499243974685669,
+          "start": 28,
+          "end": 32
+        }
+      ],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_component[0]",
+      "valid": true
+    }
+  ]
+}

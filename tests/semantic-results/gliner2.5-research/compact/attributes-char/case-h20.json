@@ -1,0 +1,20 @@
+{
+  "id": "h20",
+  "source": "不是说不想要独显，只是没确定要不要；不要替我填成必须有，也别填成必须没有。",
+  "seconds": 0.3169554999913089,
+  "cpu_seconds": 1.28125,
+  "memory": {
+    "working_set_bytes": 1878798336,
+    "peak_working_set_bytes": 3121045504
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": []
+}

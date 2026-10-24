@@ -1,0 +1,28 @@
+{
+  "id": "h21",
+  "source": "上个月我基本只看网页，这周开始每天跑本地语音转写，每次等半小时太久；不要让一个月的低平均占用盖过这周的新需求。",
+  "seconds": 1.3881521000002977,
+  "cpu_seconds": 5.484375,
+  "memory": {
+    "working_set_bytes": 2112155648,
+    "peak_working_set_bytes": 3121037312
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": []
+}

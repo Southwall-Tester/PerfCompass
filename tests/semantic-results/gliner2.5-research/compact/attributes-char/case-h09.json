@@ -1,0 +1,75 @@
+{
+  "id": "h09",
+  "source": "实验室的LabVIEW程序依赖老款USB授权钥匙，还要接串口仪器；只要能兼容，跑分高一点低一点无所谓。",
+  "seconds": 0.344802499996149,
+  "cpu_seconds": 1.359375,
+  "memory": {
+    "working_set_bytes": 1854857216,
+    "peak_working_set_bytes": 3121045504
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "LabVIEW",
+          "confidence": 0.9760087728500366,
+          "start": 4,
+          "end": 11,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.37459978461265564
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.8395408391952515
+          },
+          "timeframe": {
+            "label": "unspecified",
+            "confidence": 0.8019264936447144
+          },
+          "execution_environment": {
+            "label": "remote or cloud computer",
+            "confidence": 0.5973331928253174
+          }
+        }
+      ],
+      "computer_task": [],
+      "hardware_quantity": [
+        {
+          "text": "串口仪器",
+          "confidence": 0.7012267708778381,
+          "start": 28,
+          "end": 32,
+          "owner_scope": {
+            "label": "quoted or test text, not a personal requirement",
+            "confidence": 0.3676415979862213
+          },
+          "source_relation": {
+            "label": "negated",
+            "confidence": 0.7113959193229675
+          },
+          "timeframe": {
+            "label": "current",
+            "confidence": 0.3907889425754547
+          },
+          "execution_environment": {
+            "label": "shared computer",
+            "confidence": 0.4325031638145447
+          }
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    }
+  ]
+}

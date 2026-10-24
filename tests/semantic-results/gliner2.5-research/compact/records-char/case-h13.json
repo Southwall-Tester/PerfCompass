@@ -1,0 +1,32 @@
+{
+  "id": "h13",
+  "source": "如果接到航拍建模项目才用RealityCapture，否则继续只做排版；项目还没谈成，别按已接单来算。",
+  "seconds": 1.1321578999923076,
+  "cpu_seconds": 4.484375,
+  "memory": {
+    "working_set_bytes": 1989537792,
+    "peak_working_set_bytes": 3120898048
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "RealityCapture",
+          "confidence": 0.9302923679351807,
+          "start": 12,
+          "end": 26
+        }
+      ],
+      "computer_task": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "h08",
+  "source": "QGIS要同时开三幅20GB的栅格图和PostGIS数据库客户端；我不清楚这是不是就得买64GB内存。",
+  "seconds": 1.2126277999923332,
+  "cpu_seconds": 4.75,
+  "memory": {
+    "working_set_bytes": 2048442368,
+    "peak_working_set_bytes": 3121037312
+  },
+  "raw": {
+    "entities": {
+      "software": [
+        {
+          "text": "QGIS",
+          "confidence": 0.9983687996864319,
+          "start": 0,
+          "end": 4
+        },
+        {
+          "text": "PostGIS",
+          "confidence": 0.7843219041824341,
+          "start": 19,
+          "end": 26
+        }
+      ],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [
+        {
+          "text": "64GB",
+          "confidence": 0.9317724704742432,
+          "start": 44,
+          "end": 48
+        },
+        {
+          "text": "20GB",
+          "confidence": 0.6632580757141113,
+          "start": 10,
+          "end": 14
+        }
+      ],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": [
+    {
+      "location": "root.entities.software[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.software[1]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[0]",
+      "valid": true
+    },
+    {
+      "location": "root.entities.hardware_quantity[1]",
+      "valid": true
+    }
+  ]
+}

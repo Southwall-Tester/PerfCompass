@@ -1,0 +1,28 @@
+{
+  "id": "h07",
+  "source": "用PrusaSlicer给3D打印机切片，平常两分钟能等，复杂模型偶尔等十分钟也能接受；别按十分钟算成日常卡顿。",
+  "seconds": 0.7761547999980394,
+  "cpu_seconds": 3.09375,
+  "memory": {
+    "working_set_bytes": 1914875904,
+    "peak_working_set_bytes": 3120828416
+  },
+  "raw": {
+    "entities": {
+      "software": [],
+      "computer_task": [],
+      "hardware_component": [],
+      "hardware_quantity": [],
+      "performance_goal": [],
+      "money_constraint": [],
+      "portability_constraint": [],
+      "compatibility_requirement": [],
+      "noise_constraint": [],
+      "power_constraint": [],
+      "usage_pattern": [],
+      "schedule_constraint": [],
+      "other_constraint": []
+    }
+  },
+  "span_audit": []
+}

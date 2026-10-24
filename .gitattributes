@@ -13,6 +13,9 @@ tests/nlp-extraction-prompt.txt text eol=lf
 tests/nlp-output.schema.json text eol=lf
 # Preserve hashed provider records, including their original CRLF endings.
 tests/semantic-results/** -text whitespace=cr-at-eol
+# Research manifests bind exact source bytes, including original line endings.
+research/gliner/** -text whitespace=cr-at-eol
+tests/semantic-reviews/gliner-scope-findings.json -text whitespace=cr-at-eol
 tests/fixtures/comparison-1.2-uncertainty.json -text
 tests/fixtures/task-measurement-1.0-input-restore.json -text whitespace=cr-at-eol
 tests/fixtures/task-plan-1.0-input-restore.json -text whitespace=cr-at-eol
