@@ -1,6 +1,6 @@
 # 持续验证的进程与退出见证
 
-这是开发验证入口，不会读取用户的 `release/data`。先完成独立发布包的本机检查并设置候选标记 `READY`，再运行：
+这是开发验证入口，不会读取用户的 `release/data`。请在源码仓库目录执行；便携包不包含这些开发脚本。先完成独立发布包的本机检查并设置候选标记 `READY`，再运行：
 
 ```powershell
 .\scripts\validation-soak.ps1 -Action Start -SourceDirectory release-next -Seconds 28800
