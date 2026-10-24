@@ -113,11 +113,12 @@ public static partial class CandidateComparison
             Heavy = p.HeavyMinutes > 0 || p.Peak >= 80
         }).ToArray(),
         Trends = report.DemandTrends.Where(t => t.Status == "increased").Select(t => t.Key + ":" + t.Days + ":" + string.Join("/", t.RecentHeavyScenes.Order())).Order().ToArray(),
-        Experiences = report.ExperienceEvents.Where(e => !e.Resolved).Select(e => e.Id).Order().ToArray(),
+        Experiences = report.ExperienceEvents.Where(e => !e.Resolved).Select(e => Hash(new { e.Id, e.Time, e.HardwareId, e.Scene, e.Symptom, e.Note, e.Clues })).Order().ToArray(),
         Signals = report.Cards.Where(c => c.Key is "cpu" or "gpu" or "memory").Select(c => c.Key + ":" + c.Status + ":" + c.Title
             + (c.Observation is { } observation ? ":observation:" + Hash(new { observation.State, observation.Scope }) : "")
             + (c.RetainedWorkload is { } retained ? ":retained:" + Hash(new { retained.State, retained.Scope }) : "")).Order().ToArray()
-    })))) + (report.HistoryQuality.HasIssues ? ":history:" + report.HistoryQuality.Signature : "");
+    })))) + (report.HistoryQuality.HasIssues ? ":history:" + report.HistoryQuality.Signature : "")
+        + (report.ExperienceQuality.HasIssues ? ":experience:" + report.ExperienceQuality.Signature : "");
     public static List<PurchaseCriterion> Drafts(AnalysisReport report)
     {
         var result = new List<PurchaseCriterion>();
@@ -272,6 +273,7 @@ public static partial class CandidateComparison
         var context = new[] { $"分析范围：最近 {report.WindowDays} 天 / {report.SelectedScene ?? "全部场景"}；已观测 {report.DurationLabel}。比较结论覆盖已核对的条件，条件需求按触发情况另行判断。",
                 "证据类型逐项列出。重复耗时测量达标仅表示所附原始正式轮次全部达到该目标；机器对应关系与实际产物仍由用户核对。" }
             .Concat(report.HistoryQuality.HasIssues ? new[] { report.HistoryQuality.Message + " 候选结果仅限已逐项核对的条件，不覆盖无法读取的历史任务。", report.HistoryQuality.Details } : [])
+            .Concat(report.ExperienceQuality.HasIssues ? new[] { report.ExperienceQuality.Message + " 候选结果仅限已核对条件，不覆盖无法读取的体验。", report.ExperienceQuality.Details } : [])
             .Concat(report.Cards.Where(c => c.Key is "cpu" or "gpu" or "memory").Select(c => c.Name + "：" + c.DisplayTitle + "；" + c.DisplaySuggestion)).ToArray();
         var tradeoffs = new List<string>();
         if (passing.Length > 0)

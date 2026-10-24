@@ -18,6 +18,16 @@ public record ExperienceEvent(string Id, DateTimeOffset Time, string HardwareId,
 
 public static class ExperienceAnalyzer
 {
+    public static AnalysisReport Attach(AnalysisReport report, ExperienceReadResult reading)
+    {
+        var current = Attach(report, reading.Events);
+        if (!reading.Quality.HasIssues) return current with { ExperienceQuality = reading.Quality };
+        return current with { Ready = false, ExperienceQuality = reading.Quality, Cards = current.Cards.Select(c =>
+            c.Status is "surplus" or "review" || c.Status is ("unknown" or "fit") && c.Observation?.State == "light" && !c.UsesRetainedWorkload
+            ? c with { Status = "experience-data", Title = "体验记录异常，先核对记录", Evidence = c.Evidence + " " + reading.Quality.Message,
+                Suggestion = "查看体验记录的异常位置，保留原文件并从已核对的备份恢复到新目录；复核体验后再比较降档。" }
+            : c).ToList() };
+    }
     public static ExperienceEvent Create(DateTimeOffset now, string hardwareId, string scene, string symptom, string? note, IEnumerable<Sample> samples)
     {
         if (string.IsNullOrWhiteSpace(hardwareId)) throw new ArgumentException("Hardware identity is required.");

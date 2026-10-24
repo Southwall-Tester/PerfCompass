@@ -202,6 +202,8 @@ public partial class MainWindow : Window
         HistoryQualityNotice.Header = result.HistoryQuality.HasIssues ? $"历史记录异常 · {result.HistoryQuality.IssueCount} 处（点击查看位置）" : $"已排除重复记录 · {result.HistoryQuality.DuplicateCount} 条（点击查看位置）";
         HistoryQualityDetails.Text = result.HistoryQuality.Message + "\n" + result.HistoryQuality.Details + "\n原文件保留。可在记录设置备份，并从已核对的备份恢复到新目录。";
         ComparisonPage.RefreshLoadedContext(store, result);
+        ExperienceQualityNotice.Visibility = ExperienceHistoryQualityNotice.Visibility = result.ExperienceQuality.HasIssues ? Visibility.Visible : Visibility.Collapsed;
+        ExperienceQualityDetails.Text = ExperienceHistoryQualityNotice.Text = result.ExperienceQuality.Message + "\n" + result.ExperienceQuality.Details;
         ExperienceList.ItemsSource = result.ExperienceEvents.Take(20);
         ExperienceSummary.Text = $"最近 {days} 天 · {scene ?? "全部场景"} · {result.ExperienceEvents.Count} 条记录，显示最近 20 条";
         updatingSceneChoices = true;
@@ -245,7 +247,7 @@ public partial class MainWindow : Window
         PurchaseGuidanceList.ItemsSource = PurchaseGuidance.Build(result);
         CoverageLabel.Text = $"{scene ?? "全部场景"} · {result.Level}  ·  有效使用 {result.DurationLabel}  ·  覆盖 {result.ActiveDays} 天  ·  {result.SampleCount:N0} 条记录";
         RepresentativeStatus.Text = result.CoverageMessage;
-        CoverageNext.Text = result.HistoryQuality.HasIssues ? result.HistoryQuality.Message : result.Ready ? "已覆盖典型任务，可比较降档方向；近期新增任务会更新判断。" : result.Cards.Any(c => c.Observation != null)
+        CoverageNext.Text = result.ExperienceQuality.HasIssues ? result.ExperienceQuality.Message : result.HistoryQuality.HasIssues ? result.HistoryQuality.Message : result.Ready ? "已覆盖典型任务，可比较降档方向；近期新增任务会更新判断。" : result.Cards.Any(c => c.Observation != null)
             ? "下方已给出当前任务的判断。完成常用与偶发任务后，在记录设置确认覆盖范围，进一步评估配置预算。"
             : "正常使用电脑即可积累观测；发现繁忙任务会先显示，轻负载判断从有效记录中逐项形成。";
         var expanded = AdviceList.Items.OfType<Border>().Select(b => b.Child).OfType<StackPanel>()

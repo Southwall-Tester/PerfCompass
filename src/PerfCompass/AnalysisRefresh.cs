@@ -45,8 +45,12 @@ public partial class MainWindow
                 if (report == null || publishedAnalysisKey != key) RetireAnalysis(false);
                 try
                 {
-                    var result = await Task.Run(() => SemanticRequirements.Apply(RequirementParser.Apply(ExperienceAnalyzer.Attach(
-                        HistoryAnalysis.Analyze(store, settings, days, scene, hardwareId: id), store.ReadExperiences(days, id ?? "")), settings), settings));
+                    var result = await Task.Run(() =>
+                    {
+                        var history = HistoryAnalysis.Analyze(store, settings, days, scene, hardwareId: id);
+                        var experiences = store.ReadExperiencesChecked(days, id ?? "", history.Generated, scene);
+                        return SemanticRequirements.Apply(RequirementParser.Apply(ExperienceAnalyzer.Attach(history, experiences), settings), settings);
+                    });
                     if (BeforeAnalysisPublishForTest != null) await BeforeAnalysisPublishForTest(result);
                     // Requests arriving during a read share this completion task.
                     // Never publish an older pass before the queued latest read.
@@ -86,6 +90,7 @@ public partial class MainWindow
         ExperienceList.ItemsSource = null; ExperienceSummary.Text = state + " · " + scope;
         SamplingGapLabel.Visibility = Visibility.Collapsed;
         HistoryQualityNotice.Visibility = Visibility.Collapsed;
+        ExperienceQualityNotice.Visibility = ExperienceHistoryQualityNotice.Visibility = Visibility.Collapsed;
         ComparisonPage.SetAnalysisPending(state + " · " + scope);
     }
 

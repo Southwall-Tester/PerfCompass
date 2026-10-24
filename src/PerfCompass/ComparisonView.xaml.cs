@@ -83,6 +83,7 @@ public partial class ComparisonView : UserControl
         if (contextPending) { ContextStatus.Text = pendingContextMessage + "；当前分析完成前不使用旧结论。"; return; }
         ContextStatus.Text = $"最近 {report.WindowDays} 天 / {report.SelectedScene ?? "全部场景"} · " + (workspace.ContextStamp == CandidateComparison.Stamp(report) ? "条件范围与当前已确认需求一致。" : "当前需求或近期任务尚未纳入这份比较，请导入并核对。");
         if (report.HistoryQuality.HasIssues) ContextStatus.Text += " 历史读取有异常；请补核无法读取的任务，比较仅限已核对条件。";
+        if (report.ExperienceQuality.HasIssues) ContextStatus.Text += " 体验读取有异常；请补核无法读取的体验，比较仅限已核对条件。";
         if (workspace.Criteria.Any(CandidateComparison.IsUnresolvedCondition)) ContextStatus.Text += " 待定选项分别比较，同一事实的区间上下界一起核对；需要同时满足的项目请填写相同的实际触发条件。旧版待定条件需重新核对。";
     }
     private void Bind()

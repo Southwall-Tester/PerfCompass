@@ -36,6 +36,7 @@ public static class PurchaseGuidance
         // evidence and selected scope rather than a possibly older light label.
         switch (card.Status)
         {
+            case "experience-data": return Final("核对体验记录后，再决定配置取舍", 0);
             case "experience": return Final("先核对体验问题，再决定配置取舍", 0);
             case "requirements": return Final("先验证已确认需求，再决定配置取舍", 1);
             case "constraints": return Final("先按已确认条件筛选候选电脑", 2);
@@ -73,6 +74,12 @@ public static class PurchaseGuidance
             }, observation.Evidence, card.DisplaySuggestion, observation.Scope, "已测线索", 15);
         if (report.HistoryQuality.HasIssues)
             return HistoryIssue();
+        if (report.ExperienceQuality.HasIssues && card.UsesRetainedWorkload)
+            return Result("保留已测重任务，核对体验记录", card.RetainedWorkload!.Evidence + " " + report.ExperienceQuality.Message,
+                "保留所选时段的重要任务，先核对体验记录再比较候选配置。", card.RetainedWorkload.Scope, "已测线索", 15);
+        if (report.ExperienceQuality.HasIssues)
+            return Result("核对体验记录后，再决定配置取舍", report.ExperienceQuality.Message,
+                "在历史趋势页查看异常位置，核对原文件与备份。", scope, "体验记录待核对", 16);
         if (card.UsesRetainedWorkload)
         {
             var retained = card.RetainedWorkload!;

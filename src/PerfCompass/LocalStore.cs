@@ -109,27 +109,6 @@ public sealed partial class LocalStore
             File.AppendAllText(path, "\n" + JsonSerializer.Serialize(value) + "\n", new System.Text.UTF8Encoding(false));
         }
     }
-    public List<ExperienceEvent> ReadExperiences(int days, string hardwareId)
-    {
-        var found = new Dictionary<string, ExperienceEvent>();
-        var cutoff = DateTimeOffset.Now.AddDays(-days);
-        foreach (var file in Directory.GetFiles(Root, "experience-*.jsonl").Order())
-        {
-            using var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using var reader = new StreamReader(stream);
-            while (reader.ReadLine() is { } line)
-            {
-                try
-                {
-                    var value = JsonSerializer.Deserialize<ExperienceEvent>(line);
-                    if (value != null && !string.IsNullOrWhiteSpace(value.Id) && value.HardwareId == hardwareId && value.Time >= cutoff
-                        && value.Clues != null && value.Clues.All(c => c != null)) found[value.Id] = value;
-                }
-                catch (JsonException) { }
-            }
-        }
-        return found.Values.OrderByDescending(e => e.Time).ToList();
-    }
     public void Log(Exception e)
     {
         try
