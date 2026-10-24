@@ -63,7 +63,13 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
             if (gpuHeavy > 0) GpuHeavyScenes[s.Scene] = GpuHeavyScenes.GetValueOrDefault(s.Scene) + gpuHeavy;
         }
     }
-    private readonly Period week = new(), previousWeek = new(), month = new(), previousMonth = new();
+    private readonly Period week = new(), previousWeek = new(), month = new(), previousMonth = new(), selected = new();
+    internal void AddSelected(Sample sample) => selected.Add(sample);
+    private static MemoryCapacityEvidence? CapacityEvidence(Period period, string scope) => period.MemoryPeak.HasValue
+        && period.MemoryCapacityMin.HasValue && period.MemoryCapacityMax.HasValue && period.MemoryFirst.HasValue && period.MemoryLast.HasValue
+        ? new(period.MemoryPeak.Value, period.Commit.Maximum, period.MemoryCapacityMin.Value, period.MemoryCapacityMax.Value, period.MemoryFirst.Value, period.MemoryLast.Value)
+        { Scope = scope, ObservedHours = period.Memory.Seconds / 3600, Coverage = period.ActiveSeconds > 0 ? Math.Clamp(period.Memory.Seconds / period.ActiveSeconds, 0, 1) : 0 } : null;
+    internal MemoryCapacityEvidence? SelectedCapacity(string scope) => CapacityEvidence(selected, scope);
     public double FreshHours => week.ActiveSeconds / 3600;
     public int FreshDays => week.ActiveDays.Count;
     public bool FreshObservationReady => week.ActiveSeconds >= 1800 && week.ActiveDays.Count >= 2;
@@ -96,9 +102,7 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
         }
         if (key == "memory")
         {
-            MemoryCapacityEvidence? memoryCapacity = week.MemoryPeak.HasValue && week.MemoryCapacityMin.HasValue && week.MemoryCapacityMax.HasValue
-                && week.MemoryFirst.HasValue && week.MemoryLast.HasValue
-                ? new(week.MemoryPeak.Value, week.Commit.Maximum, week.MemoryCapacityMin.Value, week.MemoryCapacityMax.Value, week.MemoryFirst.Value, week.MemoryLast.Value) : null;
+            MemoryCapacityEvidence? memoryCapacity = CapacityEvidence(week, scope);
             ResourceObservation WithCapacity(ResourceObservation observation) => observation with { MemoryCapacity = memoryCapacity };
             double seconds = Math.Min(week.Memory.Seconds, week.CommitCapacitySeconds);
             string evidence = $"物理使用峰值 {P(week.MemoryPeak, " GiB")}（当时容量的 {P(week.MemoryPeakPercent)}）；已测物理余量最少 {P(week.PhysicalHeadroom, " GiB")}；提交量峰值 {P(week.Commit.Maximum, " GiB")}。";

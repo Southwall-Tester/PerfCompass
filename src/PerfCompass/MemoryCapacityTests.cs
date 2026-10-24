@@ -28,6 +28,17 @@ public static partial class SelfTests
             var report = Analyze(rows); using var diagnostic = new HistoryDiagnostics(7); diagnostic.Add("synthetic.jsonl", 1, "invalid row");
             assert(MemoryCapacityPreview.From(report with { HistoryQuality = diagnostic.Build() }) == null, "Damaged history supplied a capacity baseline");
         });
+        check("Selected-window memory peaks survive a quiet recent week in capacity comparisons", () =>
+        {
+            var older = rows[0] with { Time = now.AddDays(-12), MemoryPeakGb = 23.5 };
+            var input = rows.Select(s => s with { MemoryUsedGb = 4, MemoryPeakGb = 4, CommitGb = 5 }).Append(older);
+            var report = AnalysisEngine.Analyze(input, new(), 30, null, now, "memory-capacity-fixture");
+            var preview = MemoryCapacityPreview.From(report) ?? throw new Exception("Missing selected-window capacity preview");
+            assert(report.Cards.Single(c => c.Key == "memory").Observation?.State == "light" && preview.Evidence.PeakGiB == 23.5
+                && preview.Evidence.FirstRecord == older.Time && preview.Evidence.Scope.Contains("30")
+                && preview.Rows.Single(r => r.CapacityGiB == 16).DifferenceGiB == -7.5, "Recent light readings erased the older selected task");
+            assert(MemoryCapacityPreview.From(Analyze(input))!.Evidence.PeakGiB == 4, "A seven-day selection pulled in the older out-of-window task");
+        });
         check("Capacity comparisons keep arbitrary GiB inputs and reject invalid capacities", () =>
         {
             assert(MemoryCapacityPreview.Compare(40, 17.5).DifferenceGiB == 22.5 && MemoryCapacityPreview.Compare(17.5, 17.5).DifferenceLabel.Contains("相同"), "Custom capacity or equal boundary lost");
@@ -47,7 +58,7 @@ public static partial class SelfTests
             var report = Analyze(rows); string html = ReportExporter.Html(report, null);
             assert(html.Contains("容量与已测峰值对照") && html.Contains("24 GiB") && html.Contains("首末记录") && html.Contains("不等于实际余量"), "Report lost the actionable comparison or scope");
             var memory = report.Cards.Single(c => c.Key == "memory");
-            var changed = report with { Cards = report.Cards.Select(c => c.Key == "memory" ? c with { Observation = memory.Observation! with { MemoryCapacity = memory.Observation!.MemoryCapacity! with { PeakGiB = 17.4 } } } : c).ToList() };
+            var changed = report with { SelectedMemoryCapacity = report.SelectedMemoryCapacity! with { PeakGiB = 17.4 }, Cards = report.Cards.Select(c => c.Key == "memory" ? c with { Observation = memory.Observation! with { MemoryCapacity = memory.Observation!.MemoryCapacity! with { PeakGiB = 17.4 } } } : c).ToList() };
             assert(CandidateComparison.Stamp(report) == CandidateComparison.Stamp(changed), "Display-only arithmetic changed reviewed candidate scope");
         });
     }

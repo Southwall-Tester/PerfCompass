@@ -150,6 +150,7 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     bool Ready, string[] Scenes, List<Advice> Cards, List<HistoryPoint> History, string FutureNeeds)
 {
     public List<SceneProfile> SceneProfiles { get; init; } = [];
+    public MemoryCapacityEvidence? SelectedMemoryCapacity { get; init; }
     public List<GpuEngineProfile> GpuEngineProfiles { get; init; } = [];
     public string[] GpuMetricScopes { get; init; } = [];
     public bool GpuHistoryHasMixedSources { get; init; }

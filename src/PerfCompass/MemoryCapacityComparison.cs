@@ -1,7 +1,12 @@
 namespace PerfCompass;
 
 public record MemoryCapacityEvidence(double PeakGiB, double? CommitPeakGiB, double MinimumObservedCapacityGiB,
-    double MaximumObservedCapacityGiB, DateTimeOffset FirstRecord, DateTimeOffset LastRecord);
+    double MaximumObservedCapacityGiB, DateTimeOffset FirstRecord, DateTimeOffset LastRecord)
+{
+    public string Scope { get; init; } = "";
+    public double ObservedHours { get; init; }
+    public double Coverage { get; init; }
+}
 
 public record MemoryCapacityRow(double CapacityGiB, double DifferenceGiB)
 {
@@ -14,13 +19,15 @@ public record MemoryCapacityPreview(MemoryCapacityEvidence Evidence, MemoryCapac
 {
     public const string Notice = "按候选可用物理容量比较，商品规格请先统一单位。差额不等于实际余量或任务达标；工作集可能随容量变化，提交量也不能直接当作必装内存。已确认的新需求优先。";
     public string Baseline => $"已测可用容量 {(Evidence.MinimumObservedCapacityGiB == Evidence.MaximumObservedCapacityGiB ? $"{Evidence.MaximumObservedCapacityGiB:0.0}" : $"{Evidence.MinimumObservedCapacityGiB:0.0}–{Evidence.MaximumObservedCapacityGiB:0.0}")} GiB · 物理峰值 {Evidence.PeakGiB:0.0} GiB · 提交量峰值 {(Evidence.CommitPeakGiB is double c && double.IsFinite(c) && c >= 0 ? $"{c:0.0} GiB" : "未取得")}";
-    public string Period => $"首末记录 {Evidence.FirstRecord.LocalDateTime:MM/dd HH:mm}–{Evidence.LastRecord.LocalDateTime:MM/dd HH:mm}；只描述这些已测任务";
+    public string Period => $"{Evidence.Scope} · 首末记录 {Evidence.FirstRecord.LocalDateTime:MM/dd HH:mm}–{Evidence.LastRecord.LocalDateTime:MM/dd HH:mm}；只描述这些已测任务";
 
     public static MemoryCapacityPreview? From(AnalysisReport report)
     {
         var observation = report.Cards.FirstOrDefault(c => c.Key == "memory")?.Observation;
+        var measured = report.SelectedMemoryCapacity ?? observation?.MemoryCapacity;
         if (string.IsNullOrWhiteSpace(report.HardwareId) || report.HistoryQuality.HasIssues || report.HistoryQuality.HasIntervalConflicts
-            || observation?.MemoryCapacity is not { } data || observation.ObservedHours < 300d / 3600 || observation.Coverage < .95
+            || measured is not { } data || observation == null || observation.ObservedHours < 300d / 3600 || observation.Coverage < .95
+            || data.ObservedHours < 300d / 3600 || data.Coverage < .95
             || !double.IsFinite(data.PeakGiB) || data.PeakGiB < 0 || !double.IsFinite(data.MinimumObservedCapacityGiB)
             || !double.IsFinite(data.MaximumObservedCapacityGiB) || data.MinimumObservedCapacityGiB <= 0
             || data.MaximumObservedCapacityGiB < data.MinimumObservedCapacityGiB || data.PeakGiB > data.MaximumObservedCapacityGiB || data.LastRecord < data.FirstRecord) return null;

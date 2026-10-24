@@ -39,6 +39,7 @@ public static class AnalysisEngine
             if (!sceneStats.TryGetValue(s.Scene, out var scene)) sceneStats[s.Scene] = scene = new SceneAccumulator(s.Scene);
             scene.Add(s);
             if (selectedScene != null && s.Scene != selectedScene) continue;
+            temporal.AddSelected(measured);
             if (s.Seconds == 0 && SamplingClock.KnownIssue(s.SamplingIssue)) samplingGaps++;
             count++; if (latest == null || s.Time >= latest.Time) latest = s;
             if (s.Seconds > 0)
@@ -175,6 +176,7 @@ public static class AnalysisEngine
                     GpuCoverageEstimated = gpuHistoryScopes.Count == 1 && kv.Value.Gpu.Estimated
                 }).ToList(), settings.FutureNeeds)
             { HardwareId = scopeHardwareId, RepresentativeConfirmed = coverage.Confirmed, CoverageMessage = coverage.Message, SamplingGapCount = samplingGaps, HistoryQuality = quality,
+                SelectedMemoryCapacity = temporal.SelectedCapacity($"所选 {windowDays} 天 · {selectedScene ?? "全部场景"} · 已测物理容量"),
                 GpuMetricScopes = string.IsNullOrWhiteSpace(scopeHardwareId) ? [] : gpuMetricScopes.Order(StringComparer.Ordinal).ToArray(),
                 GpuHistoryHasMixedSources = gpuHistoryScopes.Count > 1,
                 SelectedScene = selectedScene, DemandTrends = trends, FreshActiveHours = temporal.FreshHours, FreshActiveDays = temporal.FreshDays,
