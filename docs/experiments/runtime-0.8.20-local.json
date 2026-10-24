@@ -72,17 +72,17 @@
     "Old019ReaderRejects13":  true,
     "Screenshots":  [
                         {
-                            "File":  "explicit-joint-trigger.png",
+                            "File":  "0.8.20-explicit-joint-trigger.png",
                             "Sha256":  "B9474A8863F1121E8DA61ED5A7D0F49C47D15FF2B3281DB6AFF95B6B5EFA404B",
                             "VisualInspected":  true
                         },
                         {
-                            "File":  "legacy-review-required.png",
+                            "File":  "0.8.20-legacy-review-required.png",
                             "Sha256":  "4CCEA986F7ADE5162EABE86793B497439462E0294AD40B76247A0D88F40969D8",
                             "VisualInspected":  true
                         },
                         {
-                            "File":  "separate-unknown-options.png",
+                            "File":  "0.8.20-separate-unknown-options.png",
                             "Sha256":  "D872F81940DED8B73F798D6A9EEA7AE008EBA84DCA3A6B241F55BBE5BA866BF7",
                             "VisualInspected":  true
                         }
@@ -90,5 +90,16 @@
     "RawEvidence":  "artifacts/published-0.8.20-final-checks.json (local; contains machine paths)",
     "Research":  "qwen3-8b-extended-20261024 raw outputs and 4 complete / 1 incomplete / 19 incorrect developer reviews, not independent human labeling",
     "FrozenSoak":  "0.8.18 continues in separate directory and does not verify 0.8.20",
-    "CommercialGoalComplete":  false
+    "CommercialGoalComplete":  false,
+    "PackagingAudit":  {
+                           "InitialNestedImagesRejected":  true,
+                           "UsesExistingFlatAllowlist":  true,
+                           "AuditArchiveBytes":  73342009,
+                           "Entries":  88,
+                           "ArchivedExeHashMatches":  true,
+                           "ExtractedNativeFlowPass":  19,
+                           "ExtractedNativeFlowFail":  0,
+                           "ExtractedNativeExit":  0,
+                           "AuditReadyIsNotLauncherReady":  true
+                       }
 }
