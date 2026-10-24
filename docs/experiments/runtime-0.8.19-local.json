@@ -1,0 +1,51 @@
+{
+    "Version":  "runtime-0.8.19-local-1",
+    "ProductVersion":  "0.8.19+9abec76d303b9cd305faa5829e4791ca77e24c1f",
+    "ExecutableSha256":  "7BB64AE25343B1233CB16D1B9D42574B9F4CB87AAE7069F6387E44514A89B760",
+    "Checks":  [
+                   {
+                       "Name":  "observation",
+                       "Passed":  44,
+                       "Failed":  0,
+                       "ExitCode":  0,
+                       "Completed":  true,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "self",
+                       "Passed":  401,
+                       "Failed":  0,
+                       "ExitCode":  0,
+                       "Completed":  true,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "draft",
+                       "Passed":  38,
+                       "Failed":  0,
+                       "ExitCode":  0,
+                       "Completed":  true,
+                       "ExitEditorSaved":  true
+                   },
+                   {
+                       "Name":  "full-ui",
+                       "Passed":  145,
+                       "Failed":  0,
+                       "ExitCode":  0,
+                       "Completed":  true,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "task-plan",
+                       "Passed":  30,
+                       "Failed":  0,
+                       "ExitCode":  0,
+                       "Completed":  true,
+                       "ExitEditorSaved":  null
+                   }
+               ],
+    "Scope":  "One frozen self-contained executable; isolated synthetic UI data and controlled task scripts. Counts overlap and must not be added. Complete latest comparison backup bytes are checked. No crash, power-loss, cross-hardware or commercial maturity claim.",
+    "PriorObservationFailure":  "The earlier +1222b6a observation process exited 1 after 34 passing checks because candidate labels remained outside the viewport. Its screenshot, bounds and executable are preserved. Focus/layout handling was improved without weakening the visibility assertion; later passing output does not replace that failure.",
+    "SourceArchiveSha256":  "12251096823f5417e1406d82d4f48364f1cf45d3625ca9e1aad760e6e4815bef",
+    "LongRun":  "The independent frozen 0.8.18 eight-hour run is still in progress; it is not validation for 0.8.19."
+}
