@@ -12,6 +12,8 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
         public double CpuHighSeconds, GpuHeavySeconds, GpuHighSeconds, MemoryHighSeconds;
         public double CommitCapacitySeconds;
         public double? GpuPeak, MemoryPeak, MemoryPeakPercent, CommitPeakPercent, PhysicalHeadroom;
+        public double? MemoryCapacityMin, MemoryCapacityMax;
+        public DateTimeOffset? MemoryFirst, MemoryLast;
         public readonly Dictionary<string, double> GpuHeavyScenes = [], CpuHeavyScenes = [];
         public void Add(Sample s)
         {
@@ -27,6 +29,10 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
             if (s.MemoryTotalGb is > 0 && s.MemoryUsedGb.HasValue && memorySeconds > 0)
             {
                 double peak = s.MemoryPeakGb ?? s.MemoryUsedGb.Value;
+                MemoryCapacityMin = Math.Min(MemoryCapacityMin ?? s.MemoryTotalGb.Value, s.MemoryTotalGb.Value);
+                MemoryCapacityMax = Math.Max(MemoryCapacityMax ?? s.MemoryTotalGb.Value, s.MemoryTotalGb.Value);
+                MemoryFirst = !MemoryFirst.HasValue || s.Time < MemoryFirst ? s.Time : MemoryFirst;
+                MemoryLast = !MemoryLast.HasValue || s.Time > MemoryLast ? s.Time : MemoryLast;
                 MemoryPeak = Math.Max(MemoryPeak ?? 0, peak);
                 MemoryPeakPercent = Math.Max(MemoryPeakPercent ?? 0, peak / s.MemoryTotalGb.Value * 100);
                 // Compare each peak with its own capacity, not the last sample's capacity.
@@ -90,15 +96,19 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
         }
         if (key == "memory")
         {
+            MemoryCapacityEvidence? memoryCapacity = week.MemoryPeak.HasValue && week.MemoryCapacityMin.HasValue && week.MemoryCapacityMax.HasValue
+                && week.MemoryFirst.HasValue && week.MemoryLast.HasValue
+                ? new(week.MemoryPeak.Value, week.Commit.Maximum, week.MemoryCapacityMin.Value, week.MemoryCapacityMax.Value, week.MemoryFirst.Value, week.MemoryLast.Value) : null;
+            ResourceObservation WithCapacity(ResourceObservation observation) => observation with { MemoryCapacity = memoryCapacity };
             double seconds = Math.Min(week.Memory.Seconds, week.CommitCapacitySeconds);
             string evidence = $"物理使用峰值 {P(week.MemoryPeak, " GiB")}（当时容量的 {P(week.MemoryPeakPercent)}）；已测物理余量最少 {P(week.PhysicalHeadroom, " GiB")}；提交量峰值 {P(week.Commit.Maximum, " GiB")}。";
             if (week.MemoryPeakPercent >= 90 || week.MemoryHighSeconds > 0)
-                return Result("busy", "已观察到内存余量偏低", evidence,
-                    "复现峰值任务，核对分页与卡顿是否同时发生。", "物理容量与提交量", week.Memory.Seconds);
+                return WithCapacity(Result("busy", "已观察到内存余量偏低", evidence,
+                    "复现峰值任务，核对分页与卡顿是否同时发生。", "物理容量与提交量", week.Memory.Seconds));
             if (!Enough(seconds, .95)) return null;
             bool light = week.MemoryPeakPercent <= 70 && week.CommitPeakPercent <= 90;
-            return Result(light ? "light" : "observed", light ? "已测内存容量有余量" : "已记录内存容量需求", evidence,
-                "用峰值筛选候选容量，并在候选机器上重跑最重的多任务组合。", "物理容量与提交量", seconds);
+            return WithCapacity(Result(light ? "light" : "observed", light ? "已测内存容量有余量" : "已记录内存容量需求", evidence,
+                "先以已测可用容量作比较基线，查看各容量与峰值的差额，再在候选机器上重跑最重的多任务组合。", "物理容量与提交量", seconds));
         }
         if (key == "gpu")
         {

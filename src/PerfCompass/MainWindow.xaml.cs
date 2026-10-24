@@ -252,7 +252,8 @@ public partial class MainWindow : Window
         var expanded = AdviceList.Items.OfType<Border>().Select(b => b.Child).OfType<StackPanel>()
             .SelectMany(s => s.Children.OfType<Expander>()).Where(x => x.IsExpanded).Select(x => x.Tag?.ToString()).ToHashSet();
         AdviceList.Items.Clear();
-        foreach (var advice in result.Cards) AdviceList.Items.Add(AdviceCard(advice, expanded.Contains(advice.Key)));
+        var memoryCapacity = MemoryCapacityPreview.From(result);
+        foreach (var advice in result.Cards) AdviceList.Items.Add(AdviceCard(advice, expanded.Contains(advice.Key), memoryCapacity, expanded.Contains("memory-capacity")));
         HistoryChart.SetPoints(result.History);
         var selectedPeriod = (HistoryPeriodCombo.SelectedItem as HistoryPoint)?.Time;
         HistoryPeriodCombo.ItemsSource = result.History.AsEnumerable().Reverse().ToArray();
@@ -271,7 +272,7 @@ public partial class MainWindow : Window
         if (HistoryPeriodDetails != null)
             HistoryPeriodDetails.Text = (HistoryPeriodCombo.SelectedItem as HistoryPoint)?.DetailsLabel ?? "当前范围没有可显示的小时均值";
     }
-    private Border AdviceCard(Advice advice, bool expanded)
+    private Border AdviceCard(Advice advice, bool expanded, MemoryCapacityPreview? memoryCapacity = null, bool capacityExpanded = false)
     {
         var stack = new StackPanel();
         string label = advice.StatusLabel;
@@ -293,6 +294,9 @@ public partial class MainWindow : Window
             compare.Click += (_, _) => Navigate("comparison");
             stack.Children.Add(compare);
         }
+        if (advice.Key == "memory" && memoryCapacity != null)
+            stack.Children.Add(new Expander { Tag = "memory-capacity", Header = "查看各容量与已测峰值的差额", IsExpanded = capacityExpanded,
+                Content = MemoryCapacityView(memoryCapacity), Margin = new(0, 12, 0, 0), Foreground = Brush("#007F73") });
         var detail = new StackPanel();
         if (advice.RetainedWorkload is { } retained)
             detail.Children.Add(new TextBlock { Text = retained.Evidence + "\n" + retained.Scope, Margin = new(0, 12, 0, 8), LineHeight = 22, TextWrapping = TextWrapping.Wrap });

@@ -106,7 +106,8 @@ public static class PurchaseGuidance
             {
                 "cpu" when observation.State == "light" => "优先比较较少核心、单核性能相近的处理器",
                 "cpu" => "用主要任务耗时比较处理器",
-                "memory" => "按已测峰值筛选内存容量",
+                "memory" when observation.State == "light" => "比较较低容量，保留峰值任务余量",
+                "memory" => "先保留当前内存容量作比较基线",
                 "gpu" when observation.State == "light" => "优先比较较低档显卡",
                 "gpu" => "按目标任务比较显卡表现",
                 _ => "按已测任务比较候选配置"

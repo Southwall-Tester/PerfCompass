@@ -49,7 +49,7 @@ public static partial class SelfTests
                 "the fixture unexpectedly passed the representative purchase gate");
             assert(Decision(report, "gpu").Direction == "优先比较较低档显卡"
                 && Decision(report, "cpu").Direction.Contains("单核性能相近")
-                && Decision(report, "memory").Direction == "按已测峰值筛选内存容量",
+                && Decision(report, "memory").Direction == "比较较低容量，保留峰值任务余量",
                 "usable short observations stayed generic unknown or invented a memory tier");
             foreach (string key in new[] { "cpu", "memory", "gpu" })
             {
@@ -83,7 +83,7 @@ public static partial class SelfTests
                 "busy single-core or short memory work became a downgrade direction");
             var observedMemory = Analyze(Rows().Select(s => s with { CommitGb = 60 }));
             assert(Card(observedMemory, "memory").Observation?.State == "observed"
-                && Decision(observedMemory, "memory").Direction == "按已测峰值筛选内存容量",
+                && Decision(observedMemory, "memory").Direction == "先保留当前内存容量作比较基线",
                 "measured capacity demand disappeared or became an invented GB tier");
         });
 

@@ -203,6 +203,19 @@ public partial class MainWindow
         await waitForAnalysis(() => AdvicePage.Visibility == Visibility.Visible && report!.SelectedScene == scene);
         await ShowCard("cpu", "55-resource-observation-cpu-light");
         await ShowCard("memory", "55-resource-observation-memory-light");
+        var capacityExpander = Descendants(Card("memory")).OfType<Expander>().Single(e => e.Tag as string == "memory-capacity");
+        capacityExpander.IsExpanded = true; UpdateLayout();
+        var capacityPanel = (FrameworkElement)capacityExpander.Content;
+        var capacityPreview = MemoryCapacityPreview.From(report!)!;
+        require(capacityPreview != null && Descendants(capacityPanel).OfType<TextBlock>().Any(t => t.Text == capacityPreview.Baseline)
+            && capacityPreview.Rows.All(r => Descendants(capacityPanel).OfType<TextBlock>().Any(t => t.Text == r.CapacityLabel)),
+            "Native memory capacity comparison displays real analyzed units baseline and candidate differences");
+        capacityPanel.BringIntoView(); await screenshot("71-memory-capacity-comparison");
+        require(ReportExporter.Html(report!, live).Contains("容量与已测峰值对照") && ComparisonPage.Workspace.Criteria.Count == 0,
+            "Capacity comparison exports with its scope and does not invent a candidate requirement");
+        await RefreshAnalysis(); await waitForAnalysis(() => report!.SelectedScene == scene);
+        require(Descendants(Card("memory")).OfType<Expander>().Single(e => e.Tag as string == "memory-capacity").IsExpanded,
+            "Ordinary analysis refresh preserves the capacity comparison expansion");
         await ShowCard("gpu", "55-resource-observation-gpu-light");
         string oldGpuTitle = lightCards.Single(card => card.Key == "gpu").DisplayTitle;
 

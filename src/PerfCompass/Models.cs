@@ -76,7 +76,10 @@ public record GpuEngineProfile(string Kind, string Name, double ObservedHours, d
     [System.Text.Json.Serialization.JsonIgnore]
     public string ScopeNotice => HasMixedSources ? "来源或规则混合，未合并 P95；峰值与重载时长仅保留为已观察线索。" : "";
 }
-public record ResourceObservation(string State, string Title, string Evidence, string Action, string Scope, double ObservedHours, double Coverage);
+public record ResourceObservation(string State, string Title, string Evidence, string Action, string Scope, double ObservedHours, double Coverage)
+{
+    public MemoryCapacityEvidence? MemoryCapacity { get; init; }
+}
 
 public record Advice(string Key, string Name, string Status, string Title, string Evidence, string Suggestion, string Limits)
 {

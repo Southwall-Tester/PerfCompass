@@ -19,7 +19,12 @@ public static class ReportExporter
         string qualitySection = report.HistoryQuality.HasNotices ? $"<section><h2>{(report.HistoryQuality.HasIssues ? "历史记录异常" : "历史重复记录已排除")}</h2><p>{E(report.HistoryQuality.Message)}</p><p class='evidence'>{E(report.HistoryQuality.Details).Replace("\n", "<br>")}</p><p>原文件保留。可在记录设置备份，并从已核对的备份恢复到新目录。</p></section>" : "";
         string Observation(Advice advice) => string.Join("", new[] { advice.RetainedWorkload, advice.Observation }.OfType<ResourceObservation>()
             .Select(o => $"<p>{E(o.Evidence)}</p><p class='muted'>{E(o.Scope)} · 有效观测 {E(DurationText.FromHours(o.ObservedHours))} · 读数覆盖 {o.Coverage:P0}</p>"));
-        var cards = string.Join("", report.Cards.Select(c => $"<section><small>{E(c.Name)} · {E(c.StatusLabel)}</small><h2>{E(c.DisplayTitle)}</h2>{Observation(c)}<p>{E(c.DisplaySuggestion)}</p><p class='evidence'>{E(c.Evidence)}</p><p class='muted'>{E(c.Limits)}</p></section>"));
+        var capacity = MemoryCapacityPreview.From(report);
+        string capacitySection = capacity == null ? "" : "<h3>容量与已测峰值对照</h3><p>" + E(capacity.Baseline) + "</p><p class='muted'>" + E(capacity.Period)
+            + "</p><div class='table-wrap'><table><thead><tr><th>候选可用容量</th><th>相对物理峰值</th><th>如何使用这个差额</th></tr></thead><tbody>"
+            + string.Join("", capacity.Rows.Select(r => $"<tr><td>{E(r.CapacityLabel)}</td><td>{E(r.DifferenceLabel)}</td><td>{E(r.Meaning)}</td></tr>"))
+            + "</tbody></table></div><p class='muted'>" + E(MemoryCapacityPreview.Notice) + "</p>";
+        var cards = string.Join("", report.Cards.Select(c => $"<section><small>{E(c.Name)} · {E(c.StatusLabel)}</small><h2>{E(c.DisplayTitle)}</h2>{Observation(c)}<p>{E(c.DisplaySuggestion)}</p>{(c.Key == "memory" ? capacitySection : "")}<p class='evidence'>{E(c.Evidence)}</p><p class='muted'>{E(c.Limits)}</p></section>"));
         string P(double? value, string unit = "%") => value.HasValue ? $"{value:0.0}{unit}" : "—";
         var sceneRows = string.Join("", report.SceneProfiles.Select(p => $"<tr><td>{E(p.Name)}</td><td>{E(p.DurationLabel)}</td><td>{P(p.CpuP95)}</td><td>{P(p.MemoryPeakGb, " GiB")}</td><td>{(p.GpuHasMixedSources ? "来源混合，未合并" : P(p.GpuP95))}</td><td>{P(p.GpuPeak)}</td></tr>"));
         string sceneTable = report.SceneProfiles.Count > 0 ? $"<section><h2>场景明细</h2><p class='muted'>当前时间范围内的全部场景 · 有效时长加权{(report.HistoryQuality.HasIntervalConflicts ? "；场景时段互有重叠，不能相加，负载值暂不解释" : "")}</p><div class='table-wrap'><table><thead><tr><th>场景</th><th>有效时长</th><th>CPU P95</th><th>内存峰值</th><th>GPU 核心/3D P95</th><th>GPU 核心/3D 峰值</th></tr></thead><tbody>{sceneRows}</tbody></table></div></section>" : "";
