@@ -1,0 +1,51 @@
+{
+    "Version":  "runtime-0.8.18-local-1",
+    "ProductVersion":  "0.8.18+da0274c68de111741c230b556b2be2b97f1cb879",
+    "ExecutableSha256":  "BBFD29EAA78344DCA341478594ED11B6F9EA165C4F83FA2A72477D1E748BB933",
+    "Checks":  [
+                   {
+                       "Name":  "self",
+                       "Passed":  401,
+                       "Failed":  0,
+                       "ExitCode":  0,
+                       "Completed":  true,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "draft",
+                       "Passed":  32,
+                       "Failed":  0,
+                       "ExitCode":  0,
+                       "Completed":  true,
+                       "ExitEditorSaved":  true
+                   },
+                   {
+                       "Name":  "full-ui",
+                       "Passed":  145,
+                       "Failed":  0,
+                       "ExitCode":  0,
+                       "Completed":  true,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "observation",
+                       "Passed":  44,
+                       "Failed":  0,
+                       "ExitCode":  0,
+                       "Completed":  true,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "task-plan",
+                       "Passed":  26,
+                       "Failed":  0,
+                       "ExitCode":  0,
+                       "Completed":  true,
+                       "ExitEditorSaved":  null
+                   }
+               ],
+    "Scope":  "Actual self-contained executable; isolated UI-test data; synthetic candidates and controlled failure injection. Flow counts overlap and must not be added. No cross-hardware, crash, power-loss or commercial maturity claim.",
+    "PriorVisibilityFailure":  "Earlier +05941f7 full UI process exited 1 after 102 passing checks. Raw failure and its executable retained. First failure cause not established; later success does not replace it.",
+    "OriginalUserHistoryHashesUnchanged":  true,
+    "SourceArchiveSha256":  "ebca57c3ed11c578d3ba1b9e7eb2f3a096de0c67097bb825b464ccd2f702542b"
+}
