@@ -1,0 +1,29 @@
+﻿{
+    "Notice":  "Actual old and new assemblies with synthetic isolated workloads. Not user data or physical disk failure.",
+    "OldAssemblyVersion":  "0.8.22+74d7f035df0ef2756e8efeb39c5e48e1c9ca8cbc",
+    "OldAssemblySha256":  "695F0A7AD7EC78DA96A36ECCF64F00997317AB7BDE8400929F093C18C0F64071",
+    "NewAssemblyVersion":  "0.8.23+937ec7ddff61b58ca601b9730b4f83b574f36a9e",
+    "NewAssemblySha256":  "631763602AE0509188FCF8716E3483A6EB979500F9538B0AC195498D8BD26CD1",
+    "BeforeCorruption":  "先核对体验问题，再决定配置取舍",
+    "OldAfterCorruption":  "优先比较较低档显卡",
+    "NewAfterCorruption":  "核对体验记录后，再决定配置取舍",
+    "NewReadQuality":  {
+                           "ReadDays":  7,
+                           "IssueCount":  1,
+                           "AffectedFiles":  1,
+                           "Signature":  "DB5A6D4F50493F8EF21C17892AB8B0F00AC7BE9DCC17563074035BFCEE4FF068",
+                           "Issues":  [
+                                          {
+                                              "File":  "experience-2026-10-24.jsonl",
+                                              "Line":  1,
+                                              "Reason":  "体验 JSON 损坏或未写完整",
+                                              "Fingerprint":  "0E9DA9702D158C01F510D38EB6A702E380A2E44CAAF20DAF7E6ED77B9C7D57A3",
+                                              "Label":  "experience-2026-10-24.jsonl · 第 1 行：体验 JSON 损坏或未写完整"
+                                          }
+                                      ],
+                           "HasIssues":  true,
+                           "Message":  "最近 7 天的体验记录有 1 处读取异常。已读体验与性能观测保留，请核对原文件后再判断降档。",
+                           "Details":  "experience-2026-10-24.jsonl · 第 1 行：体验 JSON 损坏或未写完整"
+                       },
+    "BothPreserveCorruptOriginal":  true
+}

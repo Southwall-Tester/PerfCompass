@@ -1,0 +1,118 @@
+﻿{
+    "Notice":  "Native controlled integrity checks with synthetic history and experiences in independent directories. Startup CPU/memory are actual. Counts overlap; not physical disk, cross-hardware or commercial acceptance.",
+    "ProductVersion":  "0.8.23+937ec7ddff61b58ca601b9730b4f83b574f36a9e",
+    "CodeCommit":  "937ec7ddff61b58ca601b9730b4f83b574f36a9e",
+    "Sha256":  "3F547AF9BE9551BA13E422B9E5E87E0FF21BC8FB50A0DD6EFDC295E3017EF1AF",
+    "MethodVersion":  "1.15",
+    "ComparisonVersion":  "comparison-1.3",
+    "MeasurementVersion":  "task-measurement-1.1",
+    "PlanVersion":  "task-plan-1.1",
+    "Checks":  [
+                   {
+                       "Name":  "experience-integrity",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  21,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "analysis-refresh",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  31,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "file-protection",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  28,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "uncertainty",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  19,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "self",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  434,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "draft",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  38,
+                       "Fail":  0,
+                       "ExitEditorSaved":  true
+                   },
+                   {
+                       "Name":  "full-ui",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  145,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "observation",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  44,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "task-plan",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  30,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   }
+               ],
+    "EntryGuards":  [
+                        {
+                            "Mode":  "missing-ui-flag",
+                            "ExitCode":  3,
+                            "OnlySentinel":  true,
+                            "SentinelUnchanged":  true
+                        },
+                        {
+                            "Mode":  "nonempty-root",
+                            "ExitCode":  3,
+                            "OnlySentinel":  true,
+                            "SentinelUnchanged":  true
+                        }
+                    ],
+    "Screenshots":  [
+                        {
+                            "File":  "0.8.23-experience-damaged.png",
+                            "Sha256":  "043C7FD51FD3A60EC4D592471ED2680590C85FCEFEF6F3F917B4DD709CBF1015",
+                            "VisualInspected":  true
+                        }
+                    ],
+    "PackagingAudit":  {
+                           "ArchiveBytes":  73890612,
+                           "Entries":  99,
+                           "ArchivedExecutableHashMatches":  true,
+                           "ExtractedFlowPass":  21,
+                           "ExtractedFlowFail":  0,
+                           "ExtractedExit":  0,
+                           "AuditReadyIsNotLauncherReady":  true
+                       },
+    "RawEvidence":  "artifacts/published-0.8.23-final-checks.json (local; machine paths omitted here)",
+    "PreservedDevelopmentFailures":  "One missing-clue fixture did not replace the populated Clues field; one candidate fixture omitted its required specification source. Fixtures corrected; product requirements unchanged.",
+    "FrozenSoak":  "0.8.18 remains separate and running; not a long-term result for 0.8.23",
+    "CommercialGoalComplete":  false
+}
