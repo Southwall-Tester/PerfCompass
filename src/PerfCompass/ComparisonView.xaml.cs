@@ -15,13 +15,16 @@ public partial class ComparisonView : UserControl
     private PurchaseWorkspace workspace = new();
     private PurchaseComparison? comparison;
     private bool updating, loaded, loadFailed;
+    private bool contextPending = true;
+    private string pendingContextMessage = "正在读取当前分析范围，候选草稿可继续编辑和保存。";
     internal PurchaseWorkspace Workspace => workspace;
-    internal PurchaseComparison? Result => comparison;
+    internal PurchaseComparison? Result => contextPending ? null : comparison;
     internal Action? OpenTaskMeasurement;
     internal Func<string?> MeasurementPathPicker = () => { var dialog = new OpenFileDialog { Filter = "任务测量 JSON|*.json", CheckFileExists = true }; return dialog.ShowDialog() == true ? dialog.FileName : null; };
     public ComparisonView()
     {
         InitializeComponent();
+        SetAnalysisPending(pendingContextMessage);
         InitializeDraftSaving();
         foreach (var grid in new[] { CandidatesGrid, CriteriaGrid, ObservationsGrid })
         {
@@ -50,19 +53,34 @@ public partial class ComparisonView : UserControl
     }
     internal void SetContext(LocalStore localStore, AnalysisReport report)
     {
-        store = localStore; context = report;
+        InitializeStore(localStore); context = report; contextPending = false;
+        CompareButton.IsEnabled = !loadFailed; ImportCriteriaButton.IsEnabled = true; CoverageConfirm.IsEnabled = true;
+        ComparisonOutcomePanel.Visibility = Visibility.Visible;
+        ExportComparisonButton.IsEnabled = comparison != null && !loadFailed;
+        RefreshContextStatus(report);
+        if ((workspace.CoverageConfirmed || CoverageConfirm.IsChecked == true) && workspace.ContextStamp != CandidateComparison.Stamp(report)
+            || comparison != null && comparison.ContextStamp != CandidateComparison.Stamp(report)) Invalidate();
+    }
+    internal void InitializeStore(LocalStore localStore)
+    {
+        store = localStore;
         if (!loaded)
         {
             loaded = true;
             try { workspace = CandidateComparison.Load(store.Root); Bind(); }
             catch (Exception e) { loadFailed = true; store.Log(e); ComparisonStatus.Text = "比较文件无法读取，已保留原文件。请检查 data/comparison.json；当前禁止覆盖保存，可将新草稿导出到其他文件。"; CompareButton.IsEnabled = false; SaveDraftButton.IsEnabled = false; }
         }
-        RefreshContextStatus(report);
-        if ((workspace.CoverageConfirmed || CoverageConfirm.IsChecked == true) && workspace.ContextStamp != CandidateComparison.Stamp(report)
-            || comparison != null && comparison.ContextStamp != CandidateComparison.Stamp(report)) Invalidate();
+    }
+    internal void SetAnalysisPending(string message)
+    {
+        contextPending = true; pendingContextMessage = message;
+        ContextStatus.Text = message + "；当前分析完成前不使用旧结论。候选草稿可继续编辑和保存。";
+        CompareButton.IsEnabled = ImportCriteriaButton.IsEnabled = CoverageConfirm.IsEnabled = ExportComparisonButton.IsEnabled = false;
+        ComparisonOutcomePanel.Visibility = Visibility.Collapsed;
     }
     private void RefreshContextStatus(AnalysisReport report)
     {
+        if (contextPending) { ContextStatus.Text = pendingContextMessage + "；当前分析完成前不使用旧结论。"; return; }
         ContextStatus.Text = $"最近 {report.WindowDays} 天 / {report.SelectedScene ?? "全部场景"} · " + (workspace.ContextStamp == CandidateComparison.Stamp(report) ? "条件范围与当前已确认需求一致。" : "当前需求或近期任务尚未纳入这份比较，请导入并核对。");
         if (report.HistoryQuality.HasIssues) ContextStatus.Text += " 历史读取有异常；请补核无法读取的任务，比较仅限已核对条件。";
         if (workspace.Criteria.Any(CandidateComparison.IsUnresolvedCondition)) ContextStatus.Text += " 待定选项分别比较，同一事实的区间上下界一起核对；需要同时满足的项目请填写相同的实际触发条件。旧版待定条件需重新核对。";
@@ -126,6 +144,7 @@ public partial class ComparisonView : UserControl
     }
     private void ImportCriteria_Click(object sender, RoutedEventArgs e)
     {
+        if (contextPending) return;
         if (!Commit() || context == null) return;
         var drafts = CandidateComparison.Drafts(context);
         // Keep manual edits and measurements; add only genuinely new source/name pairs.
@@ -183,6 +202,7 @@ public partial class ComparisonView : UserControl
     }
     private void Compare_Click(object sender, RoutedEventArgs e)
     {
+        if (contextPending) return;
         if (!Commit() || context == null || store == null || loadFailed) return;
         try
         {
@@ -201,11 +221,13 @@ public partial class ComparisonView : UserControl
     }
     internal string ExportHtml()
     {
+        if (contextPending) throw new InvalidOperationException("当前分析尚未完成，请等待后重新比较或导出。");
         if (comparison == null) throw new InvalidOperationException("请先重新比较。");
         return CandidateComparison.Html(workspace, comparison);
     }
     private void ExportComparison_Click(object sender, RoutedEventArgs e)
     {
+        if (contextPending) return;
         if (comparison == null) return;
         var dialog = new SaveFileDialog { Filter = "HTML 报告|*.html", FileName = "PerfCompass-候选比较.html" };
         if (dialog.ShowDialog() != true) return;

@@ -68,6 +68,7 @@
   <CheckBox x:Name="CoverageConfirm" Content="已核对条件覆盖重要任务、新需求、近期体验问题和需要保留的偶发任务" Margin="0,4,0,16"/>
   <WrapPanel><Button x:Name="CompareButton" Content="保存并比较" Click="Compare_Click" Background="#007F73" Foreground="White" Margin="0,0,10,10"/><Button x:Name="ExportComparisonButton" Content="导出比较报告" Click="ExportComparison_Click" IsEnabled="False" Margin="0,0,0,10"/></WrapPanel>
   <TextBlock x:Name="ComparisonStatus" Margin="0,4,0,16" Foreground="{StaticResource Muted}"/>
+  <StackPanel x:Name="ComparisonOutcomePanel">
   <TextBlock x:Name="ComparisonSummary" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
   <ItemsControl x:Name="ComparisonConflicts" Margin="0,0,0,12"><ItemsControl.ItemTemplate><DataTemplate><Border Style="{StaticResource Card}" BorderBrush="#B56A30" BorderThickness="1" Margin="0,0,0,12"><StackPanel><TextBlock Text="条件数值冲突" FontWeight="SemiBold" Foreground="#98551D" Margin="0,0,0,8"/><TextBlock Text="{Binding Message}" TextWrapping="Wrap"/></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
   <ItemsControl x:Name="ComparisonScenarios" Margin="0,0,0,12"><ItemsControl.ItemTemplate><DataTemplate><Border Style="{StaticResource Card}" Margin="0,0,0,12"><TextBlock Text="{Binding}"/></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
@@ -76,5 +77,6 @@
    <TextBlock Text="{Binding Name}" FontSize="19" FontWeight="SemiBold"/><TextBlock Text="{Binding StatusLabel}" Foreground="{Binding StatusBrush}" Margin="0,8,0,12"/>
    <ItemsControl ItemsSource="{Binding Checks}"><ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,0,0,14"><TextBlock Text="{Binding Name}" FontWeight="SemiBold"/><TextBlock Text="{Binding Reading}"/><TextBlock Text="{Binding ConditionLabel}" Foreground="{StaticResource Muted}"/><TextBlock Text="{Binding Evidence}" FontSize="12" Foreground="{StaticResource Muted}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
   </StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+  </StackPanel>
  </StackPanel>
 </UserControl>

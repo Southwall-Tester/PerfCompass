@@ -195,90 +195,74 @@ public partial class MainWindow : Window
         LiveChart.SetPoints(livePoints);
         if (s.SamplingIssue.Length > 0 || !analyzing && analysisSchedule.Due(Stopwatch.GetTimestamp())) _ = RefreshAnalysis();
     }
-    private async Task RefreshAnalysis()
+    private void PublishAnalysis(AnalysisReport result, int days, string? scene)
     {
-        if (analyzing) { refreshRequested = true; return; }
-        analyzing = true; analysisSchedule.Mark(Stopwatch.GetTimestamp());
+        RefreshDataProtection();
+        HistoryQualityNotice.Visibility = result.HistoryQuality.HasNotices ? Visibility.Visible : Visibility.Collapsed;
+        HistoryQualityNotice.Header = result.HistoryQuality.HasIssues ? $"历史记录异常 · {result.HistoryQuality.IssueCount} 处（点击查看位置）" : $"已排除重复记录 · {result.HistoryQuality.DuplicateCount} 条（点击查看位置）";
+        HistoryQualityDetails.Text = result.HistoryQuality.Message + "\n" + result.HistoryQuality.Details + "\n原文件保留。可在记录设置备份，并从已核对的备份恢复到新目录。";
+        ComparisonPage.RefreshLoadedContext(store, result);
+        ExperienceList.ItemsSource = result.ExperienceEvents.Take(20);
+        ExperienceSummary.Text = $"最近 {days} 天 · {scene ?? "全部场景"} · {result.ExperienceEvents.Count} 条记录，显示最近 20 条";
+        updatingSceneChoices = true;
         try
         {
-            var settings = store.Settings; var id = collector?.HardwareId; int days = windowDays; string? scene = analysisScene;
-            var result = await Task.Run(() => SemanticRequirements.Apply(RequirementParser.Apply(ExperienceAnalyzer.Attach(
-                HistoryAnalysis.Analyze(store, settings, days, scene, hardwareId: id), store.ReadExperiences(days, id ?? "")), settings), settings));
-            if (days != windowDays || scene != analysisScene || settings != store.Settings || id != collector?.HardwareId) { refreshRequested = true; return; }
-            report = result;
-            RefreshDataProtection();
-            HistoryQualityNotice.Visibility = result.HistoryQuality.HasNotices ? Visibility.Visible : Visibility.Collapsed;
-            HistoryQualityNotice.Header = result.HistoryQuality.HasIssues ? $"历史记录异常 · {result.HistoryQuality.IssueCount} 处（点击查看位置）" : $"已排除重复记录 · {result.HistoryQuality.DuplicateCount} 条（点击查看位置）";
-            HistoryQualityDetails.Text = result.HistoryQuality.Message + "\n" + result.HistoryQuality.Details + "\n原文件保留。可在记录设置备份，并从已核对的备份恢复到新目录。";
-            ComparisonPage.RefreshLoadedContext(store, result);
-            ExperienceList.ItemsSource = result.ExperienceEvents.Take(20);
-            ExperienceSummary.Text = $"最近 {days} 天 · {scene ?? "全部场景"} · {result.ExperienceEvents.Count} 条记录，显示最近 20 条";
-            updatingSceneChoices = true;
-            try
+            AnalysisSceneCombo.Items.Clear();
+            var allScenes = new ComboBoxItem { Content = "全部场景", Tag = null };
+            AnalysisSceneCombo.Items.Add(allScenes); ComboBoxItem selected = allScenes;
+            foreach (string name in result.SceneProfiles.Select(p => p.Name).Concat(scene == null ? [] : new[] { scene }).Distinct())
             {
-                AnalysisSceneCombo.Items.Clear();
-                var allScenes = new ComboBoxItem { Content = "全部场景", Tag = null };
-                AnalysisSceneCombo.Items.Add(allScenes); ComboBoxItem selected = allScenes;
-                foreach (string name in result.SceneProfiles.Select(p => p.Name).Concat(scene == null ? [] : new[] { scene }).Distinct())
-                {
-                    var choice = new ComboBoxItem { Content = name, Tag = name }; AnalysisSceneCombo.Items.Add(choice);
-                    if (name == scene) selected = choice;
-                }
-                AnalysisSceneCombo.SelectedItem = selected;
+                var choice = new ComboBoxItem { Content = name, Tag = name }; AnalysisSceneCombo.Items.Add(choice);
+                if (name == scene) selected = choice;
             }
-            finally { updatingSceneChoices = false; }
-            SceneProfileList.ItemsSource = result.SceneProfiles;
-            SceneProfileSummary.Text = result.HistoryQuality.HasIntervalConflicts ? "场景时段互有重叠，不能相加；负载值暂待核对" : "有效使用时段统计 · P95 按采样时长加权";
-            if (!result.HistoryQuality.HasIntervalConflicts && result.SceneProfiles.Any(p => p.GpuHasMixedSources))
-                SceneProfileSummary.Text += "。来源或规则混合的场景不合并 GPU P95；峰值仅保留为已观察线索：" + string.Join("、", result.SceneProfiles.Where(p => p.GpuHasMixedSources).Select(p => p.Name));
-            SceneEmptyLabel.Visibility = result.SceneProfiles.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-            GpuEngineHistoryNotice.Text = result.HistoryQuality.HasIntervalConflicts ? "时段重叠，分引擎负载与时长暂不解释；请先核对历史来源。"
-                : string.IsNullOrWhiteSpace(result.HardwareId) ? "请先隔离同一硬件配置的记录，再查看分引擎历史。"
-                : "仅统计当前范围已暴露的引擎节点。P95 按同来源读数的时长加权；来源或规则混合时不合并 P95。部分读数可能低估同类最大负载；类别完整时长不等于全GPU覆盖。时期对照仅用同来源、读数完整的观测，可能与这里的 P95 不同。缺失保留未知，不同引擎占用不能相加。"
-                    + (result.GpuMetricScopes.Length > 0 ? " 核心/3D观测来源：" + string.Join("；", result.GpuMetricScopes) : "");
-            GpuEngineProfileList.ItemsSource = result.GpuEngineProfiles
-                .OrderByDescending(p => p.ObservedHours > 0 || p.Sources.Length > 0)
-                .ThenByDescending(p => p.HeavyMinutes > 0 || p.Peak >= 80)
-                .ThenByDescending(p => p.HeavyMinutes).ThenByDescending(p => p.Peak).ThenByDescending(p => p.ObservedHours)
-                .Select(p => new
-            {
-                p.Name,
-                Readings = $"已观察 P95 {(p.P95.HasValue ? $"{p.P95:0.0}%" : p.HasMixedSources ? "来源混合，未合并" : "缺失")} · 峰值 {(p.Peak.HasValue ? $"{p.Peak:0.0}%" : "缺失")} · ≥80% 累计 {p.HeavyMinutes:0.0} 分钟" + (p.HasMixedSources ? "；" + p.ScopeNotice : ""),
-                Durations = $"已观察 {DurationText.FromHours(p.ObservedHours)} · 类别完整 {DurationText.FromHours(p.CompleteHours)}",
-                Sources = p.Sources.Length == 0 ? "来源：未取得该类别记录；不能解释为零负载或不支持该功能。" : "来源：" + string.Join("、", p.Sources)
-            }).ToList();
-            DemandTrendList.ItemsSource = result.DemandTrends;
-            var changed = result.DemandTrends.Where(t => t.Status == "increased").OrderBy(t => t.Days).FirstOrDefault();
-            DemandTrendHeader.Text = changed == null ? "近期需求变化 · " + (result.DemandTrends.Any(t => t.Status == "similar" || t.Status == "decreased") ? "查看时期对照" : "对照记录积累中") : $"近期需求变化 · {changed.Name}增加（{changed.Days} 天对照）";
-            AnalysisSummary.Text = result.Summary;
-            PurchaseGuidanceList.ItemsSource = PurchaseGuidance.Build(result);
-            CoverageLabel.Text = $"{scene ?? "全部场景"} · {result.Level}  ·  有效使用 {result.DurationLabel}  ·  覆盖 {result.ActiveDays} 天  ·  {result.SampleCount:N0} 条记录";
-            RepresentativeStatus.Text = result.CoverageMessage;
-            CoverageNext.Text = result.HistoryQuality.HasIssues ? result.HistoryQuality.Message : result.Ready ? "已覆盖典型任务，可比较降档方向；近期新增任务会更新判断。" : result.Cards.Any(c => c.Observation != null)
-                ? "下方已给出当前任务的判断。完成常用与偶发任务后，在记录设置确认覆盖范围，进一步评估配置预算。"
-                : "正常使用电脑即可积累观测；发现繁忙任务会先显示，轻负载判断从有效记录中逐项形成。";
-            var expanded = AdviceList.Items.OfType<Border>().Select(b => b.Child).OfType<StackPanel>()
-                .SelectMany(s => s.Children.OfType<Expander>()).Where(x => x.IsExpanded).Select(x => x.Tag?.ToString()).ToHashSet();
-            AdviceList.Items.Clear();
-            foreach (var advice in result.Cards) AdviceList.Items.Add(AdviceCard(advice, expanded.Contains(advice.Key)));
-            HistoryChart.SetPoints(result.History);
-            var selectedPeriod = (HistoryPeriodCombo.SelectedItem as HistoryPoint)?.Time;
-            HistoryPeriodCombo.ItemsSource = result.History.AsEnumerable().Reverse().ToArray();
-            HistoryPeriodCombo.IsEnabled = result.History.Count > 0;
-            HistoryPeriodCombo.SelectedItem = result.History.FirstOrDefault(p => p.Time == selectedPeriod) ?? result.History.LastOrDefault();
-            HistoryPeriodDetails.Text = (HistoryPeriodCombo.SelectedItem as HistoryPoint)?.DetailsLabel ?? "当前范围没有可显示的小时均值";
-            HistorySummary.Text = $"最近 {days} 天 · {result.SampleCount:N0} 条记录 · {scene ?? "全部场景"} · " + (result.HistoryQuality.HasIntervalConflicts ? "时段重叠，历史负载图暂不显示；场景时长可能互相重叠，不能相加。" : result.Scenes.Length > 0 ? string.Join("、", result.Scenes) : "等待有效使用");
-            if (!result.HistoryQuality.HasIntervalConflicts && result.GpuHistoryHasMixedSources)
-                HistorySummary.Text += "。核心/3D来源或规则混合，GPU 历史曲线暂不显示；CPU、内存曲线独立保留。";
-            SamplingGapLabel.Text = result.SamplingGapSummary;
-            SamplingGapLabel.Visibility = result.SamplingGapCount > 0 ? Visibility.Visible : Visibility.Collapsed;
+            AnalysisSceneCombo.SelectedItem = selected;
         }
-        catch (Exception ex) { store.Log(ex); StatusLine.Text = "分析读取失败，请稍后刷新。错误已记录。"; }
-        finally
+        finally { updatingSceneChoices = false; }
+        SceneProfileList.ItemsSource = result.SceneProfiles;
+        SceneProfileSummary.Text = result.HistoryQuality.HasIntervalConflicts ? "场景时段互有重叠，不能相加；负载值暂待核对" : "有效使用时段统计 · P95 按采样时长加权";
+        if (!result.HistoryQuality.HasIntervalConflicts && result.SceneProfiles.Any(p => p.GpuHasMixedSources))
+            SceneProfileSummary.Text += "。来源或规则混合的场景不合并 GPU P95；峰值仅保留为已观察线索：" + string.Join("、", result.SceneProfiles.Where(p => p.GpuHasMixedSources).Select(p => p.Name));
+        SceneEmptyLabel.Visibility = result.SceneProfiles.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        GpuEngineHistoryNotice.Text = result.HistoryQuality.HasIntervalConflicts ? "时段重叠，分引擎负载与时长暂不解释；请先核对历史来源。"
+            : string.IsNullOrWhiteSpace(result.HardwareId) ? "请先隔离同一硬件配置的记录，再查看分引擎历史。"
+            : "仅统计当前范围已暴露的引擎节点。P95 按同来源读数的时长加权；来源或规则混合时不合并 P95。部分读数可能低估同类最大负载；类别完整时长不等于全GPU覆盖。时期对照仅用同来源、读数完整的观测，可能与这里的 P95 不同。缺失保留未知，不同引擎占用不能相加。"
+                + (result.GpuMetricScopes.Length > 0 ? " 核心/3D观测来源：" + string.Join("；", result.GpuMetricScopes) : "");
+        GpuEngineProfileList.ItemsSource = result.GpuEngineProfiles
+            .OrderByDescending(p => p.ObservedHours > 0 || p.Sources.Length > 0)
+            .ThenByDescending(p => p.HeavyMinutes > 0 || p.Peak >= 80)
+            .ThenByDescending(p => p.HeavyMinutes).ThenByDescending(p => p.Peak).ThenByDescending(p => p.ObservedHours)
+            .Select(p => new
         {
-            analyzing = false;
-            if (refreshRequested && !exiting) { refreshRequested = false; _ = RefreshAnalysis(); }
-        }
+            p.Name,
+            Readings = $"已观察 P95 {(p.P95.HasValue ? $"{p.P95:0.0}%" : p.HasMixedSources ? "来源混合，未合并" : "缺失")} · 峰值 {(p.Peak.HasValue ? $"{p.Peak:0.0}%" : "缺失")} · ≥80% 累计 {p.HeavyMinutes:0.0} 分钟" + (p.HasMixedSources ? "；" + p.ScopeNotice : ""),
+            Durations = $"已观察 {DurationText.FromHours(p.ObservedHours)} · 类别完整 {DurationText.FromHours(p.CompleteHours)}",
+            Sources = p.Sources.Length == 0 ? "来源：未取得该类别记录；不能解释为零负载或不支持该功能。" : "来源：" + string.Join("、", p.Sources)
+        }).ToList();
+        DemandTrendList.ItemsSource = result.DemandTrends;
+        var changed = result.DemandTrends.Where(t => t.Status == "increased").OrderBy(t => t.Days).FirstOrDefault();
+        DemandTrendHeader.Text = changed == null ? "近期需求变化 · " + (result.DemandTrends.Any(t => t.Status == "similar" || t.Status == "decreased") ? "查看时期对照" : "对照记录积累中") : $"近期需求变化 · {changed.Name}增加（{changed.Days} 天对照）";
+        AnalysisSummary.Text = result.Summary;
+        PurchaseGuidanceList.ItemsSource = PurchaseGuidance.Build(result);
+        CoverageLabel.Text = $"{scene ?? "全部场景"} · {result.Level}  ·  有效使用 {result.DurationLabel}  ·  覆盖 {result.ActiveDays} 天  ·  {result.SampleCount:N0} 条记录";
+        RepresentativeStatus.Text = result.CoverageMessage;
+        CoverageNext.Text = result.HistoryQuality.HasIssues ? result.HistoryQuality.Message : result.Ready ? "已覆盖典型任务，可比较降档方向；近期新增任务会更新判断。" : result.Cards.Any(c => c.Observation != null)
+            ? "下方已给出当前任务的判断。完成常用与偶发任务后，在记录设置确认覆盖范围，进一步评估配置预算。"
+            : "正常使用电脑即可积累观测；发现繁忙任务会先显示，轻负载判断从有效记录中逐项形成。";
+        var expanded = AdviceList.Items.OfType<Border>().Select(b => b.Child).OfType<StackPanel>()
+            .SelectMany(s => s.Children.OfType<Expander>()).Where(x => x.IsExpanded).Select(x => x.Tag?.ToString()).ToHashSet();
+        AdviceList.Items.Clear();
+        foreach (var advice in result.Cards) AdviceList.Items.Add(AdviceCard(advice, expanded.Contains(advice.Key)));
+        HistoryChart.SetPoints(result.History);
+        var selectedPeriod = (HistoryPeriodCombo.SelectedItem as HistoryPoint)?.Time;
+        HistoryPeriodCombo.ItemsSource = result.History.AsEnumerable().Reverse().ToArray();
+        HistoryPeriodCombo.IsEnabled = result.History.Count > 0;
+        HistoryPeriodCombo.SelectedItem = result.History.FirstOrDefault(p => p.Time == selectedPeriod) ?? result.History.LastOrDefault();
+        HistoryPeriodDetails.Text = (HistoryPeriodCombo.SelectedItem as HistoryPoint)?.DetailsLabel ?? "当前范围没有可显示的小时均值";
+        HistorySummary.Text = $"最近 {days} 天 · {result.SampleCount:N0} 条记录 · {scene ?? "全部场景"} · " + (result.HistoryQuality.HasIntervalConflicts ? "时段重叠，历史负载图暂不显示；场景时长可能互相重叠，不能相加。" : result.Scenes.Length > 0 ? string.Join("、", result.Scenes) : "等待有效使用");
+        if (!result.HistoryQuality.HasIntervalConflicts && result.GpuHistoryHasMixedSources)
+            HistorySummary.Text += "。核心/3D来源或规则混合，GPU 历史曲线暂不显示；CPU、内存曲线独立保留。";
+        SamplingGapLabel.Text = result.SamplingGapSummary;
+        SamplingGapLabel.Visibility = result.SamplingGapCount > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
     private static Brush Brush(string color) => (SolidColorBrush)new BrushConverter().ConvertFromString(color)!;
     private void HistoryPeriod_Changed(object sender, SelectionChangedEventArgs e)
@@ -327,7 +311,7 @@ public partial class MainWindow : Window
         SettingsPage.Visibility = page == "settings" ? Visibility.Visible : Visibility.Collapsed;
         ComparisonPage.Visibility = page == "comparison" ? Visibility.Visible : Visibility.Collapsed;
         TaskMeasurementPage.Visibility = page == "measurement" ? Visibility.Visible : Visibility.Collapsed;
-        if (page == "comparison" && report != null) ComparisonPage.SetContext(store, report);
+        if (page == "comparison") { ComparisonPage.InitializeStore(store); if (report != null) ComparisonPage.SetContext(store, report); }
         foreach (var pair in new[] { (LiveNav, "live"), (AdviceNav, "advice"), (ComparisonNav, "comparison"), (TaskMeasurementNav, "measurement"), (HistoryNav, "history"), (SettingsNav, "settings") })
         { pair.Item1.Background = Brush(pair.Item2 == page ? "#254854" : "#132D38"); pair.Item1.Foreground = Brush(pair.Item2 == page ? "#FFFFFF" : "#BCCED4"); }
         (PageTitle.Text, PageSubtitle.Text) = page switch
@@ -390,6 +374,7 @@ public partial class MainWindow : Window
             var value = ExperienceAnalyzer.Create(DateTimeOffset.Now, collector.HardwareId, store.Settings.Scene, symptom,
                 ExperienceNote.Text, paused ? [] : experienceContext.ToArray());
             await Task.Run(() => store.AppendExperience(value));
+            experienceRevision++;
             ExperienceNote.Clear();
             ExperienceStatus.Text = "已保存。" + value.Conclusion;
             await RefreshAnalysis();
@@ -401,7 +386,7 @@ public partial class MainWindow : Window
     {
         if (sender is not Button { Tag: ExperienceEvent value } button || value.Resolved) return;
         button.IsEnabled = false;
-        try { await Task.Run(() => store.AppendExperience(value with { Resolved = true })); await RefreshAnalysis(); }
+        try { await Task.Run(() => store.AppendExperience(value with { Resolved = true })); experienceRevision++; await RefreshAnalysis(); }
         catch (Exception ex) { store.Log(ex); StatusLine.Text = "体验状态保存失败，请重试。"; button.IsEnabled = true; }
     }
     private async void SaveSettings_Click(object sender, RoutedEventArgs e)
@@ -450,13 +435,8 @@ public partial class MainWindow : Window
     }
     private async void ExportReport_Click(object sender, RoutedEventArgs e)
     {
-        while (analyzing) await Task.Delay(50);
-        await RefreshAnalysis(); if (report == null) return;
-        var dialog = new Microsoft.Win32.SaveFileDialog { Filter = "HTML 报告|*.html|JSON 数据|*.json", FileName = $"PerfCompass-配置报告-{DateTime.Now:yyyyMMdd}" };
-        if (dialog.ShowDialog(this) != true) return;
-        var current = report;
-        await File.WriteAllTextAsync(dialog.FileName, dialog.FilterIndex == 2 ? JsonSerializer.Serialize(current, new JsonSerializerOptions { WriteIndented = true }) : ReportExporter.Html(current, live), new UTF8Encoding(false));
-        StatusLine.Text = $"报告已导出：{dialog.FileName}";
+        if (exportingReport) return;
+        exportingReport = true; reportExportTask = ExportCurrentReport(); await reportExportTask;
     }
     private async void ExportCsv_Click(object sender, RoutedEventArgs e)
     {

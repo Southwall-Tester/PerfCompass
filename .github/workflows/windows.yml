@@ -155,6 +155,21 @@ jobs:
         with:
           name: native-uncertainty
           path: artifacts/ui-uncertainty-focused/
+      - name: Native latest analysis context flow
+        shell: pwsh
+        run: |
+          $root = Join-Path $PWD 'artifacts/ci-analysis-refresh/data'
+          $p = Start-Process ./release-next/PerfCompass.exe -ArgumentList @('--ui-test','--ui-test-analysis-refresh-only','--data-dir',('"' + $root + '"')) -PassThru -WindowStyle Hidden
+          if (-not $p.WaitForExit(90000)) { throw ('Native analysis refresh observation expired; inspect PID ' + $p.Id) }
+          if ($p.ExitCode -ne 0) { throw 'Native analysis refresh flow failed.' }
+          $checks = Get-Content artifacts/ui-analysis-refresh-focused/results.txt
+          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 31 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Native analysis refresh checks are incomplete.' }
+      - name: Native analysis refresh evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-analysis-refresh
+          path: artifacts/ui-analysis-refresh-focused/
       - name: Native candidate draft preservation and exit flow
         shell: pwsh
         run: |
