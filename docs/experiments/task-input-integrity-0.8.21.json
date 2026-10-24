@@ -1,0 +1,30 @@
+﻿{
+    "Notice":  "Controlled synthetic input-integrity experiment; no hardware performance or purchasing claim",
+    "Before":  {
+                   "Version":  "task-measurement-1.0",
+                   "Outcome":  "completed",
+                   "Rounds":  3,
+                   "ComparableUnderOldCode":  true,
+                   "SecondRoundInput":  "beta",
+                   "InitialAndFinalInputSame":  true,
+                   "AssemblySha256":  "353DB23BF15AE91E1AAB7A3EB87EB0FC1FD42B8BAE3D0792677189CCB3BE4B8F"
+               },
+    "After":  {
+                  "Version":  "task-measurement-1.1",
+                  "Outcome":  "failed",
+                  "Rounds":  1,
+                  "ExitCode":  7,
+                  "Comparable":  false,
+                  "SecondRoundInput":  "not-run",
+                  "InputUnchanged":  true,
+                  "AssemblySha256":  "73DACAF65BD1BAC8027D76681F5FE444EE996DE94AC2E8A03DD8545827052314"
+              },
+    "SameRecipe":  true,
+    "ProtocolFingerprintChanged":  true,
+    "OldReaderRejectsNewMeasurement":  true,
+    "OldReaderRejectsNewPlan":  true,
+    "OldReaderRejectsComparisonContainingNewMeasurement":  true,
+    "RawLegacyMeasurementSha256":  "8713CD8D118FB210B63F64BD1537E64A3C99F3576B89A54102A8B182734A87C0",
+    "RawLegacyPlanSha256":  "8F010DBC0033E7AC1932DF406B4B7887AE39E6A3AA2C57B09A6E616085F2E13D",
+    "SameDeclaredPower":  true
+}

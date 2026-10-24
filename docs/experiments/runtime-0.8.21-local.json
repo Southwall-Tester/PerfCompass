@@ -1,0 +1,125 @@
+﻿{
+    "Notice":  "Local controlled checks, synthetic file tasks and candidates; common startup telemetry is actual. Counts overlap and must not be added. Not commercial or cross-hardware validation.",
+    "ProductVersion":  "0.8.21+f511b657ff7be325919def5f1052dcdf6e02add2",
+    "CodeCommit":  "f511b657ff7be325919def5f1052dcdf6e02add2",
+    "Sha256":  "60098C48D3143B3A82FE33BC7A67E99304648D5AF91AB5F1B1EF3E0ED50E0412",
+    "MethodVersion":  "1.15",
+    "ComparisonVersion":  "comparison-1.3",
+    "MeasurementVersion":  "task-measurement-1.1",
+    "PlanVersion":  "task-plan-1.1",
+    "Checks":  [
+                   {
+                       "Name":  "file-protection",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  28,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "uncertainty",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  19,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "self",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  420,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "draft",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  38,
+                       "Fail":  0,
+                       "ExitEditorSaved":  true
+                   },
+                   {
+                       "Name":  "full-ui",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  145,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "observation",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  44,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   },
+                   {
+                       "Name":  "task-plan",
+                       "Completed":  true,
+                       "ExitCode":  0,
+                       "Pass":  30,
+                       "Fail":  0,
+                       "ExitEditorSaved":  null
+                   }
+               ],
+    "EntryGuards":  [
+                        {
+                            "value":  [
+                                          {
+                                              "Mode":  "missing-ui-flag",
+                                              "ExitCode":  3,
+                                              "OnlySentinel":  true,
+                                              "SentinelUnchanged":  true
+                                          },
+                                          {
+                                              "Mode":  "nonempty-root",
+                                              "ExitCode":  3,
+                                              "OnlySentinel":  true,
+                                              "SentinelUnchanged":  true
+                                          }
+                                      ],
+                            "Count":  2
+                        }
+                    ],
+    "FirstBuild":  {
+                       "Pass":  419,
+                       "Fail":  1,
+                       "PublicationBlocked":  true,
+                       "OriginalFailurePreserved":  true,
+                       "CauseFullyEstablished":  false,
+                       "BoundedExecutableAccessAndCleanupRetrySeconds":  2
+                   },
+    "TargetedDiagnostic":  {
+                               "RepeatedChecks":  33,
+                               "Failures":  0,
+                               "OverlapsSelfTests":  true
+                           },
+    "Screenshots":  [
+                        {
+                            "File":  "0.8.21-legacy-plan-review-required.png",
+                            "Sha256":  "F0E5D86454A9D3AAFC166AB83E737AE3AB56992BACA0A99AC6050DFA8DA269A0",
+                            "VisualInspected":  true
+                        },
+                        {
+                            "File":  "0.8.21-mutating-input-failed.png",
+                            "Sha256":  "D160D08F69A42F8B7528904ECD9E58422D9D170E2A5A00D537D220C8253AAF93",
+                            "VisualInspected":  true
+                        }
+                    ],
+    "OldReaderRejectsNewMeasurementAndPlanAndNestedResult":  true,
+    "RawEvidence":  "artifacts/published-0.8.21-final2-checks.json (local; machine paths omitted here)",
+    "FrozenSoak":  "0.8.18 remains separate and running; not a long-term result for 0.8.21",
+    "CommercialGoalComplete":  false,
+    "PackagingAudit":  {
+                           "ArchiveBytes":  73537692,
+                           "Entries":  92,
+                           "ArchivedExecutableHashMatches":  true,
+                           "ExtractedFlowPass":  28,
+                           "ExtractedFlowFail":  0,
+                           "ExtractedExit":  0,
+                           "AuditReadyIsNotLauncherReady":  true
+                       }
+}
