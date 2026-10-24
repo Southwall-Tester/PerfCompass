@@ -1,0 +1,134 @@
+﻿{
+  "Id": "h15",
+  "Source": "2027\u5E746\u6708\u4E4B\u524D\u8981\u4EA4\u6570\u5B57\u4EBA\u6BD5\u4E1A\u8BBE\u8BA1\uFF0C\u9884\u7B97\u4E0A\u96509000\u5143\u3002\u73B0\u5728\u8FD8\u6CA1\u9009\u5F15\u64CE\uFF0C\u53EF\u80FD\u7528Godot\uFF0C\u4E5F\u53EF\u80FDUnity\u3002",
+  "Seconds": 62.7638296,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "2027\u5E746\u6708\u4E4B\u524D\u8981\u4EA4\u6570\u5B57\u4EBA\u6BD5\u4E1A\u8BBE\u8BA1\uFF0C\u9884\u7B97\u4E0A\u96509000\u5143\u3002\u73B0\u5728\u8FD8\u6CA1\u9009\u5F15\u64CE\uFF0C\u53EF\u80FD\u7528Godot\uFF0C\u4E5F\u53EF\u80FDUnity\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u6570\u5B57\u4EBA\u6BD5\u4E1A\u8BBE\u8BA1",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "2027\u5E746\u6708\u4E4B\u524D",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "2027\u5E746\u6708\u4E4B\u524D\u8981\u4EA4\u6570\u5B57\u4EBA\u6BD5\u4E1A\u8BBE\u8BA1",
+        "Label": "\u6570\u5B57\u4EBA\u6BD5\u4E1A\u8BBE\u8BA1 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "2027\u5E746\u6708\u4E4B\u524D"
+      },
+      {
+        "Subject": "\u9884\u7B97",
+        "Kind": "budget",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "9000\u5143",
+        "Unit": "\u5143",
+        "Condition": "",
+        "Evidence": "\u9884\u7B97\u4E0A\u96509000\u5143",
+        "Label": "\u9884\u7B97 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "9000\u5143\uFF1B\u5143"
+      },
+      {
+        "Subject": "\u5F15\u64CE",
+        "Kind": "other",
+        "Polarity": "uncertain",
+        "Timeframe": "current",
+        "Value": "Godot",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u73B0\u5728\u8FD8\u6CA1\u9009\u5F15\u64CE\uFF0C\u53EF\u80FD\u7528Godot\uFF0C\u4E5F\u53EF\u80FDUnity",
+        "Label": "\u5F15\u64CE \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u73B0\u5728",
+        "Detail": "Godot"
+      },
+      {
+        "Subject": "\u5F15\u64CE",
+        "Kind": "other",
+        "Polarity": "uncertain",
+        "Timeframe": "current",
+        "Value": "Unity",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u73B0\u5728\u8FD8\u6CA1\u9009\u5F15\u64CE\uFF0C\u53EF\u80FD\u7528Godot\uFF0C\u4E5F\u53EF\u80FDUnity",
+        "Label": "\u5F15\u64CE \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u73B0\u5728",
+        "Detail": "Unity"
+      }
+    ],
+    "Questions": [
+      "\u662F\u5426\u9700\u8981\u8003\u8651\u7279\u5B9A\u786C\u4EF6\u8981\u6C42\u4EE5\u652F\u6301\u6240\u9009\u5F15\u64CE\uFF1F",
+      "\u662F\u5426\u6709\u7279\u5B9A\u7684\u8F6F\u4EF6\u517C\u5BB9\u6027\u9700\u6C42\uFF1F",
+      "\u662F\u5426\u9700\u8981\u8003\u8651\u672A\u6765\u53EF\u80FD\u7684\u5347\u7EA7\u6216\u6269\u5C55\uFF1F",
+      "\u662F\u5426\u6709\u5176\u4ED6\u9884\u7B97\u9650\u5236\u6216\u8D39\u7528\u5305\u542B/\u6392\u9664\u8303\u56F4\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u6570\u5B57\u4EBA\u6BD5\u4E1A\u8BBE\u8BA1",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "2027\u5E746\u6708\u4E4B\u524D",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "2027\u5E746\u6708\u4E4B\u524D\u8981\u4EA4\u6570\u5B57\u4EBA\u6BD5\u4E1A\u8BBE\u8BA1",
+        "Label": "\u6570\u5B57\u4EBA\u6BD5\u4E1A\u8BBE\u8BA1 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "2027\u5E746\u6708\u4E4B\u524D"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u9884\u7B97",
+        "Kind": "budget",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "9000\u5143",
+        "Unit": "\u5143",
+        "Condition": "",
+        "Evidence": "\u9884\u7B97\u4E0A\u96509000\u5143",
+        "Label": "\u9884\u7B97 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "9000\u5143\uFF1B\u5143"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u5F15\u64CE",
+        "Kind": "other",
+        "Polarity": "uncertain",
+        "Timeframe": "current",
+        "Value": "Godot",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u73B0\u5728\u8FD8\u6CA1\u9009\u5F15\u64CE\uFF0C\u53EF\u80FD\u7528Godot\uFF0C\u4E5F\u53EF\u80FDUnity",
+        "Label": "\u5F15\u64CE \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u73B0\u5728",
+        "Detail": "Godot"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u5F15\u64CE",
+        "Kind": "other",
+        "Polarity": "uncertain",
+        "Timeframe": "current",
+        "Value": "Unity",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u73B0\u5728\u8FD8\u6CA1\u9009\u5F15\u64CE\uFF0C\u53EF\u80FD\u7528Godot\uFF0C\u4E5F\u53EF\u80FDUnity",
+        "Label": "\u5F15\u64CE \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u73B0\u5728",
+        "Detail": "Unity"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

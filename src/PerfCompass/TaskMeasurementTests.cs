@@ -126,9 +126,9 @@ public static partial class SelfTests
             var request = Request("exit /b 0\r\n"); string path = Path.Combine(request.WorkingDirectory, "comparison.json");
             File.WriteAllText(path, JsonSerializer.Serialize(workspace));
             var upgraded = CandidateComparison.Load(request.WorkingDirectory);
-            assert(upgraded.Version == "comparison-1.2" && upgraded.Criteria[0].Reviewed && upgraded.Criteria[0].ReviewStamp == CandidateComparison.CriterionStamp(goal), "legacy review lost");
+            assert(upgraded.Version == "comparison-1.3" && upgraded.Criteria[0].Reviewed && upgraded.Criteria[0].ReviewStamp == CandidateComparison.CriterionStamp(goal), "legacy review lost");
             CandidateComparison.Save(request.WorkingDirectory, upgraded);
-            assert(File.ReadAllText(path).Contains("comparison-1.2"), "old client could silently drop repeated evidence on save");
+            assert(File.ReadAllText(path).Contains("comparison-1.3"), "old client could silently drop repeated evidence on save");
         });
         check("Real task process drains large stdout and stderr without retaining their contents", () =>
         {

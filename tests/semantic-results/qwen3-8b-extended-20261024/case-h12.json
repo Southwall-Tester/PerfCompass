@@ -1,0 +1,101 @@
+﻿{
+  "Id": "h12",
+  "Source": "UE\u9879\u76EE\u4E24\u4E2A\u6708\u624D\u5B8C\u6574\u7F16\u8BD1\u4E00\u6B21shader\uFF0C\u7B49\u5341\u4E94\u5206\u949F\u53EF\u4EE5\uFF1B\u4F46\u7F16\u8F91\u5668\u6BCF\u5929\u62D6\u52A8\u7269\u4F53\u90FD\u8981\u987A\u7545\u3002",
+  "Seconds": 38.2900275,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "UE\u9879\u76EE\u4E24\u4E2A\u6708\u624D\u5B8C\u6574\u7F16\u8BD1\u4E00\u6B21shader\uFF0C\u7B49\u5341\u4E94\u5206\u949F\u53EF\u4EE5\uFF1B\u4F46\u7F16\u8F91\u5668\u6BCF\u5929\u62D6\u52A8\u7269\u4F53\u90FD\u8981\u987A\u7545\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "UE\u9879\u76EE",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E24\u4E2A\u6708",
+        "Unit": "\u6B21",
+        "Condition": "",
+        "Evidence": "UE\u9879\u76EE\u4E24\u4E2A\u6708\u624D\u5B8C\u6574\u7F16\u8BD1\u4E00\u6B21shader",
+        "Label": "UE\u9879\u76EE \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E24\u4E2A\u6708\uFF1B\u6B21"
+      },
+      {
+        "Subject": "\u7F16\u8BD1shader",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5341\u4E94\u5206\u949F",
+        "Unit": "\u5206\u949F",
+        "Condition": "",
+        "Evidence": "\u7B49\u5341\u4E94\u5206\u949F\u53EF\u4EE5",
+        "Label": "\u7F16\u8BD1shader \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5341\u4E94\u5206\u949F\uFF1B\u5206\u949F"
+      },
+      {
+        "Subject": "\u7F16\u8F91\u5668",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u987A\u7545",
+        "Unit": "",
+        "Condition": "\u6BCF\u5929\u62D6\u52A8\u7269\u4F53",
+        "Evidence": "\u4F46\u7F16\u8F91\u5668\u6BCF\u5929\u62D6\u52A8\u7269\u4F53\u90FD\u8981\u987A\u7545",
+        "Label": "\u7F16\u8F91\u5668 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u987A\u7545\uFF1B\u6761\u4EF6\uFF1A\u6BCF\u5929\u62D6\u52A8\u7269\u4F53"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "UE\u9879\u76EE",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E24\u4E2A\u6708",
+        "Unit": "\u6B21",
+        "Condition": "",
+        "Evidence": "UE\u9879\u76EE\u4E24\u4E2A\u6708\u624D\u5B8C\u6574\u7F16\u8BD1\u4E00\u6B21shader",
+        "Label": "UE\u9879\u76EE \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E24\u4E2A\u6708\uFF1B\u6B21"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u7F16\u8BD1shader",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5341\u4E94\u5206\u949F",
+        "Unit": "\u5206\u949F",
+        "Condition": "",
+        "Evidence": "\u7B49\u5341\u4E94\u5206\u949F\u53EF\u4EE5",
+        "Label": "\u7F16\u8BD1shader \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5341\u4E94\u5206\u949F\uFF1B\u5206\u949F"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u7F16\u8F91\u5668",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u987A\u7545",
+        "Unit": "",
+        "Condition": "\u6BCF\u5929\u62D6\u52A8\u7269\u4F53",
+        "Evidence": "\u4F46\u7F16\u8F91\u5668\u6BCF\u5929\u62D6\u52A8\u7269\u4F53\u90FD\u8981\u987A\u7545",
+        "Label": "\u7F16\u8F91\u5668 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u987A\u7545\uFF1B\u6761\u4EF6\uFF1A\u6BCF\u5929\u62D6\u52A8\u7269\u4F53"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

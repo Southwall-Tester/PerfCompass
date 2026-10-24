@@ -1,0 +1,185 @@
+﻿{
+  "Id": "h10",
+  "Source": "Reaper\u91CC\u5F55\u4EBA\u58F0\u65F6\uFF0C\u8981\u540C\u65F6\u5F00Kontakt\u548C\u7F51\u8BFE\u56DE\u653E\uFF1B\u76F4\u64AD\u65F6\u4E0D\u5F55\u97F3\u3002\u76D1\u542C\u5EF6\u8FDF\u4E0D\u8D85\u8FC712ms\u5373\u53EF\uFF0C\u4E0D\u8FFD\u6C42\u66F4\u4F4E\u3002",
+  "Seconds": 74.6680656,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "Reaper\u91CC\u5F55\u4EBA\u58F0\u65F6\uFF0C\u8981\u540C\u65F6\u5F00Kontakt\u548C\u7F51\u8BFE\u56DE\u653E\uFF1B\u76F4\u64AD\u65F6\u4E0D\u5F55\u97F3\u3002\u76D1\u542C\u5EF6\u8FDF\u4E0D\u8D85\u8FC712ms\u5373\u53EF\uFF0C\u4E0D\u8FFD\u6C42\u66F4\u4F4E\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "Reaper",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5F55\u4EBA\u58F0",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "Reaper\u91CC\u5F55\u4EBA\u58F0\u65F6",
+        "Label": "Reaper \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5F55\u4EBA\u58F0"
+      },
+      {
+        "Subject": "Kontakt",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u540C\u65F6\u5F00",
+        "Unit": "",
+        "Condition": "\u5F55\u4EBA\u58F0\u65F6",
+        "Evidence": "\u8981\u540C\u65F6\u5F00Kontakt\u548C\u7F51\u8BFE\u56DE\u653E",
+        "Label": "Kontakt \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u540C\u65F6\u5F00\uFF1B\u6761\u4EF6\uFF1A\u5F55\u4EBA\u58F0\u65F6"
+      },
+      {
+        "Subject": "\u7F51\u8BFE\u56DE\u653E",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u540C\u65F6\u5F00",
+        "Unit": "",
+        "Condition": "\u5F55\u4EBA\u58F0\u65F6",
+        "Evidence": "\u8981\u540C\u65F6\u5F00Kontakt\u548C\u7F51\u8BFE\u56DE\u653E",
+        "Label": "\u7F51\u8BFE\u56DE\u653E \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u540C\u65F6\u5F00\uFF1B\u6761\u4EF6\uFF1A\u5F55\u4EBA\u58F0\u65F6"
+      },
+      {
+        "Subject": "\u76F4\u64AD",
+        "Kind": "workload",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u5F55\u97F3",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u76F4\u64AD\u65F6\u4E0D\u5F55\u97F3",
+        "Label": "\u76F4\u64AD \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u5F55\u97F3"
+      },
+      {
+        "Subject": "\u76D1\u542C\u5EF6\u8FDF",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E0D\u8D85\u8FC7",
+        "Unit": "ms",
+        "Condition": "",
+        "Evidence": "\u76D1\u542C\u5EF6\u8FDF\u4E0D\u8D85\u8FC712ms\u5373\u53EF",
+        "Label": "\u76D1\u542C\u5EF6\u8FDF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E0D\u8D85\u8FC7\uFF1Bms"
+      },
+      {
+        "Subject": "\u76D1\u542C\u5EF6\u8FDF",
+        "Kind": "experience",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u8FFD\u6C42\u66F4\u4F4E",
+        "Unit": "ms",
+        "Condition": "",
+        "Evidence": "\u4E0D\u8FFD\u6C42\u66F4\u4F4E",
+        "Label": "\u76D1\u542C\u5EF6\u8FDF \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u8FFD\u6C42\u66F4\u4F4E\uFF1Bms"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "Reaper",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5F55\u4EBA\u58F0",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "Reaper\u91CC\u5F55\u4EBA\u58F0\u65F6",
+        "Label": "Reaper \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5F55\u4EBA\u58F0"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "Kontakt",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u540C\u65F6\u5F00",
+        "Unit": "",
+        "Condition": "\u5F55\u4EBA\u58F0\u65F6",
+        "Evidence": "\u8981\u540C\u65F6\u5F00Kontakt\u548C\u7F51\u8BFE\u56DE\u653E",
+        "Label": "Kontakt \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u540C\u65F6\u5F00\uFF1B\u6761\u4EF6\uFF1A\u5F55\u4EBA\u58F0\u65F6"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u7F51\u8BFE\u56DE\u653E",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u540C\u65F6\u5F00",
+        "Unit": "",
+        "Condition": "\u5F55\u4EBA\u58F0\u65F6",
+        "Evidence": "\u8981\u540C\u65F6\u5F00Kontakt\u548C\u7F51\u8BFE\u56DE\u653E",
+        "Label": "\u7F51\u8BFE\u56DE\u653E \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u540C\u65F6\u5F00\uFF1B\u6761\u4EF6\uFF1A\u5F55\u4EBA\u58F0\u65F6"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u76F4\u64AD",
+        "Kind": "workload",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u5F55\u97F3",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u76F4\u64AD\u65F6\u4E0D\u5F55\u97F3",
+        "Label": "\u76F4\u64AD \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u5F55\u97F3"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u76D1\u542C\u5EF6\u8FDF",
+        "Kind": "experience",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E0D\u8D85\u8FC7",
+        "Unit": "ms",
+        "Condition": "",
+        "Evidence": "\u76D1\u542C\u5EF6\u8FDF\u4E0D\u8D85\u8FC712ms\u5373\u53EF",
+        "Label": "\u76D1\u542C\u5EF6\u8FDF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E0D\u8D85\u8FC7\uFF1Bms"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u76D1\u542C\u5EF6\u8FDF",
+        "Kind": "experience",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u8FFD\u6C42\u66F4\u4F4E",
+        "Unit": "ms",
+        "Condition": "",
+        "Evidence": "\u4E0D\u8FFD\u6C42\u66F4\u4F4E",
+        "Label": "\u76D1\u542C\u5EF6\u8FDF \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u8FFD\u6C42\u66F4\u4F4E\uFF1Bms"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

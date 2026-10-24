@@ -1,0 +1,76 @@
+﻿{
+  "Id": "h18",
+  "Source": "\u65B0\u5DE5\u4F5C\u6BCF\u5929\u8981\u7528ZetaWeave\u5904\u7406\u4E00\u6279\u6570\u636E\uFF0C\u6211\u4E0D\u77E5\u9053\u8F6F\u4EF6\u662F\u54EA\u7C7B\uFF0C\u4E5F\u4E0D\u77E5\u9053\u5403CPU\u8FD8\u662FGPU\uFF1B\u5148\u4FDD\u7559\u8FD9\u4E2A\u4EFB\u52A1\u522B\u731C\u914D\u7F6E\u3002",
+  "Seconds": 32.8007675,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u65B0\u5DE5\u4F5C\u6BCF\u5929\u8981\u7528ZetaWeave\u5904\u7406\u4E00\u6279\u6570\u636E\uFF0C\u6211\u4E0D\u77E5\u9053\u8F6F\u4EF6\u662F\u54EA\u7C7B\uFF0C\u4E5F\u4E0D\u77E5\u9053\u5403CPU\u8FD8\u662FGPU\uFF1B\u5148\u4FDD\u7559\u8FD9\u4E2A\u4EFB\u52A1\u522B\u731C\u914D\u7F6E\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u65B0\u5DE5\u4F5C",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6BCF\u5929",
+        "Unit": "\u6B21",
+        "Condition": "",
+        "Evidence": "\u65B0\u5DE5\u4F5C\u6BCF\u5929\u8981\u7528ZetaWeave\u5904\u7406\u4E00\u6279\u6570\u636E",
+        "Label": "\u65B0\u5DE5\u4F5C \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6BCF\u5929\uFF1B\u6B21"
+      },
+      {
+        "Subject": "ZetaWeave",
+        "Kind": "compatibility",
+        "Polarity": "uncertain",
+        "Timeframe": "current",
+        "Value": "\u5403CPU\u8FD8\u662FGPU",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6211\u4E0D\u77E5\u9053\u8F6F\u4EF6\u662F\u54EA\u7C7B\uFF0C\u4E5F\u4E0D\u77E5\u9053\u5403CPU\u8FD8\u662FGPU",
+        "Label": "ZetaWeave \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u73B0\u5728",
+        "Detail": "\u5403CPU\u8FD8\u662FGPU"
+      }
+    ],
+    "Questions": [
+      "ZetaWeave\u662F\u54EA\u7C7B\u8F6F\u4EF6\uFF1F",
+      "ZetaWeave\u4E3B\u8981\u4F9D\u8D56CPU\u8FD8\u662FGPU\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u65B0\u5DE5\u4F5C",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6BCF\u5929",
+        "Unit": "\u6B21",
+        "Condition": "",
+        "Evidence": "\u65B0\u5DE5\u4F5C\u6BCF\u5929\u8981\u7528ZetaWeave\u5904\u7406\u4E00\u6279\u6570\u636E",
+        "Label": "\u65B0\u5DE5\u4F5C \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6BCF\u5929\uFF1B\u6B21"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "ZetaWeave",
+        "Kind": "compatibility",
+        "Polarity": "uncertain",
+        "Timeframe": "current",
+        "Value": "\u5403CPU\u8FD8\u662FGPU",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u6211\u4E0D\u77E5\u9053\u8F6F\u4EF6\u662F\u54EA\u7C7B\uFF0C\u4E5F\u4E0D\u77E5\u9053\u5403CPU\u8FD8\u662FGPU",
+        "Label": "ZetaWeave \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u73B0\u5728",
+        "Detail": "\u5403CPU\u8FD8\u662FGPU"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

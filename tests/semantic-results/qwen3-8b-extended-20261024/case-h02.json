@@ -1,0 +1,106 @@
+﻿{
+  "Id": "h02",
+  "Source": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB\u7ED9\u535A\u7269\u9986\u505A\u6444\u5F71\u6D4B\u91CF\uFF0C\u8F6F\u4EF6\u53EBMetashape\uFF0C\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247\uFF1B\u73B0\u5728\u8FD8\u6CA1\u6709\u505A\u8FC7\u3002",
+  "Seconds": 53.0114332,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB\u7ED9\u535A\u7269\u9986\u505A\u6444\u5F71\u6D4B\u91CF\uFF0C\u8F6F\u4EF6\u53EBMetashape\uFF0C\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247\uFF1B\u73B0\u5728\u8FD8\u6CA1\u6709\u505A\u8FC7\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u6444\u5F71\u6D4B\u91CF",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB\u7ED9\u535A\u7269\u9986\u505A\u6444\u5F71\u6D4B\u91CF\uFF0C\u8F6F\u4EF6\u53EBMetashape\uFF0C\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247",
+        "Label": "\u6444\u5F71\u6D4B\u91CF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247"
+      },
+      {
+        "Subject": "\u6444\u5F71\u6D4B\u91CF",
+        "Kind": "frequency",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB\u7ED9\u535A\u7269\u9986\u505A\u6444\u5F71\u6D4B\u91CF\uFF0C\u8F6F\u4EF6\u53EBMetashape\uFF0C\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247",
+        "Label": "\u6444\u5F71\u6D4B\u91CF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB"
+      },
+      {
+        "Subject": "\u6444\u5F71\u6D4B\u91CF",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u8F6F\u4EF6\u53EBMetashape",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB\u7ED9\u535A\u7269\u9986\u505A\u6444\u5F71\u6D4B\u91CF\uFF0C\u8F6F\u4EF6\u53EBMetashape\uFF0C\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247",
+        "Label": "\u6444\u5F71\u6D4B\u91CF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u8F6F\u4EF6\u53EBMetashape"
+      }
+    ],
+    "Questions": [
+      "\u9700\u8981\u7684\u786C\u4EF6\u914D\u7F6E\u8981\u6C42\u662F\u4EC0\u4E48\uFF1F",
+      "\u662F\u5426\u9700\u8981\u652F\u6301\u591A\u4EFB\u52A1\u540C\u65F6\u8FD0\u884C\uFF1F",
+      "\u662F\u5426\u6709\u7279\u5B9A\u7684\u5B58\u50A8\u7A7A\u95F4\u9700\u6C42\uFF1F",
+      "\u662F\u5426\u9700\u8981\u4FBF\u643A\u5F0F\u8BBE\u5907\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u6444\u5F71\u6D4B\u91CF",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB\u7ED9\u535A\u7269\u9986\u505A\u6444\u5F71\u6D4B\u91CF\uFF0C\u8F6F\u4EF6\u53EBMetashape\uFF0C\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247",
+        "Label": "\u6444\u5F71\u6D4B\u91CF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u6444\u5F71\u6D4B\u91CF",
+        "Kind": "frequency",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB\u7ED9\u535A\u7269\u9986\u505A\u6444\u5F71\u6D4B\u91CF\uFF0C\u8F6F\u4EF6\u53EBMetashape\uFF0C\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247",
+        "Label": "\u6444\u5F71\u6D4B\u91CF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u6444\u5F71\u6D4B\u91CF",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u8F6F\u4EF6\u53EBMetashape",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4ECE\u4E0B\u4E2A\u6708\u5F00\u59CB\u7ED9\u535A\u7269\u9986\u505A\u6444\u5F71\u6D4B\u91CF\uFF0C\u8F6F\u4EF6\u53EBMetashape\uFF0C\u6BCF\u6279\u7EA6\u4E24\u5343\u5F20\u7167\u7247",
+        "Label": "\u6444\u5F71\u6D4B\u91CF \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u8F6F\u4EF6\u53EBMetashape"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

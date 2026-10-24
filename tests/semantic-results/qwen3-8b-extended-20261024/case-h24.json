@@ -1,0 +1,101 @@
+﻿{
+  "Id": "h24",
+  "Source": "\u7559\u5728\u5BB6\u4E70\u53F0\u5F0F\u673A\u6700\u591A6000\u5143\uFF0C\u82E5\u5FC5\u987B\u642C\u5BBF\u820D\u6539\u4E70\u7B14\u8BB0\u672C\u5219\u6700\u591A8000\u5143\u3002\u8FD9\u662F\u4E24\u79CD\u9009\u62E9\uFF0C\u4E0D\u8981\u6C42\u4E00\u53F0\u673A\u5668\u540C\u65F6\u7B26\u5408\u4E24\u79CD\u5F62\u6001\u3002",
+  "Seconds": 44.7637283,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u7559\u5728\u5BB6\u4E70\u53F0\u5F0F\u673A\u6700\u591A6000\u5143\uFF0C\u82E5\u5FC5\u987B\u642C\u5BBF\u820D\u6539\u4E70\u7B14\u8BB0\u672C\u5219\u6700\u591A8000\u5143\u3002\u8FD9\u662F\u4E24\u79CD\u9009\u62E9\uFF0C\u4E0D\u8981\u6C42\u4E00\u53F0\u673A\u5668\u540C\u65F6\u7B26\u5408\u4E24\u79CD\u5F62\u6001\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u8D2D\u673A",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "6000",
+        "Unit": "\u5143",
+        "Condition": "\u7559\u5728\u5BB6\u4E70\u53F0\u5F0F\u673A",
+        "Evidence": "\u7559\u5728\u5BB6\u4E70\u53F0\u5F0F\u673A\u6700\u591A6000\u5143",
+        "Label": "\u8D2D\u673A \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "6000\uFF1B\u5143\uFF1B\u6761\u4EF6\uFF1A\u7559\u5728\u5BB6\u4E70\u53F0\u5F0F\u673A"
+      },
+      {
+        "Subject": "\u8D2D\u673A",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "8000",
+        "Unit": "\u5143",
+        "Condition": "\u5FC5\u987B\u642C\u5BBF\u820D\u6539\u4E70\u7B14\u8BB0\u672C",
+        "Evidence": "\u82E5\u5FC5\u987B\u642C\u5BBF\u820D\u6539\u4E70\u7B14\u8BB0\u672C\u5219\u6700\u591A8000\u5143",
+        "Label": "\u8D2D\u673A \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "8000\uFF1B\u5143\uFF1B\u6761\u4EF6\uFF1A\u5FC5\u987B\u642C\u5BBF\u820D\u6539\u4E70\u7B14\u8BB0\u672C"
+      },
+      {
+        "Subject": "\u8D2D\u673A",
+        "Kind": "other",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u4E00\u53F0\u673A\u5668\u540C\u65F6\u7B26\u5408\u4E24\u79CD\u5F62\u6001",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u8FD9\u662F\u4E24\u79CD\u9009\u62E9\uFF0C\u4E0D\u8981\u6C42\u4E00\u53F0\u673A\u5668\u540C\u65F6\u7B26\u5408\u4E24\u79CD\u5F62\u6001",
+        "Label": "\u8D2D\u673A \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E00\u53F0\u673A\u5668\u540C\u65F6\u7B26\u5408\u4E24\u79CD\u5F62\u6001"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u8D2D\u673A",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "6000",
+        "Unit": "\u5143",
+        "Condition": "\u7559\u5728\u5BB6\u4E70\u53F0\u5F0F\u673A",
+        "Evidence": "\u7559\u5728\u5BB6\u4E70\u53F0\u5F0F\u673A\u6700\u591A6000\u5143",
+        "Label": "\u8D2D\u673A \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "6000\uFF1B\u5143\uFF1B\u6761\u4EF6\uFF1A\u7559\u5728\u5BB6\u4E70\u53F0\u5F0F\u673A"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u8D2D\u673A",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "8000",
+        "Unit": "\u5143",
+        "Condition": "\u5FC5\u987B\u642C\u5BBF\u820D\u6539\u4E70\u7B14\u8BB0\u672C",
+        "Evidence": "\u82E5\u5FC5\u987B\u642C\u5BBF\u820D\u6539\u4E70\u7B14\u8BB0\u672C\u5219\u6700\u591A8000\u5143",
+        "Label": "\u8D2D\u673A \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "8000\uFF1B\u5143\uFF1B\u6761\u4EF6\uFF1A\u5FC5\u987B\u642C\u5BBF\u820D\u6539\u4E70\u7B14\u8BB0\u672C"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u8D2D\u673A",
+        "Kind": "other",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u4E00\u53F0\u673A\u5668\u540C\u65F6\u7B26\u5408\u4E24\u79CD\u5F62\u6001",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u8FD9\u662F\u4E24\u79CD\u9009\u62E9\uFF0C\u4E0D\u8981\u6C42\u4E00\u53F0\u673A\u5668\u540C\u65F6\u7B26\u5408\u4E24\u79CD\u5F62\u6001",
+        "Label": "\u8D2D\u673A \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E00\u53F0\u673A\u5668\u540C\u65F6\u7B26\u5408\u4E24\u79CD\u5F62\u6001"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

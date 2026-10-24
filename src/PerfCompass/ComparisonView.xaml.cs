@@ -65,6 +65,7 @@ public partial class ComparisonView : UserControl
     {
         ContextStatus.Text = $"最近 {report.WindowDays} 天 / {report.SelectedScene ?? "全部场景"} · " + (workspace.ContextStamp == CandidateComparison.Stamp(report) ? "条件范围与当前已确认需求一致。" : "当前需求或近期任务尚未纳入这份比较，请导入并核对。");
         if (report.HistoryQuality.HasIssues) ContextStatus.Text += " 历史读取有异常；请补核无法读取的任务，比较仅限已核对条件。";
+        if (workspace.Criteria.Any(CandidateComparison.IsUnresolvedCondition)) ContextStatus.Text += " 待定选项分别比较，同一事实的区间上下界一起核对；需要同时满足的项目请填写相同的实际触发条件。旧版待定条件需重新核对。";
     }
     private void Bind()
     {
@@ -73,13 +74,16 @@ public partial class ComparisonView : UserControl
         {
             CandidatesGrid.ItemsSource = new ObservableCollection<PurchaseCandidate>(workspace.Candidates);
             CriteriaGrid.ItemsSource = new ObservableCollection<PurchaseCriterion>(workspace.Criteria);
-            ObservationsGrid.ItemsSource = new ObservableCollection<PurchaseObservation>(workspace.Observations);
             foreach (var observation in workspace.Observations)
             {
                 var candidate = workspace.Candidates.Single(c => c.Id == observation.CandidateId);
                 var criterion = workspace.Criteria.Single(c => c.Id == observation.CriterionId);
+                // These labels are derived from the current referenced rows;
+                // imported copies may be blank or retain a former display name.
+                observation.CandidateName = candidate.Name; observation.CriterionName = criterion.Name;
                 observation.SignatureFactory = () => CandidateComparison.ObservationStamp(candidate, criterion);
             }
+            ObservationsGrid.ItemsSource = new ObservableCollection<PurchaseObservation>(workspace.Observations);
             CoverageConfirm.IsChecked = workspace.CoverageConfirmed;
         }
         finally { updating = false; }

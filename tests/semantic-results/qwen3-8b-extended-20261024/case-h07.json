@@ -1,0 +1,101 @@
+﻿{
+  "Id": "h07",
+  "Source": "\u7528PrusaSlicer\u7ED93D\u6253\u5370\u673A\u5207\u7247\uFF0C\u5E73\u5E38\u4E24\u5206\u949F\u80FD\u7B49\uFF0C\u590D\u6742\u6A21\u578B\u5076\u5C14\u7B49\u5341\u5206\u949F\u4E5F\u80FD\u63A5\u53D7\uFF1B\u522B\u6309\u5341\u5206\u949F\u7B97\u6210\u65E5\u5E38\u5361\u987F\u3002",
+  "Seconds": 41.0446259,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u7528PrusaSlicer\u7ED93D\u6253\u5370\u673A\u5207\u7247\uFF0C\u5E73\u5E38\u4E24\u5206\u949F\u80FD\u7B49\uFF0C\u590D\u6742\u6A21\u578B\u5076\u5C14\u7B49\u5341\u5206\u949F\u4E5F\u80FD\u63A5\u53D7\uFF1B\u522B\u6309\u5341\u5206\u949F\u7B97\u6210\u65E5\u5E38\u5361\u987F\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "PrusaSlicer",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E24\u5206\u949F",
+        "Unit": "\u65F6\u95F4",
+        "Condition": "",
+        "Evidence": "\u5E73\u5E38\u4E24\u5206\u949F\u80FD\u7B49",
+        "Label": "PrusaSlicer \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E24\u5206\u949F\uFF1B\u65F6\u95F4"
+      },
+      {
+        "Subject": "PrusaSlicer",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5341\u5206\u949F",
+        "Unit": "\u65F6\u95F4",
+        "Condition": "\u590D\u6742\u6A21\u578B\u5076\u5C14",
+        "Evidence": "\u590D\u6742\u6A21\u578B\u5076\u5C14\u7B49\u5341\u5206\u949F\u4E5F\u80FD\u63A5\u53D7",
+        "Label": "PrusaSlicer \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5341\u5206\u949F\uFF1B\u65F6\u95F4\uFF1B\u6761\u4EF6\uFF1A\u590D\u6742\u6A21\u578B\u5076\u5C14"
+      },
+      {
+        "Subject": "PrusaSlicer",
+        "Kind": "experience",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u5361\u987F",
+        "Unit": "",
+        "Condition": "\u522B\u6309\u5341\u5206\u949F\u7B97\u6210\u65E5\u5E38\u5361\u987F",
+        "Evidence": "\u522B\u6309\u5341\u5206\u949F\u7B97\u6210\u65E5\u5E38\u5361\u987F",
+        "Label": "PrusaSlicer \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u5361\u987F\uFF1B\u6761\u4EF6\uFF1A\u522B\u6309\u5341\u5206\u949F\u7B97\u6210\u65E5\u5E38\u5361\u987F"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "PrusaSlicer",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E24\u5206\u949F",
+        "Unit": "\u65F6\u95F4",
+        "Condition": "",
+        "Evidence": "\u5E73\u5E38\u4E24\u5206\u949F\u80FD\u7B49",
+        "Label": "PrusaSlicer \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E24\u5206\u949F\uFF1B\u65F6\u95F4"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "PrusaSlicer",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u5341\u5206\u949F",
+        "Unit": "\u65F6\u95F4",
+        "Condition": "\u590D\u6742\u6A21\u578B\u5076\u5C14",
+        "Evidence": "\u590D\u6742\u6A21\u578B\u5076\u5C14\u7B49\u5341\u5206\u949F\u4E5F\u80FD\u63A5\u53D7",
+        "Label": "PrusaSlicer \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u5341\u5206\u949F\uFF1B\u65F6\u95F4\uFF1B\u6761\u4EF6\uFF1A\u590D\u6742\u6A21\u578B\u5076\u5C14"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "PrusaSlicer",
+        "Kind": "experience",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u5361\u987F",
+        "Unit": "",
+        "Condition": "\u522B\u6309\u5341\u5206\u949F\u7B97\u6210\u65E5\u5E38\u5361\u987F",
+        "Evidence": "\u522B\u6309\u5341\u5206\u949F\u7B97\u6210\u65E5\u5E38\u5361\u987F",
+        "Label": "PrusaSlicer \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u5361\u987F\uFF1B\u6761\u4EF6\uFF1A\u522B\u6309\u5341\u5206\u949F\u7B97\u6210\u65E5\u5E38\u5361\u987F"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

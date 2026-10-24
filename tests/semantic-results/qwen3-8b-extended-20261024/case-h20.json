@@ -1,0 +1,47 @@
+﻿{
+  "Id": "h20",
+  "Source": "\u4E0D\u662F\u8BF4\u4E0D\u60F3\u8981\u72EC\u663E\uFF0C\u53EA\u662F\u6CA1\u786E\u5B9A\u8981\u4E0D\u8981\uFF1B\u4E0D\u8981\u66FF\u6211\u586B\u6210\u5FC5\u987B\u6709\uFF0C\u4E5F\u522B\u586B\u6210\u5FC5\u987B\u6CA1\u6709\u3002",
+  "Seconds": 17.587099,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u4E0D\u662F\u8BF4\u4E0D\u60F3\u8981\u72EC\u663E\uFF0C\u53EA\u662F\u6CA1\u786E\u5B9A\u8981\u4E0D\u8981\uFF1B\u4E0D\u8981\u66FF\u6211\u586B\u6210\u5FC5\u987B\u6709\uFF0C\u4E5F\u522B\u586B\u6210\u5FC5\u987B\u6CA1\u6709\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u663E\u5361",
+        "Kind": "compatibility",
+        "Polarity": "uncertain",
+        "Timeframe": "current",
+        "Value": "\u9700\u8981",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4E0D\u662F\u8BF4\u4E0D\u60F3\u8981\u72EC\u663E\uFF0C\u53EA\u662F\u6CA1\u786E\u5B9A\u8981\u4E0D\u8981",
+        "Label": "\u663E\u5361 \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u73B0\u5728",
+        "Detail": "\u9700\u8981"
+      }
+    ],
+    "Questions": [
+      "\u662F\u5426\u9700\u8981\u72EC\u7ACB\u663E\u5361\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u663E\u5361",
+        "Kind": "compatibility",
+        "Polarity": "uncertain",
+        "Timeframe": "current",
+        "Value": "\u9700\u8981",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4E0D\u662F\u8BF4\u4E0D\u60F3\u8981\u72EC\u663E\uFF0C\u53EA\u662F\u6CA1\u786E\u5B9A\u8981\u4E0D\u8981",
+        "Label": "\u663E\u5361 \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u73B0\u5728",
+        "Detail": "\u9700\u8981"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

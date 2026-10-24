@@ -1,0 +1,101 @@
+﻿{
+  "Id": "h06",
+  "Source": "\u6574\u53F0\u4E3B\u673A\u9884\u7B97\u4E00\u4E07\u4E94\uFF0C\u4E0D\u542B\u5C4F\u5E55\uFF1B\u5176\u4E2D\u663E\u5361\u6700\u591A\u82B1\u4E94\u5343\u3002\u6BCF\u670830\u7F8E\u5143\u7684\u4E91\u8BA1\u7B97\u989D\u5EA6\u53E6\u5916\u7B97\u3002",
+  "Seconds": 38.7103037,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u6574\u53F0\u4E3B\u673A\u9884\u7B97\u4E00\u4E07\u4E94\uFF0C\u4E0D\u542B\u5C4F\u5E55\uFF1B\u5176\u4E2D\u663E\u5361\u6700\u591A\u82B1\u4E94\u5343\u3002\u6BCF\u670830\u7F8E\u5143\u7684\u4E91\u8BA1\u7B97\u989D\u5EA6\u53E6\u5916\u7B97\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u6574\u53F0\u4E3B\u673A",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E00\u4E07\u4E94",
+        "Unit": "\u5143",
+        "Condition": "",
+        "Evidence": "\u6574\u53F0\u4E3B\u673A\u9884\u7B97\u4E00\u4E07\u4E94",
+        "Label": "\u6574\u53F0\u4E3B\u673A \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E00\u4E07\u4E94\uFF1B\u5143"
+      },
+      {
+        "Subject": "\u663E\u5361",
+        "Kind": "resource",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u4E94\u5343",
+        "Unit": "\u5143",
+        "Condition": "\u6700\u591A",
+        "Evidence": "\u663E\u5361\u6700\u591A\u82B1\u4E94\u5343",
+        "Label": "\u663E\u5361 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E94\u5343\uFF1B\u5143\uFF1B\u6761\u4EF6\uFF1A\u6700\u591A"
+      },
+      {
+        "Subject": "\u4E91\u8BA1\u7B97\u989D\u5EA6",
+        "Kind": "budget",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "30",
+        "Unit": "\u7F8E\u5143",
+        "Condition": "",
+        "Evidence": "\u6BCF\u670830\u7F8E\u5143\u7684\u4E91\u8BA1\u7B97\u989D\u5EA6\u53E6\u5916\u7B97",
+        "Label": "\u4E91\u8BA1\u7B97\u989D\u5EA6 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "30\uFF1B\u7F8E\u5143"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u6574\u53F0\u4E3B\u673A",
+        "Kind": "budget",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E00\u4E07\u4E94",
+        "Unit": "\u5143",
+        "Condition": "",
+        "Evidence": "\u6574\u53F0\u4E3B\u673A\u9884\u7B97\u4E00\u4E07\u4E94",
+        "Label": "\u6574\u53F0\u4E3B\u673A \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E00\u4E07\u4E94\uFF1B\u5143"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u663E\u5361",
+        "Kind": "resource",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u4E94\u5343",
+        "Unit": "\u5143",
+        "Condition": "\u6700\u591A",
+        "Evidence": "\u663E\u5361\u6700\u591A\u82B1\u4E94\u5343",
+        "Label": "\u663E\u5361 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E94\u5343\uFF1B\u5143\uFF1B\u6761\u4EF6\uFF1A\u6700\u591A"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u4E91\u8BA1\u7B97\u989D\u5EA6",
+        "Kind": "budget",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "30",
+        "Unit": "\u7F8E\u5143",
+        "Condition": "",
+        "Evidence": "\u6BCF\u670830\u7F8E\u5143\u7684\u4E91\u8BA1\u7B97\u989D\u5EA6\u53E6\u5916\u7B97",
+        "Label": "\u4E91\u8BA1\u7B97\u989D\u5EA6 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "30\uFF1B\u7F8E\u5143"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

@@ -1,0 +1,106 @@
+﻿{
+  "Id": "h13",
+  "Source": "\u5982\u679C\u63A5\u5230\u822A\u62CD\u5EFA\u6A21\u9879\u76EE\u624D\u7528RealityCapture\uFF0C\u5426\u5219\u7EE7\u7EED\u53EA\u505A\u6392\u7248\uFF1B\u9879\u76EE\u8FD8\u6CA1\u8C08\u6210\uFF0C\u522B\u6309\u5DF2\u63A5\u5355\u6765\u7B97\u3002",
+  "Seconds": 50.4994874,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u5982\u679C\u63A5\u5230\u822A\u62CD\u5EFA\u6A21\u9879\u76EE\u624D\u7528RealityCapture\uFF0C\u5426\u5219\u7EE7\u7EED\u53EA\u505A\u6392\u7248\uFF1B\u9879\u76EE\u8FD8\u6CA1\u8C08\u6210\uFF0C\u522B\u6309\u5DF2\u63A5\u5355\u6765\u7B97\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u822A\u62CD\u5EFA\u6A21\u9879\u76EE",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u4F7F\u7528RealityCapture",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u5982\u679C\u63A5\u5230\u822A\u62CD\u5EFA\u6A21\u9879\u76EE\u624D\u7528RealityCapture",
+        "Label": "\u822A\u62CD\u5EFA\u6A21\u9879\u76EE \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u4F7F\u7528RealityCapture"
+      },
+      {
+        "Subject": "\u6392\u7248",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u7EE7\u7EED\u53EA\u505A\u6392\u7248",
+        "Unit": "",
+        "Condition": "\u5426\u5219",
+        "Evidence": "\u5426\u5219\u7EE7\u7EED\u53EA\u505A\u6392\u7248",
+        "Label": "\u6392\u7248 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u7EE7\u7EED\u53EA\u505A\u6392\u7248\uFF1B\u6761\u4EF6\uFF1A\u5426\u5219"
+      },
+      {
+        "Subject": "\u9879\u76EE",
+        "Kind": "schedule",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u6309\u5DF2\u63A5\u5355\u6765\u7B97",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u9879\u76EE\u8FD8\u6CA1\u8C08\u6210\uFF0C\u522B\u6309\u5DF2\u63A5\u5355\u6765\u7B97",
+        "Label": "\u9879\u76EE \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u6309\u5DF2\u63A5\u5355\u6765\u7B97"
+      }
+    ],
+    "Questions": [
+      "\u822A\u62CD\u5EFA\u6A21\u9879\u76EE\u662F\u5426\u5DF2\u7ECF\u8C08\u6210\uFF1F",
+      "\u662F\u5426\u9700\u8981\u4E3ARealityCapture\u8F6F\u4EF6\u51C6\u5907\u7279\u5B9A\u786C\u4EF6\u914D\u7F6E\uFF1F",
+      "\u6392\u7248\u5DE5\u4F5C\u662F\u5426\u9700\u8981\u7279\u5B9A\u7684\u786C\u4EF6\u652F\u6301\uFF1F",
+      "\u662F\u5426\u9700\u8981\u8003\u8651\u5176\u4ED6\u8F6F\u4EF6\u7684\u517C\u5BB9\u6027\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u822A\u62CD\u5EFA\u6A21\u9879\u76EE",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "future",
+        "Value": "\u4F7F\u7528RealityCapture",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u5982\u679C\u63A5\u5230\u822A\u62CD\u5EFA\u6A21\u9879\u76EE\u624D\u7528RealityCapture",
+        "Label": "\u822A\u62CD\u5EFA\u6A21\u9879\u76EE \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u672A\u6765",
+        "Detail": "\u4F7F\u7528RealityCapture"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u6392\u7248",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u7EE7\u7EED\u53EA\u505A\u6392\u7248",
+        "Unit": "",
+        "Condition": "\u5426\u5219",
+        "Evidence": "\u5426\u5219\u7EE7\u7EED\u53EA\u505A\u6392\u7248",
+        "Label": "\u6392\u7248 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u7EE7\u7EED\u53EA\u505A\u6392\u7248\uFF1B\u6761\u4EF6\uFF1A\u5426\u5219"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u9879\u76EE",
+        "Kind": "schedule",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u6309\u5DF2\u63A5\u5355\u6765\u7B97",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u9879\u76EE\u8FD8\u6CA1\u8C08\u6210\uFF0C\u522B\u6309\u5DF2\u63A5\u5355\u6765\u7B97",
+        "Label": "\u9879\u76EE \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u6309\u5DF2\u63A5\u5355\u6765\u7B97"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

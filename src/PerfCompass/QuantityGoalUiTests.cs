@@ -71,7 +71,7 @@ public partial class MainWindow
             view.CoverageConfirm.IsChecked = true; Click(view.CompareButton);
             require(view.Result!.Candidates[1].State == "pass" && view.Result.Candidates[0].State == "fail" && view.Result.Candidates[2].State == "fail" && view.Result.Summary.Contains("均衡方案"), "Both budget endpoints and measured latency constrain the final candidate result");
             string html = view.ExportHtml(); File.WriteAllText(Path.Combine(output, "quantity-comparison.html"), html);
-            require(html.Contains("严格小于") && html.Contains("0.009") && html.Contains("6000") && html.Contains("8000") && CandidateComparison.Load(store.Root).Version == "comparison-1.2", "Export and persisted schema retain strict operators ranges and measurements");
+            require(html.Contains("严格小于") && html.Contains("0.009") && html.Contains("6000") && html.Contains("8000") && CandidateComparison.Load(store.Root).Version == "comparison-1.3", "Export and persisted schema retain strict operators ranges and measurements");
             view.ComparisonResults.BringIntoView(); await screenshot("23-quantity-comparison");
         }
         finally { semanticExtractorFactory = factory; }

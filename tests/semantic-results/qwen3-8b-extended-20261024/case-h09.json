@@ -1,0 +1,106 @@
+﻿{
+  "Id": "h09",
+  "Source": "\u5B9E\u9A8C\u5BA4\u7684LabVIEW\u7A0B\u5E8F\u4F9D\u8D56\u8001\u6B3EUSB\u6388\u6743\u94A5\u5319\uFF0C\u8FD8\u8981\u63A5\u4E32\u53E3\u4EEA\u5668\uFF1B\u53EA\u8981\u80FD\u517C\u5BB9\uFF0C\u8DD1\u5206\u9AD8\u4E00\u70B9\u4F4E\u4E00\u70B9\u65E0\u6240\u8C13\u3002",
+  "Seconds": 48.6083141,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u5B9E\u9A8C\u5BA4\u7684LabVIEW\u7A0B\u5E8F\u4F9D\u8D56\u8001\u6B3EUSB\u6388\u6743\u94A5\u5319\uFF0C\u8FD8\u8981\u63A5\u4E32\u53E3\u4EEA\u5668\uFF1B\u53EA\u8981\u80FD\u517C\u5BB9\uFF0C\u8DD1\u5206\u9AD8\u4E00\u70B9\u4F4E\u4E00\u70B9\u65E0\u6240\u8C13\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "LabVIEW\u7A0B\u5E8F",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u8001\u6B3EUSB\u6388\u6743\u94A5\u5319",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u5B9E\u9A8C\u5BA4\u7684LabVIEW\u7A0B\u5E8F\u4F9D\u8D56\u8001\u6B3EUSB\u6388\u6743\u94A5\u5319",
+        "Label": "LabVIEW\u7A0B\u5E8F \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u8001\u6B3EUSB\u6388\u6743\u94A5\u5319"
+      },
+      {
+        "Subject": "LabVIEW\u7A0B\u5E8F",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E32\u53E3\u4EEA\u5668",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u8FD8\u8981\u63A5\u4E32\u53E3\u4EEA\u5668",
+        "Label": "LabVIEW\u7A0B\u5E8F \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E32\u53E3\u4EEA\u5668"
+      },
+      {
+        "Subject": "\u7535\u8111",
+        "Kind": "experience",
+        "Polarity": "uncertain",
+        "Timeframe": "current",
+        "Value": "\u8DD1\u5206",
+        "Unit": "",
+        "Condition": "\u517C\u5BB9",
+        "Evidence": "\u53EA\u8981\u80FD\u517C\u5BB9\uFF0C\u8DD1\u5206\u9AD8\u4E00\u70B9\u4F4E\u4E00\u70B9\u65E0\u6240\u8C13",
+        "Label": "\u7535\u8111 \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u73B0\u5728",
+        "Detail": "\u8DD1\u5206\uFF1B\u6761\u4EF6\uFF1A\u517C\u5BB9"
+      }
+    ],
+    "Questions": [
+      "\u662F\u5426\u9700\u8981\u652F\u6301\u8001\u6B3EUSB\u6388\u6743\u94A5\u5319\u7684\u63A5\u53E3\uFF1F",
+      "\u662F\u5426\u9700\u8981\u652F\u6301\u4E32\u53E3\u4EEA\u5668\u7684\u63A5\u53E3\uFF1F",
+      "\u662F\u5426\u9700\u8981\u517C\u5BB9LabVIEW\u7A0B\u5E8F\uFF1F",
+      "\u662F\u5426\u9700\u8981\u8003\u8651\u517C\u5BB9\u6027\u5BF9\u8DD1\u5206\u7684\u5F71\u54CD\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "LabVIEW\u7A0B\u5E8F",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u8001\u6B3EUSB\u6388\u6743\u94A5\u5319",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u5B9E\u9A8C\u5BA4\u7684LabVIEW\u7A0B\u5E8F\u4F9D\u8D56\u8001\u6B3EUSB\u6388\u6743\u94A5\u5319",
+        "Label": "LabVIEW\u7A0B\u5E8F \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u8001\u6B3EUSB\u6388\u6743\u94A5\u5319"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "LabVIEW\u7A0B\u5E8F",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4E32\u53E3\u4EEA\u5668",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u8FD8\u8981\u63A5\u4E32\u53E3\u4EEA\u5668",
+        "Label": "LabVIEW\u7A0B\u5E8F \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4E32\u53E3\u4EEA\u5668"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u7535\u8111",
+        "Kind": "experience",
+        "Polarity": "uncertain",
+        "Timeframe": "current",
+        "Value": "\u8DD1\u5206",
+        "Unit": "",
+        "Condition": "\u517C\u5BB9",
+        "Evidence": "\u53EA\u8981\u80FD\u517C\u5BB9\uFF0C\u8DD1\u5206\u9AD8\u4E00\u70B9\u4F4E\u4E00\u70B9\u65E0\u6240\u8C13",
+        "Label": "\u7535\u8111 \u00B7 \u5C1A\u672A\u786E\u5B9A \u00B7 \u73B0\u5728",
+        "Detail": "\u8DD1\u5206\uFF1B\u6761\u4EF6\uFF1A\u517C\u5BB9"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

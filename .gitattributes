@@ -13,3 +13,4 @@ tests/nlp-extraction-prompt.txt text eol=lf
 tests/nlp-output.schema.json text eol=lf
 # Preserve hashed provider records, including their original CRLF endings.
 tests/semantic-results/** -text whitespace=cr-at-eol
+tests/fixtures/comparison-1.2-uncertainty.json -text

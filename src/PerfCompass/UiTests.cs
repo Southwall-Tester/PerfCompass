@@ -21,7 +21,8 @@ public partial class MainWindow
         bool historyAggregationOnly = Environment.GetCommandLineArgs().Contains("--ui-test-history-aggregation-only");
         bool taskPlanOnly = Environment.GetCommandLineArgs().Contains("--ui-test-task-plan-only");
         bool comparisonDraftOnly = Environment.GetCommandLineArgs().Contains("--ui-test-comparison-draft-only");
-        var output = Path.GetFullPath(comparisonDraftOnly ? "artifacts/ui-comparison-draft-focused" : taskPlanOnly ? "artifacts/ui-task-plan-focused" : historyAggregationOnly ? "artifacts/ui-history-aggregation-focused" : observationOnly ? "artifacts/ui-observation-focused" : gpuFreshnessOnly ? "artifacts/ui-gpu-freshness-focused" : gpuOnly ? "artifacts/ui-gpu-focused" : cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
+        bool uncertaintyOnly = Environment.GetCommandLineArgs().Contains("--ui-test-uncertainty-only");
+        var output = Path.GetFullPath(uncertaintyOnly ? "artifacts/ui-uncertainty-focused" : comparisonDraftOnly ? "artifacts/ui-comparison-draft-focused" : taskPlanOnly ? "artifacts/ui-task-plan-focused" : historyAggregationOnly ? "artifacts/ui-history-aggregation-focused" : observationOnly ? "artifacts/ui-observation-focused" : gpuFreshnessOnly ? "artifacts/ui-gpu-freshness-focused" : gpuOnly ? "artifacts/ui-gpu-focused" : cpuOnly ? "artifacts/ui-cpu-focused" : retentionOnly ? "artifacts/ui-retention-focused" : timingOnly ? "artifacts/ui-timing-focused" : historyOnly ? "artifacts/ui-history-focused" : "artifacts/ui"); Directory.CreateDirectory(output);
         var results = new List<string>();
         File.WriteAllText(Path.Combine(output, "results.txt"), "RUNNING " + DateTimeOffset.Now.ToString("O"));
         void Require(bool value, string name) { results.Add((value ? "PASS " : "FAIL ") + name); File.AppendAllText(Path.Combine(output, "results.txt"), "\n" + results[^1]); if (!value) throw new Exception(name); }
@@ -46,6 +47,7 @@ public partial class MainWindow
             Require(live?.Sample.Cpu is >= 0 and <= 100, "Real CPU sample available");
             Require(live?.Sample.MemoryTotalGb > 0, "Real memory sample available");
             Require(MemoryDetail.Text.Contains("GiB"), "Real memory telemetry is displayed in binary units");
+            if (uncertaintyOnly) { await RunPurchaseScenarioUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (comparisonDraftOnly) { await RunComparisonDraftUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (taskPlanOnly)
             {

@@ -1,0 +1,200 @@
+{
+    "Version":  "semantic-review-1.0",
+    "CorpusSha256":  "3CDFBA654B58B7D1810D4410E095D86B00A15C6BD3AAC908FE80E660975D80A4",
+    "ExperimentSha256":  "566F6E2C8C08B2D2A2CAF279E40945F144486C54D9DE2953B4D7D296EDC58B1D",
+    "Reviewer":  "Codex 开发代理逐例审阅；不是独立人工标注、盲测或通用准确率，仍需独立复核",
+    "Cases":  [
+                  {
+                      "Id":  "h01",
+                      "CaseSha256":  "1FA348E178CCB8A82428D5F39929AE11C0AFE39F054B843CBF2128B99A384838",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "过去每周进行仿真和当前停用已正确分开。第三项把尚未决定是否恢复的意向标为 conditional，并把下学期可能恢复本身作为触发条件；应保留 uncertain，不能用自指条件代替尚未确定的状态。没有由此提出具体CPU或内存配置。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h02",
+                      "CaseSha256":  "B143042D49EED63B8B3797CB1A6C6802CDF2448BB9349490420E43C2AFF445FE",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "摄影测量与约两千张照片已保留为未来任务，没有推导内存容量。但同一未来任务的Metashape兼容性被标为current，未保留现在尚未做过；从下个月开始被放入frequency而不是时间安排，改变了任务阶段。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h03",
+                      "CaseSha256":  "44928B3C76D324C23E5DFA32E6531107D0DF31F126F270F41CA149D98BDB9694",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "保留当前每天在DaVinci剪8K素材，未把8K转换为内存。但漏掉过去不做剪辑的对照，并把不能只按去年办公记录选择写成对办公记录的excluded，丢失只这一限定；近期需求应与历史对照，不等于排除全部旧记录。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h04",
+                      "CaseSha256":  "5FCC2EDAFEAC1EBB4042BD4578EF66FB21368F5C545622BC7F6DA73A6E3BFBA4",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "本机SSH和浏览器已保留，未提出本机八张A100的要求。但当前在远程集群训练被标成past，当前不应计入的集群GPU也标成past；训练事实的Value仅为运行，远程位置只在引用里，不能据此正确区分当前远端与本机任务。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h05",
+                      "CaseSha256":  "04DA8E9FE3D869AF44C09D3D69AD82DBFE016EAAD242144DA81F5AE84A32EB42",
+                      "Rating":  "incomplete",
+                      "Issues":  [
+                                     "保留32GB与显存不是越大越好的文字，没有把64GB捏造成必需或上限。但内存Value只剩32，明确的不能低于方向没有进入结构化数值，当前数量编译没有生成这个下限；显存偏好放在resource/excluded下也需核对，不能解释为不需要显存。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h06",
+                      "CaseSha256":  "B55AE4C1B48D64FE1E4BE59B1198A98A6055381951D8DDFEDCA56AB3CA8BE801",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "显卡最多花五千被标为resource/excluded，并把最多写入触发条件，反转了组件预算上限且不通过条件字段校验；整机预算未保留不含屏幕的费用范围，云费用的每月和另外算关系未进入结构化值。美元未自动转成人民币；一万五仍需按原文核对，不能借此猜另一预算。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h07",
+                      "CaseSha256":  "E56168379CCFBDDC0AB62A3DA353BB9E527718E73A46995F9A72663044FEF7F2",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "保留PrusaSlicer和两种等待时长，但把等待容忍写为workload，unit为笼统时间。复杂模型偶尔被塞进required事项的Condition；别按十分钟算成日常卡顿又被当成excluded体验的触发条件，两项字段校验失败。任务、偶发情景与可接受等待尚未正确连通。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h08",
+                      "CaseSha256":  "477BAA7EFCB8D791EABF7652EDD4499610A6BC758856517E9BD21147FB04B05E",
+                      "Rating":  "complete",
+                      "Issues":  [
+
+                                 ]
+                  },
+                  {
+                      "Id":  "h09",
+                      "CaseSha256":  "7E57CB4B29FBB8B27120C86B7809E5EB3F9F874BD84C85E62475A0BBC3242EC9",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "USB授权钥匙与串口仪器的兼容性已保留，未猜处理器或系统。但确定的跑分高低容忍被改成uncertain，Value只剩跑分，并把兼容写成不确定触发条件；同时重复询问已明确要求的USB、串口和LabVIEW兼容性。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h10",
+                      "CaseSha256":  "A9212831B31FAA37705272187E710248A25FECD8DDB7FA3495934A9C99E707A9",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "保留录音、Kontakt和网课回放，但两个required事项又带录人声时Condition，不通过条件字段检查；监听延迟的Value只剩不超过，12完全未进入数值字段，无法得到12ms的非严格上限。直播排除录音和不追求更低的范围也需要核对，不能将其读成排除直播或排除低延迟。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h11",
+                      "CaseSha256":  "792206C261D5CAFA95CB57113FCC88C093F11C44D6A6424EC634F88E3885F210",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "节奏VR任务和分辨率不是显存的提示已保留，但90fps整体塞进Unit，Value仅稳定，数值与单位未正确分离；头显每只眼的对象范围又被写成required事项的触发Condition，字段校验失败。没有生成显存数值，但这还不是完整的帧率目标与头显背景描述。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h12",
+                      "CaseSha256":  "698E904B30FD171DF6AB715DEEB04351A7DD08065067C82A212B48A5E42CBAE0",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "罕见shader编译与十五分钟等待均保留，日常拖动物体顺畅也未删除。但两个月一次的频率被拆成Value两个月、Unit次，任务/频率关系不完整；每天拖动物体被放进required体验的Condition，字段校验失败。当前已知日常任务不应因此变成尚未触发的新需求。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h13",
+                      "CaseSha256":  "6EC8B053D36DD47519CED895790C76CCF5F9BF2338D2B89E0FFB90B5491E4DBE",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "把仅在接到项目时使用RealityCapture直接标为required/future，缺少触发条件，原文没谈成被另记为schedule/excluded也不能修复这项无条件新任务。否则排版又作为required却带Condition否则，字段检查失败，并重复询问已经明确未谈成的项目状态。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h14",
+                      "CaseSha256":  "B43E9EB2F45F7FE2B47BBA08A63322431EAFD27438C26450527EB2D1F08329AC",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "五人轮流使用已保留，没有推导五任务并发，也未生成显存容量。但每个人约8GB的资料规模被写为公共电脑resource/required 8GB，并将每个人资料当成触发Condition，丢失约数和数据归属且不通过条件字段校验；资料量不能直接成为整机资源要求。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h15",
+                      "CaseSha256":  "30B5285A73C225CA967138AB025B33679EFA1156C77D51C6B7D44C4CC9664603",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "未来设计任务和截止日期保留，但9000元预算上限被标为excluded且Value没有上限方向，不能作为有效预算约束。Godot与Unity虽然各标uncertain，却未在结构化值中保留只选其一的替代关系；两项同名引擎不能据此当作同时需要。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h16",
+                      "CaseSha256":  "C0BB2560D591BEAC2AAA7D15AC41A980E5D284EFE0A9E10183D7B53D394145DE",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "朋友与本人两台电脑的名称已区分，本机KiCad和浏览器保留，未生成本机128GB容量。但朋友尚想要128GB的要求被写为past，原文没有说明该要求已经过去；不能靠错误的过去时间碰巧过滤第三方需求。本人未给内存数值保留为uncertain，仍需核对未提供与未确定的区别。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h17",
+                      "CaseSha256":  "8DF79AABACE33923D8BF8A089B91BECE7331603AC7C0191E74179C5F5B520173",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "本体1.4公斤和充电器65瓦对象分开，未推导整机功耗下限。但最多的重量方向未进入Value；适配器重量不计入被写成excluded事项的Condition，既不是触发条件，也不能表示排除适配器，字段检查失败。可以接受65瓦也不应升级成必须使用65瓦。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h18",
+                      "CaseSha256":  "7A1A7DFE46BD5B485F27312B5DA5CD033F81F0835C7F0A5E3235058A930D0334",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "没有猜测CPU或GPU配置，但必需的ZetaWeave任务只在新工作事项的引用中出现，Value仅每天，处理一批数据的规模丢失；ZetaWeave本身被归入compatibility/uncertain。明确任务与未知资源特性未正确拆分，还反问用户已明确不知道的软件类型与CPU/GPU依赖。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h19",
+                      "CaseSha256":  "F2A91368ED4FE0C6F9355F24C9726D89836FB385E3059F6F3C4D96C185F83B0D",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "当前写作保留。但no longer need的当前停止被标成past排除，不能正确表达现在已不需要本地渲染；未来might start CAD被标required且带unless Condition，字段检查失败，也丢失未定意向的肯否状态。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h20",
+                      "CaseSha256":  "39105B6EFA42ED3314DE09E725C7C2C28EFFB83F8CB8D7ED9BBD3B26FE9442EC",
+                      "Rating":  "complete",
+                      "Issues":  [
+
+                                 ]
+                  },
+                  {
+                      "Id":  "h21",
+                      "CaseSha256":  "37C972973F1CA0FB82DFBF27DCAE1DC2CCB3DA495291F2AEF475EE707A7F5F48",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "当前每天的本地语音转写保留，没有直接推断缺哪个部件。但上个月只看网页的基线缺失；不能让旧平均盖过新需求被写为past/resource/excluded且Condition为盖过这周的新需求，字段校验失败。半小时的不接受体验仍需与已观察耗时区分，不能升级成未来性能上限。"
+                                 ]
+                  },
+                  {
+                      "Id":  "h22",
+                      "CaseSha256":  "9151E88601C549EDF0B22C6D6DB4B748C3B30A153494AD4DC73B7B2C5107A848",
+                      "Rating":  "complete",
+                      "Issues":  [
+
+                                 ]
+                  },
+                  {
+                      "Id":  "h23",
+                      "CaseSha256":  "460610F082363988FE59E5983D61078AF32026E7A89A013F846ADF8234111FEA",
+                      "Rating":  "complete",
+                      "Issues":  [
+
+                                 ]
+                  },
+                  {
+                      "Id":  "h24",
+                      "CaseSha256":  "510436B0A926A22133E0083437AB0066D5593481015EA832CBCA17C11ADF018F",
+                      "Rating":  "incorrect",
+                      "Issues":  [
+                                     "两个形态及触发文字分开保留，也记下不要求同时符合两形态；但两项预算都写required并带Condition，字段校验失败，Value只剩6000和8000，没有最多的上限方向。不能直接作为已核对的两种条件预算使用，也不能合并成无条件区间。"
+                                 ]
+                  }
+              ]
+}

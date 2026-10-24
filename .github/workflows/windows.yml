@@ -125,6 +125,21 @@ jobs:
         with:
           name: native-task-plan
           path: artifacts/ui-task-plan-focused/
+      - name: Native unresolved alternative comparison flow
+        shell: pwsh
+        run: |
+          $root = Join-Path $PWD 'artifacts/ci-uncertainty/data'
+          $p = Start-Process ./release-next/PerfCompass.exe -ArgumentList @('--ui-test','--ui-test-uncertainty-only','--data-dir',('"' + $root + '"')) -PassThru -WindowStyle Hidden
+          if (-not $p.WaitForExit(90000)) { $p.Kill(); throw 'Native uncertainty flow exceeded its bounded check.' }
+          if ($p.ExitCode -ne 0) { throw 'Native uncertainty flow failed.' }
+          $checks = Get-Content artifacts/ui-uncertainty-focused/results.txt
+          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 19 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Native uncertainty checks are incomplete.' }
+      - name: Native unresolved alternative evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-uncertainty
+          path: artifacts/ui-uncertainty-focused/
       - name: Native candidate draft preservation and exit flow
         shell: pwsh
         run: |

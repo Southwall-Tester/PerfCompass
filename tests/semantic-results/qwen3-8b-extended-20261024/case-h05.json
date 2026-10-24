@@ -1,0 +1,73 @@
+﻿{
+  "Id": "h05",
+  "Source": "\u5185\u5B58\u4E0D\u80FD\u4F4E\u4E8E32GB\uFF0C\u4F46\u6211\u6CA1\u6709\u8BF4\u4E00\u5B9A\u898164GB\uFF1B\u663E\u5B58\u4E5F\u4E0D\u662F\u8D8A\u5927\u8D8A\u597D\u3002",
+  "Seconds": 25.3567145,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u5185\u5B58\u4E0D\u80FD\u4F4E\u4E8E32GB\uFF0C\u4F46\u6211\u6CA1\u6709\u8BF4\u4E00\u5B9A\u898164GB\uFF1B\u663E\u5B58\u4E5F\u4E0D\u662F\u8D8A\u5927\u8D8A\u597D\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u5185\u5B58",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "32",
+        "Unit": "GB",
+        "Condition": "",
+        "Evidence": "\u5185\u5B58\u4E0D\u80FD\u4F4E\u4E8E32GB",
+        "Label": "\u5185\u5B58 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "32\uFF1BGB"
+      },
+      {
+        "Subject": "\u663E\u5B58",
+        "Kind": "resource",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u8D8A\u5927\u8D8A\u597D",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u663E\u5B58\u4E5F\u4E0D\u662F\u8D8A\u5927\u8D8A\u597D",
+        "Label": "\u663E\u5B58 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u8D8A\u5927\u8D8A\u597D"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u5185\u5B58",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "32",
+        "Unit": "GB",
+        "Condition": "",
+        "Evidence": "\u5185\u5B58\u4E0D\u80FD\u4F4E\u4E8E32GB",
+        "Label": "\u5185\u5B58 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "32\uFF1BGB"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u663E\u5B58",
+        "Kind": "resource",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u8D8A\u5927\u8D8A\u597D",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u663E\u5B58\u4E5F\u4E0D\u662F\u8D8A\u5927\u8D8A\u597D",
+        "Label": "\u663E\u5B58 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u8D8A\u5927\u8D8A\u597D"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

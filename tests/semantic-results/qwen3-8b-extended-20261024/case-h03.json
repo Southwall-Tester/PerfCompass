@@ -1,0 +1,134 @@
+﻿{
+  "Id": "h03",
+  "Source": "\u4EE5\u524D\u4E0D\u78B0\u526A\u8F91\uFF0C\u73B0\u5728\u6BCF\u5929\u90FD\u5728DaVinci\u91CC\u526A8K\u7D20\u6750\uFF0C\u4E0D\u80FD\u518D\u53EA\u6309\u6211\u53BB\u5E74\u7684\u529E\u516C\u8BB0\u5F55\u9009\u3002",
+  "Seconds": 59.0236661,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u4EE5\u524D\u4E0D\u78B0\u526A\u8F91\uFF0C\u73B0\u5728\u6BCF\u5929\u90FD\u5728DaVinci\u91CC\u526A8K\u7D20\u6750\uFF0C\u4E0D\u80FD\u518D\u53EA\u6309\u6211\u53BB\u5E74\u7684\u529E\u516C\u8BB0\u5F55\u9009\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u526A\u8F91",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6BCF\u5929",
+        "Unit": "\u6B21",
+        "Condition": "",
+        "Evidence": "\u73B0\u5728\u6BCF\u5929\u90FD\u5728DaVinci\u91CC\u526A8K\u7D20\u6750",
+        "Label": "\u526A\u8F91 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6BCF\u5929\uFF1B\u6B21"
+      },
+      {
+        "Subject": "DaVinci",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4F7F\u7528",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u73B0\u5728\u6BCF\u5929\u90FD\u5728DaVinci\u91CC\u526A8K\u7D20\u6750",
+        "Label": "DaVinci \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4F7F\u7528"
+      },
+      {
+        "Subject": "\u7D20\u6750",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "8K",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u73B0\u5728\u6BCF\u5929\u90FD\u5728DaVinci\u91CC\u526A8K\u7D20\u6750",
+        "Label": "\u7D20\u6750 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "8K"
+      },
+      {
+        "Subject": "\u529E\u516C\u8BB0\u5F55",
+        "Kind": "other",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u53BB\u5E74\u7684",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4E0D\u80FD\u518D\u53EA\u6309\u6211\u53BB\u5E74\u7684\u529E\u516C\u8BB0\u5F55\u9009",
+        "Label": "\u529E\u516C\u8BB0\u5F55 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u53BB\u5E74\u7684"
+      }
+    ],
+    "Questions": [
+      "\u9700\u8981\u7684\u7535\u8111\u914D\u7F6E\u662F\u5426\u652F\u63018K\u7D20\u6750\u526A\u8F91\uFF1F",
+      "\u662F\u5426\u9700\u8981\u7279\u5B9A\u7684\u786C\u4EF6\u52A0\u901F\u652F\u6301\uFF1F",
+      "\u662F\u5426\u9700\u8981\u8003\u8651\u4FBF\u643A\u6027\uFF1F",
+      "\u662F\u5426\u9700\u8981\u8003\u8651\u672A\u6765\u53EF\u80FD\u7684\u5347\u7EA7\u9700\u6C42\uFF1F"
+    ]
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u526A\u8F91",
+        "Kind": "workload",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u6BCF\u5929",
+        "Unit": "\u6B21",
+        "Condition": "",
+        "Evidence": "\u73B0\u5728\u6BCF\u5929\u90FD\u5728DaVinci\u91CC\u526A8K\u7D20\u6750",
+        "Label": "\u526A\u8F91 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u6BCF\u5929\uFF1B\u6B21"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "DaVinci",
+        "Kind": "compatibility",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "\u4F7F\u7528",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u73B0\u5728\u6BCF\u5929\u90FD\u5728DaVinci\u91CC\u526A8K\u7D20\u6750",
+        "Label": "DaVinci \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "\u4F7F\u7528"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u7D20\u6750",
+        "Kind": "resource",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "8K",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u73B0\u5728\u6BCF\u5929\u90FD\u5728DaVinci\u91CC\u526A8K\u7D20\u6750",
+        "Label": "\u7D20\u6750 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "8K"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u529E\u516C\u8BB0\u5F55",
+        "Kind": "other",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "\u53BB\u5E74\u7684",
+        "Unit": "",
+        "Condition": "",
+        "Evidence": "\u4E0D\u80FD\u518D\u53EA\u6309\u6211\u53BB\u5E74\u7684\u529E\u516C\u8BB0\u5F55\u9009",
+        "Label": "\u529E\u516C\u8BB0\u5F55 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u53BB\u5E74\u7684"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}

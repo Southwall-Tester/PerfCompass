@@ -1,0 +1,101 @@
+﻿{
+  "Id": "h17",
+  "Source": "\u7B14\u8BB0\u672C\u672C\u4F53\u6700\u591A1.4\u516C\u65A4\uFF0C\u9002\u914D\u5668\u91CD\u91CF\u4E0D\u8BA1\u5165\uFF1B\u6211\u53EF\u4EE5\u63A5\u53D765\u74E6\u5145\u7535\u5668\uFF0C\u4E0D\u662F\u8BF4\u6574\u673A\u529F\u8017\u898165\u74E6\u4EE5\u4E0A\u3002",
+  "Seconds": 39.222682,
+  "Outcome": "received",
+  "Draft": {
+    "Source": "\u7B14\u8BB0\u672C\u672C\u4F53\u6700\u591A1.4\u516C\u65A4\uFF0C\u9002\u914D\u5668\u91CD\u91CF\u4E0D\u8BA1\u5165\uFF1B\u6211\u53EF\u4EE5\u63A5\u53D765\u74E6\u5145\u7535\u5668\uFF0C\u4E0D\u662F\u8BF4\u6574\u673A\u529F\u8017\u898165\u74E6\u4EE5\u4E0A\u3002",
+    "Model": "perfcompass-research",
+    "Provider": "127.0.0.1",
+    "Facts": [
+      {
+        "Subject": "\u7B14\u8BB0\u672C\u672C\u4F53",
+        "Kind": "portability",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "1.4",
+        "Unit": "\u516C\u65A4",
+        "Condition": "",
+        "Evidence": "\u7B14\u8BB0\u672C\u672C\u4F53\u6700\u591A1.4\u516C\u65A4",
+        "Label": "\u7B14\u8BB0\u672C\u672C\u4F53 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "1.4\uFF1B\u516C\u65A4"
+      },
+      {
+        "Subject": "\u9002\u914D\u5668",
+        "Kind": "portability",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "",
+        "Unit": "",
+        "Condition": "\u91CD\u91CF\u4E0D\u8BA1\u5165",
+        "Evidence": "\u9002\u914D\u5668\u91CD\u91CF\u4E0D\u8BA1\u5165",
+        "Label": "\u9002\u914D\u5668 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u6761\u4EF6\uFF1A\u91CD\u91CF\u4E0D\u8BA1\u5165"
+      },
+      {
+        "Subject": "\u5145\u7535\u5668",
+        "Kind": "power",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "65",
+        "Unit": "\u74E6",
+        "Condition": "",
+        "Evidence": "\u6211\u53EF\u4EE5\u63A5\u53D765\u74E6\u5145\u7535\u5668",
+        "Label": "\u5145\u7535\u5668 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "65\uFF1B\u74E6"
+      }
+    ],
+    "Questions": []
+  },
+  "Validation": [
+    {
+      "Fact": {
+        "Subject": "\u7B14\u8BB0\u672C\u672C\u4F53",
+        "Kind": "portability",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "1.4",
+        "Unit": "\u516C\u65A4",
+        "Condition": "",
+        "Evidence": "\u7B14\u8BB0\u672C\u672C\u4F53\u6700\u591A1.4\u516C\u65A4",
+        "Label": "\u7B14\u8BB0\u672C\u672C\u4F53 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "1.4\uFF1B\u516C\u65A4"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u9002\u914D\u5668",
+        "Kind": "portability",
+        "Polarity": "excluded",
+        "Timeframe": "current",
+        "Value": "",
+        "Unit": "",
+        "Condition": "\u91CD\u91CF\u4E0D\u8BA1\u5165",
+        "Evidence": "\u9002\u914D\u5668\u91CD\u91CF\u4E0D\u8BA1\u5165",
+        "Label": "\u9002\u914D\u5668 \u00B7 \u660E\u786E\u6392\u9664 \u00B7 \u73B0\u5728",
+        "Detail": "\u6761\u4EF6\uFF1A\u91CD\u91CF\u4E0D\u8BA1\u5165"
+      },
+      "ReviewIssue": "\u5B58\u5728\u89E6\u53D1\u6761\u4EF6\uFF0C\u8BF7\u5C06\u4E8B\u9879\u6539\u4E3A\u6761\u4EF6\u9700\u6C42\u6216\u5C1A\u672A\u786E\u5B9A\uFF0C\u4E0D\u80FD\u4F5C\u4E3A\u65E0\u6761\u4EF6\u8981\u6C42\u3002",
+      "QuantityCandidates": []
+    },
+    {
+      "Fact": {
+        "Subject": "\u5145\u7535\u5668",
+        "Kind": "power",
+        "Polarity": "required",
+        "Timeframe": "current",
+        "Value": "65",
+        "Unit": "\u74E6",
+        "Condition": "",
+        "Evidence": "\u6211\u53EF\u4EE5\u63A5\u53D765\u74E6\u5145\u7535\u5668",
+        "Label": "\u5145\u7535\u5668 \u00B7 \u660E\u786E\u9700\u8981 \u00B7 \u73B0\u5728",
+        "Detail": "65\uFF1B\u74E6"
+      },
+      "ReviewIssue": null,
+      "QuantityCandidates": []
+    }
+  ],
+  "Notice": "Unconfirmed synthetic input. Structural checks and quote matching do not establish semantic correctness. No purchase advice generated."
+}
