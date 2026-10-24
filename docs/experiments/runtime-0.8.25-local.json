@@ -107,5 +107,12 @@
                           "Failed":  0,
                           "ActualExitCode":  0,
                           "Scope":  "Audited ZIP extracted on this same machine. Not a clean OS install or cross-hardware validation. Final documentation and READY may be updated without changing this EXE."
-                      }
+                      },
+    "CI":  {
+               "Commit":  "03248ecca24b2eb5a967513ce3a158f05549129e",
+               "Status":  "completed",
+               "Scope":  "Product sources, vendor, build.ps1 and NuGet.Config unchanged from frozen a0001ee; no claim of byte-identical CI EXE.",
+               "Conclusion":  "success",
+               "RunId":  40094214567
+           }
 }

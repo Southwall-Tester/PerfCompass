@@ -48,6 +48,20 @@ jobs:
       - name: Model batch transport regression
         shell: pwsh
         run: ./tests/model-probe-batch.ps1
+      - name: Validation process supervision
+        shell: pwsh
+        run: |
+          ./tests/validation-supervision-tests.ps1 -SourceDirectory release-next
+          if ($LASTEXITCODE -ne 0) { throw 'Validation supervision regression failed.' }
+          $latest = Get-Content 'artifacts/validation-supervision-test-latest.json' -Raw | ConvertFrom-Json
+          $summary = Get-Content (Join-Path $latest.RunDirectory 'summary.json') -Raw | ConvertFrom-Json
+          if ($summary.Failed -ne 0 -or $summary.Passed -ne 27) { throw 'Validation supervision checks are incomplete.' }
+      - name: Validation supervision evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-supervision
+          path: artifacts/validation-supervision-test-*/evidence/
       - name: Native sampling during a stalled UI
         shell: pwsh
         run: |

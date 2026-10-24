@@ -1,0 +1,66 @@
+{
+    "Scope":  "Validation tool supervision only; 27 checks on copied exact scripts in an independent workspace. Real monitor short/stop flows, fast native fixture and synthetic metadata checks are distinct. No long-term stability or cross-hardware claim.",
+    "Passed":  27,
+    "Failed":  0,
+    "ActualHarnessExitCode":  0,
+    "ExecutableSha256":  "EB7FA871D2499C345E04752EBD7520BB89216C8EE9D18B859E788785F10A459D",
+    "ManagerSha256":  "9B9BB19CD8955C247B62584CF711A43CE4AE21124DB5C5E12700FD877B4F886F",
+    "SupervisorSha256":  "E6BA461F42E1C47E7DB2C51F22C36CA5A40E90922178F6F6056245F45BD95C10",
+    "HarnessSha256":  "129F2492ABDAAFB82DE43C652C69B996346720A58BE3E2DF631A5D5FC33E42BB",
+    "ByteScope":  "Hashes describe executed local files and copied scripts. CI verifies its own copies; Git checkout line endings may differ.",
+    "ResultsSha256":  "4478E8AE0E34610F171868DF374D07EB5BBACC7B7BB4385A5F20E9D41129C6CE",
+    "RealShort":  {
+                      "ObservedSeconds":  20.2980462,
+                      "RequestedSeconds":  20,
+                      "ApplicationChecksPassed":  true,
+                      "ChecksPassed":  true,
+                      "ActualExitCode":  0,
+                      "ExitWitnessStatus":  "matched"
+                  },
+    "OrderlyStop":  {
+                        "ExitWitnessStatus":  "matched",
+                        "ActualExitCode":  2,
+                        "ChecksPassed":  false,
+                        "State":  "stopped"
+                    },
+    "FastNativeFixture":  {
+                              "Scope":  "Renamed whoami.exe with invalid fixed validation arguments; never classified as PerfCompass telemetry.",
+                              "ExitWitnessStatus":  "matched",
+                              "ActualExitCode":  1,
+                              "ChecksPassed":  false,
+                              "State":  "missing-terminal-result"
+                          },
+    "SyntheticMetadata":  {
+                              "Scope":  "Never-executed byte fixture and deliberately varied metadata. Covers absent witnesses, mismatched run ID/PID/start/hash, Boolean/string/overflow exit code, mismatched duration, legacy missing witness, supervisor-only startup and incomplete identity."
+                          },
+    "ActualActiveSoakPointerPreserved":  true,
+    "Cases":  [
+                  "PASS Started real monitor and supervisor are live; no early successful exit claimed",
+                  "PASS Run freezes the actual supervisor bytes alongside the EXE",
+                  "PASS A live monitor or supervisor prevents a second run without creating its target",
+                  "PASS Real short validation completes with independent matching OS exit code zero",
+                  "PASS Real result retains the exact published EXE and requested duration",
+                  "PASS Orderly early stop preserves stopped result and captured exit two rather than completing",
+                  "PASS Fast-exiting native fixture keeps its nonzero OS code even before parent launch polling finishes",
+                  "PASS Process exit without a monitor result remains an incomplete validation",
+                  "PASS A supervisor identity remains observable before the child manifest exists (synthetic metadata)",
+                  "PASS Equivalent path spelling cannot hide the live supervisor identity",
+                  "PASS Missing recorded path remains unknown rather than proving the process stopped",
+                  "PASS A live supervisor alone blocks duplicate start without inventing a child terminal state",
+                  "PASS Unreadable recorded identity is rejected rather than treated as a stopped process",
+                  "PASS Nonempty data is refused before executing a child; sentinel and failure remain intact",
+                  "PASS A passing result declaration cannot supply a missing OS exit witness",
+                  "PASS Rejects mismatched or ill-typed witness RunId",
+                  "PASS Rejects mismatched or ill-typed witness ProcessId",
+                  "PASS Rejects mismatched or ill-typed witness StartTimeUtc",
+                  "PASS Rejects mismatched or ill-typed witness ExecutableSha256",
+                  "PASS Rejects mismatched or ill-typed witness ExitCode",
+                  "PASS Rejects mismatched or ill-typed witness ExitCode",
+                  "PASS Rejects mismatched or ill-typed witness ExitCode",
+                  "PASS String false cannot be interpreted as a passing Boolean result",
+                  "PASS A different requested duration cannot pass the current run",
+                  "PASS Nonzero OS exit overrides a passing application declaration",
+                  "PASS Legacy passing declarations remain readable without inventing a missing exit code",
+                  "PASS Tests preserve the actual workspace active-soak pointer"
+              ]
+}
