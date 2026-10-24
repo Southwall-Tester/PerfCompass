@@ -1,0 +1,27 @@
+{
+  "Version": "0.8.28+9f1c41a9c3e43bcd15ddbfda79c5e3988b34c102",
+  "ExeSha256": "2B026B8907F493B925DB00BBC1B96D7D4C0701E5058A8BF57E774E3E3FB248BF",
+  "SameFrozenExecutable": true,
+  "SelfTests": { "Passed": 484, "Failed": 0, "CapturedProcessExitCode": 0 },
+  "FullNativeWpf": { "Passed": 146, "Failed": 0, "CapturedProcessExitCode": 0 },
+  "ObservationAndCandidateFlow": { "Passed": 56, "Failed": 0, "CapturedProcessExitCode": 0 },
+  "CountsOverlapAndMustNotBeSummed": true,
+  "NewCoverage": [
+    "Budget-first candidates after required and individual conditional goals",
+    "Quote source eligibility, ties, and failing cheaper candidates",
+    "Minimum maximum and strict performance directions without inferred task weights",
+    "Distinct task identities with identical display names",
+    "Manual values versus original repeated elapsed-time ranges",
+    "Overlapping ranges do not establish a premium advantage from their medians",
+    "Expired reviews, incompatible protocols, and unknown power are not buying evidence",
+    "Native comparison control, conditional withdrawal, base budget preservation and HTML escaping"
+  ],
+  "RenderedNativeInterfaceReviewed": true,
+  "HtmlContentChecked": true,
+  "HtmlBrowserRenderingReviewed": false,
+  "CandidatePricesAndTimesAreSynthetic": true,
+  "ProductionHistoryUsedForTheseTests": false,
+  "RealCandidateHardwareCalibrationCompleted": false,
+  "CommercialMaturityEstablished": false,
+  "LongRun": "The independent frozen 0.8.25 trial remains separate; no 0.8.28 long-run pass is claimed."
+}

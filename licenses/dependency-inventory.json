@@ -271,11 +271,11 @@
         "UpstreamVersion":  "0.9.6",
         "PatchedVersion":  "0.9.6-perfcompass.1",
         "PerfCompassRepository":  "https://github.com/Southwall-Tester/PerfCompass",
-        "PerfCompassCheckoutCommit":  "f933014b8ea75b69747012d16436cab76fd786b3",
+        "PerfCompassCheckoutCommit":  "9f1c41a9c3e43bcd15ddbfda79c5e3988b34c102",
         "SourceTreeDirty":  false,
         "SourceSnapshotSha256":  "e6a7b5e3279f4d11adacc38a109ae984f6457844b66ef486daa2acfad5285849",
         "SourceZip":  "LibreHardwareMonitor-perfcompass/LibreHardwareMonitor-0.9.6-perfcompass.1-source.zip",
-        "SourceZipSha256":  "d2783d2a9ef1e95728ec4a0c0f92dbf5fc84534bfd998a99828dbd5d8d3e25ef",
+        "SourceZipSha256":  "6da8ea540a6bfb55ce23f443cd1283c1782dd19f6c36cd9560b3349b593e14ba",
         "SourceFiles":  198
     }
 ]
