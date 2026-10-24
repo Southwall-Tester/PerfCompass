@@ -41,7 +41,7 @@ public static partial class SelfTests
             var request = Request(); var plan = Create(request);
             string path = Path.Combine(request.WorkingDirectory, "plan.json"); TaskPlans.Save(path, plan);
             var reopened = TaskPlans.Load(path);
-            assert(reopened == plan && reopened.Version == "task-plan-1.0"
+            assert(reopened == plan && reopened.Version == "task-plan-1.1"
                 && reopened.ProtocolFingerprint == TaskMeasurements.Fingerprint(plan.Recipe, machine),
                 "plan serialization changed the recipe, environment or existing measurement fingerprint");
             using var document = JsonDocument.Parse(File.ReadAllBytes(path)); var root = document.RootElement;

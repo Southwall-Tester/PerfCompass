@@ -10,11 +10,13 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\App.ico</ApplicationIcon>
-    <Version>0.8.20</Version>
+    <Version>0.8.21</Version>
     <AssemblyName>PerfCompass</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\tests\fixtures\comparison-1.2-uncertainty.json" LogicalName="PerfCompass.LegacyUncertainty.json" />
+    <EmbeddedResource Include="..\..\tests\fixtures\task-measurement-1.0-input-restore.json" LogicalName="PerfCompass.LegacyInputMeasurement.json" />
+    <EmbeddedResource Include="..\..\tests\fixtures\task-plan-1.0-input-restore.json" LogicalName="PerfCompass.LegacyInputPlan.json" />
     <EmbeddedResource Include="..\..\tests\nlp-cases.json" LogicalName="PerfCompass.NlpCases.json" />
     <EmbeddedResource Include="..\..\tests\quantity-cases.json" LogicalName="PerfCompass.QuantityCases.json" />
     <EmbeddedResource Include="..\..\tests\semantic-results\qwen3-4b-production\case-12.json" LogicalName="PerfCompass.ProviderCase12.json" />

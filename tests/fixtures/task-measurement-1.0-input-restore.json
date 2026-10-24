@@ -1,0 +1,62 @@
+{
+  "Version": "task-measurement-1.0",
+  "Started": "2026-10-24T13:38:21.8606842+08:00",
+  "Recipe": {
+    "Name": "Synthetic input integrity",
+    "ExecutableName": "cmd.exe",
+    "ExecutableSha256": "15CD209C995B7D3009C91CA40892D5B8F1FB162F3E5F10716642EA278E8E0D7B",
+    "Arguments": "/d /q /c case.cmd",
+    "SoftwareVersion": "Windows command processor (controlled synthetic test)",
+    "InputName": "payload.txt",
+    "InputSha256": "4A31F8A329CDBBAB944056FC992EEB5AB5C0B4A78C3BC34E6D7C4A59FD6CF3B6",
+    "Procedure": "Read or modify only isolated fixtures; not hardware performance validation",
+    "Repeats": 3,
+    "Warmup": false,
+    "TimeoutSeconds": 10
+  },
+  "Machine": {
+    "Cpu": "synthetic CPU",
+    "Gpu": "synthetic GPU",
+    "MemoryGiB": 32,
+    "OperatingSystem": "synthetic OS",
+    "PowerSource": "Online",
+    "PowerProfile": "controlled process test"
+  },
+  "Attempts": [
+    {
+      "Number": 1,
+      "Warmup": false,
+      "Seconds": 0.0506807,
+      "ExitCode": 0,
+      "Outcome": "completed",
+      "RootExited": true,
+      "PowerBefore": "Online",
+      "PowerAfter": "Online"
+    },
+    {
+      "Number": 2,
+      "Warmup": false,
+      "Seconds": 0.0388525,
+      "ExitCode": 0,
+      "Outcome": "completed",
+      "RootExited": true,
+      "PowerBefore": "Online",
+      "PowerAfter": "Online"
+    },
+    {
+      "Number": 3,
+      "Warmup": false,
+      "Seconds": 0.0372827,
+      "ExitCode": 0,
+      "Outcome": "completed",
+      "RootExited": true,
+      "PowerBefore": "Online",
+      "PowerAfter": "Online"
+    }
+  ],
+  "Outcome": "completed",
+  "Detail": "\u91CD\u590D\u6D4B\u91CF\u5B8C\u6210\u3002\u7ED3\u679C\u4E0D\u8BC1\u660E\u4EFB\u52A1\u8F93\u51FA\u6B63\u786E\uFF1B\u8BF7\u6838\u5BF9\u5B9E\u9645\u4EA7\u7269\u3001\u673A\u5668\u548C\u6D4B\u8BD5\u6761\u4EF6\u3002",
+  "ProtocolFingerprint": "EC0852538F1A8F7B26F60E724F801A15F5AF734CA9BD3911BA21162A57994842",
+  "MedianSeconds": 0.0388525,
+  "Summary": "Synthetic input integrity \u00B7 \u5B8C\u6210 \u00B7 \u6B63\u5F0F 3/3 \u6B21 \u00B7 \u4E2D\u4F4D\u6570 0.039 \u79D2"
+}

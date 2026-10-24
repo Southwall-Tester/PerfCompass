@@ -168,13 +168,14 @@ public partial class ComparisonView : UserControl
         try
         {
             var result = TaskMeasurements.Load(path);
-            if (!TaskMeasurements.Comparable(result)) { ComparisonStatus.Text = "测量未完整成功，或电源状态改变/未知；请检查后重新测量。"; return; }
+            if (!TaskMeasurements.HasCompleteRoundsAndStablePower(result)) { ComparisonStatus.Text = "测量未完整成功，或电源状态改变/未知；请检查后重新测量。"; return; }
             if (criterion.MeasurementProtocol.Length > 0 && criterion.MeasurementProtocol != result.ProtocolFingerprint) { ComparisonStatus.Text = "程序、输入或测试协议不同，不能并入同一目标。请新建目标保留不同协议的测量。"; return; }
             criterion.MeasurementProtocol = result.ProtocolFingerprint; criterion.Reviewed = false;
             observation.Measurement = result; observation.Value = result.MedianSeconds * (criterion.Unit is "毫秒" or "ms" ? 1000 : 1);
             observation.Evidence = TaskMeasurements.Evidence(result); observation.Comparable = false; observation.ProofStamp = "";
             Invalidate(); Bind();
             ComparisonStatus.Text = $"已导入 {result.Recipe.Name}。来源机器：{result.Machine.Cpu} / {result.Machine.Gpu}。请核对它对应所选候选、任务步骤与实际产物，重新确认目标及可比性。";
+            if (result.Version == TaskMeasurements.LegacyVersion) ComparisonStatus.Text += " 旧测量仅作记录，不能作为当前重复耗时达标依据；请到任务测量页导入该文件复用方案，并重新测量。";
         }
         catch (ArgumentException ex) { ComparisonStatus.Text = ex.Message; }
         catch (System.Text.Json.JsonException) { ComparisonStatus.Text = "测量文件格式不正确，未导入。"; }

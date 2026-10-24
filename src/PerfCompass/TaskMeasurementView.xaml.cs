@@ -93,6 +93,7 @@ public partial class TaskMeasurementView : UserControl
             ExecutableBox.Clear(); WorkingDirectoryBox.Clear(); InputFileBox.Clear();
             SetPlan(plan);
             TaskPlanStatus.Text = $"已导入「{plan.Recipe.Name}」。请选择本机程序、工作目录和输入文件；运行前会核对是否与原方案一致。需要修改条件时，点击“作为新方案编辑”。";
+            if (plan.UpgradedFromLegacy) TaskPlanStatus.Text += " 旧版任务安排已按当前只读保护方法复用；需重新核对环境并测量，不沿用旧耗时。";
             TaskStatus.Text = "方案已载入，尚未运行。请在下方核对本机环境；既有测量中的耗时和机器信息不会作为本机结果。";
         }
         catch (ArgumentException ex) { TaskPlanStatus.Text = ex.Message; }
@@ -133,6 +134,7 @@ public partial class TaskMeasurementView : UserControl
             TaskPlanPanel.BringIntoView();
         }
         catch (OperationCanceledException) { TaskPlanStatus.Text = "方案保存已取消，未替换已有文件。"; }
+        catch (TaskFileProtectionException ex) { TaskPlanStatus.Text = ex.Message; }
         catch (ArgumentException ex) { TaskPlanStatus.Text = ex.Message; }
         catch (Exception ex) { store?.Log(new InvalidOperationException("Task plan export failed: " + ex.GetType().Name)); TaskPlanStatus.Text = "方案未保存，请检查文件与目标目录。"; }
         finally
@@ -213,6 +215,7 @@ public partial class TaskMeasurementView : UserControl
             TaskResultPanel.BringIntoView();
         }
         catch (OperationCanceledException) { TaskStatus.Text = "测量已取消；未使用旧结果。确认任务结束后再继续监测。"; }
+        catch (TaskFileProtectionException ex) { TaskStatus.Text = ex.Message; }
         catch (ArgumentException ex) { TaskStatus.Text = ex.Message; }
         catch (Exception ex) { store.Log(new InvalidOperationException("Task measurement failed: " + ex.GetType().Name)); TaskStatus.Text = "测量或保存失败，未产生可用于配置判断的新结果。确认任务结束后再继续监测。"; }
         finally { timer.Stop(); elapsed.Stop(); cancellation = null; activity(false); TaskInputs.IsEnabled = TaskPlanButtons.IsEnabled = true; RunTaskButton.IsEnabled = true; CancelTaskButton.IsEnabled = false; TaskProgressBar.IsIndeterminate = false; TaskProgressBar.Visibility = Visibility.Collapsed; TaskProgressLabel.Text = $"本次运行已结束 · 用时 {elapsed.Elapsed.TotalSeconds:0.0} 秒"; }

@@ -125,6 +125,21 @@ jobs:
         with:
           name: native-task-plan
           path: artifacts/ui-task-plan-focused/
+      - name: Native task file protection and legacy method flow
+        shell: pwsh
+        run: |
+          $root = Join-Path $PWD 'artifacts/ci-file-protection/data'
+          $p = Start-Process ./release-next/PerfCompass.exe -ArgumentList @('--ui-test','--ui-test-file-protection-only','--data-dir',('"' + $root + '"')) -PassThru -WindowStyle Hidden
+          if (-not $p.WaitForExit(90000)) { $p.Kill(); throw 'Native file protection flow exceeded its bounded check.' }
+          if ($p.ExitCode -ne 0) { throw 'Native file protection flow failed.' }
+          $checks = Get-Content artifacts/ui-file-protection-focused/results.txt
+          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 28 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Native file protection checks are incomplete.' }
+      - name: Native task file protection evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-file-protection
+          path: artifacts/ui-file-protection-focused/
       - name: Native unresolved alternative comparison flow
         shell: pwsh
         run: |

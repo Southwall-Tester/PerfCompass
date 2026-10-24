@@ -16,6 +16,7 @@
    <TextBlock Text="工作目录" Margin="0,12,0,5"/><DockPanel><Button x:Name="ChooseWorkingDirectoryButton" Content="选择目录" Click="ChooseWorkingDirectory_Click" DockPanel.Dock="Right" Margin="10,0,0,0"/><TextBox x:Name="WorkingDirectoryBox" Padding="8"/></DockPanel>
    <TextBlock Text="软件版本" Margin="0,12,0,5"/><TextBox x:Name="SoftwareVersionBox" MaxLength="200" Padding="8"/>
    <TextBlock Text="任务输入文件或输入清单（校验同一输入；不会自动作为程序参数）" Margin="0,12,0,5"/><DockPanel><Button x:Name="ChooseInputButton" Content="选择输入" Click="ChooseInput_Click" DockPanel.Dock="Right" Margin="10,0,0,0"/><TextBox x:Name="InputFileBox" Padding="8"/></DockPanel>
+   <TextBlock x:Name="InputProtectionHint" Text="测量期间，程序和所选输入保持只读；输出请写到其他文件。选择输入清单不会自动保护清单中列出的其他文件。" TextWrapping="Wrap" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,8,0,0"/>
    <TextBlock Text="统一步骤与环境（数据集、设置、产物如何核对）" Margin="0,12,0,5"/><TextBox x:Name="ProcedureBox" MaxLength="2000" TextWrapping="Wrap" AcceptsReturn="True" MinHeight="70" Padding="8"/>
    <TextBlock Text="电源 / 性能模式（例如：插电、系统平衡模式、原厂散热设置）" Margin="0,12,0,5"/><TextBox x:Name="PowerProfileBox" MaxLength="200" Padding="8"/>
    <CheckBox x:Name="PlanEnvironmentConfirmedCheck" Content="已在本机核对方案要求的电源模式、软件设置和输入安排" Visibility="Collapsed" Margin="0,12,0,0"/>

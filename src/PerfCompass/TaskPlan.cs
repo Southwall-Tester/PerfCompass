@@ -5,13 +5,17 @@ namespace PerfCompass;
 
 public record TaskPlan(string Version, TaskRecipe Recipe, string PowerSource, string PowerProfile)
 {
-    public string ProtocolFingerprint => TaskMeasurements.Fingerprint(Recipe, new("", "", null, "", PowerSource, PowerProfile));
+    public string ProtocolFingerprint => TaskMeasurements.Fingerprint(Recipe, new("", "", null, "", PowerSource, PowerProfile),
+        Version == TaskPlans.LegacyVersion ? TaskMeasurements.LegacyVersion : TaskMeasurements.Version);
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool UpgradedFromLegacy { get; init; }
 }
 
 /// <summary>A portable recipe and environment declaration, never a run result or a local executable path.</summary>
 public static class TaskPlans
 {
-    public const string Version = "task-plan-1.0";
+    public const string Version = "task-plan-1.1";
+    public const string LegacyVersion = "task-plan-1.0";
     internal const int MaximumFileBytes = 131072;
     private static readonly JsonSerializerOptions JsonOptions = new() { MaxDepth = 12, WriteIndented = true };
     private static void Need([System.Diagnostics.CodeAnalysis.DoesNotReturnIf(false)] bool value, string message)
@@ -19,7 +23,7 @@ public static class TaskPlans
 
     public static void Validate(TaskPlan plan)
     {
-        Need(plan != null && plan.Version == Version && plan.Recipe != null, "任务方案版本或内容无效。");
+        Need(plan != null && plan.Version is Version or LegacyVersion && plan.Recipe != null, "任务方案版本或内容无效。");
         TaskMeasurements.ValidateRecipe(plan.Recipe);
         Need(plan.PowerSource is "Online" or "Offline", "方案电源状态须为已知的插电或电池状态；请核对后重新保存方案。");
         Need(!string.IsNullOrWhiteSpace(plan.PowerProfile) && plan.PowerProfile.Length <= 200, "请填写方案的电源 / 性能模式（最多 200 字）。");
@@ -37,6 +41,7 @@ public static class TaskPlans
     public static void Verify(TaskPlan plan, TaskRecipe recipe, TaskMachine machine)
     {
         Validate(plan); TaskMeasurements.ValidateRecipe(recipe);
+        Need(plan.Version == Version, "旧方案需重新导入并核对本机环境，按当前只读方法复测；尚未启动任务。");
         Need(machine != null, "尚未取得本机电源信息。");
         var expected = plan.Recipe;
         var different = new List<string>();
@@ -68,7 +73,7 @@ public static class TaskPlans
         RejectDuplicateMembers(root);
         Need(root.TryGetProperty("Version", out var version) && version.ValueKind == JsonValueKind.String, "方案或测量文件缺少版本。");
         TaskPlan plan;
-        if (version.GetString() == Version)
+        if (version.GetString() is Version or LegacyVersion)
         {
             string[] members = ["Version", "Recipe", "PowerSource", "PowerProfile", "ProtocolFingerprint"];
             Need(root.EnumerateObject().All(p => members.Contains(p.Name)), "任务方案包含不支持的字段，请使用当前版本重新导出。");
@@ -79,23 +84,25 @@ public static class TaskPlans
                 "方案中的任务字段不完整或不受支持，请重新导出。");
             plan = root.Deserialize<TaskPlan>(JsonOptions) ?? throw new ArgumentException("任务方案内容为空。");
         }
-        else if (version.GetString() == TaskMeasurements.Version)
+        else if (version.GetString() is TaskMeasurements.Version or TaskMeasurements.LegacyVersion)
         {
             var measurement = root.Deserialize<TaskMeasurementResult>(JsonOptions) ?? throw new ArgumentException("测量文件内容为空。");
             TaskMeasurements.Validate(measurement);
             // Only reuse the recipe and environment. Attempts, result state,
             // machine identity and old elapsed values never become plan fields.
-            plan = new(Version, measurement.Recipe, measurement.Machine.PowerSource, measurement.Machine.PowerProfile);
+            plan = new(measurement.Version == TaskMeasurements.LegacyVersion ? LegacyVersion : Version, measurement.Recipe, measurement.Machine.PowerSource, measurement.Machine.PowerProfile);
         }
         else throw new ArgumentException("不支持此文件版本，请选择任务方案或原始任务测量文件。");
         Validate(plan);
         if (root.TryGetProperty("ProtocolFingerprint", out var fingerprint))
             Need(fingerprint.ValueKind == JsonValueKind.String && fingerprint.GetString() == plan.ProtocolFingerprint,
                 "文件中的协议指纹与内容不一致，请从原方案或测量记录重新导出。");
-        return plan;
+        // Check the ORIGINAL fingerprint before changing the measurement method.
+        // Reuse task settings only; old timings are never promoted to this method.
+        return plan.Version == LegacyVersion ? plan with { Version = Version, UpgradedFromLegacy = true } : plan;
     }
 
-    private static void RejectDuplicateMembers(JsonElement element)
+    internal static void RejectDuplicateMembers(JsonElement element)
     {
         if (element.ValueKind == JsonValueKind.Object)
         {

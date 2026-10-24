@@ -393,6 +393,7 @@ public static partial class SelfTests
         RunValidationRunTests(Check, Assert);
         RunActivityRulesTests(Check, Assert, Fixture);
         Task.Run(() => RunTaskMeasurementTests(Check, Assert)).GetAwaiter().GetResult();
+        Task.Run(() => RunTaskFileProtectionTests(Check, Assert)).GetAwaiter().GetResult();
         Task.Run(() => RunTaskPlanTests(Check, Assert)).GetAwaiter().GetResult();
         Directory.CreateDirectory("artifacts");
         File.WriteAllLines("artifacts/self-tests.txt", log);

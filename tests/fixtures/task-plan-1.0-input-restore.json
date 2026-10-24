@@ -1,0 +1,19 @@
+{
+  "Version": "task-plan-1.0",
+  "Recipe": {
+    "Name": "Synthetic input integrity",
+    "ExecutableName": "cmd.exe",
+    "ExecutableSha256": "15CD209C995B7D3009C91CA40892D5B8F1FB162F3E5F10716642EA278E8E0D7B",
+    "Arguments": "/d /q /c case.cmd",
+    "SoftwareVersion": "Windows command processor (controlled synthetic test)",
+    "InputName": "payload.txt",
+    "InputSha256": "4A31F8A329CDBBAB944056FC992EEB5AB5C0B4A78C3BC34E6D7C4A59FD6CF3B6",
+    "Procedure": "Read or modify only isolated fixtures; not hardware performance validation",
+    "Repeats": 3,
+    "Warmup": false,
+    "TimeoutSeconds": 10
+  },
+  "PowerSource": "Online",
+  "PowerProfile": "controlled process test",
+  "ProtocolFingerprint": "EC0852538F1A8F7B26F60E724F801A15F5AF734CA9BD3911BA21162A57994842"
+}

@@ -154,11 +154,12 @@ public static partial class SelfTests
             var result = TaskMeasurements.RunAsync(Request("ping -n 20 127.0.0.1 >nul\r\n", 10), machine, null, cancellation.Token).GetAwaiter().GetResult();
             assert(result.Outcome == "cancelled" && result.Attempts.Count == 1 && result.Attempts[0].RootExited, "cancelled task passed or did not stop");
         });
-        check("Changed task input is detected after otherwise successful repeated exits", () =>
+        check("Selected batch input cannot change even when a successful root ignores write denial", () =>
         {
             var request = Request("echo rem changed>> task.cmd\r\nexit /b 0\r\n");
+            byte[] original = File.ReadAllBytes(request.InputFile);
             var result = TaskMeasurements.RunAsync(request, machine, null, CancellationToken.None).GetAwaiter().GetResult();
-            assert(result.Outcome == "failed" && result.Detail.Contains("改变"), "mutated input became comparable");
+            assert(result.Outcome == "completed" && original.SequenceEqual(File.ReadAllBytes(request.InputFile)) && result.Detail.Contains("不证明任务输出正确"), "input changed or zero exit proved output correctness");
         });
     }
 }

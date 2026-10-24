@@ -118,7 +118,7 @@ public partial class MainWindow
                 "Saving a task plan hashes the selected files without running its parameters or creating a measurement");
             var plan = TaskPlans.Load(planPath);
             string originalPlanHash = HashFile(planPath);
-            require(plan.Version == "task-plan-1.0" && plan.Recipe.Name == name
+            require(plan.Version == "task-plan-1.1" && plan.Recipe.Name == name
                 && plan.Recipe.Arguments == arguments && plan.Recipe.SoftwareVersion == version
                 && plan.Recipe.Procedure == enteredProcedure && plan.Recipe.Repeats == 3 && plan.Recipe.Warmup
                 && plan.Recipe.TimeoutSeconds == 5 && plan.Recipe.InputName == "task-plan-input.cmd"
