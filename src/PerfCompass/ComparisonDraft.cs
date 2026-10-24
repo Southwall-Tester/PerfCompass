@@ -22,7 +22,23 @@ public partial class ComparisonView
     private void InitializeDraftSaving()
     {
         draftSaveTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.25) };
-        draftSaveTimer.Tick += (_, _) => { draftSaveTimer.Stop(); TrySaveDraft(); };
+        draftSaveTimer.Tick += (_, _) =>
+        {
+            draftSaveTimer.Stop();
+            if (new[] { CandidatesGrid, CriteriaGrid, ObservationsGrid }.Any(HasEditingCell))
+            {
+                DraftStatus.Text = "当前单元格仍在编辑；结束编辑后自动保存。";
+                draftSaveTimer.Start(); return;
+            }
+            TrySaveDraft();
+        };
+    }
+    private static bool HasEditingCell(DependencyObject parent)
+    {
+        if (parent is System.Windows.Controls.DataGridCell { IsEditing: true }) return true;
+        for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent); i++)
+            if (HasEditingCell(System.Windows.Media.VisualTreeHelper.GetChild(parent, i))) return true;
+        return false;
     }
     private void MarkDraftDirty()
     {

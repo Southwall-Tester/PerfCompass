@@ -44,6 +44,16 @@ public partial class MainWindow
             require(CandidateComparison.Load(store.Root).Candidates[0].Name == "自动保存的合成候选" && view.Result == null
                 && !view.CoverageConfirm.IsChecked.GetValueOrDefault(), "Native edits autosave an unfinished draft without creating a result or confirmation");
             await Capture("draft-autosaved");
+            var typingGrid = view.CandidatesGrid; var typingItem = typingGrid.Items[0]; var typingColumn = typingGrid.Columns[0];
+            typingGrid.CurrentCell = new(typingItem, typingColumn); typingGrid.ScrollIntoView(typingItem, typingColumn); typingGrid.UpdateLayout();
+            if (!typingGrid.BeginEdit()) throw new Exception("Could not begin autosave editing continuity check.");
+            var typingEditor = (TextBox)typingColumn.GetCellContent(typingItem); typingEditor.Text = "自动保存的合成候选";
+            await Task.Delay(1600);
+            require(ReferenceEquals(typingEditor, typingColumn.GetCellContent(typingItem)) && view.HasUnsavedDraft
+                && view.DraftStatus.Text.Contains("仍在编辑"), "Autosave waits for a real active editor without ending typing or clearing unsaved protection");
+            typingGrid.CommitEdit(DataGridEditingUnit.Cell, true); typingGrid.CommitEdit(DataGridEditingUnit.Row, true);
+            await wait(() => !view.HasUnsavedDraft);
+            require(CandidateComparison.Load(store.Root).Candidates[0].Name == "自动保存的合成候选", "Autosave resumes after the active cell is committed");
             await EditComparisonCell(view.CandidatesGrid, 0, 5, "合成 CPU（非商品）");
             Click(view.SaveDraftButton);
             require(!view.HasUnsavedDraft && CandidateComparison.Load(store.Root).Candidates[0].Cpu == "合成 CPU（非商品）", "Explicit draft save works independently of comparing");
