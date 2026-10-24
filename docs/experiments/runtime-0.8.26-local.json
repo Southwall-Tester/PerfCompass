@@ -1,0 +1,44 @@
+{
+    "Version":  "0.8.26+5fb2d78855318b1a79b6646cc928d15be2ddffaf",
+    "SourceCommit":  "5fb2d78855318b1a79b6646cc928d15be2ddffaf",
+    "ExeSha256":  "5709B5EC95596507B11C6950CD43F984429B2269DA32C357A752E87CAFF00F1C",
+    "Method":  "1.15",
+    "Scope":  "One local PC. Independent empty UI-test roots and synthetic task/candidate fixtures. Counts overlap. Not product maturity, cross-hardware calibration, model accuracy or long-term stability.",
+    "SelfTests":  {
+                      "ResultsSha256":  "89E7E03F2FFF7C688CE5B9B18390A834AEE9A21B684756455FF3F4CAB2C639FF",
+                      "ActualExitCode":  0,
+                      "Failed":  0,
+                      "Passed":  466
+                  },
+    "FullWpf":  {
+                    "ResultsSha256":  "A93DA7A43C5D2BD955D45F96AE2D1A124C5644211970759B2806AA6CCA94448B",
+                    "ActualExitCode":  0,
+                    "Failed":  0,
+                    "Passed":  146
+                },
+    "ObservationAndCandidate":  {
+                                    "ResultsSha256":  "4F6FDBBA613754287A004578B6D462E155F17432D22884976A174CFBBBDF02ED",
+                                    "ActualExitCode":  0,
+                                    "Failed":  0,
+                                    "Passed":  47
+                                },
+    "NativeVisual":  {
+                         "Scope":  "Capacity table in the actual WPF visual tree with isolated synthetic rows. HTML content/values checked; no browser-rendering claim.",
+                         "Reviewed":  true,
+                         "ImageSha256":  "EED0F3BE6C52489B06C2FD04ED32CB3B2E3F5EBA66A4FE1C39482F1DDD70EC0C"
+                     },
+    "MemoryCases":  [
+                        "Physical peak and commit remain separate",
+                        "Insufficient and sparse readings do not create a baseline",
+                        "Hardware and damaged-history isolation",
+                        "Arbitrary GiB capacities and exact equal boundaries",
+                        "Measured dates and capacity range retained",
+                        "Display-only arithmetic does not invalidate reviewed candidate scope",
+                        "Older selected-window memory peak survives recent light readings; narrower window excludes it"
+                    ],
+    "PrivateHistoryReview":  {
+                                 "Scope":  "Read-only local user-history copies; no fabricated representative confirmation, no source-file mutation, no upload or public user trace. Not independent human annotation.",
+                                 "Performed":  true
+                             },
+    "LongRun":  "Existing frozen 0.8.25 run remains independent and does not validate 0.8.26."
+}
