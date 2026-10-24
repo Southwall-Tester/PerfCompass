@@ -6,6 +6,10 @@ public record SemanticFact(string Subject, string Kind, string Polarity, string 
 {
     public string Label => $"{Subject} · {SemanticRequirements.Label(Polarity)} · {SemanticRequirements.Label(Timeframe)}";
     public string Detail => string.Join("；", new[] { Value, Unit, string.IsNullOrWhiteSpace(Condition) ? "" : "条件：" + Condition }.Where(s => !string.IsNullOrWhiteSpace(s)));
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? DecisionUse { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string DecisionUseLabel => SemanticUse.Label(this);
 }
 public record SemanticPlan(string Source, string Model, string Provider, string ContractVersion, List<SemanticFact> Facts, DateTimeOffset ConfirmedAt);
 public record SemanticDraft(string Source, string Model, string Provider, List<SemanticFact> Facts, string[] Questions);
@@ -17,39 +21,49 @@ public sealed class SemanticFactEditor : System.ComponentModel.INotifyPropertyCh
     public Action? Changed { get; set; }
     private bool include;
     private string subject = "", kind = "other", polarity = "uncertain", timeframe = "unspecified", value = "", unit = "", condition = "", evidence = "";
+    private string decisionUse = "clarify";
     private void Set<T>(ref T field, T next, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
     {
         if (!EqualityComparer<T>.Default.Equals(field, next))
         {
-            field = next; PropertyChanged?.Invoke(this, new(name)); PropertyChanged?.Invoke(this, new(nameof(QuantityPreview))); Changed?.Invoke();
+            field = next;
+            if (name is nameof(Subject) or nameof(Kind) or nameof(Polarity) or nameof(Timeframe) or nameof(Value) or nameof(Unit) or nameof(Condition) or nameof(Evidence))
+            { decisionUse = "clarify"; PropertyChanged?.Invoke(this, new(nameof(DecisionUse))); }
+            PropertyChanged?.Invoke(this, new(name)); PropertyChanged?.Invoke(this, new(nameof(QuantityPreview))); Changed?.Invoke();
         }
     }
     public bool Include { get => include; set => Set(ref include, value); }
     public string Subject { get => subject; set => Set(ref subject, value); }
     public string Kind { get => kind; set => Set(ref kind, value); }
     public string Polarity { get => polarity; set => Set(ref polarity, value); }
+    public string DecisionUse { get => decisionUse; set => Set(ref decisionUse, value); }
     public string Timeframe { get => timeframe; set => Set(ref timeframe, value); }
     public string Value { get => value; set => Set(ref this.value, value); }
     public string Unit { get => unit; set => Set(ref unit, value); }
     public string Condition { get => condition; set => Set(ref condition, value); }
     public string Evidence { get => evidence; set => Set(ref evidence, value); }
     public SemanticChoice[] Kinds => SemanticRequirements.Kinds;
-    public SemanticChoice[] Polarities => SemanticRequirements.Polarities;
+    public SemanticChoice[] Polarities => SemanticUse.SourceRelations;
     public SemanticChoice[] Timeframes => SemanticRequirements.Timeframes;
+    public SemanticChoice[] DecisionUses => SemanticUse.Choices;
     public SemanticFactEditor() { }
-    public SemanticFactEditor(SemanticFact fact) { Subject = fact.Subject; Kind = fact.Kind; Polarity = fact.Polarity; Timeframe = fact.Timeframe; Value = fact.Value; Unit = fact.Unit; Condition = fact.Condition; Evidence = fact.Evidence; }
-    public SemanticFact ToFact() => new(Subject.Trim(), Kind, Polarity, Timeframe, Value.Trim(), Unit.Trim(), Condition.Trim(), Evidence.Trim());
+    public SemanticFactEditor(SemanticFact fact) { Subject = fact.Subject; Kind = fact.Kind; Polarity = fact.Polarity; Timeframe = fact.Timeframe; Value = fact.Value; Unit = fact.Unit; Condition = fact.Condition; Evidence = fact.Evidence; DecisionUse = SemanticUse.Role(fact); }
+    public SemanticFact ToFact() => new(Subject.Trim(), Kind, Polarity, Timeframe, Value.Trim(), Unit.Trim(), Condition.Trim(), Evidence.Trim()) { DecisionUse = DecisionUse };
     public string QuantityPreview
     {
         get
         {
-            var goals = QuantityGoals.Compile(ToFact());
+            var fact = ToFact();
+            if (DecisionUse == "omit") return "本次不作为购机条件，原文保留。";
+            if (DecisionUse == "clarify") return "请先核对这项内容怎样影响选机。";
+            if (DecisionUse == "avoid") return "候选比较方式：核对完整的禁止事项，不自动反转数值方向。";
+            var goals = QuantityGoals.Compile(fact);
             return goals.Count == 0 ? "候选比较方式：逐项核对" : "候选比较目标：" + string.Join(" 且 ", goals.Select(g => CandidateComparison.DirectionLabel(g.Direction) + $" {g.Target:G} {g.Unit}")) + (Polarity == "conditional" ? "（条件成立时）" : "");
         }
     }
 }
 
-public static class SemanticRequirements
+public static partial class SemanticRequirements
 {
     public const string Version = "semantic-1.0";
     public static readonly SemanticChoice[] Kinds = [new("workload", "任务或软件"), new("resource", "容量与规模"), new("experience", "体验目标"), new("budget", "预算与费用范围"), new("portability", "便携与续航"), new("noise", "噪声"), new("power", "功耗"), new("compatibility", "兼容性"), new("frequency", "使用频率"), new("schedule", "时间安排"), new("conflict", "冲突"), new("other", "其他条件")];
@@ -62,6 +76,7 @@ public static class SemanticRequirements
         Require(source.Length is > 0 and <= 2000, "需求原文应为 1–2000 字符。");
         Require(!string.IsNullOrWhiteSpace(fact.Subject) && fact.Subject.Length <= 150, "请填写事项名称（最多 150 字符）。");
         Require(Kinds.Any(c => c.Key == fact.Kind) && Polarities.Any(c => c.Key == fact.Polarity) && Timeframes.Any(c => c.Key == fact.Timeframe), "事项类型、肯否关系或时间无效。");
+        Require(fact.DecisionUse == null || SemanticUse.Choices.Any(c => c.Key == fact.DecisionUse), "购机用途无效，请重新核对。");
         Require(fact.Value != null && fact.Unit != null && fact.Condition != null && fact.Evidence != null, "事项字段不能缺失。");
         Require(fact.Value.Length <= 500 && fact.Unit.Length <= 50 && fact.Condition.Length <= 500, "事项字段过长。");
         if (!requireGrounding) return;
@@ -96,37 +111,10 @@ public static class SemanticRequirements
         var facts = editors.Where(e => e.Include).Select(e => e.ToFact()).ToList();
         Require(facts.Count is > 0 and <= 20, "请至少核对并选择一项需求，最多 20 项。");
         foreach (var fact in facts) Validate(draft.Source, fact);
-        return new(draft.Source, draft.Model, draft.Provider, Version, facts, DateTimeOffset.Now);
+        Require(facts.All(f => f.DecisionUse != null), "请核对每项内容的购机用途。");
+        return new(draft.Source, draft.Model, draft.Provider, SemanticUse.PlanVersion, facts, DateTimeOffset.Now);
     }
-    public static AnalysisReport Apply(AnalysisReport report, Settings settings)
-    {
-        var plan = settings.SemanticRequirements;
-        if (plan == null || plan.Source != settings.FutureNeeds.Trim() || plan.ContractVersion != Version || plan.Facts == null || plan.Facts.Count is < 1 or > 20 || plan.Facts.Any(f => f == null)) return report;
-        try { foreach (var fact in plan.Facts) Validate(plan.Source, fact); } catch (ArgumentException) { return report; }
-        var active = plan.Facts.Where(f => f.Timeframe != "past" && f.Polarity == "required").ToList();
-        bool futureWork = active.Any(f => f.Kind == "workload" && f.Timeframe == "future");
-        bool pending = plan.Facts.Any(f => f.Timeframe != "past" && (f.Polarity is "conditional" or "uncertain" || f.Kind == "conflict" || f.Timeframe == "unspecified"));
-        var cards = report.Cards.Select(c =>
-        {
-            bool resource = active.Any(f => f.Kind == "experience" || f.Kind == "resource" && MatchesResource(f, c.Key));
-            bool protects = c.Key is "cpu" or "gpu" or "memory" && (futureWork || resource);
-            if (!protects && !pending) return c;
-            bool replace = protects && c.Status is "surplus" or "review" or "fit" or "unknown";
-            return c with { Status = replace ? "requirements" : c.Status,
-                Title = replace ? "先验证已确认的任务与目标，再评估降档" : c.Title,
-                Evidence = c.Evidence + " 已确认的结构化需求见购机条件；条件与不确定事项不作为必然需求。",
-                Observation = !replace && pending && c.Observation is { } observation
-                    ? observation with { Action = observation.Action + " 另外分别比较条件需求成立与不成立时的配置。" } : c.Observation,
-                RetainedWorkload = !replace && pending && c.RetainedWorkload is { } retained
-                    ? retained with { Action = retained.Action + " 另外分别比较条件需求成立与不成立时的配置。" } : c.RetainedWorkload,
-                Suggestion = replace ? "历史占用不足以覆盖已确认的新任务或资源/体验目标。先在候选配置上验证这些条件，再判断余量；未据此推导具体型号。" : c.Suggestion + (pending ? " 当前占用结论仅覆盖已测任务；另外比较条件成立与不成立时的配置。" : "") };
-        }).ToList();
-        cards.Add(new("constraints", "购机条件", "constraints", pending ? "分开核对确定需求与条件需求" : "按已确认条件验证候选电脑",
-            string.Join("\n", plan.Facts.Select(f => $"{f.Label}：{f.Detail}；原文：{f.Evidence}")),
-            "预算、便携、噪声、功耗和兼容性需逐项核对候选机器；仅凭占用记录无法证明满足这些条件。",
-            "这些事项经过用户核对，但模型提取本身不证明语义正确，也不证明候选机器的性能、价格或兼容性。"));
-        return report with { Cards = cards, SemanticRequirements = plan };
-    }
+    public static AnalysisReport Apply(AnalysisReport report, Settings settings) => ApplyUses(report, settings);
     private static bool MatchesResource(SemanticFact fact, string component)
     {
         string text = fact.Subject + " " + fact.Evidence;

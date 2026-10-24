@@ -46,13 +46,15 @@ public partial class MainWindow
             var includes = Children<CheckBox>(SemanticEditors); foreach (var box in includes) { box.SetCurrentValue(ToggleButton.IsCheckedProperty, true); box.GetBindingExpression(ToggleButton.IsCheckedProperty)!.UpdateSource(); }
             require(SemanticEditors.Items.Cast<SemanticFactEditor>().First().Subject == "GeoMystic 地质建模" && SemanticEditors.Items.Cast<SemanticFactEditor>().All(e => e.Include), "Real review controls update chosen facts and corrected names");
             require(SemanticReviewConfirm.IsChecked == false && !SemanticStatus.Text.Contains("至少"), "Review edits invalidate old acknowledgement and clear stale validation errors");
+            foreach (var use in Children<ComboBox>(SemanticEditors).Where(b => System.Windows.Automation.AutomationProperties.GetName(b) == "购机用途"))
+            { use.SetCurrentValue(Selector.SelectedValueProperty, "require"); use.GetBindingExpression(Selector.SelectedValueProperty)!.UpdateSource(); }
             SemanticReviewConfirm.IsChecked = true;
             SemanticPanel.BringIntoView(); await screenshot("11-semantic-review");
             Click(SaveSemanticButton); await wait(() => report!.SemanticRequirements?.Facts.Count == 2);
             require(report!.SemanticRequirements!.Facts.First().Polarity == "conditional" && report.Cards.Single(c => c.Key == "memory").Status == "requirements", "Confirmed condition stays conditional while explicit memory goal constrains sizing");
             require(!File.ReadAllText(Path.Combine(store.Root, "settings.json")).Contains("synthetic-ui-secret") && new LocalStore(store.Root).Settings.SemanticRequirements?.Facts.Count == 2, "Reviewed facts persist without writing the API key");
             string html = ReportExporter.Html(report, live); File.WriteAllText(Path.Combine(output, "semantic-report.html"), html);
-            require(html.Contains("逐项核对的购机条件") && html.Contains("GeoMystic 地质建模") && html.Contains("条件成立时需要"), "Report includes corrected open workload and conditional meaning");
+            require(html.Contains("逐项核对的购机条件") && html.Contains("GeoMystic 地质建模") && html.Contains("条件陈述") && html.Contains("选上地质课") && html.Contains("购机用途"), "Report includes corrected open workload and conditional meaning");
             Click(AdviceNav); await wait(() => report!.Cards.Any(c => c.Key == "constraints")); await screenshot("12-semantic-advice");
             await RunComparisonUiTests(output, require, screenshot, wait);
             Click(SettingsNav); FutureBox.Text = "现在只办公";

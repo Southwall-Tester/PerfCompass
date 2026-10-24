@@ -154,7 +154,8 @@ public static class QuantityGoals
     }
     public static List<QuantityGoal> Compile(SemanticFact fact)
     {
-        if (fact.Polarity is not ("required" or "conditional") || fact.Timeframe is not ("current" or "future")) return [];
+        if (SemanticUse.Role(fact) != "require" || fact.Polarity is not ("required" or "conditional")
+            || fact.Timeframe is not ("current" or "future") && !(fact.Timeframe == "past" && fact.DecisionUse == "require")) return [];
         string text = QuantityText(Clean(fact.Value)), suppliedUnit = Clean(fact.Unit);
         var range = Match(text, @"^(?<a>" + Number + @")\s*(?<au>" + Units + @")?\s*(?:到|至|[-–~～]|to)\s*(?<b>" + Number + @")\s*(?<bu>" + Units + @")?$");
         var rawBounds = new List<(string Number, string Unit, string Direction)>();

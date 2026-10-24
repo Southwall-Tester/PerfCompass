@@ -40,8 +40,11 @@ public partial class MainWindow
             SemanticReviewConfirm.IsChecked = true;
             var valueBox = Children<TextBox>(SemanticEditors).Single(b => b.DataContext == editors[1] && b.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path == nameof(SemanticFactEditor.Value));
             valueBox.SetCurrentValue(TextBox.TextProperty, "不超过10"); valueBox.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
+            var use = Children<ComboBox>(SemanticEditors).Single(b => b.DataContext == editors[1] && System.Windows.Automation.AutomationProperties.GetName(b) == "购机用途");
+            use.SetCurrentValue(Selector.SelectedValueProperty, "require"); use.GetBindingExpression(Selector.SelectedValueProperty)!.UpdateSource();
             require(!SemanticReviewConfirm.IsChecked!.Value && editors[1].QuantityPreview.Contains("逐项核对"), "Editing the strict boundary updates preview and clears review through actual binding");
             valueBox.SetCurrentValue(TextBox.TextProperty, "低于10"); valueBox.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
+            use.SetCurrentValue(Selector.SelectedValueProperty, "require"); use.GetBindingExpression(Selector.SelectedValueProperty)!.UpdateSource();
             Children<TextBlock>(SemanticEditors).Single(t => t.Text.Contains("严格小于 0.01 秒")).BringIntoView(); await screenshot("22-quantity-review");
             SemanticReviewConfirm.IsChecked = true; Click(SaveSemanticButton); await wait(() => report!.SemanticRequirements?.Source == source);
             Click(ComparisonNav); await wait(() => ComparisonPage.Visibility == Visibility.Visible); var view = ComparisonPage;

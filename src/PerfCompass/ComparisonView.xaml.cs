@@ -77,10 +77,12 @@ public partial class ComparisonView : UserControl
         ContextStatus.Text = message + "；当前分析完成前不使用旧结论。候选草稿可继续编辑和保存。";
         CompareButton.IsEnabled = ImportCriteriaButton.IsEnabled = CoverageConfirm.IsEnabled = ExportComparisonButton.IsEnabled = false;
         ComparisonOutcomePanel.Visibility = Visibility.Collapsed;
+        SemanticSourceNotice.Visibility = Visibility.Collapsed;
     }
     private void RefreshContextStatus(AnalysisReport report)
     {
         if (contextPending) { ContextStatus.Text = pendingContextMessage + "；当前分析完成前不使用旧结论。"; return; }
+        RefreshSemanticSources(report);
         ContextStatus.Text = $"最近 {report.WindowDays} 天 / {report.SelectedScene ?? "全部场景"} · " + (workspace.ContextStamp == CandidateComparison.Stamp(report) ? "条件范围与当前已确认需求一致。" : "当前需求或近期任务尚未纳入这份比较，请导入并核对。");
         if (report.HistoryQuality.HasIssues) ContextStatus.Text += " 历史读取有异常；请补核无法读取的任务，比较仅限已核对条件。";
         if (report.ExperienceQuality.HasIssues) ContextStatus.Text += " 体验读取有异常；请补核无法读取的体验，比较仅限已核对条件。";
@@ -106,6 +108,7 @@ public partial class ComparisonView : UserControl
             CoverageConfirm.IsChecked = workspace.CoverageConfirmed;
         }
         finally { updating = false; }
+        if (context != null && !contextPending) RefreshSemanticSources(context);
     }
     private void Invalidate()
     {

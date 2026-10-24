@@ -118,15 +118,18 @@ public static partial class CandidateComparison
             + (c.Observation is { } observation ? ":observation:" + Hash(new { observation.State, observation.Scope }) : "")
             + (c.RetainedWorkload is { } retained ? ":retained:" + Hash(new { retained.State, retained.Scope }) : "")).Order().ToArray()
     })))) + (report.HistoryQuality.HasIssues ? ":history:" + report.HistoryQuality.Signature : "")
-        + (report.ExperienceQuality.HasIssues ? ":experience:" + report.ExperienceQuality.Signature : "");
+        + (report.ExperienceQuality.HasIssues ? ":experience:" + report.ExperienceQuality.Signature : "")
+        + (report.SemanticUseNotice.Length > 0 ? ":meaning:" + Hash(report.SemanticUseNotice) : "")
+        + (report.SemanticUseSignature.Length > 0 ? ":meaning-data:" + report.SemanticUseSignature : "");
     public static List<PurchaseCriterion> Drafts(AnalysisReport report)
     {
         var result = new List<PurchaseCriterion>();
         if (report.SemanticRequirements is { } plan)
-            foreach (var f in plan.Facts.Where(f => f.Timeframe != "past"))
+            foreach (var f in plan.Facts.Where(SemanticUse.Relevant))
             {
-                var c = new PurchaseCriterion { OriginId = "semantic:" + Hash(f), Name = f.Label + "：" + f.Detail, Evidence = f.Evidence,
-                    Condition = f.Polarity is "conditional" or "uncertain" || f.Timeframe == "unspecified" ? (string.IsNullOrWhiteSpace(f.Condition) ? "需求尚未确定：" + f.Subject : f.Condition) : "" };
+                var c = new PurchaseCriterion { OriginId = "semantic:" + Hash(SemanticUse.SourceIdentity(f)) + SemanticUse.IdentitySuffix(f), Name = f.Subject + " · " + SemanticUse.Label(f) + " · 原文" + SemanticRequirements.Label(f.Timeframe) + "：" + f.Detail, Evidence = f.Evidence,
+                    Condition = SemanticUse.PendingUse(f) ? "需求尚未确定：" + f.Subject + (string.IsNullOrWhiteSpace(f.Condition) ? "" : "（用途待核对；原触发条件：" + f.Condition + "）")
+                        : SemanticUse.Conditional(f) ? (string.IsNullOrWhiteSpace(f.Condition) ? "需求尚未确定：" + f.Subject : f.Condition) : "" };
                 // An exclusion is a checklist of the entire negative statement, never a positive capacity floor.
                 var quantities = QuantityGoals.Compile(f);
                 if (quantities.Count == 0) result.Add(c);
@@ -187,6 +190,7 @@ public static partial class CandidateComparison
     public static PurchaseComparison Evaluate(PurchaseWorkspace workspace, AnalysisReport report)
     {
         Validate(workspace);
+        if (OutdatedSemanticCriteria(workspace, report).Count > 0) throw new ArgumentException("部分条件的源需求或购机用途需要重新核对。请删除这些条件，或选中后保留为独立目标并重新核对。");
         string stamp = Stamp(report);
         bool current = workspace.ContextStamp == stamp;
         var conflicts = FindConflicts(workspace.Criteria);
@@ -256,7 +260,7 @@ public static partial class CandidateComparison
             var missing = candidates.Where(a => a.PriceCny.HasValue && !evidencedQuotes.Contains(a.Id)).Select(a => a.Name).ToArray();
             return missing.Length == 0 ? "" : " 待补报价来源：" + string.Join("、", missing) + "；这些金额暂不参与最低报价、价差或节省计算。";
         }
-        string summary = requiredConflict ? "必需条件存在数值冲突。请先核对冲突项目的方向、数值和触发条件，再比较候选电脑。" : !current ? "需求或近期任务已改变，请重新核对条件覆盖范围。" : !workspace.CoverageConfirmed ? "请先核对是否覆盖重要任务、新需求和近期体验问题。"
+        string summary = requiredConflict ? "必需条件存在数值冲突。请先核对冲突项目的方向、数值和触发条件，再比较候选电脑。" : !current ? "比较范围已改变或尚未核对，请重新核对条件覆盖范围。" : !workspace.CoverageConfirmed ? "请先核对是否覆盖重要任务、新需求和近期体验问题。"
             : assessments.Count == 1 ? $"候选「{assessments[0].Name}」：" + (assessments[0].State == "pass" ? "必需条件已通过。" : assessments[0].State == "fail" ? "存在不满足的必需条件。" : "仍有待验证的必需条件。")
                 + (assessments[0].PriceCny.HasValue ? $" 已记录整机报价 {assessments[0].PriceCny:0.##} 元；单台验证不计算候选价差。" : " 报价未填写，任务与规格目标可单独判断。")
             : passing.Length == 0 ? assessments.Any(a => a.State == "pass")
@@ -274,6 +278,7 @@ public static partial class CandidateComparison
                 "证据类型逐项列出。重复耗时测量达标仅表示所附原始正式轮次全部达到该目标；机器对应关系与实际产物仍由用户核对。" }
             .Concat(report.HistoryQuality.HasIssues ? new[] { report.HistoryQuality.Message + " 候选结果仅限已逐项核对的条件，不覆盖无法读取的历史任务。", report.HistoryQuality.Details } : [])
             .Concat(report.ExperienceQuality.HasIssues ? new[] { report.ExperienceQuality.Message + " 候选结果仅限已核对条件，不覆盖无法读取的体验。", report.ExperienceQuality.Details } : [])
+            .Concat(report.SemanticUseNotice.Length > 0 ? new[] { report.SemanticUseNotice } : [])
             .Concat(report.Cards.Where(c => c.Key is "cpu" or "gpu" or "memory").Select(c => c.Name + "：" + c.DisplayTitle + "；" + c.DisplaySuggestion)).ToArray();
         var tradeoffs = new List<string>();
         if (passing.Length > 0)

@@ -89,7 +89,7 @@ public record Advice(string Key, string Name, string Status, string Title, strin
     public string StatusLabel => UsesRetainedWorkload || UsesObservation ? "初步判断" : Status switch
     {
         "surplus" => "疑似过剩", "pressure" => "压力线索", "fit" => "保持观察", "changed" => "近期需求增加",
-        "review" => "可比较降档", "experience" => "体验待核对", "experience-data" => "体验记录待核对", "requirements" => "新需求待验证",
+        "review" => "可比较降档", "experience" => "体验待核对", "experience-data" => "体验记录待核对", "meaning" => "用途待核对", "requirements" => "新需求待验证",
         "constraints" => "已确认条件", _ => "等待观测"
     };
 }
@@ -153,6 +153,8 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     public string? SelectedScene { get; init; }
     public List<DemandTrend> DemandTrends { get; init; } = [];
     public List<ExperienceEvent> ExperienceEvents { get; init; } = [];
+    public string SemanticUseNotice { get; init; } = "";
+    public string SemanticUseSignature { get; init; } = "";
     public ExperienceReadQuality ExperienceQuality { get; init; } = ExperienceReadQuality.Unchecked;
     public RequirementsPlan? ConfirmedRequirements { get; init; }
     public SemanticPlan? SemanticRequirements { get; init; }
@@ -168,7 +170,7 @@ public record AnalysisReport(DateTimeOffset Generated, int WindowDays, int Sampl
     [System.Text.Json.Serialization.JsonIgnore]
     public string DurationLabel => DurationText.FromHours(ActiveHours);
     public string Level => Ready ? "较充分" : ActiveHours >= .5 ? "初步观察" : "积累中";
-    public string Summary => ExperienceQuality.HasIssues ? "体验记录存在读取异常，请先核对记录" : HistoryQuality.HasIssues ? "历史记录存在异常，先核对数据再判断配置余量" : Cards.Any(c => c.Status == "experience") ? "近期有体验问题，先核对原因再评估余量" : Cards.Any(c => c.Status == "requirements") ? "已确认配置目标，先核对候选机器的表现" : DemandTrends.Any(t => t.Status == "increased") ? "近期任务负载增加，优先核对新的配置需求" : Ready ? $"{Cards.Count(c => c.Status == "surplus")} 项疑似过剩 · {Cards.Count(c => c.Status == "review")} 项可比较降档 · {Cards.Count(c => c.Status == "pressure")} 项压力线索" : Cards.Any(c => c.UsesObservation || c.UsesRetainedWorkload)
+    public string Summary => SemanticUseNotice.Length > 0 ? "需求的购机用途需要核对" : ExperienceQuality.HasIssues ? "体验记录存在读取异常，请先核对记录" : HistoryQuality.HasIssues ? "历史记录存在异常，先核对数据再判断配置余量" : Cards.Any(c => c.Status == "experience") ? "近期有体验问题，先核对原因再评估余量" : Cards.Any(c => c.Status == "requirements") ? "已确认配置目标，先核对候选机器的表现" : DemandTrends.Any(t => t.Status == "increased") ? "近期任务负载增加，优先核对新的配置需求" : Ready ? $"{Cards.Count(c => c.Status == "surplus")} 项疑似过剩 · {Cards.Count(c => c.Status == "review")} 项可比较降档 · {Cards.Count(c => c.Status == "pressure")} 项压力线索" : Cards.Any(c => c.UsesObservation || c.UsesRetainedWorkload)
         ? Cards.Any(c => c.UsesObservation && c.Observation?.State is ("light" or "busy") || c.UsesRetainedWorkload)
             ? $"初步判断：{Cards.Count(c => c.UsesObservation && c.Observation?.State == "light")} 项有余量线索 · {Cards.Count(c => c.UsesObservation && c.Observation?.State == "busy")} 项曾出现繁忙"
                 + (Cards.Any(c => c.UsesRetainedWorkload) ? $" · {Cards.Count(c => c.UsesRetainedWorkload)} 项保留重任务" : "")

@@ -36,6 +36,7 @@ public static class PurchaseGuidance
         // evidence and selected scope rather than a possibly older light label.
         switch (card.Status)
         {
+            case "meaning": return Final("核对需求的购机用途，再决定配置取舍", 0);
             case "experience-data": return Final("核对体验记录后，再决定配置取舍", 0);
             case "experience": return Final("先核对体验问题，再决定配置取舍", 0);
             case "requirements": return Final("先验证已确认需求，再决定配置取舍", 1);

@@ -64,7 +64,9 @@ public static partial class SelfTests
             foreach (var fact in new[] { Fact("如果选上才做CAD", polarity: "conditional"), Fact("不做CAD", polarity: "excluded"), Fact("以前做CAD", time: "past"), Fact("或许做CAD", polarity: "uncertain"), Fact("用CAD", time: "unspecified") })
             {
                 var report = SemanticRequirements.Apply(baseline(), new Settings(FutureNeeds: fact.Evidence, SemanticRequirements: Plan(fact.Evidence, fact)));
-                assert(report.Cards.Single(c => c.Key == "memory").Status == "surplus", "conditional or old task treated as mandatory future work");
+                var memory = report.Cards.Single(c => c.Key == "memory");
+                assert(memory.Status != "requirements", "conditional or old task treated as mandatory future work");
+                assert(SemanticUse.PendingUse(fact) ? memory.Status == "meaning" && !report.Ready : memory.Status == "surplus", "unresolved source use was either dropped or treated as an unconditional task");
             }
         });
         check("Explicit memory minimum does not manufacture a graphics requirement", () =>
@@ -84,7 +86,7 @@ public static partial class SelfTests
             string source = "如果选上才做CAD <script>"; var plan = Plan(source, Fact(source, polarity: "conditional"));
             var report = SemanticRequirements.Apply(baseline(), new Settings(FutureNeeds: source, SemanticRequirements: plan));
             string html = ReportExporter.Html(report, null);
-            assert(html.Contains("条件成立时需要") && html.Contains("&lt;script&gt;") && !html.Contains("CAD <script>"), "semantic report lost condition or escaping");
+            assert(html.Contains("原文关系：条件陈述") && html.Contains(plan.Facts[0].Condition) && html.Contains("&lt;script&gt;") && !html.Contains("CAD <script>"), "semantic report lost condition or escaping");
         });
         check("Model connection refuses credential URLs and insecure remote transport", () =>
         {

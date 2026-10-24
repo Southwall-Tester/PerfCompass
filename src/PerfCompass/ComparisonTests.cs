@@ -86,9 +86,10 @@ public static partial class SelfTests
                 new("动画", "workload", "required", "past", "", "", "", "去年做过动画") };
             var context = Context() with { FutureNeeds = source, SemanticRequirements = new(source, "test", "test", SemanticRequirements.Version, facts, DateTimeOffset.Now) };
             var drafts = CandidateComparison.Drafts(context);
-            assert(drafts.Count == 5 && drafts[0].Metric == "memory" && drafts[0].Direction == "min" && drafts[0].Target == 64 && !drafts[0].Reviewed, "memory draft or review wrong");
+            assert(drafts.Count == 6 && drafts[0].Metric == "memory" && drafts[0].Direction == "min" && drafts[0].Target == 64 && !drafts[0].Reviewed, "memory draft or review wrong");
             assert(drafts[1].Metric == "price" && drafts[1].Target == 12000 && drafts[1].Direction == "max", "budget normalization wrong");
             assert(drafts[2].Target == 2000 && drafts[3].Metric == "check" && drafts[4].Condition == "接到项目", "storage, exclusion or condition wrong");
+            assert(drafts[3].Condition.Length > 0 && drafts[5].Condition.Length > 0 && drafts[5].Metric == "check", "ambiguous exclusion or past use became mandatory or disappeared");
         });
         check("Ambiguous numeric phrases remain checklists rather than invented bounds", () =>
         {

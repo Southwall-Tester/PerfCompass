@@ -17,11 +17,12 @@ public partial class MainWindow
         ModelNameBox.Text = store.Settings.ModelName;
         if (store.Settings.SemanticRequirements is { } plan && plan.Source == FutureBox.Text.Trim())
         {
-            if (plan.ContractVersion != SemanticRequirements.Version || plan.Facts == null || plan.Facts.Count is < 1 or > 20 || plan.Facts.Any(f => f == null)) { SemanticStatus.Text = "已保存事项无效或版本已改变，请重新解析。"; return; }
+            if (!SemanticUse.KnownPlan(plan.ContractVersion) || plan.Facts == null || plan.Facts.Count is < 1 or > 20 || plan.Facts.Any(f => f == null)) { SemanticStatus.Text = "已保存事项无效或版本已改变，请重新解析。"; return; }
             try { foreach (var fact in plan.Facts) SemanticRequirements.Validate(plan.Source, fact); } catch (ArgumentException) { SemanticStatus.Text = "已保存事项需要重新核对，请重新解析。"; return; }
             ShowSemanticDraft(new(plan.Source, plan.Model, plan.Provider, plan.Facts, []));
             SemanticEditors.ItemsSource = plan.Facts.Select(f => CreateSemanticEditor(f, true)).ToList();
-            SemanticReviewConfirm.IsChecked = true;
+            SemanticReviewConfirm.IsChecked = plan.ContractVersion == SemanticUse.PlanVersion && plan.Facts.All(f => f.DecisionUse != null);
+            if (SemanticReviewConfirm.IsChecked != true) SemanticStatus.Text = "事项与原文已保留，请分别核对原文时间与购机用途后保存。";
         }
     }
     private void ResetSemanticDraft()
@@ -106,7 +107,7 @@ public partial class MainWindow
             { SemanticStatus.Text = settingsFailures["semantic"]; return; }
             ClearSettingsFailure("requirements");
             RequirementsConfirm.IsChecked = false;
-            SemanticStatus.Text = "已保存选用的事项并参与建议。条件、不确定及过去需求仍分别保留；密钥未写入磁盘。";
+            SemanticStatus.Text = "已保存事项及购机用途。必须满足、必须避免、不作为条件和用途待核对的内容分别处理。";
             await RefreshAnalysis();
         }
         catch (ArgumentException ex) { SemanticStatus.Text = ex.Message; }

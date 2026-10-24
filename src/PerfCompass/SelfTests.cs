@@ -387,6 +387,7 @@ public static partial class SelfTests
         RunGpuEngineComparisonTests(Check, Assert);
         RunHistoryQualityTests(Check, Assert, Fixture);
         RunExperienceReaderTests(Check, Assert, root, () => Analyze(Fixture()));
+        RunSemanticUseTests(Check, Assert, root, () => Analyze(Fixture()));
         RunHistoryIntervalTests(Check, Assert, Fixture);
         RunDataRootLeaseTests(Check, Assert);
         RunSamplingClockTests(Check, Assert);

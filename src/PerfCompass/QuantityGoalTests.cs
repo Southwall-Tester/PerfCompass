@@ -71,7 +71,8 @@ public static partial class SelfTests
             editor.Changed = () => changed = true; int notifications = 0;
             editor.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(editor.QuantityPreview)) notifications++; };
             assert(editor.QuantityPreview.Contains("0.01 秒") && editor.QuantityPreview.Contains("严格小于"), "preview conversion wrong");
-            editor.Value = "不超过10"; assert(changed && notifications == 1 && editor.QuantityPreview.Contains("逐项核对"), "changed boundary retained an old numeric preview");
+            editor.Value = "不超过10"; assert(changed && notifications == 1 && editor.DecisionUse == "clarify" && !editor.QuantityPreview.Contains("0.01 秒"), "changed boundary retained an old numeric preview or purchasing use");
+            editor.DecisionUse = "require"; assert(editor.QuantityPreview.Contains("逐项核对"), "reconfirmed use bypassed the original quote's strict boundary");
         });
         check("Real provider noun prefixes and modal words compile without removing negation or context", () =>
         {
