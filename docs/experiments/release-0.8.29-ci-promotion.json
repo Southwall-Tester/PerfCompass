@@ -1,0 +1,23 @@
+﻿{
+    "Version":  "0.8.29+5910a0e21236a8e2f8e6b1f01376f54725c98a00",
+    "ExeSha256":  "0F99C28BE8E6B1FBBD3ED179F9FC9DBAD8666D5996CBE4CD9A8CE70A51D8B2D1",
+    "FrozenCommit":  "5910a0e21236a8e2f8e6b1f01376f54725c98a00",
+    "CI":  {
+               "RunId":  40152110869,
+               "Commit":  "bbe85f01a772ea1ed0e788c467c3a98382e54d38",
+               "Status":  "completed",
+               "Conclusion":  "success",
+               "Url":  "https://github.com/Southwall-Tester/PerfCompass/actions/runs/40152110869",
+               "ProductSourcesMatchFrozenCommit":  true,
+               "RemoteBinaryIdentityClaimed":  false
+           },
+    "DefaultEntry":  {
+                         "Promoted":  true,
+                         "SameFrozenExeHash":  true,
+                         "Previous028DirectoryPreserved":  true,
+                         "UserHistoryUnchanged":  true,
+                         "UserHistoryFileCount":  3
+                     },
+    "LongRun":  "Independent final 0.8.29 eight-hour run remains live with matching application and formal supervisor identities. Exit witness pending; no completion or long-run pass claimed.",
+    "CommercialMaturityEstablished":  false
+}

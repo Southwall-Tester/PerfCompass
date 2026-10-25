@@ -17,6 +17,8 @@
 
 完整版本、EXE 摘要、失败记录和验证范围见 [验证记录](VALIDATION.md)；原始编解码实验的公开摘要见 [本机 GPU 任务记录](experiments/gpu-workload-0.8.17-local.json)。
 
+0.8.29 的对应远端构建已成功，本机默认入口已提升到同一冻结 EXE，更新前后用户历史摘要未变；详见 [CI 与默认入口记录](experiments/release-0.8.29-ci-promotion.json)。这不替代仍在运行的八小时试验。
+
 ## 启动与升级
 
 1. 将便携包完整解压到可写的普通本地目录，再运行 `PerfCompass.exe`。发布包自带运行时，不需要安装 Python 或预装 .NET。程序按当前用户权限运行，不自动申请管理员权限。
