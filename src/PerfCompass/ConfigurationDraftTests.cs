@@ -41,7 +41,11 @@ public static partial class SelfTests
                 "Commit pressure was turned into a 48 GB installed-memory requirement");
             var occupied = Analyze(Rows().Select(s => s with { MemoryPeakGb = 27, MemoryUsedGb = 26 }));
             assert(Row(occupied, "memory").AvailableMemoryGiB == 32 && Row(occupied, "memory").Recommendation.Contains("保留"), "Non-light memory was automatically downsized");
-            var pressure = Analyze(Rows().Select(s => s with { MemoryPeakGb = 31, MemoryUsedGb = 31, CommitGb = 33 }));
+            var shortPressure = Analyze(Rows().Select(s => s with { MemoryPeakGb = 31, MemoryUsedGb = 31, CommitGb = 33 }));
+            assert(shortPressure.Cards.Single(c => c.Key == "memory").Status != "pressure"
+                && Row(shortPressure, "memory").AvailableMemoryGiB == 32, "Short high usage was promoted to sustained pressure");
+            var frame = Rows()[0] with { MemoryPeakGb = 31, MemoryUsedGb = 31, CommitGb = 33 };
+            var pressure = Analyze(Enumerable.Range(0, 180).Select(i => frame with { Time = now.AddHours(-1).AddSeconds(i * 10) }));
             assert(Row(pressure, "memory").AvailableMemoryGiB == 48 && Row(pressure, "memory").Recommendation.Contains("优先比较"),
                 "Physical memory pressure did not open a larger-capacity comparison");
         });
