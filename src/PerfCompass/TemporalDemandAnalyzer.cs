@@ -90,15 +90,17 @@ public sealed class TemporalDemandAnalyzer(DateTimeOffset now)
         {
             bool cpuBusy = week.Cpu.Maximum >= 80 || week.CpuHighSeconds > 0, coreBusy = week.Core.Maximum >= 80;
             double seconds = Math.Min(week.Cpu.Seconds, week.Core.Seconds);
+            var demand = new CpuDemandEvidence(week.Cpu.Quantile(.95), week.Core.Quantile(.95), week.Cpu.Maximum,
+                week.Core.Maximum, week.CpuHighSeconds, seconds / 3600, Coverage(seconds));
             string evidence = $"CPU P95 {P(week.Cpu.Quantile(.95))}；最忙逻辑核心峰值 {P(week.Core.Maximum)}；CPU ≥90% 累计 {week.CpuHighSeconds:0.0} 秒。";
             if (cpuBusy || coreBusy)
                 return Result("busy", cpuBusy ? "已观察到处理器繁忙" : "已观察到单核繁忙", evidence,
-                    "重跑出现繁忙的任务，记录耗时或卡顿，再核对升级收益。", "CPU 与逻辑核心", Math.Max(cpuBusy ? week.Cpu.Seconds : 0, coreBusy ? week.Core.Seconds : 0));
+                    "重跑出现繁忙的任务，记录耗时或卡顿，再核对升级收益。", "CPU 与逻辑核心", Math.Max(cpuBusy ? week.Cpu.Seconds : 0, coreBusy ? week.Core.Seconds : 0)) with { CpuDemand = demand };
             if (!Enough(seconds, .95)) return null;
             bool light = week.Cpu.Quantile(.95) < 25 && week.Core.Maximum < 70;
             return Result(light ? "light" : "observed", light ? "已测处理器负载偏低" : "处理器已有实际负载", evidence,
                 light ? "可先比较较少核心、单核性能相近的CPU，并用最重任务筛选。" : "记录主要任务的完成时间，再与候选机器实测比较。",
-                "CPU 与逻辑核心", seconds);
+                "CPU 与逻辑核心", seconds) with { CpuDemand = demand };
         }
         if (key == "memory")
         {

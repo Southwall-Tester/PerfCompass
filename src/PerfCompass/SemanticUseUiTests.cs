@@ -110,6 +110,17 @@ public partial class MainWindow
         finally { ReportExportPathForTest = picker; }
         string html = File.ReadAllText(export);
         require(html.Contains("购机用途：必须避免") && html.Contains("购机用途：不作为购机条件") && html.Contains("过去"), "Actual report export preserves background sources chronology and the chosen prohibition");
+        var configuration = (ConfigurationDraft)ConfigurationDraftPanel.DataContext;
+        require(configuration.Conditions.Any(c => c.Label == "接课" && c.Source.Contains("如果接课才运行OrbitalStack"))
+            && html.Contains("下一台电脑配置草案") && html.Contains("条件原文："),
+            "Saved conditional purpose reaches both the automatic configuration draft and exported report with its source");
+        ConfigurationDraftConditions.IsExpanded = true; UpdateLayout();
+        ConfigurationDraftConditions.BringIntoView(new Rect(0, 0, ConfigurationDraftConditions.ActualWidth, 100));
+        await screenshot("configuration-conditional-source");
+        require(Children<TextBlock>(ConfigurationDraftConditions).Any(t => t.IsVisible && t.Text == "接课")
+            && Children<TextBlock>(ConfigurationDraftConditions).Any(t => t.IsVisible && t.Text.Contains("条件原文：如果接课才运行OrbitalStack")),
+            "Native conditional configuration exposes the trigger and original source together");
+        ConfigurationDraftConditions.IsExpanded = false;
 
         // Exercise the real initialization routine against legacy saved facts.
         var legacy = new SemanticPlan(source, "synthetic-legacy", "local", SemanticRequirements.Version, facts, DateTimeOffset.Now);

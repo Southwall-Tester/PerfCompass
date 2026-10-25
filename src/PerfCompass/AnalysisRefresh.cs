@@ -82,6 +82,8 @@ public partial class MainWindow
         AnalysisSummary.Text = state; CoverageLabel.Text = scope;
         CoverageNext.Text = "更新完成后显示配置判断；原始记录和候选草稿保留。";
         PurchaseGuidanceList.ItemsSource = Array.Empty<ConfigurationDecision>(); AdviceList.Items.Clear();
+        ConfigurationDraftPanel.DataContext = null;
+        ConfigurationDraftPanel.Visibility = Visibility.Collapsed;
         SceneProfileList.ItemsSource = null; SceneProfileSummary.Text = state; SceneEmptyLabel.Visibility = Visibility.Collapsed;
         GpuEngineProfileList.ItemsSource = null; GpuEngineHistoryNotice.Text = state;
         DemandTrendList.ItemsSource = null; DemandTrendHeader.Text = state;

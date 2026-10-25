@@ -80,6 +80,7 @@ public record GpuEngineProfile(string Kind, string Name, double ObservedHours, d
 public record ResourceObservation(string State, string Title, string Evidence, string Action, string Scope, double ObservedHours, double Coverage)
 {
     public MemoryCapacityEvidence? MemoryCapacity { get; init; }
+    public CpuDemandEvidence? CpuDemand { get; init; }
 }
 
 public record Advice(string Key, string Name, string Status, string Title, string Evidence, string Suggestion, string Limits)

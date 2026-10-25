@@ -244,6 +244,8 @@ public partial class MainWindow : Window
         DemandTrendHeader.Text = changed == null ? "近期需求变化 · " + (result.DemandTrends.Any(t => t.Status == "similar" || t.Status == "decreased") ? "查看时期对照" : "对照记录积累中") : $"近期需求变化 · {changed.Name}增加（{changed.Days} 天对照）";
         AnalysisSummary.Text = result.Summary;
         PurchaseGuidanceList.ItemsSource = PurchaseGuidance.Build(result);
+        ConfigurationDraftPanel.DataContext = ConfigurationDraft.Build(result);
+        ConfigurationDraftPanel.Visibility = Visibility.Visible;
         CoverageLabel.Text = $"{scene ?? "全部场景"} · {result.Level}  ·  有效使用 {result.DurationLabel}  ·  覆盖 {result.ActiveDays} 天  ·  {result.SampleCount:N0} 条记录";
         RepresentativeStatus.Text = result.CoverageMessage;
         CoverageNext.Text = result.ExperienceQuality.HasIssues ? result.ExperienceQuality.Message : result.HistoryQuality.HasIssues ? result.HistoryQuality.Message : result.SemanticUseNotice.Length > 0 ? result.SemanticUseNotice : result.Ready ? "已覆盖典型任务，可比较降档方向；近期新增任务会更新判断。" : result.Cards.Any(c => c.Observation != null)

@@ -60,6 +60,8 @@ public partial class MainWindow
             using (var file = File.Create(Path.Combine(output, "blocked-context.png"))) png.Save(file);
             require(!waiter.IsCompleted && !first.IsCompleted, "A queued refresh waits for the latest selected context instead of returning the previous result");
             require(report == null && !PurchaseGuidanceList.Items.OfType<ConfigurationDecision>().Any(), "Changing analysis scope immediately retires old purchasing directions while the reader is pending");
+            require(ConfigurationDraftPanel.Visibility == Visibility.Collapsed && ConfigurationDraftPanel.DataContext == null,
+                "A pending scope change retires the old automatic configuration draft with the other purchasing advice");
         }
         finally { release.Set(); await holding; await first.WaitAsync(TimeSpan.FromSeconds(30)); }
         await wait(() => report?.WindowDays == 90);

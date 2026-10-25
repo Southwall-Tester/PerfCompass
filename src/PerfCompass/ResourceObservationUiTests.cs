@@ -180,6 +180,24 @@ public partial class MainWindow
             .Single(item => item.Tag as string == scene);
         await waitForAnalysis(() => report!.SelectedScene == scene && report.SampleCount == 60);
         var light = report!;
+        var configuration = ConfigurationDraft.Build(light);
+        require(ConfigurationDraftPanel.Visibility == Visibility.Visible
+            && ConfigurationDraftPanel.DataContext is ConfigurationDraft draft && draft.Baseline.Rows.Length == 4
+            && ConfigurationDraftList.Items.OfType<ConfigurationDraftRow>().Select(r => r.Recommendation)
+                .SequenceEqual(configuration.Baseline.Rows.Select(r => r.Recommendation)),
+            "Actual analysis entry publishes a four-component configuration draft from the selected scene");
+        UpdateLayout();
+        var configurationLabels = Descendants(ConfigurationDraftList).OfType<TextBlock>().Where(t => configuration.Baseline.Rows.Any(r => r.Recommendation == t.Text)).ToArray();
+        await RevealLeadingArea(ConfigurationDraftPanel, configurationLabels);
+        require(configurationLabels.Length == 4 && configurationLabels.All(InViewport),
+            "All four configuration recommendations are readable together in the actual viewport");
+        File.WriteAllText(Path.Combine(output, "configuration-draft.json"), JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
+        await screenshot("90-next-computer-configuration");
+        ConfigurationDraftEvidence.IsExpanded = true;
+        await RefreshAnalysis();
+        require(ConfigurationDraftEvidence.IsExpanded && ConfigurationDraftList.Items.Count == 4,
+            "Ordinary refresh preserves configuration evidence expansion and does not create review confirmation");
+        ConfigurationDraftEvidence.IsExpanded = false;
         var lightCards = new[] { "cpu", "memory", "gpu" }.Select(key => light.Cards.Single(card => card.Key == key)).ToArray();
         require(!light.Ready && !light.RepresentativeConfirmed && light.ActiveDays == 1
             && Math.Abs(light.ActiveHours - 1d / 6) < 1e-7 && !light.HistoryQuality.HasIssues
