@@ -84,7 +84,7 @@ public partial class MainWindow
                 "Actual import adds a sourced quote and specification candidate without task outcomes or coverage confirmation");
             await wait(() => view.Triage?.Cases.FirstOrDefault()?.Candidates.Any(c => c.Id == view.Workspace.Candidates[0].Id) == true);
             var importedTriage = view.Triage!.Cases[0].Candidates.Single(c => c.Id == view.Workspace.Candidates[0].Id);
-            require(importedTriage.Name.Contains(firstPreview.Sku) && importedTriage.Quote.Contains("有出处")
+            require(importedTriage.Name.Contains(firstPreview!.Sku) && importedTriage.Quote.Contains("有出处")
                 && importedTriage.Pending.Any(p => p.Contains("实际任务")) && view.Workspace.Criteria.Count == 0,
                 "An imported real SKU automatically reaches candidate triage with its sourced quote while actual task performance remains pending");
 

@@ -14,7 +14,13 @@ New-Item -ItemType Directory -Force -Path $taskLicenseRoot | Out-Null
 $taskRows = @(foreach ($taskLibrary in $taskAssets.libraries.PSObject.Properties) {
     if ($taskLibrary.Value.type -eq 'project') { continue }
     if ($taskLibrary.Value.type -ne 'package') { throw "Unsupported dependency asset type: $($taskLibrary.Name)" }
-    $taskPackageDir = Join-Path (Join-Path $taskRoot '.tools\nuget') $taskLibrary.Value.path
+    # Use the restore's actual cache roots, including NUGET_PACKAGES, instead
+    # of requiring another full package cache in every temporary worktree.
+    $taskPackageDir = @($taskAssets.packageFolders.PSObject.Properties.Name | ForEach-Object {
+        $taskCandidate = Join-Path $_ $taskLibrary.Value.path
+        if (Test-Path -LiteralPath $taskCandidate -PathType Container) { $taskCandidate }
+    }) | Select-Object -First 1
+    if (-not $taskPackageDir) { throw "Restored package directory is missing: $($taskLibrary.Name)" }
     $taskSpec = Get-ChildItem -LiteralPath $taskPackageDir -Filter '*.nuspec' | Select-Object -First 1
     if ($taskSpec) {
         [xml]$taskXml = Get-Content -LiteralPath $taskSpec.FullName -Encoding UTF8 -Raw

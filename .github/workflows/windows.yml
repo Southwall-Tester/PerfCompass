@@ -130,6 +130,24 @@ jobs:
         with:
           name: native-preliminary-observation
           path: artifacts/ui-observation-focused/
+      # CI uses recorded public source facts; live shop reads are explicit local checks.
+      - name: Native product-page import and candidate triage
+        shell: pwsh
+        run: |
+          $root = Join-Path $PWD 'artifacts/ci-product-page/data'
+          $p = Start-Process ./release-next/PerfCompass.exe -ArgumentList @('--ui-test','--ui-test-product-page-only','--data-dir',('"' + $root + '"')) -PassThru -WindowStyle Hidden
+          $handle = $p.Handle
+          if (-not $p.WaitForExit(90000)) { throw ('Product-page observation expired; inspect PID ' + $p.Id) }
+          $p.WaitForExit(); $p.Refresh()
+          if ($p.ExitCode -ne 0) { throw 'Native product-page flow failed.' }
+          $checks = Get-Content artifacts/ui-product-page-focused/results.txt
+          if (@($checks | Where-Object { $_ -like 'PASS *' }).Count -ne 20 -or @($checks | Where-Object { $_ -like 'FAIL *' }).Count -gt 0) { throw 'Product-page checks are incomplete.' }
+      - name: Product-page entry evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-product-page
+          path: artifacts/ui-product-page-focused/
       - name: Native hourly history weighting flow
         shell: pwsh
         run: |
