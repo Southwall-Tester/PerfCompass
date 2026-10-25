@@ -119,5 +119,16 @@
   "DefaultPromoted": true,
   "UserHistoryUnchanged": true,
   "CandidateExecutableMovedInsteadOfDuplicated": true,
-  "CurrentPackagePath": "artifacts/PerfCompass-current-Windows-x64.zip"
+  "CurrentPackagePath": "artifacts/PerfCompass-current-Windows-x64.zip",
+  "PortablePackage": {
+    "Version": "0.8.34",
+    "Entries": 140,
+    "ExtractedExeHashMatches": true,
+    "WorkingDirectoryIsExtractedPackage": true,
+    "IndependentEmptyData": true,
+    "ProductPassed": 23,
+    "Failed": 0,
+    "CapturedProcessExitCode": 0,
+    "DocumentationUpdatedAfterEntryCheck": true
+  }
 }
