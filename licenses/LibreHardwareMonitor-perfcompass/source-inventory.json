@@ -5,7 +5,7 @@
     "UpstreamVersion":  "0.9.6",
     "PatchedVersion":  "0.9.6-perfcompass.1",
     "PerfCompassRepository":  "https://github.com/Southwall-Tester/PerfCompass",
-    "PerfCompassCheckoutCommit":  "9f1c41a9c3e43bcd15ddbfda79c5e3988b34c102",
+    "PerfCompassCheckoutCommit":  "5910a0e21236a8e2f8e6b1f01376f54725c98a00",
     "SourceTreeDirty":  false,
     "SourceSnapshotSha256":  "e6a7b5e3279f4d11adacc38a109ae984f6457844b66ef486daa2acfad5285849",
     "Files":  [

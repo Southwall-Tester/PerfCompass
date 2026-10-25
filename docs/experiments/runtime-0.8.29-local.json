@@ -1,0 +1,77 @@
+﻿{
+    "Version":  "0.8.29+5910a0e21236a8e2f8e6b1f01376f54725c98a00",
+    "ExeSha256":  "0F99C28BE8E6B1FBBD3ED179F9FC9DBAD8666D5996CBE4CD9A8CE70A51D8B2D1",
+    "SameFrozenExecutable":  true,
+    "SelfTests":  {
+                      "Passed":  492,
+                      "Failed":  0,
+                      "CapturedProcessExitCode":  0
+                  },
+    "ObservationAndCandidateFlow":  {
+                                        "Passed":  63,
+                                        "Failed":  0,
+                                        "CapturedProcessExitCode":  0,
+                                        "ResultSha256":  "912E8D32B32F68692EEDFDB1F348E59B1928C4DF4555D8877EB6CEEB0199919E"
+                                    },
+    "UncertainScenarioFlow":  {
+                                  "Passed":  21,
+                                  "Failed":  0,
+                                  "CapturedProcessExitCode":  0,
+                                  "ResultSha256":  "A227A7481E2E9B1B5F394DA44D60EC109BDD17303C71F6E7BF88BD9DFD3F6908"
+                              },
+    "DraftAndBackupFlow":  {
+                               "Passed":  38,
+                               "Failed":  0,
+                               "CapturedProcessExitCode":  0,
+                               "ResultSha256":  "DF0FF3F3B8136C9400AE37ED9E972C49EB2A17B4E83008E7B136FAD67BFBCD3B"
+                           },
+    "MeasurementPlanFlow":  {
+                                "Passed":  30,
+                                "Failed":  0,
+                                "CapturedProcessExitCode":  0,
+                                "ResultSha256":  "3C6B57A76B0786E1E58FB4F5AB4DB9B3115B4F62B3270CF3AB45C8AAD0079AD9"
+                            },
+    "SemanticUseFlow":  {
+                            "Passed":  23,
+                            "Failed":  0,
+                            "CapturedProcessExitCode":  0,
+                            "ResultSha256":  "B936FC5808F29DE4410C481DBE61D61AEF8D143F0A9FEF895B9E3C785327F4E4"
+                        },
+    "FullNativeWpf":  {
+                          "Passed":  146,
+                          "Failed":  0,
+                          "CapturedProcessExitCode":  0,
+                          "ResultSha256":  "A93DA7A43C5D2BD955D45F96AE2D1A124C5644211970759B2806AA6CCA94448B"
+                      },
+    "CountsOverlapAndMustNotBeSummed":  true,
+    "RenderedNativeInterfaceReviewed":  true,
+    "HtmlContentChecked":  true,
+    "HtmlBrowserRenderingReviewed":  false,
+    "BrowserAvailability":  "Edge tool did not return a session; supported CUA inventory returned no browsers.",
+    "IndependentSpecificationAndQuoteSources":  true,
+    "ComparisonSchema":  "comparison-1.4",
+    "Old028ApiRejectsNewFileAndPreservesOriginal":  true,
+    "CandidatePricesAndTimesAreSynthetic":  true,
+    "ProductionHistoryUsedForTheseTests":  false,
+    "RealCandidateHardwareCalibrationCompleted":  false,
+    "CommercialMaturityEstablished":  false,
+    "PreviousFrozenFailure":  {
+                                  "Version":  "0.8.29+85b97b06ad49113fe64f433278c433c937d01d5b",
+                                  "UncertainScenarioPassed":  8,
+                                  "UncertainScenarioFailed":  2,
+                                  "CapturedProcessExitCode":  1,
+                                  "Preserved":  true
+                              },
+    "LongRun":  "Independent final 0.8.29 eight-hour trial started 2026-10-25 09:48 UTC+8. Application and formal supervisor identities initially matched. Running, exit witness pending; no long-run pass is claimed.",
+    "PortableAudit":  {
+                          "Entries":  126,
+                          "Bytes":  74861574,
+                          "ExecutableHashMatches":  true,
+                          "ExtractedObservationAndCandidatePassed":  63,
+                          "Failed":  0,
+                          "CapturedProcessExitCode":  0,
+                          "ExtractedDirectoryUsedAsWorkingDirectory":  true,
+                          "IndependentEmptyDataDirectory":  true
+                      },
+    "PriorLongRun":  "The separate 0.8.25 run has no live application or observer and no terminal result or exit witness; not complete and not passed. No long-run pass is transferred to 0.8.29."
+}
