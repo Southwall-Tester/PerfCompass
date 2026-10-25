@@ -1,0 +1,119 @@
+{
+  "Version": "0.8.34",
+  "FrozenCommit": "435c067464cdb428e5544a4519f1f689849223a3",
+  "ExeSha256": "38AAA5F627EEE811B837E5655999FC8362845451B67B10D208B7F202B7D56C5F",
+  "Runs": [
+    {
+      "Mode": "full",
+      "ExeSha256": "38AAA5F627EEE811B837E5655999FC8362845451B67B10D208B7F202B7D56C5F",
+      "ElapsedSeconds": 160.1274253,
+      "CapturedProcessExitCode": 0,
+      "Passed": 157,
+      "Failed": 0,
+      "SameExe": true
+    },
+    {
+      "Mode": "live",
+      "ExeSha256": "38AAA5F627EEE811B837E5655999FC8362845451B67B10D208B7F202B7D56C5F",
+      "ElapsedSeconds": 8.4688686,
+      "CapturedProcessExitCode": 0,
+      "Passed": 28,
+      "Failed": 0,
+      "SameExe": true
+    },
+    {
+      "Mode": "observations",
+      "ExeSha256": "38AAA5F627EEE811B837E5655999FC8362845451B67B10D208B7F202B7D56C5F",
+      "ElapsedSeconds": 18.8047185,
+      "CapturedProcessExitCode": 0,
+      "Passed": 77,
+      "Failed": 0,
+      "SameExe": true
+    },
+    {
+      "Mode": "product",
+      "ExeSha256": "38AAA5F627EEE811B837E5655999FC8362845451B67B10D208B7F202B7D56C5F",
+      "ElapsedSeconds": 6.719418999999999,
+      "CapturedProcessExitCode": 0,
+      "Passed": 23,
+      "Failed": 0,
+      "SameExe": true
+    },
+    {
+      "Mode": "refresh",
+      "ExeSha256": "38AAA5F627EEE811B837E5655999FC8362845451B67B10D208B7F202B7D56C5F",
+      "ElapsedSeconds": 7.5631083,
+      "CapturedProcessExitCode": 0,
+      "Passed": 33,
+      "Failed": 0,
+      "SameExe": true
+    },
+    {
+      "Mode": "self",
+      "ExeSha256": "38AAA5F627EEE811B837E5655999FC8362845451B67B10D208B7F202B7D56C5F",
+      "ElapsedSeconds": 41.529114,
+      "CapturedProcessExitCode": 0,
+      "Passed": 517,
+      "Failed": 0,
+      "SameExe": true
+    }
+  ],
+  "CountsOverlap": true,
+  "NativeRenderInspected": true,
+  "BrowserRenderAccepted": false,
+  "NativePublicSkuFacts": [
+    {
+      "Sku": "dx13260_reg_03",
+      "Source": "https://www.dell.com/zh-cn/shop/laptop-computers/spd/xps13dx13260/dx13260_reg_03",
+      "ObservedAt": "2026-10-25T12:04:17.9989667+08:00",
+      "MemoryGB": 8,
+      "StorageGB": 512,
+      "DedicatedVramGB": null,
+      "ObservedPriceCNY": 9495.39,
+      "RegionalDeliveryOrCheckoutVerified": false,
+      "CandidateTaskPerformanceVerified": false
+    },
+    {
+      "Sku": "ds14260_reg_02",
+      "Source": "https://www.dell.com/zh-cn/shop/laptop-computers/spd/dell14sds14260/ds14260_reg_02",
+      "ObservedAt": "2026-10-25T12:04:18.440333+08:00",
+      "MemoryGB": 16,
+      "StorageGB": 1000,
+      "DedicatedVramGB": null,
+      "ObservedPriceCNY": 11422.65,
+      "RegionalDeliveryOrCheckoutVerified": false,
+      "CandidateTaskPerformanceVerified": false
+    },
+    {
+      "Sku": "aa18250_reg_01",
+      "Source": "https://www.dell.com/zh-cn/shop/laptop-computers/spd/alienware18area51aa18250/aa18250_reg_01",
+      "ObservedAt": "2026-10-25T12:04:18.8858857+08:00",
+      "MemoryGB": 32,
+      "StorageGB": 1000,
+      "DedicatedVramGB": 8,
+      "ObservedPriceCNY": 35478.61,
+      "RegionalDeliveryOrCheckoutVerified": false,
+      "CandidateTaskPerformanceVerified": false
+    }
+  ],
+  "LenovoAttemptedButUnsupported": [
+    "https://item.lenovo.com.cn/product/1044729.html",
+    "https://item.lenovo.com.cn/product/1037529.html"
+  ],
+  "PrivateHistoricalAudit": {
+    "SourceFixedPrefixesUnchanged": true,
+    "AnalysisEntry": "HistoryAnalysis.Analyze",
+    "ObservedOutput": "capacity-conflicts-and-pending-actual-tasks",
+    "CoverageAutoConfirmed": false,
+    "CandidateMeasurementsSynthesized": false,
+    "UserValuesPublished": false,
+    "AuditExecution": "runtime-loaded-existing-frozen-assembly"
+  },
+  "CI": {
+    "RunId": 40160383669,
+    "Commit": "435c067464cdb428e5544a4519f1f689849223a3",
+    "Status": "completed",
+    "Conclusion": "success",
+    "RemoteBinaryIdentityProven": false
+  }
+}
