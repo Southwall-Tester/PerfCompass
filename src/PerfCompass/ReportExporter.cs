@@ -13,9 +13,11 @@ public static class ReportExporter
     {
         string E(string? text) => WebUtility.HtmlEncode(text ?? "");
         var configuration = ConfigurationDraft.Build(report);
+        string References(ModelReferenceList list) => "<h4>接近的参考机型</h4>" + string.Join("", list.Items.Select(r =>
+            $"<article><h4>{E(r.Name)}</h4><p>{E(r.Configuration)}</p><p>{E(r.Reason)}</p><p><a href='{E(r.Source)}'>{E(r.Source)}</a> · {E(r.CheckedOn)}</p></article>")) + "<p class='muted'>" + E(list.Notice) + "</p>";
         string DraftCase(ConfigurationDraftCase item) => "<h3>" + E(item.Label) + "</h3><p>" + E(item.Source) + "</p><p>" + E(item.Notice) + "</p><table><thead><tr><th>部件</th><th>优先比较</th><th>预算取舍</th></tr></thead><tbody>"
             + string.Join("", item.Rows.Select(r => $"<tr><td>{E(r.Name)}</td><td>{E(r.Recommendation)}</td><td>{E(r.Spending)}</td></tr>"))
-            + "</tbody></table><details><summary>配置依据与适用范围</summary>"
+            + "</tbody></table>" + References(item.References) + "<details><summary>配置依据与适用范围</summary>"
             + string.Join("", item.Rows.Select(r => $"<h4>{E(r.Name)}</h4><p>{E(r.Evidence)}</p><p class='muted'>{E(r.Scope)}</p>")) + "</details>";
         string configurationSection = "<section class='configuration-draft'><h2>下一台电脑配置草案</h2><p class='muted'>" + E(configuration.Scope)
             + "</p>" + DraftCase(configuration.Baseline) + (configuration.Conditions.Length == 0 ? "" : "<details><summary>条件成立时的配置</summary>"

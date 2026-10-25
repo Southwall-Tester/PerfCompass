@@ -66,15 +66,24 @@
        <Border.Resources><DataTemplate x:Key="ConfigurationDraftRows"><Border BorderBrush="#E3EAEC" BorderThickness="0,0,0,1" Padding="0,10"><StackPanel>
         <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="70"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="{Binding Name}" Foreground="#677A87"/><TextBlock Grid.Column="1" Text="{Binding Recommendation}" FontWeight="SemiBold" TextWrapping="Wrap"/></Grid>
         <TextBlock Text="{Binding Spending}" Foreground="#45606C" FontSize="12" TextWrapping="Wrap" Margin="70,6,0,0" LineHeight="19"/>
-       </StackPanel></Border></DataTemplate></Border.Resources>
+       </StackPanel></Border></DataTemplate>
+       <DataTemplate x:Key="ModelReferenceRows"><StackPanel Margin="0,9,0,4">
+        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+        <TextBlock Text="{Binding Configuration}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+        <TextBlock Text="{Binding Reason}" TextWrapping="Wrap" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,4,0,0"/>
+        <TextBox Text="{Binding Source, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" TextWrapping="Wrap" FontSize="11" Padding="0" Margin="0,4,0,0"/>
+       </StackPanel></DataTemplate></Border.Resources>
        <StackPanel>
         <TextBlock Text="下一台电脑配置草案" FontSize="18" FontWeight="SemiBold"/>
         <TextBlock Text="{Binding Scope}" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,7,0,3" TextWrapping="Wrap"/>
         <TextBlock Text="{Binding Baseline.Notice}" Foreground="#98631D" TextWrapping="Wrap"/>
         <ItemsControl x:Name="ConfigurationDraftList" ItemsSource="{Binding Baseline.Rows}" ItemTemplate="{StaticResource ConfigurationDraftRows}"/>
+        <TextBlock Text="接近的参考机型" FontSize="16" FontWeight="SemiBold" Margin="0,16,0,4"/>
+        <ItemsControl x:Name="ModelReferenceList" ItemsSource="{Binding Baseline.References.Items}" ItemTemplate="{StaticResource ModelReferenceRows}"/>
+        <TextBlock Text="{Binding Baseline.References.Notice}" Foreground="{StaticResource Muted}" FontSize="12" TextWrapping="Wrap" Margin="0,7,0,0"/>
         <Expander x:Name="ConfigurationDraftEvidence" Header="配置依据与适用范围" Margin="0,10,0,0"><ItemsControl ItemsSource="{Binding Baseline.Rows}"><ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,9,0,3"><TextBlock Text="{Binding Name}" FontWeight="SemiBold"/><TextBlock Text="{Binding Evidence}" TextWrapping="Wrap" Margin="0,5,0,0"/><TextBlock Text="{Binding Scope}" TextWrapping="Wrap" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,4,0,0"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate></ItemsControl></Expander>
         <Expander x:Name="ConfigurationDraftConditions" Header="条件成立时的配置" Margin="0,10,0,0"><Expander.Style><Style TargetType="Expander"><Style.Triggers><DataTrigger Binding="{Binding Conditions.Length}" Value="0"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Expander.Style>
-         <ItemsControl ItemsSource="{Binding Conditions}"><ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,12,0,4"><TextBlock Text="{Binding Label}" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding Source}" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap"/><TextBlock Text="{Binding Notice}" Foreground="#98631D" TextWrapping="Wrap"/><ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource ConfigurationDraftRows}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+         <ItemsControl ItemsSource="{Binding Conditions}"><ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,12,0,4"><TextBlock Text="{Binding Label}" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding Source}" Foreground="{StaticResource Muted}" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap"/><TextBlock Text="{Binding Notice}" Foreground="#98631D" TextWrapping="Wrap"/><ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource ConfigurationDraftRows}"/><TextBlock Text="接近的参考机型" FontWeight="SemiBold" Margin="0,12,0,0"/><ItemsControl ItemsSource="{Binding References.Items}" ItemTemplate="{StaticResource ModelReferenceRows}"/><TextBlock Text="{Binding References.Notice}" TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource Muted}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
         </Expander>
         <TextBlock Text="{x:Static local:ConfigurationDraft.Notice}" TextWrapping="Wrap" Foreground="{StaticResource Muted}" FontSize="11" Margin="0,12,0,0"/>
        </StackPanel>

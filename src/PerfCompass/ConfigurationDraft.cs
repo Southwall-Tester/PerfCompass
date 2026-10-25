@@ -11,6 +11,7 @@ public record ConfigurationDraftRow(string Key, string Name, string Recommendati
 public record ConfigurationDraftCase(string Label, ConfigurationDraftRow[] Rows, string Notice)
 {
     public string Source { get; init; } = "";
+    public ModelReferenceList References { get; init; } = new([], "");
 }
 public record ConfigurationDraft(ConfigurationDraftCase Baseline, ConfigurationDraftCase[] Conditions, string Scope)
 {
@@ -30,7 +31,7 @@ public record ConfigurationDraft(ConfigurationDraftCase Baseline, ConfigurationD
         {
             var rows = new[] { Cpu(), Memory(scenario), Gpu(scenario), Storage(scenario) };
             string notice = string.Join(" ", scenario.Conflicts.Select(c => c.Message));
-            return new(scenario.Label, rows, notice) { Source = scenario.Key.Length == 0 ? ""
+            return new(scenario.Label, rows, notice) { References = ModelReferences.Build(report, scenario, gpu.Mode), Source = scenario.Key.Length == 0 ? ""
                 : "条件原文：" + string.Join("；", scenario.Criteria.Where(c => c.Condition.Length > 0).Select(c => c.Evidence).Distinct()) };
         }
         var cases = CandidateComparison.ConfigurationScenarios(report).Select(BuildCase).ToArray();

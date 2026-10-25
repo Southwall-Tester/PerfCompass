@@ -193,6 +193,15 @@ public partial class MainWindow
             "All four configuration recommendations are readable together in the actual viewport");
         File.WriteAllText(Path.Combine(output, "configuration-draft.json"), JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true }));
         await screenshot("90-next-computer-configuration");
+        require(ModelReferenceList.Items.Count > 0 && ModelReferenceList.Items.Count == configuration.Baseline.References.Items.Length,
+            "Actual analysis shows reference models without importing products or creating candidates");
+        UpdateLayout();
+        var referenceLabels = Descendants(ModelReferenceList).OfType<TextBlock>()
+            .Where(t => configuration.Baseline.References.Items.Any(r => r.Name == t.Text)).ToArray();
+        await RevealLeadingArea(ModelReferenceList, referenceLabels);
+        require(referenceLabels.Length == ModelReferenceList.Items.Count && referenceLabels.All(InViewport),
+            "Reference model names are readable in the actual analysis viewport");
+        await screenshot("91-reference-models");
         ConfigurationDraftEvidence.IsExpanded = true;
         await RefreshAnalysis();
         require(ConfigurationDraftEvidence.IsExpanded && ConfigurationDraftList.Items.Count == 4,

@@ -15,6 +15,19 @@ public static partial class SelfTests
         }).ToArray();
         AnalysisReport Analyze(IEnumerable<Sample> rows, int days = 7) => AnalysisEngine.Analyze(rows, new(), days, null, now, hardware);
         var baseline = Analyze(Rows());
+        check("Model references appear without product import, quotes or candidate measurements", () =>
+        {
+            var draft = ConfigurationDraft.Build(baseline);
+            assert(draft.Baseline.References.Items.Length == 2
+                && draft.Baseline.References.Items.All(r => r.Configuration.Contains("集成显卡")
+                    && r.Source.StartsWith("https://") && r.CheckedOn == "2026-10-25"), "Light route references missing or unsourced");
+            var unknown = ConfigurationDraft.Build(Analyze([])).Baseline.References;
+            assert(unknown.Items.All(r => r.Reason.Contains("路线尚未确定")), "Unknown history became personalized performance advice");
+            assert(ReportExporter.Html(baseline, null).Contains("接近的参考机型"), "References absent from exported analysis");
+            var occupied = ConfigurationDraft.Build(Analyze(Rows().Select(s => s with { MemoryPeakGb = 20, MemoryUsedGb = 20 })));
+            assert(occupied.Baseline.References.Items.All(r => !r.Configuration.Contains("16 GB")),
+                "A model below the observed physical-memory footprint was offered as a close reference");
+        });
         ConfigurationDraftRow Row(AnalysisReport report, string key) => ConfigurationDraft.Build(report).Baseline.Rows.Single(r => r.Key == key);
         SemanticFact Goal(string subject, string quantity, string source, string condition = "", string polarity = "required")
             => new(subject, "resource", polarity, "future", quantity, "GB", condition, source) { DecisionUse = "require" };
@@ -89,6 +102,18 @@ public static partial class SelfTests
             var conflict = WithGoals(baseline, Goal("内存", "至少64", "内存至少64GB"), Goal("内存", "不超过32", "内存不超过32GB"));
             assert(Row(conflict, "memory").Recommendation.Contains("冲突") && Row(conflict, "memory").NominalCapacityGB == null
                 && Row(conflict, "disk").NominalCapacityGB == 1000, "Conflict became a tier or erased an independent storage recommendation");
+        });
+        check("Reference models respect strict nominal goals and independent conditions", () =>
+        {
+            var vram = ConfigurationDraft.Build(WithGoals(baseline, Goal("显存", "至少12", "独立显存至少12GB")));
+            assert(vram.Baseline.References.Items.Length == 1
+                && vram.Baseline.References.Items[0].Configuration.Contains("12 GB"), "VRAM bound ignored");
+            var conditional = ConfigurationDraft.Build(WithGoals(baseline,
+                Goal("内存", "大于32", "训练时内存大于32GB", "训练", "conditional")));
+            assert(conditional.Baseline.References.Items.Length > 0 && conditional.Conditions.Single().References.Items.Length == 0,
+                "Strict or conditional capacity boundary ignored to force a reference match");
+            var conflict = ConfigurationDraft.Build(WithGoals(baseline, Goal("内存", "至少64", "内存至少64GB"), Goal("内存", "不超过32", "内存不超过32GB")));
+            assert(conflict.Baseline.References.Items.Length == 0, "Conflicting requirements were labeled as a matching product");
         });
         check("Draft invalid history and missing hardware cannot supply observed capacity or downgrade directions", () =>
         {
