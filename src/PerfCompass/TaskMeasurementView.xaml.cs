@@ -25,6 +25,7 @@ public partial class TaskMeasurementView : UserControl
     internal Func<string?>? WorkingDirectoryPathProvider;
     internal Func<string?>? MeasurementExportPathProvider;
     internal Action? ResultPersisted;
+    internal Action? OpenCandidateComparison;
     internal TaskMeasurementResult? LastResult { get; private set; }
     internal bool HasUnsavedResult => LastResult != null && !resultSaved;
     internal bool Running => cancellation != null;
@@ -54,7 +55,7 @@ public partial class TaskMeasurementView : UserControl
     private bool ClearResult()
     {
         if (HasUnsavedResult) { TaskStatus.Text = "请先导出上次测量文件，避免丢失尚未保存的结果；本次操作尚未开始。"; return false; }
-        LastResult = null; TaskResultPanel.Visibility = Visibility.Collapsed; ExportTaskButton.IsEnabled = false;
+        LastResult = null; TaskResultPanel.Visibility = Visibility.Collapsed; ExportTaskButton.IsEnabled = UseMeasurementForCandidateButton.IsEnabled = false;
         return true;
     }
     private void SetPlan(TaskPlan? plan, bool environmentConfirmed = false)
@@ -201,6 +202,7 @@ public partial class TaskMeasurementView : UserControl
             var progress = new Progress<TaskRunProgress>(p => { if (cancellation != source) return; stage = p.Stage; TaskProgressBar.Maximum = p.Total; TaskProgressBar.Value = Math.Max(0, p.Finished); TaskProgressBar.IsIndeterminate = p.Stage.Contains("校验") || p.Stage.Contains("复核"); UpdateLabel(); });
             var result = await TaskMeasurements.RunAsync(request, currentMachine, progress, source.Token, BoundPlan);
             LastResult = result; resultSaved = false;
+            UseMeasurementForCandidateButton.IsEnabled = TaskMeasurements.HasCompleteRoundsAndStablePower(result);
             TaskResultSummary.Text = result.Summary; TaskEvidenceLabel.Text = TaskMeasurements.Evidence(result);
             TaskAttemptsList.ItemsSource = result.Attempts.Select(a => $"第 {a.Number} 轮{(a.Warmup ? "（预热）" : "")}：{a.Seconds:0.###} 秒 · {TaskMeasurements.OutcomeLabel(a.Outcome)} · 退出码 {a.ExitCode?.ToString() ?? "未知"} · 根进程退出 {(a.RootExited ? "是" : "未确认")}").ToArray();
             TaskResultPanel.Visibility = Visibility.Visible; ExportTaskButton.IsEnabled = true;
@@ -221,6 +223,10 @@ public partial class TaskMeasurementView : UserControl
         finally { timer.Stop(); elapsed.Stop(); cancellation = null; activity(false); TaskInputs.IsEnabled = TaskPlanButtons.IsEnabled = true; RunTaskButton.IsEnabled = true; CancelTaskButton.IsEnabled = false; TaskProgressBar.IsIndeterminate = false; TaskProgressBar.Visibility = Visibility.Collapsed; TaskProgressLabel.Text = $"本次运行已结束 · 用时 {elapsed.Elapsed.TotalSeconds:0.0} 秒"; }
     }
     private void CancelTask_Click(object sender, RoutedEventArgs e) => Cancel();
+    private void UseMeasurementForCandidate_Click(object sender, RoutedEventArgs e)
+    {
+        if (!Running && LastResult != null && UseMeasurementForCandidateButton.IsEnabled) OpenCandidateComparison?.Invoke();
+    }
     private void ExportTask_Click(object sender, RoutedEventArgs e)
     {
         if (LastResult == null) return;

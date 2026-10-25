@@ -92,7 +92,15 @@
   </StackPanel></Border>
   <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
    <TextBlock Text="任务测试与逐项核对结果" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/>
-   <WrapPanel Margin="0,0,0,12"><Button x:Name="PrepareMeasurementsButton" Content="生成 / 更新结果行" Click="PrepareMeasurements_Click" Margin="0,0,8,8"/><Button x:Name="OpenTaskMeasurementButton" Content="运行任务测量" Click="OpenTaskMeasurement_Click" Margin="0,0,8,8"/><Button x:Name="ImportTaskMeasurementButton" Content="导入所选行的测量" Click="ImportTaskMeasurement_Click" Margin="0,0,0,8"/></WrapPanel>
+   <WrapPanel Margin="0,0,0,12"><Button x:Name="PrepareMeasurementsButton" Content="生成 / 更新结果行" Click="PrepareMeasurements_Click" Margin="0,0,8,8"/><Button x:Name="OpenTaskMeasurementButton" Content="运行任务测量" Click="OpenTaskMeasurement_Click" Margin="0,0,8,8"/><Button x:Name="UseCurrentMeasurementButton" Content="使用本次测量" Click="UseCurrentMeasurement_Click" Margin="0,0,8,8"/><Button x:Name="ImportTaskMeasurementButton" Content="导入所选行的测量" Click="ImportTaskMeasurement_Click" Margin="0,0,0,8"/></WrapPanel>
+   <Border x:Name="MeasurementHandoffPanel" Visibility="Collapsed" Background="#F0F8F6" BorderBrush="#C5DFD9" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16"><StackPanel>
+    <TextBlock Text="核对本次测量对应的候选与任务" FontSize="17" FontWeight="SemiBold"/>
+    <TextBlock x:Name="MeasurementHandoffTarget" Margin="0,10,0,8"/>
+    <TextBlock x:Name="MeasurementHandoffSource"/>
+    <Expander Header="查看任务步骤与测量依据" Margin="0,10,0,10"><TextBlock x:Name="MeasurementHandoffEvidence" FontSize="12" Foreground="{StaticResource Muted}" Margin="0,8,0,0"/></Expander>
+    <TextBlock Text="请核对来源机器对应这套候选，并检查任务步骤和实际产物。填入后，仍需重新核对目标与测试可比性。" Foreground="{StaticResource Muted}" FontSize="12"/>
+    <WrapPanel Margin="0,12,0,0"><Button x:Name="ConfirmMeasurementHandoffButton" Content="核对并填入所选行" Click="ConfirmMeasurementHandoff_Click" Margin="0,0,10,0"/><Button x:Name="CancelMeasurementHandoffButton" Content="取消" Click="CancelMeasurementHandoff_Click"/></WrapPanel>
+   </StackPanel></Border>
    <DataGrid x:Name="ObservationsGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Height="240" RowHeight="40" EnableRowVirtualization="False" FrozenColumnCount="2">
     <DataGrid.Columns>
      <DataGridTextColumn Header="候选" Binding="{Binding CandidateName}" IsReadOnly="True" Width="130"/>

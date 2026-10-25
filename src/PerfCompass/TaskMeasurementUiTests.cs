@@ -55,6 +55,7 @@ public partial class MainWindow
         var goal = (PurchaseCriterion)comparisonView.CriteriaGrid.Items[goalRow];
         var observation = comparisonView.Workspace.Observations.First(o => o.CriterionId == goal.Id);
         comparisonView.ObservationsGrid.SelectedItem = observation;
+        await RunMeasurementHandoffUiTests(output, require, screenshot, comparisonView, observation, goal, measured);
         var picker = comparisonView.MeasurementPathPicker;
         try
         {

@@ -244,6 +244,7 @@ public partial class MainWindow
                 && view.WorkingDirectoryBox.Text == relocatedDirectory && RunCount() == 8,
                 "An invalid plan file or cancelled import preserves the current bound plan and completed measurement");
 
+            await RunMeasurementHandoffScenario(output, require, screenshot, wait, retainedResult!);
             Click(view.NewTaskPlanButton);
             view.TaskNameBox.Text = "显式新建的合成方案";
             require(view.BoundPlan == null && !view.TaskNameBox.IsReadOnly && !view.ArgumentsBox.IsReadOnly

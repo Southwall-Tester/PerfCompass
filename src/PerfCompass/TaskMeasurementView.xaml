@@ -30,6 +30,7 @@
   <TextBlock x:Name="TaskStatus" Foreground="{StaticResource Muted}" Margin="0,0,0,16"/>
   <Border x:Name="TaskResultPanel" Style="{StaticResource Card}" Visibility="Collapsed"><StackPanel>
    <TextBlock x:Name="TaskResultSummary" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,12"/>
+   <Button x:Name="UseMeasurementForCandidateButton" Content="到候选页核对本次测量" Click="UseMeasurementForCandidate_Click" HorizontalAlignment="Left" IsEnabled="False" Margin="0,0,0,12"/>
    <Expander Header="查看机器、输入与协议依据" Margin="0,0,0,16"><TextBlock x:Name="TaskEvidenceLabel" FontSize="12" Foreground="{StaticResource Muted}" Margin="0,10,0,0"/></Expander>
    <ItemsControl x:Name="TaskAttemptsList"><ItemsControl.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" Margin="0,0,0,8"/></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
   </StackPanel></Border>

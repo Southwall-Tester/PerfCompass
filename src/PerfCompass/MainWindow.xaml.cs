@@ -46,6 +46,8 @@ public partial class MainWindow : Window
         liveUpdates = new(PostLiveUpdate, ApplyLiveUpdates);
         ApplicationVersionLabel.Text = "本地记录 · v" + typeof(MainWindow).Assembly.GetName().Version?.ToString(3);
         ComparisonPage.OpenTaskMeasurement = () => Navigate("measurement");
+        ComparisonPage.CurrentTaskMeasurement = () => TaskMeasurementPage.Running ? null : TaskMeasurementPage.LastResult;
+        TaskMeasurementPage.OpenCandidateComparison = () => Navigate("comparison");
         ComparisonPage.DraftPersisted = () =>
         {
             if (StatusLine.Text == UnsavedComparisonNotice) StatusLine.Text = "候选草稿已保存或导出。";
