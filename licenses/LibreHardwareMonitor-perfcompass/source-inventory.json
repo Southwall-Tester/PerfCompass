@@ -5,7 +5,7 @@
     "UpstreamVersion":  "0.9.6",
     "PatchedVersion":  "0.9.6-perfcompass.1",
     "PerfCompassRepository":  "https://github.com/Southwall-Tester/PerfCompass",
-    "PerfCompassCheckoutCommit":  "2fdd6b9f8389dc593d87445ac135fafd76b37ad9",
+    "PerfCompassCheckoutCommit":  "3e30efa444d243c5ac7d70146a9f8b8711a74eb7",
     "SourceTreeDirty":  false,
     "SourceSnapshotSha256":  "e6a7b5e3279f4d11adacc38a109ae984f6457844b66ef486daa2acfad5285849",
     "Files":  [
@@ -1201,8 +1201,8 @@
     "GeneratedFiles":  [
                            {
                                "Path":  "NuGet.Config",
-                               "Bytes":  332,
-                               "Sha256":  "997af26d799d9e1f7d91b7c700aabaa94ff292c13cae1c3f278a92b18d6defa8"
+                               "Bytes":  337,
+                               "Sha256":  "b15b3f2e01e5c537eb90cb6a25b3038f41fb9e37c7cf2e29a3c3710224326aea"
                            }
                        ]
 }

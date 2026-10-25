@@ -1,0 +1,80 @@
+{
+  "Version": "0.8.32",
+  "FrozenCommit": "3e30efa444d243c5ac7d70146a9f8b8711a74eb7",
+  "ExeSha256": "CEC837D96245CE9BBE9B8182BB055DB7860DFDF9B06C86A84F21852739009007",
+  "Runs": [
+    {
+      "Mode": "drafts",
+      "ElapsedSeconds": 13.5664752,
+      "CapturedProcessExitCode": 0,
+      "Passed": 38,
+      "Failed": 0,
+      "SameFrozenExe": true
+    },
+    {
+      "Mode": "full",
+      "ElapsedSeconds": 176.0849237,
+      "CapturedProcessExitCode": 0,
+      "Passed": 146,
+      "Failed": 0,
+      "SameFrozenExe": true
+    },
+    {
+      "Mode": "live",
+      "ElapsedSeconds": 7.268943999999999,
+      "CapturedProcessExitCode": 0,
+      "Passed": 21,
+      "Failed": 0,
+      "SameFrozenExe": true
+    },
+    {
+      "Mode": "observations",
+      "ElapsedSeconds": 18.8454038,
+      "CapturedProcessExitCode": 0,
+      "Passed": 77,
+      "Failed": 0,
+      "SameFrozenExe": true
+    },
+    {
+      "Mode": "product",
+      "ElapsedSeconds": 7.131585599999999,
+      "CapturedProcessExitCode": 0,
+      "Passed": 21,
+      "Failed": 0,
+      "SameFrozenExe": true
+    },
+    {
+      "Mode": "refresh",
+      "ElapsedSeconds": 8.409991,
+      "CapturedProcessExitCode": 0,
+      "Passed": 33,
+      "Failed": 0,
+      "SameFrozenExe": true
+    },
+    {
+      "Mode": "self",
+      "ElapsedSeconds": 45.0653394,
+      "CapturedProcessExitCode": 0,
+      "Passed": 515,
+      "Failed": 0,
+      "SameFrozenExe": true
+    }
+  ],
+  "OverlappingChecksNotAdditive": true,
+  "NativeRenderInspected": true,
+  "BrowserRenderAccepted": false,
+  "PrivateHistoricalAudit": {
+    "SourceUnchanged": true,
+    "CoverageAutoConfirmed": false,
+    "ConcreteSkuCount": 1,
+    "CandidateTaskMeasurements": 0,
+    "Output": "capacity-mismatch-and-pending-verification",
+    "UserValuesPublished": false
+  },
+  "LiveScope": {
+    "Domain": "www.dell.com",
+    "Sku": "ds14260_reg_02",
+    "AllDomainPagesVerified": false,
+    "CheckoutOrRegionalDeliveryVerified": false
+  }
+}
