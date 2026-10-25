@@ -34,6 +34,17 @@ public static partial class SelfTests
                 assert(Parse(page).PriceCny == null, "uncertain or unavailable offer became a qualified RMB quotation");
             assert(Reject(html.Replace("\"sku\": \"ds14260_reg_02\"", "\"sku\": \"wrong-sku\"")), "another configuration inherited this quote");
         });
+        check("Dell marketing metadata cannot replace or conflict with a SKU's selected technical fields", () =>
+        {
+            string page = html.Replace("\"offers\":", "\"additionalProperty\":[{\"name\":\"CPU\",\"value\":\"Generic CPU help text, not a selected processor\"},{\"name\":\"Memory\",\"value\":\"128GB optional family upgrade\"}],\"offers\":")
+                .Replace("16 GB LPDDR5x", "32 GB：2 x 16 GB，DDR5");
+            var p = Parse(page); var spec = SpecificationImport.Parse(p.SpecificationText);
+            assert(spec.Cpu.Contains("322") && spec.MemoryGb == 32 && !p.SpecificationText.Contains("Generic CPU")
+                && !p.SpecificationText.Contains("128GB"), "family marketing became the selected configuration");
+            var missing = Parse(page.Replace("id=tech-spec-container", "id=unavailable-tech-spec"));
+            assert(SpecificationImport.Parse(missing.SpecificationText).Cpu.Length == 0
+                && SpecificationImport.Parse(missing.SpecificationText).MemoryGb == null, "missing selected specs fell back to family marketing");
+        });
         check("Ambiguous malformed and duplicated product fields do not select an arbitrary cheap price", () =>
         {
             assert(Reject(html + html.Replace("11422.65", "999")), "conflicting products selected cheapest");

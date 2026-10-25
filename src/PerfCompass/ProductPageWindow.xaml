@@ -2,7 +2,7 @@
  <Grid Margin="24" Background="#F4F7F8"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
   <StackPanel>
    <TextBlock Text="从商品链接添加候选" FontSize="21" FontWeight="SemiBold"/>
-   <TextBlock Text="目前读取 Dell 中国官网和联想商城提供的结构化商品资料；未提供或无法读取时，可继续用规格摘录。仅访问填写的网址，不发送需求或使用历史，也不使用浏览器登录信息。" TextWrapping="Wrap" Margin="0,10,0,12" Foreground="#45606C"/>
+   <TextBlock Text="目前实际读通部分 Dell 中国官网 SKU，联想商城尚未验证成功；读取失败可继续用规格摘录。仅访问填写的网址，不发送需求或使用历史，也不使用浏览器登录信息。" TextWrapping="Wrap" Margin="0,10,0,12" Foreground="#45606C"/>
    <DockPanel><Button x:Name="ReadPageButton" Content="读取商品预览" Click="ReadPage_Click" DockPanel.Dock="Right" Padding="14,8" Margin="10,0,0,0"/><TextBox x:Name="ProductUrlBox" MaxLength="1000" Padding="8" TextChanged="UrlChanged" AutomationProperties.Name="商品网址"/></DockPanel>
    <TextBlock x:Name="ProductStatus" Text="填写具体 SKU 的商品页，读取后逐项核对再添加。" TextWrapping="Wrap" Margin="0,10,0,12" Foreground="#45606C"/>
   </StackPanel>

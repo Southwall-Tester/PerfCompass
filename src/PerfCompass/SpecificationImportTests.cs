@@ -41,6 +41,18 @@ public static partial class SelfTests
             assert(p.MemoryGb == null && p.Questions.Length > 0, "conflicting installed values became the largest option");
             assert(SpecificationImport.Parse(raw + "\nMemory: 2x 16GB DDR5").MemoryGb == 32, "byte-identical repeated rows became conflicting models");
         });
+        check("Explicit installed totals agree exactly with module counts across units and common separators", () =>
+        {
+            foreach (var item in new[] { ("32 GB：2 x 16 GB，DDR5，高达 6400 MT/s，CSoDIMM", 32d),
+                ("16 GB：1 x 16 GB，DDR5", 16d), ("64 GB：2 个 32 GB，DDR5", 64d),
+                ("48 GB (2 × 24 GB) DDR5", 48d), ("2 TB：2 x 1 TB SSD", 2000d),
+                ("34.359738368 GB：2 x 16 GiB", 34.359738368d) })
+                assert(SpecificationImport.ParseCapacity(item.Item1) == item.Item2, "consistent explicit module layout was lost: " + item.Item1);
+            foreach (string value in new[] { "32 GB：2 x 8 GB", "32 GB：2 x 16 GiB", "32 GB：0 x 16 GB", "32 GB：2 x 16 GB x 2",
+                "32 GB + 2 x 16 GB", "32 GB or 2 x 16 GB", "Up to 32 GB：2 x 16 GB", "32 GB：2 x 16 GB + 8 GB",
+                "32 GB：99999999999999999999999999999999999 x 16 GB", "32 GB (2 x 16 GB", "32 GB (2 x 16 GB) x 2", "1，5TB" })
+                assert(SpecificationImport.ParseCapacity(value) == null, "inconsistent or ambiguous module layout was invented: " + value);
+        });
         check("Specification import does not confuse shared memory or optional GPU models with dedicated VRAM", () =>
         {
             var p = SpecificationImport.Parse("Model: SYNTH-TWO\nGraphics: Integrated shared 32GB memory\nMemory: 32GB\nMax Memory: 128GB");

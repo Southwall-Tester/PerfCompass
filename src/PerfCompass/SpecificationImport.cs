@@ -32,7 +32,7 @@ public static class SpecificationImport
         ["VRAM"]="vram", ["Video Memory"]="vram", ["Graphics Memory"]="vram", ["显存"]="vram", ["独立显存"]="vram",
         ["Storage"]="storage", ["SSD"]="storage", ["Installed Storage"]="storage", ["硬盘"]="storage", ["存储"]="storage", ["固态硬盘"]="storage"
     };
-    private static readonly Regex Capacity = new(@"(?<![\d.,])(?<size>[0-9]+(?:\.[0-9]+)?)\s*(?<unit>[Gg][Ii]?B|[Tt][Ii]?B)(?=$|[\s,;:/()（）+x×*]|(?i:DDR|LPDDR|GDDR|SSD|SODIMM|NVMe))", RegexOptions.CultureInvariant);
+    private static readonly Regex Capacity = new(@"(?<![\d.,，])(?<size>[0-9]+(?:\.[0-9]+)?)\s*(?<unit>[Gg][Ii]?B|[Tt][Ii]?B)(?=$|[\s,;:/，；：()（）+x×*]|(?i:DDR|LPDDR|GDDR|SSD|SODIMM|NVMe))", RegexOptions.CultureInvariant);
     public static string Stamp(string source, string text) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new[] { source, text }))));
     public static bool Current(SpecificationDraft draft) => draft.RecordedAt.HasValue && draft.ParsedStamp == Stamp(draft.Source, draft.Text);
     public static SpecificationPreview Parse(string text)
@@ -86,8 +86,9 @@ public static class SpecificationImport
     }
     public static double? ParseCapacity(string value)
     {
-        if (Regex.IsMatch(value, @"up\s+to|max(?:imum)?|optional|shared|最多|最高|可选|支持|共享|至少|不超过|[<>≤≥]|\d,\d|\d[eE][+-]?\d", RegexOptions.IgnoreCase)) return null;
+        if (Regex.IsMatch(value, @"up\s+to|max(?:imum)?|optional|shared|\bor\b|最多|最高|可选|或|支持|共享|至少|不超过|[<>≤≥]|\d[,，]\d|\d[eE][+-]?\d", RegexOptions.IgnoreCase)) return null;
         var matches = Capacity.Matches(value).Where(m => !Regex.IsMatch(value[(m.Index + m.Length)..], @"^\s*/\s*(?:seconds?|secs?|s|秒)(?:\b|$)", RegexOptions.IgnoreCase)).ToArray();
+        if (matches.Length == 2) return ExplicitTotal(value, matches[0], matches[1]);
         if (matches.Length != 1) return null;
         var m = matches[0]; double size = double.Parse(m.Groups["size"].Value, CultureInfo.InvariantCulture);
         double scale = m.Groups["unit"].Value.ToUpperInvariant() switch { "GB" => 1, "TB" => 1000, "GIB" => 1073741824d / 1e9, "TIB" => 1099511627776d / 1e9, _ => double.NaN };
@@ -99,6 +100,33 @@ public static class SpecificationImport
         double count = before.Success ? double.Parse(before.Groups["n"].Value, CultureInfo.InvariantCulture) : after.Success ? double.Parse(after.Groups["n"].Value, CultureInfo.InvariantCulture) : 1;
         double total = size * scale * count;
         return count > 0 && double.IsFinite(total) && total is >= 0 and <= 1e12 ? total : null;
+    }
+    private static double? ExplicitTotal(string value, Match total, Match module)
+    {
+        // Accept an explicit installed total only when its stated module layout
+        // agrees exactly. Neither a sum of choices nor the largest token wins.
+        if (!string.IsNullOrWhiteSpace(value[..total.Index])) return null;
+        string between = value[(total.Index + total.Length)..module.Index];
+        var layout = Regex.Match(between, @"^\s*(?<separator>[:：（(])\s*(?<count>[0-9]+)\s*(?:[x×*]|个|条|根)\s*$");
+        if (!layout.Success || !decimal.TryParse(layout.Groups["count"].Value, NumberStyles.None, CultureInfo.InvariantCulture, out decimal count)
+            || count is <= 0 or > 1e12m) return null;
+        string suffix = value[(module.Index + module.Length)..];
+        bool parenthesized = layout.Groups["separator"].Value is "(" or "（";
+        var closing = Regex.Match(suffix, @"^\s*[)）]");
+        if (parenthesized && !closing.Success) return null;
+        string tail = parenthesized ? suffix[closing.Length..] : suffix;
+        if (Regex.IsMatch(tail, @"^\s*[x×*]\s*[0-9]")) return null;
+        decimal? Quantity(Match token)
+        {
+            if (!decimal.TryParse(token.Groups["size"].Value, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal size)
+                || size is < 0 or > 1e12m) return null;
+            decimal scale = token.Groups["unit"].Value.ToUpperInvariant() switch
+            { "GB" => 1m, "TB" => 1000m, "GIB" => 1073741824m / 1e9m, "TIB" => 1099511627776m / 1e9m, _ => 0m };
+            decimal result = size * scale;
+            return scale > 0 && result <= 1e12m ? result : null;
+        }
+        decimal? declared = Quantity(total), part = Quantity(module);
+        return declared.HasValue && part.HasValue && declared.Value == part.Value * count ? (double)declared.Value : null;
     }
     public static PurchaseCandidate Candidate(SpecificationDraft draft)
     {

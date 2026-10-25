@@ -35,7 +35,7 @@ public partial class MainWindow
         var view = ComparisonPage; var factory = view.ProductPageFactory;
         bool live = Environment.GetCommandLineArgs().Contains("--ui-test-product-page-live");
         File.WriteAllText(Path.Combine(output, "NOTICE.txt"), live
-            ? "First preview uses an explicit live HTTPS read of one official Dell SKU. Later races and modified quotations use labelled controlled input. No production history or candidate-machine performance measurement is used."
+            ? "Four explicit live HTTPS reads cover three official Dell SKUs. Intervening races, module layouts and modified quotations use labelled controlled input. No production history or candidate-machine performance measurement is used."
             : "Uses a recorded 2026-10-25 official SKU/Offer and selected technical rows, followed by controlled cancellation/failure and manual-price edits. This is not current stock or candidate performance verification. Independent empty data root only.");
         ProductPagePreview? firstPreview = null;
         void Open(Func<ProductPageWindow, Task> drive, Func<string, CancellationToken, Task<ProductPagePreview>> reader)
@@ -139,6 +139,26 @@ public partial class MainWindow
                 && comparison.Shortlists[0].Options.All(o => o.CandidateId != edited.Id),
                 "Budget evaluation can use the reviewed page quote but cannot recommend an edited cheaper amount without its own evidence");
             File.WriteAllText(Path.Combine(output, "product-comparison.html"), CandidateComparison.Html(saved, comparison));
+            string modulePage = SelfTests.RecordedProductPage().Replace("\"offers\":",
+                "\"additionalProperty\":[{\"name\":\"CPU\",\"value\":\"Generic CPU help text, not a selected processor\"}],\"offers\":")
+                .Replace("16 GB LPDDR5x", "32 GB：2 x 16 GB，DDR5");
+            Open(async window =>
+            {
+                window.ProductUrlBox.Text = SelfTests.RecordedProductUrl; Click(window.ReadPageButton);
+                await Ready(() => window.ProductPreviewPanel.Visibility == Visibility.Visible);
+                require(window.ProductMemoryBox.Text == "32" && window.ProductCpuBox.Text.Contains("322")
+                    && !window.ProductCpuBox.Text.Contains("help text"),
+                    "Native preview uses the selected CPU and a consistent total plus module layout rather than family help text");
+                window.ProductNameBox.Text = "合成模块拆分入口检查（非实际商品配置）";
+                await Capture(window, "product-module-layout");
+                window.Reader = (_, _) => Task.FromResult(ProductPageImport.Parse(modulePage.Replace("2 x 16 GB", "2 x 8 GB"),
+                    new Uri(SelfTests.RecordedProductUrl), DateTimeOffset.Now));
+                window.ConfirmDiscard = () => true; Click(window.ReadPageButton);
+                await Ready(() => window.ReadPageButton.IsEnabled);
+                require(window.ProductMemoryBox.Text.Length == 0 && window.ProductStatus.Text.Contains("容量或配置不明确"),
+                    "A contradictory declared total and module count remains unknown in the actual product preview");
+                window.Close();
+            }, (_, _) => Task.FromResult(ProductPageImport.Parse(modulePage, new Uri(SelfTests.RecordedProductUrl), DateTimeOffset.Now)));
             Open(async window =>
             {
                 window.ProductUrlBox.Text = SelfTests.RecordedProductUrl; Click(window.ReadPageButton);
@@ -149,6 +169,40 @@ public partial class MainWindow
             var modified = view.Workspace.Candidates.Last();
             require(modified.MemoryGb == 64 && modified.PriceCny == 11422.65 && modified.Source.Length == 0,
                 "Editing installed capacity cannot attach the unchanged price of the originally selected configuration");
+            if (live)
+            {
+                // Explicit live mode also checks multiple real SKU shapes through
+                // the same native read/review/add path. CI remains recorded-only.
+                while (view.Workspace.Candidates.Count > 0)
+                { view.CandidatesGrid.SelectedItem = view.Workspace.Candidates[0]; Click(view.RemoveCandidateButton); }
+                var liveReads = new List<ProductPagePreview>();
+                foreach (var item in new[]
+                {
+                    (Url: "https://www.dell.com/zh-cn/shop/laptop-computers/spd/xps13dx13260/dx13260_reg_03", Memory: "8", Cpu: "320"),
+                    (Url: SelfTests.RecordedProductUrl, Memory: "16", Cpu: "322"),
+                    (Url: "https://www.dell.com/zh-cn/shop/laptop-computers/spd/alienware18area51aa18250/aa18250_reg_01", Memory: "32", Cpu: "270HX")
+                })
+                {
+                    Open(async window =>
+                    {
+                        window.ProductUrlBox.Text = item.Url; Click(window.ReadPageButton);
+                        await Ready(() => window.ProductPreviewPanel.Visibility == Visibility.Visible || window.ProductStatus.Text.StartsWith("读取未完成"));
+                        require(window.ProductPreviewPanel.Visibility == Visibility.Visible && window.ProductMemoryBox.Text == item.Memory
+                            && window.ProductCpuBox.Text.Contains(item.Cpu) && liveReads.Last().PriceCny > 0,
+                            "Live selected SKU reaches native preview with independently checked CPU and memory: " + new Uri(item.Url).Segments.Last());
+                        window.ProductReviewed.IsChecked = true; Click(window.ProductAddButton);
+                    }, async (url, token) => { var result = await ProductPageImport.ReadAsync(url, token); liveReads.Add(result); return result; });
+                }
+                require(view.Workspace.Candidates.Count == 3 && view.Workspace.Candidates.Select(c => c.MemoryGb).SequenceEqual(new double?[] { 8, 16, 32 })
+                    && view.Workspace.Candidates.All(c => c.PriceCny > 0 && liveReads.Any(p => c.Source.Contains(p.Sku)))
+                    && view.Workspace.Observations.Count == 0 && !view.Workspace.CoverageConfirmed,
+                    "Three real SKU candidates retain selected capacities and quote provenance without invented task or coverage evidence");
+                await wait(() => view.Triage?.Cases[0].Candidates.Length == 3);
+                require(view.Triage!.Cases[0].Candidates.All(c => c.Pending.Any(p => p.Contains("实际任务"))),
+                    "All live SKU candidates still require actual-machine task verification after automatic triage");
+                File.WriteAllText(Path.Combine(output, "live-product-reads.json"), JsonSerializer.Serialize(liveReads, new JsonSerializerOptions { WriteIndented = true }));
+                Click(view.SaveDraftButton);
+            }
         }
         finally { view.ProductPageFactory = factory; }
     }

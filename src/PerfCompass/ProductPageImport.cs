@@ -103,7 +103,10 @@ public static class ProductPageImport
         if (source.IdnHost == "www.dell.com" && !source.AbsolutePath.TrimEnd('/').EndsWith("/" + sku, StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("页面 SKU 与所选链接不一致，未采用该报价或配置。");
         var lines = new List<string> { "Model: " + name + " · " + sku };
-        if (product.TryGetProperty("additionalProperty", out var props) && props.ValueKind == JsonValueKind.Array)
+        // Dell's Product.additionalProperty also contains feature-help prose
+        // under labels such as "CPU". It describes the family, not this SKU.
+        // For Dell only the selected technical-specification rows supply fields.
+        if (source.IdnHost != "www.dell.com" && product.TryGetProperty("additionalProperty", out var props) && props.ValueKind == JsonValueKind.Array)
             foreach (var prop in props.EnumerateArray())
                 if (SpecKeys.TryGetValue(Text(prop, "name"), out string? key) && Text(prop, "value") is { Length: > 0 } value)
                     lines.Add(key + ": " + OneLine(value));
