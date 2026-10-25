@@ -1,0 +1,36 @@
+﻿{
+    "Version":  "0.8.30",
+    "FrozenCommit":  "2fdd6b9f8389dc593d87445ac135fafd76b37ad9",
+    "ExeSha256":  "DADA88670A816ABC9CBDD3FC6DB5629E646B157798BDE00C32BB54E56BAECF41",
+    "SelfTests":  {
+                      "ActualExit":  0,
+                      "Failed":  0,
+                      "Passed":  501
+                  },
+    "FullWpf":  {
+                    "ActualExit":  0,
+                    "Failed":  0,
+                    "Passed":  146
+                },
+    "ObservationAndCandidates":  {
+                                     "ActualExit":  0,
+                                     "Failed":  0,
+                                     "Passed":  66
+                                 },
+    "SemanticUse":  {
+                        "ActualExit":  0,
+                        "Failed":  0,
+                        "Passed":  25
+                    },
+    "AnalysisRefresh":  {
+                            "ActualExit":  0,
+                            "Failed":  0,
+                            "Passed":  32
+                        },
+    "CountsOverlap":  true,
+    "NativeRendering":  "Actual frozen WPF visual-tree images reviewed; synthetic scenarios in isolated empty roots.",
+    "Html":  "Content and escaping checked; browser rendering not accepted.",
+    "ActualHistory":  "Read-only fixed-prefix snapshot report reviewed; original sample digests unchanged; no user values or traces included here.",
+    "Nlp":  "No new inference; model default remains disabled.",
+    "CommercialMaturity":  "Not established; exact models, purchasable products, quotes and cross-machine task benefits remain open."
+}
