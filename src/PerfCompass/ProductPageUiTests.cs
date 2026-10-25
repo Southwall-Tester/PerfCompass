@@ -82,6 +82,11 @@ public partial class MainWindow
                 && view.Workspace.Candidates[0].Source.Contains(firstPreview.Sku) && view.Workspace.Candidates[0].SpecificationSource.Contains("Processor:")
                 && view.CoverageConfirm.IsChecked != true && view.Workspace.Observations.Count == 0,
                 "Actual import adds a sourced quote and specification candidate without task outcomes or coverage confirmation");
+            await wait(() => view.Triage?.Cases.FirstOrDefault()?.Candidates.Any(c => c.Id == view.Workspace.Candidates[0].Id) == true);
+            var importedTriage = view.Triage!.Cases[0].Candidates.Single(c => c.Id == view.Workspace.Candidates[0].Id);
+            require(importedTriage.Name.Contains(firstPreview.Sku) && importedTriage.Quote.Contains("有出处")
+                && importedTriage.Pending.Any(p => p.Contains("实际任务")) && view.Workspace.Criteria.Count == 0,
+                "An imported real SKU automatically reaches candidate triage with its sourced quote while actual task performance remains pending");
 
             var old = new TaskCompletionSource<ProductPagePreview>(); var newer = new TaskCompletionSource<ProductPagePreview>();
             Open(async window =>
@@ -116,6 +121,9 @@ public partial class MainWindow
             var edited = view.Workspace.Candidates.Last();
             require(edited.PriceCny == 1 && edited.Source == "" && edited.SpecificationSource.Contains("页面报价参考"),
                 "A manually replaced quote is retained without inheriting the original page price source");
+            await wait(() => view.Triage?.Cases[0].Candidates.Any(c => c.Id == edited.Id) == true);
+            require(view.Triage!.Cases[0].Candidates.Single(c => c.Id == edited.Id).Quote.Contains("来源待补"),
+                "Automatic triage exposes the edited quote's missing source instead of presenting it as an evidenced cheap option");
             Click(view.SaveDraftButton); await Ready(() => CandidateComparison.Load(store.Root).Candidates.Count == 2);
             var saved = CandidateComparison.Load(store.Root);
             require(saved.Candidates[0].Source == view.Workspace.Candidates[0].Source && saved.Candidates[0].SpecificationSource == view.Workspace.Candidates[0].SpecificationSource

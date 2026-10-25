@@ -62,6 +62,8 @@ public partial class MainWindow
             require(report == null && !PurchaseGuidanceList.Items.OfType<ConfigurationDecision>().Any(), "Changing analysis scope immediately retires old purchasing directions while the reader is pending");
             require(ConfigurationDraftPanel.Visibility == Visibility.Collapsed && ConfigurationDraftPanel.DataContext == null,
                 "A pending scope change retires the old automatic configuration draft with the other purchasing advice");
+            require(ComparisonPage.Triage == null && ComparisonPage.TriageCases.Items.Count == 0 && !ComparisonPage.ExportTriageButton.IsEnabled,
+                "A pending scope change also retires concrete candidate screening and its export");
         }
         finally { release.Set(); await holding; await first.WaitAsync(TimeSpan.FromSeconds(30)); }
         await wait(() => report?.WindowDays == 90);
