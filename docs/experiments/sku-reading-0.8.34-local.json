@@ -115,5 +115,9 @@
     "Status": "completed",
     "Conclusion": "success",
     "RemoteBinaryIdentityProven": false
-  }
+  },
+  "DefaultPromoted": true,
+  "UserHistoryUnchanged": true,
+  "CandidateExecutableMovedInsteadOfDuplicated": true,
+  "CurrentPackagePath": "artifacts/PerfCompass-current-Windows-x64.zip"
 }

@@ -1,4 +1,4 @@
-param([string]$SourceDirectory = 'release-next', [string]$OutputPath = 'PerfCompass-Windows-x64.zip')
+param([string]$SourceDirectory = 'release-next', [string]$OutputPath = 'artifacts/PerfCompass-current-Windows-x64.zip')
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.IO.Compression
 $taskRoot = Split-Path -Parent $PSScriptRoot
