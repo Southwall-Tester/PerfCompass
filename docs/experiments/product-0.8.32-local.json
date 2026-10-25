@@ -76,5 +76,27 @@
     "Sku": "ds14260_reg_02",
     "AllDomainPagesVerified": false,
     "CheckoutOrRegionalDeliveryVerified": false
-  }
+  },
+  "CI": {
+    "RunId": 40157199920,
+    "Commit": "cc1debb376af4f57eda131e540b9134483b21f76",
+    "Status": "completed",
+    "Conclusion": "success",
+    "Url": "https://github.com/Southwall-Tester/PerfCompass/actions/runs/40157199920",
+    "SameProductSourcesAsFrozen": true,
+    "RemoteBinaryIdentityProven": false
+  },
+  "PortablePackage": {
+    "Version": "0.8.32",
+    "Entries": 138,
+    "ExtractedExeHashMatches": true,
+    "WorkingDirectoryIsExtractedPackage": true,
+    "IndependentEmptyData": true,
+    "ProductPassed": 21,
+    "Failed": 0,
+    "CapturedProcessExitCode": 0,
+    "DocumentationUpdatedAfterEntryCheck": true
+  },
+  "DefaultPromoted": true,
+  "UserDataUnchanged": true
 }
