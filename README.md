@@ -14,6 +14,8 @@
 
 Windows 原生电脑占用监测与购机配置分析工具。C# / .NET 10 / WPF；采样与历史保存在本机，可选模型解析会在主动点击时向所配服务发送需求描述。
 
+准备实际选购时可按 [一次购机核对流程](docs/BUYING_SESSION.md) 从重要任务走到候选与预算取舍；设备验证边界、升级和问题定位见 [试用版支持范围](docs/SUPPORT_SCOPE.md)。
+
 双击根目录 `启动.cmd`。通过验证的新版本位于 `release-next/`，启动器优先使用它，并继续读取 `release/data/` 中的历史。已经运行的旧版本需要正常退出后再启动。发布版自带运行时，不依赖 Python 或预装 .NET。
 
 GitHub 上的源码不包含 EXE。可从 [Windows 构建流程](https://github.com/Southwall-Tester/PerfCompass/actions/workflows/windows.yml) 中成功的运行下载 `PerfCompass-Windows-x64` 产物，解压后运行 `PerfCompass.exe`。当前为开发试用版，尚未完成商业级验证。
