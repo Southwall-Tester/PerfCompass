@@ -74,5 +74,26 @@
     "RemoteBinaryIdentityProven": false
   },
   "DefaultPromoted": true,
-  "UserHistoryUnchanged": true
+  "UserHistoryUnchanged": true,
+  "PortablePackage": {
+    "Version": "0.8.33",
+    "Entries": 139,
+    "ExtractedExeHashMatches": true,
+    "WorkingDirectoryIsExtractedPackage": true,
+    "IndependentEmptyData": true,
+    "TaskPlanAndHandoffPassed": 43,
+    "Failed": 0,
+    "CapturedProcessExitCode": 0,
+    "DocumentationUpdatedAfterEntryCheck": true
+  },
+  "CompletedCheckCleanup": {
+    "Executed": false,
+    "AutomaticReview": "blocked by policy",
+    "Retained": [
+      "artifacts/current-candidate-033",
+      "artifacts/handoff-033-check",
+      "artifacts/PerfCompass-0.8.32-Windows-x64.zip"
+    ],
+    "Bypassed": false
+  }
 }
