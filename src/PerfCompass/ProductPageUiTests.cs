@@ -74,6 +74,9 @@ public partial class MainWindow
                 require(window.ProductReviewed.IsChecked != true && !window.ProductAddButton.IsEnabled, "A real field edit withdraws the old product review");
                 window.ConfirmDiscard = () => false; window.Close();
                 require(window.IsVisible && window.ProductNameBox.Text.EndsWith("edited"), "Closing an edited product preview defaults to preserving its unique content");
+                Exit();
+                require(!exiting && !exitPending && window.IsVisible && window.ProductNameBox.Text.EndsWith("edited")
+                    && window.ProductStatus.Text.Contains("再退出"), "The actual global exit path keeps an active product preview and its edits before stopping any collection or saving old candidate state");
                 window.ProductNameBox.Text = original; window.ProductReviewed.IsChecked = true;
                 window.ProductReviewed.BringIntoView(); window.UpdateLayout(); await Capture(window, "product-quote-review");
                 Click(window.ProductAddButton);

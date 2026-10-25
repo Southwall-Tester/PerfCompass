@@ -487,6 +487,7 @@ public partial class MainWindow : Window
     private async void Exit()
     {
         if (exiting || exitPending) return;
+        if (ComparisonPage.ProductPreviewOpen) { ComparisonPage.FocusProductPreview(); return; }
         if (protectionWindow is { } maintenance) { maintenance.Close(); if (maintenance.Busy) return; }
         exitPending = true;
         semanticCancellation?.Cancel(); TaskMeasurementPage.Cancel();
