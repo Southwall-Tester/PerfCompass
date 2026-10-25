@@ -3,13 +3,16 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace PerfCompass;
 
 public partial class MainWindow
 {
     private async Task RunPurchaseScenarioUiTests(string output, Action<bool, string> require,
-        Func<string, Task> screenshot, Func<Func<bool>, Task> wait)
+        Func<Func<bool>, Task> wait)
     {
         void Click(Button b) { b.Focus(); b.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent)); }
         if (!paused) Click(PauseButton);
@@ -64,12 +67,94 @@ public partial class MainWindow
         require(view.ComparisonScenarios.Items.Count == 2 && view.ContextStatus.Text.Contains("待定选项分别比较"), "Rendered scenario list and instructions distinguish uncertain options");
         async Task Capture(string name)
         {
-            await Dispatcher.InvokeAsync(UpdateLayout, System.Windows.Threading.DispatcherPriority.ContextIdle);
-            view.ComparisonScenarios.BringIntoView(); await Task.Delay(150); UpdateLayout();
             var root = (FrameworkElement)Content;
-            var bounds = view.ComparisonScenarios.TransformToAncestor(root).TransformBounds(new Rect(view.ComparisonScenarios.RenderSize));
-            require(view.ComparisonScenarios.IsVisible && bounds.Top >= 0 && bounds.Bottom <= root.ActualHeight, "Complete scenario text is inside the visible window: " + name);
-            await screenshot(name);
+            Rect Bounds() => view.ComparisonScenarios.TransformToAncestor(root).TransformBounds(new Rect(view.ComparisonScenarios.RenderSize));
+            var events = new List<object>(); var clock = System.Diagnostics.Stopwatch.StartNew();
+            RequestBringIntoViewEventHandler bring = (_, e) =>
+            {
+                if (events.Count < 200) events.Add(new { At = clock.Elapsed.TotalMilliseconds, Kind = "bring", Target = e.TargetObject is FrameworkElement f ? f.GetType().Name + ":" + f.Name : e.TargetObject.GetType().Name,
+                    Rect = e.TargetRect.ToString(), Scenarios = Bounds().ToString() });
+            };
+            ScrollChangedEventHandler scrolled = (_, e) =>
+            {
+                if (events.Count < 200) events.Add(new { At = clock.Elapsed.TotalMilliseconds, Kind = "scroll", e.VerticalOffset, e.VerticalChange, e.ViewportHeight, e.ExtentHeight, Scenarios = Bounds().ToString() });
+            };
+            root.AddHandler(FrameworkElement.RequestBringIntoViewEvent, bring, true);
+            root.AddHandler(ScrollViewer.ScrollChangedEvent, scrolled, true);
+            try
+            {
+            await Dispatcher.InvokeAsync(UpdateLayout, System.Windows.Threading.DispatcherPriority.ContextIdle);
+            view.CompareButton.Focus();
+            void Position()
+            {
+                view.ComparisonScenarios.BringIntoView(); UpdateLayout();
+                for (var parent = VisualTreeHelper.GetParent(view.ComparisonScenarios); parent != null; parent = VisualTreeHelper.GetParent(parent))
+                    if (parent is ScrollViewer scroll)
+                    {
+                        if (!scroll.CanContentScroll && scroll.Content is Visual content)
+                            scroll.ScrollToVerticalOffset(Math.Max(0, view.ComparisonScenarios.TransformToAncestor(content).Transform(new Point()).Y - 12));
+                        break;
+                    }
+                UpdateLayout();
+            }
+            Position();
+            bool FullyVisible(Rect rect)
+            {
+                if (!view.ComparisonScenarios.IsVisible || rect.Width <= 0 || rect.Height <= 0 || rect.Left < 0 || rect.Right > root.ActualWidth
+                    || rect.Top < 0 || rect.Bottom > root.ActualHeight) return false;
+                var visible = rect;
+                for (var parent = VisualTreeHelper.GetParent(view.ComparisonScenarios); parent != null && parent != root; parent = VisualTreeHelper.GetParent(parent))
+                    if (parent is FrameworkElement frame && (frame.ClipToBounds || frame is ScrollContentPresenter))
+                        visible.Intersect(frame.TransformToAncestor(root).TransformBounds(new Rect(frame.RenderSize)));
+                return !visible.IsEmpty && visible.Width >= rect.Width - .5 && visible.Height >= rect.Height - .5;
+            }
+            Rect previous = Rect.Empty; int stable = 0;
+            for (int attempt = 0; attempt < 20 && stable < 2; attempt++)
+            {
+                await Task.Delay(50); UpdateLayout();
+                var rect = Bounds();
+                bool same = !previous.IsEmpty && Math.Abs(rect.Top - previous.Top) < .5 && Math.Abs(rect.Bottom - previous.Bottom) < .5;
+                stable = FullyVisible(rect) ? same ? stable + 1 : 1 : 0;
+                previous = rect;
+            }
+            var before = Bounds(); var bounds = before; bool visible = false;
+            // Keep the geometry check and bitmap on one dispatcher callback.
+            // The shared capture's asynchronous delay can otherwise allow a
+            // deferred scroll request between the check and the actual frame.
+            await Dispatcher.InvokeAsync(() =>
+            {
+                UpdateLayout();
+                if (!FullyVisible(Bounds())) Position();
+                bounds = Bounds();
+                visible = stable >= 2 && FullyVisible(bounds) && Math.Abs(bounds.Top - before.Top) < .5 && Math.Abs(bounds.Bottom - before.Bottom) < .5;
+                var bitmap = new RenderTargetBitmap((int)Math.Ceiling(root.ActualWidth), (int)Math.Ceiling(root.ActualHeight), 96, 96, PixelFormats.Pbgra32);
+                bitmap.Render(root);
+                var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                using var file = File.Create(Path.Combine(output, name + ".png")); encoder.Save(file);
+                visible = visible && FullyVisible(Bounds());
+            }, System.Windows.Threading.DispatcherPriority.ContextIdle);
+            File.WriteAllText(Path.Combine(output, name + "-viewport-trace.json"), JsonSerializer.Serialize(new
+            { Before = before.ToString(), Captured = bounds.ToString(), After = Bounds().ToString(), StableFrames = stable, Visible = visible, Events = events }, new JsonSerializerOptions { WriteIndented = true }));
+            if (!visible)
+            {
+                var scrolls = new List<object>();
+                for (var parent = VisualTreeHelper.GetParent(view.ComparisonScenarios); parent != null && parent != root; parent = VisualTreeHelper.GetParent(parent))
+                    if (parent is ScrollViewer scroll) scrolls.Add(new { scroll.VerticalOffset, scroll.ViewportHeight, scroll.ExtentHeight, scroll.CanContentScroll,
+                        Bounds = scroll.TransformToAncestor(root).TransformBounds(new Rect(scroll.RenderSize)).ToString() });
+                File.WriteAllText(Path.Combine(output, name + "-visibility-failure.json"), JsonSerializer.Serialize(new
+                {
+                    Scenarios = bounds.ToString(), root.ActualWidth, root.ActualHeight, Scrolls = scrolls,
+                    Focus = Keyboard.FocusedElement is FrameworkElement focused ? focused.GetType().Name + ":" + focused.Name : "none",
+                    Text = view.Result?.ScenarioSummaries
+                }, new JsonSerializerOptions { WriteIndented = true }));
+            }
+            require(visible, "Complete scenario text is inside the visible window: " + name);
+            }
+            finally
+            {
+                root.RemoveHandler(FrameworkElement.RequestBringIntoViewEvent, bring);
+                root.RemoveHandler(ScrollViewer.ScrollChangedEvent, scrolled);
+            }
         }
         await Capture("separate-unknown-options");
         string html = view.ExportHtml(); File.WriteAllText(Path.Combine(output, "separate-options.html"), html);

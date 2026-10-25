@@ -58,7 +58,7 @@ public partial class MainWindow
             if (experienceIntegrityOnly) { await RunExperienceIntegrityUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (analysisRefreshOnly) { await RunAnalysisRefreshUiTests(output, Require, WaitForAnalysis); return; }
             if (fileProtectionOnly) { await RunTaskFileProtectionUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
-            if (uncertaintyOnly) { await RunPurchaseScenarioUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
+            if (uncertaintyOnly) { await RunPurchaseScenarioUiTests(output, Require, WaitForAnalysis); return; }
             if (comparisonDraftOnly) { await RunComparisonDraftUiTests(output, Require, Screenshot, WaitForAnalysis); return; }
             if (taskPlanOnly)
             {
