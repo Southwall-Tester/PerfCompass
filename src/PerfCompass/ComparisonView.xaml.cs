@@ -30,6 +30,8 @@ public partial class ComparisonView : UserControl
         {
             foreach (var column in grid.Columns.OfType<DataGridTextColumn>()) column.ElementStyle = (Style)FindResource("TableText");
             grid.BeginningEdit += (_, _) => Invalidate();
+            grid.CellEditEnding += (_, _) => QueueTriageRefresh();
+            grid.RowEditEnding += (_, _) => QueueTriageRefresh();
         }
         // Display-mode combo boxes also emit selection events when WPF creates
         // their bindings during layout. Only actual cell editing invalidates a
@@ -60,6 +62,7 @@ public partial class ComparisonView : UserControl
         RefreshContextStatus(report);
         if ((workspace.CoverageConfirmed || CoverageConfirm.IsChecked == true) && workspace.ContextStamp != CandidateComparison.Stamp(report)
             || comparison != null && comparison.ContextStamp != CandidateComparison.Stamp(report)) Invalidate();
+        RefreshTriage();
     }
     internal void InitializeStore(LocalStore localStore)
     {
@@ -78,6 +81,7 @@ public partial class ComparisonView : UserControl
         CompareButton.IsEnabled = ImportCriteriaButton.IsEnabled = CoverageConfirm.IsEnabled = ExportComparisonButton.IsEnabled = false;
         ComparisonOutcomePanel.Visibility = Visibility.Collapsed;
         SemanticSourceNotice.Visibility = Visibility.Collapsed;
+        RetireTriage("当前分析更新中，旧初筛已撤下；候选草稿可继续编辑。");
     }
     private void RefreshContextStatus(AnalysisReport report)
     {
@@ -110,6 +114,7 @@ public partial class ComparisonView : UserControl
         }
         finally { updating = false; }
         if (context != null && !contextPending) RefreshSemanticSources(context);
+        RefreshTriage();
     }
     private void Invalidate()
     {
@@ -118,6 +123,7 @@ public partial class ComparisonView : UserControl
         updating = true;
         try { CoverageConfirm.IsChecked = false; workspace.CoverageConfirmed = false; DropResult(); }
         finally { updating = false; }
+        QueueTriageRefresh();
     }
     private void DropResult() { comparison = null; ComparisonResults.ItemsSource = null; ComparisonTradeoffs.ItemsSource = null; ComparisonScenarios.ItemsSource = null; ComparisonConflicts.ItemsSource = null; ComparisonSummary.Text = ""; ComparisonShortlists.ItemsSource = null; ShortlistExpander.Visibility = Visibility.Collapsed; ExportComparisonButton.IsEnabled = false; }
     private bool Commit()

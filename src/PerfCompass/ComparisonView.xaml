@@ -15,6 +15,23 @@
   <TextBlock x:Name="ContextStatus" Margin="0,0,0,14" Foreground="{StaticResource Accent}"/>
   <WrapPanel><Button x:Name="SaveDraftButton" Content="保存草稿" Click="SaveDraft_Click" Margin="0,0,10,8"/><Button x:Name="ExportDraftButton" Content="导出草稿" Click="ExportDraft_Click" Margin="0,0,10,8"/><Button x:Name="ImportDraftButton" Content="导入草稿" Click="ImportDraft_Click" Margin="0,0,0,8"/></WrapPanel>
   <TextBlock x:Name="DraftStatus" Text="编辑后自动保存草稿；保存草稿不会生成比较结论。" TextWrapping="Wrap" Foreground="{StaticResource Muted}" Margin="0,0,0,14"/>
+  <Border x:Name="TriagePanel" Style="{StaticResource Card}" Margin="0,0,0,16"><Border.Resources><DataTemplate x:Key="TriageCaseTemplate"><StackPanel Margin="0,10,0,0">
+    <TextBlock Text="{Binding Label}" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding Notice}" Foreground="#98631D" TextWrapping="Wrap"/>
+    <Expander Header="需求与条件依据" FontSize="12" Margin="0,5,0,0"><TextBlock Text="{Binding Source}" TextWrapping="Wrap" Margin="0,7,0,0"/></Expander>
+    <ItemsControl ItemsSource="{Binding Candidates}"><ItemsControl.ItemTemplate><DataTemplate><Border BorderBrush="#E3EAEC" BorderThickness="0,0,0,1" Padding="0,10"><StackPanel>
+     <DockPanel><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding State}" Foreground="#007F73" HorizontalAlignment="Right" TextWrapping="Wrap" Margin="12,0,0,0"/></DockPanel>
+     <TextBlock Text="{Binding Quote}" Foreground="#007F73" TextWrapping="Wrap" Margin="0,5,0,0"/><TextBlock Text="{Binding Specifications}" TextWrapping="Wrap" Margin="0,5,0,0" FontSize="12"/>
+     <TextBlock Text="{Binding ComparisonReason}" TextWrapping="Wrap" Margin="0,5,0,0" FontSize="12"/>
+     <TextBlock Text="{Binding IssueText}" Foreground="#98631D" TextWrapping="Wrap" Margin="0,5,0,0"/>
+     <Expander Header="待核对项与资料来源" Margin="0,6,0,0"><StackPanel><TextBlock Text="{Binding ReasonText}" TextWrapping="Wrap" FontSize="12" Margin="0,7,0,0"/><TextBlock Text="{Binding PendingText}" TextWrapping="Wrap" Margin="0,7,0,0" FontSize="12"/><TextBlock Text="{Binding Sources}" TextWrapping="Wrap" Foreground="{StaticResource Muted}" Margin="0,7,0,0" FontSize="12"/></StackPanel></Expander>
+    </StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+   </StackPanel></DataTemplate></Border.Resources><StackPanel>
+   <DockPanel><TextBlock Text="候选自动初筛" FontSize="18" FontWeight="SemiBold"/><Button x:Name="ExportTriageButton" Content="导出初筛" Click="ExportTriage_Click" HorizontalAlignment="Right"/></DockPanel>
+   <TextBlock x:Name="TriageStatus" TextWrapping="Wrap" Foreground="{StaticResource Muted}" Margin="0,8,0,0"/>
+   <Expander x:Name="TriageExpander" Header="查看具体机型与比较顺序" IsExpanded="True" Margin="0,10,0,0"><ItemsControl x:Name="TriageCases" ItemTemplate="{StaticResource TriageCaseTemplate}"/></Expander>
+   <Expander x:Name="TriageConditionalExpander" Header="条件成立时的候选顺序" Visibility="Collapsed" Margin="0,10,0,0"><ItemsControl x:Name="TriageConditionalCases" ItemTemplate="{StaticResource TriageCaseTemplate}"/></Expander>
+   <TextBlock x:Name="TriageNotice" Text="{x:Static local:CandidateTriage.Notice}" TextWrapping="Wrap" Foreground="{StaticResource Muted}" FontSize="11" Margin="0,10,0,0"/>
+  </StackPanel></Border>
   <Border Style="{StaticResource Card}" Margin="0,0,0,16"><StackPanel>
    <DockPanel Margin="0,0,0,12"><TextBlock Text="候选电脑 · 最多三套" FontSize="18" FontWeight="SemiBold"/><StackPanel Orientation="Horizontal" HorizontalAlignment="Right"><Button x:Name="AddCandidateButton" Content="添加候选" Click="AddCandidate_Click" Margin="8,0"/><Button Content="删除选中候选" Click="RemoveCandidate_Click"/></StackPanel></DockPanel>
    <DataGrid x:Name="CandidatesGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" Height="185" RowHeight="38" EnableRowVirtualization="False" FrozenColumnCount="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">

@@ -387,6 +387,7 @@ public partial class MainWindow
                 $"Editing a real {edit.Kind} cell still invalidates the previous result and coverage confirmation");
         }
         await RunCandidateDecisionUiTests(output, require, screenshot);
+        await RunCandidateTriageUiTests(output, require, screenshot, waitForAnalysis);
         File.WriteAllText(Path.Combine(output, "resource-observation-NOTICE.txt"),
             "The initial three common checks use actual local CPU/memory collection. This flow then pauses recording and appends 60 ten-second synthetic rows, one earlier 95% core row and one partial 96% compute-engine row, only to the guarded empty UI-test data directory. The explicitly synthetic selected scene excludes startup telemetry. Seven/thirty-day selection and the rendered purchasing direction are exercised; these are synthesized records, not days of actual use. Native store/history analysis, visible text and scope, actual comparison actions and grids, saved review state and HTML export are checked. Candidate names and prices are synthetic; no candidate condition or task is claimed verified. No workload, model, hardware setting or production history is changed.");
     }

@@ -3,8 +3,10 @@ namespace PerfCompass;
 public static partial class CandidateComparison
 {
     internal static ConfigurationScenario[] ConfigurationScenarios(AnalysisReport report)
+        => ConfigurationScenarios(Drafts(report));
+
+    internal static ConfigurationScenario[] ConfigurationScenarios(List<PurchaseCriterion> criteria)
     {
-        var criteria = Drafts(report);
         var conflicts = FindConflicts(criteria);
         return new[] { "" }.Concat(criteria.Select(ScenarioKey).Where(k => k.Length > 0).Distinct().Order(StringComparer.Ordinal))
             .Select(key => new ConfigurationScenario(key, key.Length == 0 ? "当前任务与必需条件"
