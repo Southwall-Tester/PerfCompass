@@ -1,0 +1,27 @@
+﻿{
+    "FeatureCommit":  "c7fc290",
+    "DevelopmentVersion":  "0.8.31",
+    "ManagedAssemblySha256":  "E68DC5CBABB497967C553AEC2470BB1C8F24741675A0CA2DCBC10C1E2F42509B",
+    "SelfTests":  {
+                      "CapturedProcessExitCode":  0,
+                      "Failed":  0,
+                      "Passed":  506
+                  },
+    "NativeProductPageFlow":  {
+                                  "CapturedProcessExitCode":  0,
+                                  "Failed":  0,
+                                  "Passed":  18
+                              },
+    "ExplicitLiveRead":  {
+                             "ReturnedFixedCnyQuote":  true,
+                             "Source":  "https://www.dell.com/zh-cn/shop/laptop-computers/spd/dell14sds14260/ds14260_reg_02",
+                             "SelectedSpecificationsPreserved":  true,
+                             "Sku":  "ds14260_reg_02"
+                         },
+    "OtherRaceFailureAndPriceEditsAreControlled":  true,
+    "NoProductionHistory":  true,
+    "NoCandidatePerformanceMeasurement":  true,
+    "FrozenReleaseValidation":  false,
+    "CommercialMaturityEstablished":  false,
+    "RawTemporaryOutputsRemovedByUserRequest":  true
+}
