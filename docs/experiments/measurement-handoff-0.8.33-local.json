@@ -1,0 +1,78 @@
+{
+  "Version": "0.8.33",
+  "FrozenCommit": "2d3e9177a048cb1d183aff43a35b2004701b6e5f",
+  "ExeSha256": "8FBD9F68EBA6C836E12358BEB50D99E0AE16B6FD70B5F531281DECF0F634C683",
+  "Runs": [
+    {
+      "Mode": "drafts",
+      "ExeSha256": "8FBD9F68EBA6C836E12358BEB50D99E0AE16B6FD70B5F531281DECF0F634C683",
+      "ElapsedSeconds": 13.9229142,
+      "CapturedProcessExitCode": 0,
+      "Passed": 38,
+      "Failed": 0,
+      "SameExe": true
+    },
+    {
+      "Mode": "full",
+      "ExeSha256": "8FBD9F68EBA6C836E12358BEB50D99E0AE16B6FD70B5F531281DECF0F634C683",
+      "ElapsedSeconds": 166.9845164,
+      "CapturedProcessExitCode": 0,
+      "Passed": 157,
+      "Failed": 0,
+      "SameExe": true
+    },
+    {
+      "Mode": "plan",
+      "ExeSha256": "8FBD9F68EBA6C836E12358BEB50D99E0AE16B6FD70B5F531281DECF0F634C683",
+      "ElapsedSeconds": 9.1854675,
+      "CapturedProcessExitCode": 0,
+      "Passed": 43,
+      "Failed": 0,
+      "SameExe": true
+    },
+    {
+      "Mode": "refresh",
+      "ExeSha256": "8FBD9F68EBA6C836E12358BEB50D99E0AE16B6FD70B5F531281DECF0F634C683",
+      "ElapsedSeconds": 9.8604414,
+      "CapturedProcessExitCode": 0,
+      "Passed": 33,
+      "Failed": 0,
+      "SameExe": true
+    },
+    {
+      "Mode": "self",
+      "ExeSha256": "8FBD9F68EBA6C836E12358BEB50D99E0AE16B6FD70B5F531281DECF0F634C683",
+      "ElapsedSeconds": 50.747984599999995,
+      "CapturedProcessExitCode": 0,
+      "Passed": 515,
+      "Failed": 0,
+      "SameExe": true
+    }
+  ],
+  "CountsOverlap": true,
+  "NativeRenderInspected": true,
+  "ScreenshotsContainLocalMachineValues": "private-artifacts-only",
+  "CandidateTaskPerformanceProven": false,
+  "CrossHardwareProven": false,
+  "FormatsUnchanged": [
+    "comparison-1.4",
+    "task-measurement-1.1",
+    "task-plan-1.1"
+  ],
+  "FirstDevelopmentLaunch": {
+    "AppHostWithoutCoreClr": true,
+    "ChecksStarted": false,
+    "RunnerDotnetRootCorrected": true
+  },
+  "IndependentLongRunVersion": "0.8.29",
+  "CI": {
+    "RunId": 40158574997,
+    "Commit": "2d3e9177a048cb1d183aff43a35b2004701b6e5f",
+    "Status": "completed",
+    "Conclusion": "success",
+    "Url": "https://github.com/Southwall-Tester/PerfCompass/actions/runs/40158574997",
+    "RemoteBinaryIdentityProven": false
+  },
+  "DefaultPromoted": true,
+  "UserHistoryUnchanged": true
+}
