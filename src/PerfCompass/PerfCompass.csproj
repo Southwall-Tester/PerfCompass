@@ -10,10 +10,11 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\App.ico</ApplicationIcon>
-    <Version>0.8.30</Version>
+    <Version>0.8.31</Version>
     <AssemblyName>PerfCompass</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\..\tests\fixtures\product-page-dell.html" LogicalName="PerfCompass.ProductPageDell.html" />
     <EmbeddedResource Include="..\..\tests\fixtures\comparison-1.2-uncertainty.json" LogicalName="PerfCompass.LegacyUncertainty.json" />
     <EmbeddedResource Include="..\..\tests\fixtures\task-measurement-1.0-input-restore.json" LogicalName="PerfCompass.LegacyInputMeasurement.json" />
     <EmbeddedResource Include="..\..\tests\fixtures\task-plan-1.0-input-restore.json" LogicalName="PerfCompass.LegacyInputPlan.json" />

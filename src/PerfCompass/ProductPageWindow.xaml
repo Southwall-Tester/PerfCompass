@@ -1,0 +1,26 @@
+<Window x:Class="PerfCompass.ProductPageWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="从商品链接添加候选" Width="760" Height="760" MinWidth="620" MinHeight="540" WindowStartupLocation="CenterOwner" Background="#F4F7F8" Foreground="#192A36" FontFamily="Microsoft YaHei UI" Closing="Window_Closing">
+ <Grid Margin="24" Background="#F4F7F8"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <StackPanel>
+   <TextBlock Text="从商品链接添加候选" FontSize="21" FontWeight="SemiBold"/>
+   <TextBlock Text="目前读取 Dell 中国官网和联想商城提供的结构化商品资料；未提供或无法读取时，可继续用规格摘录。仅访问填写的网址，不发送需求或使用历史，也不使用浏览器登录信息。" TextWrapping="Wrap" Margin="0,10,0,12" Foreground="#45606C"/>
+   <DockPanel><Button x:Name="ReadPageButton" Content="读取商品预览" Click="ReadPage_Click" DockPanel.Dock="Right" Padding="14,8" Margin="10,0,0,0"/><TextBox x:Name="ProductUrlBox" MaxLength="1000" Padding="8" TextChanged="UrlChanged" AutomationProperties.Name="商品网址"/></DockPanel>
+   <TextBlock x:Name="ProductStatus" Text="填写具体 SKU 的商品页，读取后逐项核对再添加。" TextWrapping="Wrap" Margin="0,10,0,12" Foreground="#45606C"/>
+  </StackPanel>
+  <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"><StackPanel x:Name="ProductPreviewPanel" Visibility="Collapsed">
+   <TextBlock x:Name="ProductIdentity" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,12"/>
+   <TextBlock Text="候选备注名称（原始 SKU 在上方保留）"/><TextBox x:Name="ProductNameBox" MaxLength="150" Padding="7" Margin="0,4,0,12" TextChanged="FieldChanged"/>
+   <TextBlock Text="CPU（不明确可留空）"/><TextBox x:Name="ProductCpuBox" MaxLength="200" Padding="7" Margin="0,4,0,12" TextChanged="FieldChanged"/>
+   <TextBlock Text="GPU（共享显存不填入独立显存）"/><TextBox x:Name="ProductGpuBox" MaxLength="200" Padding="7" Margin="0,4,0,12" TextChanged="FieldChanged"/>
+   <UniformGrid Columns="3">
+    <StackPanel Margin="0,0,10,12"><TextBlock Text="内存 / GB"/><TextBox x:Name="ProductMemoryBox" MaxLength="100" Padding="7" Margin="0,4,0,0" TextChanged="FieldChanged"/></StackPanel>
+    <StackPanel Margin="0,0,10,12"><TextBlock Text="独立显存 / GB"/><TextBox x:Name="ProductVramBox" MaxLength="100" Padding="7" Margin="0,4,0,0" TextChanged="FieldChanged"/></StackPanel>
+    <StackPanel Margin="0,0,0,12"><TextBlock Text="存储 / GB"/><TextBox x:Name="ProductStorageBox" MaxLength="100" Padding="7" Margin="0,4,0,0" TextChanged="FieldChanged"/></StackPanel>
+   </UniformGrid>
+   <TextBlock Text="整机报价 / 元（不明确可留空）"/><TextBox x:Name="ProductPriceBox" MaxLength="100" Padding="7" Margin="0,4,0,12" TextChanged="FieldChanged"/>
+   <Expander Header="查看本次读取的规格与报价依据" Margin="0,0,0,14"><TextBlock x:Name="ProductEvidence" TextWrapping="Wrap" Margin="0,8,0,0" Foreground="#45606C"/></Expander>
+   <CheckBox x:Name="ProductReviewed" Checked="ReviewChanged" Unchecked="ReviewChanged" Margin="0,8,0,14"><TextBlock Text="已核对上述 SKU、修改后的字段与当前页面一致；填写报价时，也已核对配置、金额及可购买条件。此核对不代表任务性能通过。" TextWrapping="Wrap"/></CheckBox>
+   <TextBlock Text="添加后进入候选草稿，条件核对、任务结果与覆盖确认仍单独处理。编辑后关闭会默认返回，避免丢弃唯一内容。" TextWrapping="Wrap" FontSize="12" Foreground="#677A87" Margin="0,0,0,12"/>
+  </StackPanel></ScrollViewer>
+  <DockPanel Grid.Row="2" Margin="0,15,0,0"><Button x:Name="ProductAddButton" Content="核对并添加候选" IsEnabled="False" Click="AddProduct_Click" Padding="18,10" Background="#007F73" Foreground="White" DockPanel.Dock="Right"/><Button Content="返回候选页" Click="Return_Click" Padding="18,10" HorizontalAlignment="Left"/></DockPanel>
+ </Grid>
+</Window>
